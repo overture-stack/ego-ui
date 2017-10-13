@@ -15,19 +15,26 @@
     "react-router-dom": "^4.2.2",
     "react-scripts-ts": "2.7.0",
     "react-table": "^6.6.0",
-    "recompose": "^0.26.0"
+    "recompose": "^0.26.0",
+    "ts-loader": "^2.3.7"
   },
   "scripts": {
     "start": "NODE_PATH=src react-scripts-ts start",
     "build": "NODE_PATH=src react-scripts-ts build",
     "test": "NODE_PATH=src react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "eject": "react-scripts-ts eject",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^3.2.12",
+    "@storybook/addon-links": "^3.2.12",
+    "@storybook/react": "^3.2.12",
     "@types/jest": "^21.1.2",
     "@types/node": "^8.0.33",
     "@types/react": "^16.0.10",
-    "@types/react-dom": "^16.0.1"
+    "@types/react-dom": "^16.0.1",
+    "@types/storybook__react": "^3.0.5"
   },
   "prettier": {
     "trailingComma": "all",

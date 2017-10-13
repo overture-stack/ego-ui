@@ -7,6 +7,10 @@ import colors from 'common/colors';
 import { googleLogin } from 'services/login';
 import { provideUser } from 'stateProviders';
 
+import Login from 'components/Login';
+import Users from 'components/Users';
+import NoAccess from 'components/NoAccess';
+
 import './App.css';
 
 const GOOGLE_CLIENT_ID =
@@ -27,20 +31,9 @@ class App extends React.Component {
     return (
       <Router>
         <div style={{ height: '100%' }}>
-          <Route
-            path="/"
-            exact
-            component={require('components/Login').default}
-          />
-          <Route
-            path="/users"
-            component={require('components/Users').default}
-          />
-          <Route
-            path="/no-access"
-            exact
-            component={require('components/NoAccess').default}
-          />
+          <Route path="/" exact component={Login} />
+          <Route path="/users" component={Users} />
+          <Route path="/no-access" exact component={NoAccess} />
         </div>
       </Router>
     );
