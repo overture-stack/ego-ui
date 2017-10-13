@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { css } from 'glamor';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
