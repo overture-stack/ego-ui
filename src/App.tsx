@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
@@ -18,7 +18,7 @@ const styles = {
   },
 };
 
-const gapi = global['gapi'];
+const gapi = global.gapi;
 
 const enhance = compose(provideUser);
 

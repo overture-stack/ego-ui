@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'glamor';
 import { compose } from 'recompose';
@@ -33,7 +33,7 @@ const styles = {
   },
 };
 
-const gapi = global['gapi'];
+const gapi = global.gapi;
 
 const enhance = compose(injectState);
 
@@ -47,9 +47,9 @@ class Component extends React.Component {
     try {
       gapi.load('auth2', () => {
         /**
-       * Retrieve the singleton for the GoogleAuth library and set up the
-       * client.
-       */
+         * Retrieve the singleton for the GoogleAuth library and set up the
+         * client.
+         */
         gapi.auth2.init({
           client_id: GOOGLE_CLIENT_ID,
         });

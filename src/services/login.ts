@@ -1,6 +1,6 @@
 import ajax from 'services/ajax';
 
-const gapi = global['gapi'];
+const gapi = global.gapi;
 gapi.load('auth2');
 
 export const googleLogin = token =>
