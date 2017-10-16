@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { configure, storiesOf } from '@storybook/react';
+import { configure, storiesOf, addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 
-import { Button, Welcome } from '@storybook/react/demo';
+import providerUsers from 'stateProviders/provideUser';
 
 global.gapi = {
   load: () => {},
@@ -16,17 +16,9 @@ const req = require.context(
   /\.stories\.(js|ts|tsx)$/,
 );
 
-storiesOf('Welcome', module).add('to Storybook', () => (
-  <Welcome showApp={linkTo('Button')} />
-));
+const StateProviders = providerUsers(({ children }) => children);
 
-storiesOf('Button', module)
-  .add('with text', () => (
-    <Button onClick={action('clicked')}>Hello Button</Button>
-  ))
-  .add('with some emoji', () => (
-    <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
-  ));
+addDecorator(storyFn => <StateProviders>{storyFn()}</StateProviders>);
 
 function loadStories() {
   req.keys().forEach(filename => req(filename));
