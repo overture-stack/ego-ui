@@ -3,6 +3,7 @@ import React from 'react';
 import { configure, storiesOf, addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
+import StoryRouter from 'storybook-router';
 
 import providerUsers from 'stateProviders/provideUser';
 
@@ -19,6 +20,7 @@ const req = require.context(
 const StateProviders = providerUsers(({ children }) => children);
 
 addDecorator(storyFn => <StateProviders>{storyFn()}</StateProviders>);
+addDecorator(StoryRouter());
 
 function loadStories() {
   req.keys().forEach(filename => req(filename));
