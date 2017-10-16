@@ -6,6 +6,10 @@ import { linkTo } from '@storybook/addon-links';
 
 import { Button, Welcome } from '@storybook/react/demo';
 
+global.gapi = {
+  load: () => {},
+};
+
 const req = require.context(
   '../src/components',
   true,

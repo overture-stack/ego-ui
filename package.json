@@ -16,6 +16,7 @@
     "react-scripts-ts": "2.7.0",
     "react-table": "^6.6.0",
     "recompose": "^0.26.0",
+    "storybook-router": "^0.3.1",
     "ts-loader": "^2.3.7"
   },
   "scripts": {

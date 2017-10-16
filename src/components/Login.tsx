@@ -53,7 +53,6 @@ class Component extends React.Component {
         gapi.auth2.init({
           client_id: GOOGLE_CLIENT_ID,
         });
-
         gapi.signin2.render('googleSignin', {
           scope: 'profile email',
           width: 240,
