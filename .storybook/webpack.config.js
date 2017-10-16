@@ -1,3 +1,4 @@
+const path = require('path');
 // load the default config generator.
 const genDefaultConfig = require('@storybook/react/dist/server/config/defaults/webpack.config.js');
 const { EnvironmentPlugin } = require('webpack');
@@ -19,5 +20,9 @@ module.exports = (baseConfig, env) => {
   );
 
   config.resolve.extensions.push('.ts', '.tsx');
+  config.resolve.modules = [
+    path.resolve(__dirname, '..', process.env.NODE_PATH || 'src'),
+    'node_modules',
+  ];
   return config;
 };
