@@ -7,6 +7,8 @@ import StoryRouter from 'storybook-router';
 
 import providerUsers from 'stateProviders/provideUser';
 
+import 'common/injectGlobals';
+
 global.gapi = {
   load: () => {},
 };
