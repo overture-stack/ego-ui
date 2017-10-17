@@ -24,3 +24,9 @@ html {
   width: 100%;
   max-width: 960px;
 }
+
+.column {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}

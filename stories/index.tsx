@@ -4,6 +4,7 @@ import { configure, storiesOf, addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 import StoryRouter from 'storybook-router';
+import 'flexboxgrid';
 
 import providerUsers from 'stateProviders/provideUser';
 

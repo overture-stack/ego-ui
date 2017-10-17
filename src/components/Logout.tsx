@@ -5,14 +5,7 @@ import colors from 'common/colors';
 import { googleLogout } from 'services';
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0.5em 0.8em',
-    cursor: 'pointer',
-  },
+  container: { cursor: 'pointer' },
 };
 
 const enhance = withRouter;
