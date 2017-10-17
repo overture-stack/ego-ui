@@ -8,12 +8,12 @@ import './index.css';
 
 import App from './App';
 
-const locale = qs.parse('?locale=en', { ignoreQueryPrefix: true });
+const { locale } = qs.parse('?locale=en', { ignoreQueryPrefix: true });
 
 const messages = {};
 
 ReactDOM.render(
-  <IntlProvider>
+  <IntlProvider locale={locale}>
     <App />
   </IntlProvider>,
   document.getElementById('root') as HTMLElement,

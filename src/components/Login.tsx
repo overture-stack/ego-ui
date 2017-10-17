@@ -63,11 +63,11 @@ class Component extends React.Component {
             const { id_token } = googleUser.getAuthResponse();
             this.handleGoogleToken(id_token);
           },
-          onfailure: error => console.log('login fail', error),
+          onfailure: error => global.log('login fail', error),
         });
       });
     } catch (e) {
-      console.error(e);
+      global.log(e);
     }
   }
 
