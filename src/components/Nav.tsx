@@ -18,6 +18,8 @@ const styles = {
     width: 240,
     padding: '30px 50px',
     flex: 'none',
+    display: 'flex',
+    flexDirection: 'column',
   },
 
   logo: {
@@ -43,7 +45,7 @@ const styles = {
 };
 
 const Nav = () => (
-  <div className={`column ${css(styles.container)}`}>
+  <div className={`${css(styles.container)}`}>
     <img
       className={`Emblem ${css(styles.logo)}`}
       src={require('assets/emblem-white.svg')}

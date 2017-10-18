@@ -1,22 +1,22 @@
 import ajax from 'services/ajax';
 import { useDummyData } from 'common/injectGlobals';
 import queryString from 'querystring';
-import { User } from 'common/typedefs/User';
+import { Group } from 'common/typedefs/Group';
 
-const dummyUsers = require('./dummyUsers.json') as User[];
+const dummyGroups = require('./dummyGroups.json') as Group[];
 
-export const getUsers = (
+export const getGroups = (
   offset = 0,
   limit = 20,
-): Promise<{ count: number; results: User[] }> => {
+): Promise<{ count: number; results: Group[] }> => {
   return useDummyData
     ? Promise.resolve({
-        count: dummyUsers.length,
-        results: dummyUsers.slice(offset, offset + limit),
+        count: dummyGroups.length,
+        results: dummyGroups.slice(offset, offset + limit),
       })
     : ajax
         .get(
-          `/users?${queryString.stringify({
+          `/groups?${queryString.stringify({
             limit,
             offset,
           })}`,

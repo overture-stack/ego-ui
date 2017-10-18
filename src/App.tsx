@@ -9,6 +9,8 @@ import { provideUser } from 'stateProviders';
 
 import Login from 'components/Login';
 import Users from 'components/Users';
+import Groups from 'components/Groups';
+import Apps from 'components/Apps';
 import NoAccess from 'components/NoAccess';
 
 import './App.css';
@@ -33,6 +35,8 @@ class App extends React.Component {
         <div style={{ height: '100%' }}>
           <Route path="/" exact component={Login} />
           <Route path="/users" component={Users} />
+          <Route path="/groups" component={Groups} />
+          <Route path="/apps" component={Apps} />
           <Route path="/no-access" exact component={NoAccess} />
         </div>
       </Router>
