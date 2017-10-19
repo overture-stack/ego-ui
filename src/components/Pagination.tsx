@@ -1,9 +1,23 @@
 import React from 'react';
 
-import { Menu } from 'semantic-ui-react';
+import { Menu, Dropdown } from 'semantic-ui-react';
 import { WIDTHS } from 'semantic-ui-react/dist/es/lib/SUI';
 
-export default ({ onChange, offset, limit, total, range = 5 }) => {
+export default ({
+  onChange,
+  onLimitChange,
+  offset,
+  limit,
+  total,
+  range = 5,
+}: {
+  onChange: Function;
+  onLimitChange?: Function;
+  offset: number;
+  limit: number;
+  total: number;
+  range?: number;
+}) => {
   const totalPages = Math.ceil(total / limit);
   const currentPage = offset / limit;
   const halfRange = Math.floor(range / 2);
@@ -58,15 +72,35 @@ export default ({ onChange, offset, limit, total, range = 5 }) => {
     }, []);
 
   return (
-    <Menu
-      pagination
-      size="mini"
-      widths={
-        WIDTHS.includes(menuItems.length)
-          ? menuItems.length as WIDTHS
-          : undefined
-      }
-      items={menuItems}
-    />
+    <div className="row" style={{ flex: 'none' }}>
+      {onLimitChange && (
+        <div style={{ marginRight: 5 }}>
+          Show{' '}
+          <Dropdown
+            text={`${limit}`}
+            onChange={(e, { value }) => onLimitChange(value)}
+            options={[50, 30, 20, 10].map(value => ({
+              value,
+              text: `${value}`,
+              key: value,
+            }))}
+            upward
+            compact
+            selection
+          />
+        </div>
+      )}
+      <Menu
+        style={{ flex: 1 }}
+        pagination
+        size="mini"
+        widths={
+          WIDTHS.includes(menuItems.length)
+            ? menuItems.length as WIDTHS
+            : undefined
+        }
+        items={menuItems}
+      />
+    </div>
   );
 };

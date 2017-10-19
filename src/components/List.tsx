@@ -3,23 +3,19 @@ import { css } from 'glamor';
 
 import colors from 'common/colors';
 import Pagination from 'components/Pagination';
-import { withPropsOnChange, compose } from 'recompose';
-
-const PAGINATION_HEIGHT = 32;
-const BOTTOM_PADDING = 20;
 
 interface IListProps {
   onSelect: Function;
   Component: any;
   getKey: Function;
   getData: Function;
-  limit?: number;
 }
 
 interface IListState {
   items: any[];
   count: number;
   offset: number;
+  limit: number;
 }
 
 const styles = {
@@ -27,7 +23,7 @@ const styles = {
     minWidth: 300,
     background: colors.lightGrey,
     borderRight: `1px solid ${colors.grey}`,
-    padding: `0 30px ${BOTTOM_PADDING}px`,
+    padding: `0 30px 20px`,
     overflowY: 'auto',
     flex: 'none',
     display: 'flex',
@@ -36,19 +32,16 @@ const styles = {
 };
 
 class List extends React.Component<IListProps, IListState> {
-  static defaultProps = {
-    limit: 10,
-  };
-
   state = {
     items: [],
     count: 0,
     offset: 0,
+    limit: 10,
   };
 
   fetchData = async state => {
-    const { getData, limit } = this.props;
-    const { offset } = state;
+    const { getData } = this.props;
+    const { offset, limit } = state;
     const { results, count = 0 } = await getData(offset, limit);
     this.setState({ items: results, count });
   };
@@ -59,7 +52,7 @@ class List extends React.Component<IListProps, IListState> {
 
   componentWillUpdate(nextProps: IListProps, nextState: IListState) {
     if (
-      nextProps.limit !== this.props.limit ||
+      nextState.limit !== this.state.limit ||
       nextState.offset !== this.state.offset
     ) {
       this.fetchData(nextState);
@@ -68,8 +61,7 @@ class List extends React.Component<IListProps, IListState> {
 
   render() {
     const { onSelect, Component, getKey } = this.props;
-    const { items, count, offset } = this.state;
-    const limit = this.props.limit as number;
+    const { limit, items, count, offset } = this.state;
 
     return (
       <div className={`List ${css(styles.container)}`}>
@@ -88,6 +80,7 @@ class List extends React.Component<IListProps, IListState> {
         {limit < count && (
           <Pagination
             onChange={page => this.setState({ offset: page * limit })}
+            onLimitChange={l => this.setState({ limit: l, offset: 0 })}
             offset={offset}
             limit={limit}
             total={count}
