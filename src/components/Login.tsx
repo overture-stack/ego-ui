@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { css } from 'glamor';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
+import jwtDecode from 'jwt-decode';
 import colors from 'common/colors';
 import { googleLogin } from 'services/login';
+import { setToken } from 'services/ajax';
 
 const GOOGLE_CLIENT_ID =
   '814606937527-kk7ooglk6pj2tvpn7ldip6g3b74f8o72.apps.googleusercontent.com';
@@ -75,10 +77,17 @@ class Component extends React.Component {
     const response = await googleLogin(token);
     const props = this.props as any;
     if (response.status === 200) {
-      const user = response.data[0];
+      const jwt = response.data;
+
+      setToken(jwt);
+
+      const user = jwtDecode(jwt);
       await props.effects.setUser(user);
+
       if (user.role === 'ADMIN') {
-        props.history.push('/users');
+        props.history.push(
+          props.match.path !== '/' ? props.match.path : '/users',
+        );
       } else {
         props.history.push('/no-access');
       }
