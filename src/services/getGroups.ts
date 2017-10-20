@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import ajax from 'services/ajax';
 import { useDummyData } from 'common/injectGlobals';
 import queryString from 'querystring';
@@ -5,10 +6,11 @@ import { Group } from 'common/typedefs/Group';
 
 const dummyGroups = require('./dummyGroups.json') as Group[];
 
-export const getGroups = (
+export const getGroups = ({
   offset = 0,
   limit = 20,
-): Promise<{ count: number; results: Group[] }> => {
+  query = '',
+}): Promise<{ count: number; results: Group[] }> => {
   return useDummyData
     ? Promise.resolve({
         count: dummyGroups.length,
@@ -16,10 +18,10 @@ export const getGroups = (
       })
     : ajax
         .get(
-          `/groups?${queryString.stringify({
-            limit,
-            offset,
-          })}`,
+          `/groups?${queryString.stringify(
+            _.omitBy({ limit, offset, query }),
+            _.isNil,
+          )}`,
         )
         .then(r => r.data);
 };
