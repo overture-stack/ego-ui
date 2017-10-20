@@ -1,9 +1,11 @@
 import React from 'react';
 import { css } from 'glamor';
-import { getApps, getApp } from 'services';
+import { getUsers, getUser } from 'services';
 import Nav from 'components/Nav';
 import List from 'components/List';
 import Content from 'components/Content';
+
+import Item from './Item';
 
 const styles = {
   container: {
@@ -14,33 +16,18 @@ const styles = {
   },
 };
 
-const App = ({ item: { name }, style, ...props }) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        ...style,
-      }}
-      {...props}
-    >
-      <div style={{ fontSize: 20 }}>{name}</div>
-    </div>
-  );
-};
-
 export default class extends React.Component<any, any> {
-  state = { currentApp: null };
+  state = { currentUser: null };
 
-  fetchApp = async id => {
-    const currentApp = await getApp(id);
-    this.setState({ currentApp });
+  fetchUser = async id => {
+    const currentUser = await getUser(id);
+    this.setState({ currentUser });
   };
 
   componentDidMount() {
     const id = this.props.match.params.id;
     if (id) {
-      this.fetchApp(id);
+      this.fetchUser(id);
     }
   }
 
@@ -48,7 +35,7 @@ export default class extends React.Component<any, any> {
     const id = nextProps.match.params.id;
 
     if (id && id !== this.props.match.params.id) {
-      this.fetchApp(id);
+      this.fetchUser(id);
     }
   }
 
@@ -57,24 +44,27 @@ export default class extends React.Component<any, any> {
       <div className={`row ${css(styles.container)}`}>
         <Nav />
         <List
-          Component={App}
+          Component={Item}
           getKey={item => item.id}
-          getData={getApps}
-          onSelect={currentApp => {
-            this.props.history.push(`/apps/${currentApp.id}`);
+          getData={getUsers}
+          onSelect={currentUser => {
+            this.props.history.push(`/users/${currentUser.id}`);
           }}
         />
-        {this.state.currentApp && (
+        {this.state.currentUser && (
           <Content
-            data={this.state.currentApp}
+            data={this.state.currentUser}
             keys={[
-              'name',
-              'clientId',
-              'clientSecret',
-              'description',
-              'id',
-              'redirectUri',
+              'firstName',
+              'lastName',
+              'userName',
+              'email',
+              'role',
               'status',
+              'createdAt',
+              'lastLogin',
+              'preferredLanguage',
+              'id',
             ]}
           />
         )}

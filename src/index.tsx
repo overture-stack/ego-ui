@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { injectIntl, IntlProvider, FormattedRelative } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 import qs from 'qs';
 import 'common/injectGlobals';
 import './index.css';

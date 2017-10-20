@@ -29,9 +29,9 @@ class App extends React.Component {
       <Router>
         <div style={{ height: '100%' }}>
           <Route path="/" exact component={Login} />
-          <ProtectedRoute path="/users" component={Users} />
-          <ProtectedRoute path="/groups" component={Groups} />
-          <ProtectedRoute path="/apps" component={Apps} />
+          <ProtectedRoute path="/users/:id?" component={Users} />
+          <ProtectedRoute path="/groups/:id?" component={Groups} />
+          <ProtectedRoute path="/apps/:id?" component={Apps} />
           <Route path="/no-access" exact component={NoAccess} />
         </div>
       </Router>
