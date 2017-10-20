@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route } from 'react-router';
 import { storiesOf } from '@storybook/react';
 import Users from './Users';
 import Pagination from './Pagination';
@@ -21,5 +22,5 @@ class PaginationTest extends React.Component {
   }
 }
 storiesOf('Screens', module)
-  .add('Users', () => <Users />)
+  .add('Users', () => <Route path="/:any?/:id?" component={Users} />)
   .add('Pagination', () => <PaginationTest />);

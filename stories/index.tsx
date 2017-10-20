@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { css } from 'glamor';
 import { configure, storiesOf, addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
@@ -13,6 +13,10 @@ import 'common/injectGlobals';
 global.gapi = {
   load: () => {},
 };
+
+css.global('#root > div', {
+  height: '100%',
+});
 
 const req = require.context(
   '../src/components',

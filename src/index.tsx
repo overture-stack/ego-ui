@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
 import qs from 'qs';
 import 'common/injectGlobals';
-import './index.css';
 
 import App from './App';
 
