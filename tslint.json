@@ -21,7 +21,7 @@
       "static-before-instance",
       "variables-before-functions"
     ],
-    "no-unused-variable": true,
+    "no-unused-variable": [true, { "ignore-pattern": "React" }],
     "no-any": false,
     "no-arg": true,
     "no-bitwise": true,
