@@ -1,7 +1,17 @@
 import React from 'react';
+import { css } from 'glamor';
 
 import { Menu, Dropdown } from 'semantic-ui-react';
 import { WIDTHS } from 'semantic-ui-react/dist/es/lib/SUI';
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: '1em 0',
+  },
+};
 
 export default ({
   onChange,
@@ -72,26 +82,9 @@ export default ({
     }, []);
 
   return (
-    <div className="row" style={{ flex: 'none' }}>
-      {onLimitChange && (
-        <div style={{ marginRight: 5 }}>
-          Show{' '}
-          <Dropdown
-            text={`${limit}`}
-            onChange={(e, { value }) => onLimitChange(value)}
-            options={[50, 30, 20, 10].map(value => ({
-              value,
-              text: `${value}`,
-              key: value,
-            }))}
-            upward
-            compact
-            selection
-          />
-        </div>
-      )}
+    <div className={`Pagination ${css(styles.container)}`}>
       <Menu
-        style={{ flex: 1 }}
+        style={{ width: 'auto' }}
         pagination
         size="mini"
         widths={

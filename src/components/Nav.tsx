@@ -13,6 +13,7 @@ const resetList = {
 
 const styles = {
   container: {
+    position: 'relative',
     backgroundColor: colors.purple,
     color: '#fff',
     width: 240,
@@ -45,7 +46,7 @@ const styles = {
 };
 
 const Nav = () => (
-  <div className={`${css(styles.container)}`}>
+  <div className={`Nav ${css(styles.container)}`}>
     <img
       className={`Emblem ${css(styles.logo)}`}
       src={require('assets/emblem-white.svg')}
