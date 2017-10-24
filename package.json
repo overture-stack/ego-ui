@@ -31,7 +31,9 @@
     "test": "NODE_PATH=src react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "build-with-storybook":
+      "npm run build && npm run build-storybook && mv storybook-static build/storybook"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.2.12",
