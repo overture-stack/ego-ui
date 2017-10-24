@@ -84,7 +84,11 @@ export default class extends React.Component<any, any> {
           getData={getUsers}
           selectedItem={currentUser}
           onSelect={user => {
-            this.props.history.push(`/users/${user.id}`);
+            if (user.id === currentUser.id) {
+              this.props.history.push(`/users/`);
+            } else {
+              this.props.history.push(`/users/${user.id}`);
+            }
           }}
         />
         <Content
