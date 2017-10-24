@@ -7,8 +7,7 @@ import jwtDecode from 'jwt-decode';
 import colors from 'common/colors';
 import { googleLogin } from 'services/login';
 
-const GOOGLE_CLIENT_ID =
-  '814606937527-kk7ooglk6pj2tvpn7ldip6g3b74f8o72.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '814606937527-kk7ooglk6pj2tvpn7ldip6g3b74f8o72.apps.googleusercontent.com';
 
 const styles = {
   container: {
@@ -97,8 +96,8 @@ class Component extends React.Component {
   render() {
     return (
       <div className={`Login ${css(styles.container)}`}>
-        <img src={require('assets/emblem-white.svg')} alt="" className={`${css(styles.logo)}`} />
-        <h1 className={`${css(styles.title)}`}>DRP User Admin</h1>
+        {/* <img src={require('assets/emblem-white.svg')} alt="" className={`${css(styles.logo)}`} /> */}
+        <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
         <div className={`${css(styles.googleSignin)}`} id="googleSignin" />
       </div>
     );

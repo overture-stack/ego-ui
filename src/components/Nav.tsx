@@ -47,11 +47,11 @@ const styles = {
 
 const Nav = () => (
   <div className={`Nav ${css(styles.container)}`}>
-    <img
+    {/* <img
       className={`Emblem ${css(styles.logo)}`}
       src={require('assets/emblem-white.svg')}
       alt=""
-    />
+    /> */}
     <ul className={`LinkList ${css(resetList, styles.linkList)}`}>
       <li>
         <NavLink style={styles.link} to="/users">
