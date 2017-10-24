@@ -10,8 +10,6 @@ import Groups from 'components/Groups';
 import Apps from 'components/Apps';
 import NoAccess from 'components/NoAccess';
 
-import './App.css';
-
 const enhance = compose(provideUser);
 
 const ProtectedRoute = injectState(

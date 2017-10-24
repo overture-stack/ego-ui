@@ -1,17 +1,10 @@
 import _ from 'lodash';
 import React from 'react';
-import {
-  compose,
-  withProps,
-  defaultProps,
-  withStateHandlers,
-  withState,
-} from 'recompose';
+import { compose, defaultProps, withStateHandlers } from 'recompose';
 import { css } from 'glamor';
-import { Input, Icon, Label, Button, Menu } from 'semantic-ui-react';
+import { Icon, Label } from 'semantic-ui-react';
 
 import ItemSelector from './ItemSelector';
-import { getGroups } from 'services/getGroups';
 
 const styles = {
   container: {
@@ -26,6 +19,8 @@ const enhance = compose(
   defaultProps({
     getName: item => _.get(item, 'name'),
     getKey: item => _.get(item, 'id'),
+    onAdd: _.noop,
+    onRemove: _.noop,
   }),
   withStateHandlers(
     ({ initialItems }) => ({
@@ -35,26 +30,41 @@ const enhance = compose(
       setItemsInList: () => items => ({
         itemsInList: items,
       }),
-      addItem: ({ itemsInList }) => item => ({
-        itemsInList: itemsInList.concat(item),
-      }),
-      removeItem: ({ itemsInList }) => item => ({
-        itemsInList: _.without(itemsInList, item),
-      }),
+      addItem: ({ itemsInList }, { onAdd }) => item => {
+        onAdd(item);
+
+        return {
+          itemsInList: itemsInList.concat(item),
+        };
+      },
+      removeItem: ({ itemsInList }, { onRemove }) => item => {
+        onRemove(item);
+
+        return {
+          itemsInList: _.without(itemsInList, item),
+        };
+      },
     },
   ),
 );
 
-const render = ({ addItem, itemsInList, removeItem, getName, getKey }) => {
+const render = ({
+  addItem,
+  itemsInList,
+  removeItem,
+  getName,
+  getKey,
+  fetchItems,
+}) => {
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <ItemSelector
-        fetchItems={({ query = '' } = {}) => getGroups({ query, limit: 10 })}
+        fetchItems={args => fetchItems({ ...args, limit: 10 })}
         onSelect={addItem}
         disabledItems={itemsInList}
       />
       {itemsInList.map(item => (
-        <Label key={getKey(item)}>
+        <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
           {getName(item)}
           <Icon name="delete" onClick={() => removeItem(item)} />
         </Label>

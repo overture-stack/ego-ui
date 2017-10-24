@@ -1,11 +1,24 @@
 import React from 'react';
 import { css } from 'glamor';
-import { getUsers, getUser } from 'services';
+import {
+  getUsers,
+  getUser,
+  getGroups,
+  addGroupToUser,
+  removeGroupFromUser,
+  getUserGroups,
+  getUserApplications,
+  addApplicationToUser,
+  removeApplicationFromUser,
+} from 'services';
 import Nav from 'components/Nav';
 import List from 'components/List';
 import Content from 'components/Content';
 
+import Associator from 'components/ItemList/Associator';
+
 import Item from './Item';
+import { getApps } from 'services';
 
 const styles = {
   container: {
@@ -17,11 +30,28 @@ const styles = {
 };
 
 export default class extends React.Component<any, any> {
-  state = { currentUser: null };
+  state = {
+    currentUser: null,
+    currentGroups: null,
+    currentApplications: null,
+  };
 
   fetchUser = async id => {
-    const currentUser = await getUser(id);
-    this.setState({ currentUser });
+    const [
+      currentUser,
+      currentGroups,
+      currentApplications,
+    ] = await Promise.all([
+      getUser(id),
+      getUserGroups(id),
+      getUserApplications(id),
+    ]);
+
+    this.setState({
+      currentUser,
+      currentGroups: currentGroups.resultSet,
+      currentApplications: currentApplications.resultSet,
+    });
   };
 
   componentDidMount() {
@@ -40,6 +70,9 @@ export default class extends React.Component<any, any> {
   }
 
   render() {
+    const currentUser = this.state.currentUser as any;
+    const { currentGroups, currentApplications } = this.state;
+
     return (
       <div className={`row ${css(styles.container)}`}>
         <Nav />
@@ -47,13 +80,44 @@ export default class extends React.Component<any, any> {
           Component={Item}
           getKey={item => item.id}
           getData={getUsers}
-          onSelect={currentUser => {
-            this.props.history.push(`/users/${currentUser.id}`);
+          onSelect={user => {
+            this.props.history.push(`/users/${user.id}`);
           }}
         />
-        {this.state.currentUser && (
+        {currentUser && (
           <Content
-            data={this.state.currentUser}
+            data={{
+              ...currentUser,
+              groups: (
+                <Associator
+                  key={`${currentUser.id}-groups`}
+                  initialItems={currentGroups}
+                  fetchItems={getGroups}
+                  onAdd={group => {
+                    addGroupToUser({ user: currentUser, group });
+                  }}
+                  onRemove={group => {
+                    removeGroupFromUser({ user: currentUser, group });
+                  }}
+                />
+              ),
+              applications: (
+                <Associator
+                  key={`${currentUser.id}-applications`}
+                  initialItems={currentApplications}
+                  fetchItems={getApps}
+                  onAdd={application => {
+                    addApplicationToUser({ user: currentUser, application });
+                  }}
+                  onRemove={application => {
+                    removeApplicationFromUser({
+                      user: currentUser,
+                      application,
+                    });
+                  }}
+                />
+              ),
+            }}
             keys={[
               'firstName',
               'lastName',
@@ -65,6 +129,8 @@ export default class extends React.Component<any, any> {
               'lastLogin',
               'preferredLanguage',
               'id',
+              'groups',
+              'applications',
             ]}
           />
         )}

@@ -1,25 +1,26 @@
+import _ from 'lodash';
 import ajax from 'services/ajax';
 import { useDummyData } from 'common/injectGlobals';
 import queryString from 'querystring';
 import { Application } from 'common/typedefs/Application';
 
-const dummyApps = require('./dummyApps.json') as Application[];
+import dummyApplications from './dummyData/applications';
 
-export const getApps = (
+export const getApps = ({
   offset = 0,
   limit = 20,
-): Promise<{ count: number; results: Application[] }> => {
+  query = '',
+}): Promise<{ count: number; resultSet: Application[] }> => {
   return useDummyData
     ? Promise.resolve({
-        count: dummyApps.length,
-        results: dummyApps.slice(offset, offset + limit),
+        count: dummyApplications.length,
+        resultSet: dummyApplications.slice(offset, offset + limit),
       })
     : ajax
         .get(
-          `/applications?${queryString.stringify({
-            limit,
-            offset,
-          })}`,
+          `/applications?${queryString.stringify(
+            _.omitBy({ limit, offset, query }, _.isNil),
+          )}`,
         )
         .then(r => r.data);
 };

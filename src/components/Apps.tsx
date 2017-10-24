@@ -1,9 +1,22 @@
 import React from 'react';
 import { css } from 'glamor';
-import { getApps, getApp } from 'services';
+import {
+  getApps,
+  getApp,
+  getUsers,
+  getGroups,
+  addApplicationToUser,
+  removeApplicationFromUser,
+  addApplicationToGroup,
+  removeApplicationFromGroup,
+  getAppUsers,
+  getAppGroups,
+} from 'services';
 import Nav from 'components/Nav';
 import List from 'components/List';
 import Content from 'components/Content';
+
+import Associator from 'components/ItemList/Associator';
 
 const styles = {
   container: {
@@ -20,6 +33,7 @@ const App = ({ item: { name }, style, ...props }) => {
       style={{
         display: 'flex',
         alignItems: 'center',
+        padding: '10px 0',
         ...style,
       }}
       {...props}
@@ -30,11 +44,20 @@ const App = ({ item: { name }, style, ...props }) => {
 };
 
 export default class extends React.Component<any, any> {
-  state = { currentApp: null };
+  state = { currentApp: null, currentGroups: null, currentUsers: null };
 
   fetchApp = async id => {
-    const currentApp = await getApp(id);
-    this.setState({ currentApp });
+    const [currentApp, currentUsers, currentGroups] = await Promise.all([
+      getApp(id),
+      getAppUsers(id),
+      getAppGroups(id),
+    ]);
+
+    this.setState({
+      currentApp,
+      currentUsers: currentUsers.resultSet,
+      currentGroups: currentGroups.resultSet,
+    });
   };
 
   componentDidMount() {
@@ -53,6 +76,9 @@ export default class extends React.Component<any, any> {
   }
 
   render() {
+    const currentApp = this.state.currentApp as any;
+    const { currentUsers, currentGroups } = this.state;
+
     return (
       <div className={`row ${css(styles.container)}`}>
         <Nav />
@@ -60,13 +86,47 @@ export default class extends React.Component<any, any> {
           Component={App}
           getKey={item => item.id}
           getData={getApps}
-          onSelect={currentApp => {
-            this.props.history.push(`/apps/${currentApp.id}`);
+          onSelect={app => {
+            this.props.history.push(`/apps/${app.id}`);
           }}
         />
         {this.state.currentApp && (
           <Content
-            data={this.state.currentApp}
+            data={{
+              ...currentApp,
+              users: (
+                <Associator
+                  key={`${currentApp.id}-users`}
+                  initialItems={currentUsers}
+                  fetchItems={getUsers}
+                  onAdd={user => {
+                    addApplicationToUser({ user, application: currentApp });
+                  }}
+                  onRemove={user => {
+                    removeApplicationFromUser({
+                      user,
+                      application: currentApp,
+                    });
+                  }}
+                />
+              ),
+              groups: (
+                <Associator
+                  key={`${currentApp.id}-groups`}
+                  initialItems={currentGroups}
+                  fetchItems={getGroups}
+                  onAdd={group => {
+                    addApplicationToGroup({ group, application: currentApp });
+                  }}
+                  onRemove={group => {
+                    removeApplicationFromGroup({
+                      group,
+                      application: currentApp,
+                    });
+                  }}
+                />
+              ),
+            }}
             keys={[
               'name',
               'clientId',
@@ -75,6 +135,8 @@ export default class extends React.Component<any, any> {
               'id',
               'redirectUri',
               'status',
+              'groups',
+              'users',
             ]}
           />
         )}

@@ -9,4 +9,5 @@ export interface User {
   lastLogin: string;
   createdAt: string;
   preferredLanguage: string;
+  groups: string[];
 }

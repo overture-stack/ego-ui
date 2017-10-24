@@ -42,8 +42,8 @@ class List extends React.Component<IListProps, IListState> {
   fetchData = async state => {
     const { getData } = this.props;
     const { offset, limit } = state;
-    const { results, count = 0 } = await getData(offset, limit);
-    this.setState({ items: results, count });
+    const { resultSet, count = 0 } = await getData({ offset, limit });
+    this.setState({ items: resultSet, count });
   };
 
   componentDidMount() {

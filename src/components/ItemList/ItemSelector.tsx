@@ -12,12 +12,7 @@ import Downshift from 'downshift';
 import { Input, Icon, Button, Menu } from 'semantic-ui-react';
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    flexWrap: 'wrap',
-  },
+  container: {},
   optionsWrapper: {
     position: 'absolute',
   },
@@ -47,7 +42,7 @@ const enhance = compose(
     },
     requestItems: async query => {
       const response = await fetchItems({ query });
-      setItems(response.results);
+      setItems(response.resultSet);
     },
   })),
   withHandlers({
@@ -81,8 +76,8 @@ const render = ({
       onStateChange={handleStateChange}
       isOpen={isEntryMode}
     >
-      {({ getInputProps, getItemProps, inputValue, highlightedIndex }) => (
-        <div className={`ItemSelector ${styles.container}`}>
+      {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
+        <div className={`ItemSelector ${css(styles.container)}`}>
           {!isEntryMode && (
             <Button
               size="mini"
@@ -93,13 +88,20 @@ const render = ({
             </Button>
           )}
           {isEntryMode && (
-            <Input {...getInputProps()} focus autoFocus size="mini" />
+            <Input
+              {...getInputProps()}
+              value={inputValue}
+              focus
+              autoFocus
+              size="mini"
+            />
           )}
           {isEntryMode ? (
             <Menu
               className={`OptionList ${css(styles.optionsWrapper)}`}
               vertical
               size="small"
+              style={{ zIndex: 1 }}
             >
               {items.filter(matchFor(inputValue, getName)).map((item, i) => {
                 const isDisabled = disabledItems

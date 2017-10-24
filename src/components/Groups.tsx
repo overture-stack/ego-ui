@@ -1,9 +1,21 @@
 import React from 'react';
 import { css } from 'glamor';
-import { getGroups, getGroup } from 'services';
+import {
+  getGroups,
+  getGroup,
+  getUsers,
+  getApps,
+  addApplicationToGroup,
+  removeApplicationFromGroup,
+  getGroupApplications,
+  getGroupUsers,
+  addGroupToUser,
+} from 'services';
 import Nav from 'components/Nav';
 import List from 'components/List';
 import Content from 'components/Content';
+import Associator from 'components/ItemList/Associator';
+import { removeGroupFromUser } from '../services/updateUser';
 
 const styles = {
   container: {
@@ -20,6 +32,7 @@ const Group = ({ item: { name }, style, ...props }) => {
       style={{
         display: 'flex',
         alignItems: 'center',
+        padding: '10px 0',
         ...style,
       }}
       {...props}
@@ -32,11 +45,26 @@ const Group = ({ item: { name }, style, ...props }) => {
 export default class extends React.Component<any, any> {
   state = {
     currentGroup: null,
+    currentUsers: null,
+    currentApplications: null,
   };
 
   fetchGroup = async id => {
-    const currentGroup = await getGroup(id);
-    this.setState({ currentGroup });
+    const [
+      currentGroup,
+      currentUsers,
+      currentApplications,
+    ] = await Promise.all([
+      getGroup(id),
+      getGroupUsers(id),
+      getGroupApplications(id),
+    ]);
+
+    this.setState({
+      currentGroup,
+      currentUsers: currentUsers.resultSet,
+      currentApplications: currentApplications.resultSet,
+    });
   };
 
   componentDidMount() {
@@ -55,6 +83,9 @@ export default class extends React.Component<any, any> {
   }
 
   render() {
+    const currentGroup = this.state.currentGroup as any;
+    const { currentUsers, currentApplications } = this.state;
+
     return (
       <div className={`row ${css(styles.container)}`}>
         <Nav />
@@ -62,13 +93,50 @@ export default class extends React.Component<any, any> {
           Component={Group}
           getKey={item => item.id}
           getData={getGroups}
-          onSelect={currentGroup =>
-            this.props.history.push(`/groups/${currentGroup.id}`)}
+          onSelect={groups => this.props.history.push(`/groups/${groups.id}`)}
         />
-        {this.state.currentGroup && (
+        {currentGroup && (
           <Content
-            data={this.state.currentGroup}
-            keys={['name', 'description', 'id', 'status', 'applications']}
+            data={{
+              ...currentGroup,
+              users: (
+                <Associator
+                  key={`${currentGroup.id}-user`}
+                  initialItems={currentUsers}
+                  fetchItems={getUsers}
+                  onAdd={user => {
+                    addGroupToUser({ user, group: currentGroup });
+                  }}
+                  onRemove={user => {
+                    removeGroupFromUser({ user, group: currentGroup });
+                  }}
+                />
+              ),
+              applications: (
+                <Associator
+                  key={`${currentGroup.id}-applications`}
+                  initialItems={currentApplications}
+                  fetchItems={getApps}
+                  onAdd={application => {
+                    addApplicationToGroup({ application, group: currentGroup });
+                  }}
+                  onRemove={application => {
+                    removeApplicationFromGroup({
+                      application,
+                      group: currentGroup,
+                    });
+                  }}
+                />
+              ),
+            }}
+            keys={[
+              'name',
+              'description',
+              'id',
+              'status',
+              'users',
+              'applications',
+            ]}
           />
         )}
       </div>
