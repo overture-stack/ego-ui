@@ -39,11 +39,7 @@ export default class extends React.Component<any, any> {
   };
 
   fetchUser = async id => {
-    const [
-      currentUser,
-      currentGroups,
-      currentApplications,
-    ] = await Promise.all([
+    const [currentUser, currentGroups, currentApplications] = await Promise.all([
       getUser(id),
       getUserGroups(id),
       getUserApplications(id),
@@ -125,16 +121,15 @@ export default class extends React.Component<any, any> {
             ),
           }}
           keys={[
+            'id',
             'firstName',
             'lastName',
-            'userName',
             'email',
             'role',
             'status',
             'createdAt',
             'lastLogin',
             'preferredLanguage',
-            'id',
             'groups',
             'applications',
           ]}

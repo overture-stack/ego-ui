@@ -49,13 +49,13 @@ const styles = ({ columnWidth, rowHeight }) => ({
     flexGrow: 1,
     cursor: 'pointer',
     padding: '0 1em',
-    minWidth: columnWidth,
+    width: columnWidth,
     height: rowHeight,
     '&:hover': { backgroundColor: '#f0f0f0' },
   },
 
   filler: {
-    minWidth: columnWidth,
+    width: columnWidth,
     height: rowHeight,
   },
 });
@@ -80,8 +80,8 @@ const enhance = compose(
       // TODO: move this HOC into the element that only renders the list, no extra elements to account for
       const extraVerticalSpace = 60;
       const extraHorizontalSpace = 20;
-      const columns = Math.floor((size.width - extraHorizontalSpace) / columnWidth);
-      const rows = Math.floor((size.height - extraVerticalSpace) / rowHeight);
+      const columns = Math.max(Math.floor((size.width - extraHorizontalSpace) / columnWidth), 1);
+      const rows = Math.max(Math.floor((size.height - extraVerticalSpace) / rowHeight), 1);
       const pageSize = columns * rows;
       return {
         pageSize,
