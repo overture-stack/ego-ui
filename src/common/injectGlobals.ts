@@ -7,4 +7,4 @@ const debug = require('debug') as Function;
 global.log = debug('app');
 
 export const apiRoot = process.env.REACT_APP_API;
-export const useDummyData = false;
+export const useDummyData = process.env.REACT_APP_DUMMY;
