@@ -5,7 +5,8 @@ import { compose } from 'recompose';
 import { injectState } from 'freactal';
 import jwtDecode from 'jwt-decode';
 import colors from 'common/colors';
-import { googleLogin } from 'services/login';
+import { googleLogin, facebookLogin } from 'services/login';
+import FacebookLogin from 'components/FacebookLogin';
 
 const GOOGLE_CLIENT_ID = '814606937527-kk7ooglk6pj2tvpn7ldip6g3b74f8o72.apps.googleusercontent.com';
 
@@ -28,6 +29,7 @@ const styles = {
   },
   googleSignin: {
     marginTop: 20,
+    marginBottom: 20,
   },
   title: {
     fontWeight: 400,
@@ -71,9 +73,18 @@ class Component extends React.Component {
       global.log(e);
     }
   }
-
+  onFacebookLogin = response => {
+    this.handleFacebookToken(response.authResponse.accessToken);
+  };
+  handleFacebookToken = async token => {
+    const response = await facebookLogin(token);
+    this.handleLoginResponse(response);
+  };
   handleGoogleToken = async token => {
     const response = await googleLogin(token);
+    this.handleLoginResponse(response);
+  };
+  handleLoginResponse = async response => {
     const props = this.props as any;
 
     if (response.status === 200) {
@@ -100,6 +111,7 @@ class Component extends React.Component {
         <img src={require('assets/emblem-white.svg')} alt="" className={`${css(styles.logo)}`} />
         <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
         <div className={`${css(styles.googleSignin)}`} id="googleSignin" />
+        <FacebookLogin onLogin={this.onFacebookLogin} />
       </div>
     );
   }

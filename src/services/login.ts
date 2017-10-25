@@ -15,3 +15,18 @@ export const googleLogout = () => {
     return Promise.resolve();
   }
 };
+
+export const facebookLogin = token =>
+  ajax.get('/oauth/facebook/token', { headers: { id_token: token } });
+
+export const facebookLogout = () => {
+  return new Promise((resolve, reject) => {
+    global.FB.getLoginStatus(({ authResponse }) => {
+      if (authResponse) {
+        global.FB.logout(resolve);
+      } else {
+        resolve();
+      }
+    });
+  });
+};

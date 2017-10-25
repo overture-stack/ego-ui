@@ -1,8 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { css } from 'glamor';
-import colors from 'common/colors';
-import { googleLogout } from 'services';
+import { googleLogout, facebookLogout } from 'services';
 
 const styles = {
   container: { cursor: 'pointer' },
@@ -12,7 +11,7 @@ const enhance = withRouter;
 
 const Component = class extends React.Component<any, any> {
   handleClick = async () => {
-    await googleLogout();
+    await Promise.all([googleLogout(), facebookLogout()]);
     this.props.history.push('/');
   };
   render() {
