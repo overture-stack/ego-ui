@@ -55,7 +55,7 @@ const styles = {
       display: 'block',
       position: 'absolute',
       zIndex: 1,
-      backgroundColor: colors.darkBlue,
+      backgroundColor: '#6a0e65',
       content: '""',
       top: 0,
       left: 0,
