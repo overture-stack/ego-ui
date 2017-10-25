@@ -11,23 +11,6 @@ const styles = {
     padding: '10px 0',
     '& .DisplayName, & .email': {
       position: 'relative',
-      '&::before': {
-        backgroundColor: colors.purple,
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: -10,
-        height: '100%',
-        width: 3,
-        transition: 'opacity 0.15s, transform 0.3s',
-        opacity: 0,
-      },
-    },
-    '& .DisplayName::before': {
-      transform: 'translateY(12px)',
-    },
-    '& .email::before': {
-      transform: 'translateY(-12px)',
     },
   },
   email: {

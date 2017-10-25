@@ -27,7 +27,14 @@ const styles = ({ columnWidth, rowHeight }) => ({
     padding: '0 1em',
     minWidth: columnWidth,
     height: rowHeight,
-    '&:hover': { backgroundColor: '#f0f0f0' },
+    borderRadius: 3,
+    '&:not(.selected):not(:active):hover': {
+      background: 'linear-gradient(to right, #f0f0f0, #f9f9f9)',
+    },
+    '&:active': { backgroundColor: '#e0e0e0' },
+    '&.selected': {
+      backgroundColor: '#f0f0f0',
+    },
   },
 
   filler: {

@@ -6,6 +6,7 @@ const styles = {
   container: {
     width: '160px',
     fontSize: 18,
+    lineHeight: 1,
     display: 'flex',
     alignItems: 'baseline',
     wordBreak: 'break-all',

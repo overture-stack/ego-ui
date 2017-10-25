@@ -75,6 +75,8 @@ export default class extends React.Component<any, any> {
       <div className={`row ${css(styles.container)}`}>
         <ListPane
           Component={Item}
+          columnWidth={200}
+          rowHeight={50}
           getKey={item => item.id}
           getData={getUsers}
           selectedItem={currentUser}

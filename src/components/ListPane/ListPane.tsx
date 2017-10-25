@@ -89,6 +89,7 @@ class Component extends React.Component<IListProps, IListState> {
         <div className={`items-wrapper`}>
           {items.map(item => (
             <Component
+              className={selectedItem && getKey(item) === getKey(selectedItem) ? 'selected' : ''}
               item={item}
               style={styles.listItem}
               key={getKey(item)}
