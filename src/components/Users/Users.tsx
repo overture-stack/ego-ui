@@ -11,11 +11,11 @@ import {
   addApplicationToUser,
   removeApplicationFromUser,
 } from 'services';
-import Nav from 'components/Nav';
-import List from 'components/List';
+
+import ListPane from 'components/ListPane';
 import Content from 'components/Content';
 
-import Associator from 'components/ItemList/Associator';
+import Associator from 'components/Associator/Associator';
 
 import Item from './Item';
 import { getApps } from 'services';
@@ -73,8 +73,7 @@ export default class extends React.Component<any, any> {
 
     return (
       <div className={`row ${css(styles.container)}`}>
-        <Nav />
-        <List
+        <ListPane
           Component={Item}
           getKey={item => item.id}
           getData={getUsers}

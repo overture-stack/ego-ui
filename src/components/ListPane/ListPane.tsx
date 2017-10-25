@@ -4,8 +4,8 @@ import { css } from 'glamor';
 import withSize from 'react-sizeme';
 import { compose, withPropsOnChange, defaultProps, withProps } from 'recompose';
 
-import colors from 'common/colors';
 import Pagination from 'components/Pagination';
+import styles from './ListPane.styles';
 
 interface IListProps {
   onSelect: Function;
@@ -23,42 +23,6 @@ interface IListState {
   count: number;
   offset: number;
 }
-
-const styles = ({ columnWidth, rowHeight }) => ({
-  container: {
-    minWidth: columnWidth,
-    background: colors.lightGrey,
-    borderRight: `1px solid ${colors.grey}`,
-    overflowY: 'auto',
-    display: 'flex',
-    flexGrow: 1,
-    flexShrink: 1,
-    flexDirection: 'column',
-    '& .items-wrapper': {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      flexGrow: 1,
-      justifyContent: 'space-evenly',
-      paddingLeft: 10,
-      paddingRight: 10,
-    },
-  },
-
-  listItem: {
-    flexGrow: 1,
-    cursor: 'pointer',
-    padding: '0 1em',
-    width: columnWidth,
-    height: rowHeight,
-    '&:hover': { backgroundColor: '#f0f0f0' },
-  },
-
-  filler: {
-    width: columnWidth,
-    height: rowHeight,
-  },
-});
 
 const enhance = compose(
   defaultProps({

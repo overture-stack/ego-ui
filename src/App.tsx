@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { compose } from 'recompose';
 import { provideUser } from 'stateProviders';
 import { injectState } from 'freactal';
@@ -9,29 +9,27 @@ import Users from 'components/Users';
 import Groups from 'components/Groups';
 import Apps from 'components/Apps';
 import NoAccess from 'components/NoAccess';
+import Nav from 'components/Nav';
 
 const enhance = compose(provideUser);
 
-const ProtectedRoute = injectState(
-  ({ component: Component, state, ...rest }) => (
-    <Route
-      {...rest}
-      render={props =>
-        state.token ? <Component {...props} /> : <Login {...props} />}
-    />
-  ),
-);
+const ProtectedRoute = injectState(({ renderLogin, component, state, ...rest }) => (
+  <Route {...rest} component={state.token ? component : renderLogin && Login} />
+));
 
 class App extends React.Component<any, any> {
   render() {
     return (
       <Router>
-        <div style={{ height: '100%' }}>
-          <Route path="/" exact component={Login} />
-          <ProtectedRoute path="/users/:id?" component={Users} />
-          <ProtectedRoute path="/groups/:id?" component={Groups} />
-          <ProtectedRoute path="/apps/:id?" component={Apps} />
-          <Route path="/no-access" exact component={NoAccess} />
+        <div style={{ height: '100%', display: 'flex' }}>
+          <ProtectedRoute path="/(users|groups|apps)/:id?" exact component={Nav} />
+          <Switch>
+            <Route path="/" exact component={Login} />
+            <ProtectedRoute path="/users/:id?" component={Users} renderLogin />
+            <ProtectedRoute path="/groups/:id?" component={Groups} renderLogin />
+            <ProtectedRoute path="/apps/:id?" component={Apps} renderLogin />
+            <Route path="/no-access" exact component={NoAccess} />
+          </Switch>
         </div>
       </Router>
     );

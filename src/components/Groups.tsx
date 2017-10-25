@@ -11,10 +11,9 @@ import {
   getGroupUsers,
   addGroupToUser,
 } from 'services';
-import Nav from 'components/Nav';
-import List from 'components/List';
+import ListPane from 'components/ListPane';
 import Content from 'components/Content';
-import Associator from 'components/ItemList/Associator';
+import Associator from 'components/Associator/Associator';
 import { removeGroupFromUser } from '../services/updateUser';
 
 const styles = {
@@ -50,11 +49,7 @@ export default class extends React.Component<any, any> {
   };
 
   fetchGroup = async id => {
-    const [
-      currentGroup,
-      currentUsers,
-      currentApplications,
-    ] = await Promise.all([
+    const [currentGroup, currentUsers, currentApplications] = await Promise.all([
       getGroup(id),
       getGroupUsers(id),
       getGroupApplications(id),
@@ -88,8 +83,7 @@ export default class extends React.Component<any, any> {
 
     return (
       <div className={`row ${css(styles.container)}`}>
-        <Nav />
-        <List
+        <ListPane
           Component={Group}
           getKey={item => item.id}
           getData={getGroups}
@@ -129,14 +123,7 @@ export default class extends React.Component<any, any> {
                 />
               ),
             }}
-            keys={[
-              'name',
-              'description',
-              'id',
-              'status',
-              'users',
-              'applications',
-            ]}
+            keys={['name', 'description', 'id', 'status', 'users', 'applications']}
           />
         )}
       </div>
