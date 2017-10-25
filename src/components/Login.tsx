@@ -97,7 +97,7 @@ class Component extends React.Component {
   render() {
     return (
       <div className={`Login ${css(styles.container)}`}>
-        {/* <img src={require('assets/emblem-white.svg')} alt="" className={`${css(styles.logo)}`} /> */}
+        <img src={require('assets/emblem-white.svg')} alt="" className={`${css(styles.logo)}`} />
         <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
         <div className={`${css(styles.googleSignin)}`} id="googleSignin" />
       </div>
