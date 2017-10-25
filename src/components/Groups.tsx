@@ -1,5 +1,6 @@
 import React from 'react';
 import { css } from 'glamor';
+import _ from 'lodash';
 import {
   getGroups,
   getGroup,
@@ -13,6 +14,7 @@ import {
 } from 'services';
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
+import EmptyContent from 'components/EmptyContent';
 import Associator from 'components/Associator/Associator';
 import { removeGroupFromUser } from '../services/updateUser';
 
@@ -25,18 +27,22 @@ const styles = {
   },
 };
 
-const Group = ({ item: { name }, style, ...props }) => {
+const Group = ({ item: { name }, className = '', style, ...props }) => {
   return (
     <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: '10px 0',
-        ...style,
-      }}
+      className={`${className} ${css(
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '10px 0',
+          fontSize: 20,
+        },
+        style,
+      )}`}
       {...props}
     >
-      <div style={{ fontSize: 20 }}>{name}</div>
+      {name}
     </div>
   );
 };
@@ -72,24 +78,41 @@ export default class extends React.Component<any, any> {
   componentWillReceiveProps(nextProps: any) {
     const id = nextProps.match.params.id;
 
-    if (id && id !== this.props.match.params.id) {
-      this.fetchGroup(id);
+    if (id !== this.props.match.params.id) {
+      if (id) {
+        this.fetchGroup(id);
+      } else {
+        this.setState({
+          currentGroup: null,
+          currentUsers: null,
+          currentApplications: null,
+        });
+      }
     }
   }
 
   render() {
     const currentGroup = this.state.currentGroup as any;
+    const groupId = _.get(currentGroup, 'id');
     const { currentUsers, currentApplications } = this.state;
 
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
           Component={Group}
-          getKey={item => item.id}
           getData={getGroups}
-          onSelect={groups => this.props.history.push(`/groups/${groups.id}`)}
+          selectedItem={currentGroup}
+          onSelect={group => {
+            if (group.id === groupId) {
+              this.props.history.push('/groups');
+            } else {
+              this.props.history.push(`/groups/${group.id}`);
+            }
+          }}
         />
-        {currentGroup && (
+        {!currentGroup ? (
+          <EmptyContent message="Please select a group" />
+        ) : (
           <Content
             data={{
               ...currentGroup,

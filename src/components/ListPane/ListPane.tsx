@@ -28,6 +28,7 @@ const enhance = compose(
   defaultProps({
     columnWidth: 200,
     rowHeight: 60,
+    getKey: item => item.id,
   }),
   withSize({
     refreshRate: 20,
@@ -54,7 +55,7 @@ const enhance = compose(
   ),
 );
 
-class Component extends React.Component<IListProps, IListState> {
+class List extends React.Component<IListProps, IListState> {
   state = {
     items: [],
     count: 0,
@@ -115,4 +116,4 @@ class Component extends React.Component<IListProps, IListState> {
   }
 }
 
-export default enhance(Component);
+export default enhance(List);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { css } from 'glamor';
+import _ from 'lodash';
 import {
   getApps,
   getApp,
@@ -14,6 +15,7 @@ import {
 } from 'services';
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
+import EmptyContent from 'components/EmptyContent';
 
 import Associator from 'components/Associator/Associator';
 
@@ -26,18 +28,22 @@ const styles = {
   },
 };
 
-const App = ({ item: { name }, style, ...props }) => {
+const App = ({ item: { name }, style, className = '', ...props }) => {
   return (
     <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: '10px 0',
-        ...style,
-      }}
+      className={`${className} ${css(
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '10px 0',
+          fontSize: 20,
+        },
+        style,
+      )}`}
       {...props}
     >
-      <div style={{ fontSize: 20 }}>{name}</div>
+      {name}
     </div>
   );
 };
@@ -69,26 +75,37 @@ export default class extends React.Component<any, any> {
   componentWillReceiveProps(nextProps: any) {
     const id = nextProps.match.params.id;
 
-    if (id && id !== this.props.match.params.id) {
-      this.fetchApp(id);
+    if (id !== this.props.match.params.id) {
+      if (id) {
+        this.fetchApp(id);
+      } else {
+        this.setState({ currentApp: null, currentGroups: null, currentUsers: null });
+      }
     }
   }
 
   render() {
     const currentApp = this.state.currentApp as any;
+    const appId = _.get(currentApp, 'id');
     const { currentUsers, currentGroups } = this.state;
 
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
           Component={App}
-          getKey={item => item.id}
           getData={getApps}
+          selectedItem={currentApp}
           onSelect={app => {
-            this.props.history.push(`/apps/${app.id}`);
+            if (app.id === appId) {
+              this.props.history.push(`/apps`);
+            } else {
+              this.props.history.push(`/apps/${app.id}`);
+            }
           }}
         />
-        {this.state.currentApp && (
+        {!currentApp ? (
+          <EmptyContent message="Please select an application" />
+        ) : (
           <Content
             data={{
               ...currentApp,

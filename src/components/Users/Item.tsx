@@ -9,9 +9,6 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'center',
     padding: '10px 0',
-    '& .DisplayName, & .email': {
-      position: 'relative',
-    },
   },
   email: {
     color: '#aaa',
@@ -25,32 +22,22 @@ const styles = {
     fontSize: '0.5em',
     color: colors.purple,
   },
-  selected: {
-    '& .DisplayName, & .email': {
-      '&::before': {
-        transform: 'translateY(0) !important',
-        opacity: 1,
-      },
-    },
-  },
 };
 
 export default ({
   item: { firstName, lastName, email, status, role },
+  className = '',
   style,
-  className,
-  selected,
   ...props,
 }) => {
   return (
     <div
-      className={`Item ${className ? className : ''} ${css(
+      className={`Item ${className} ${css(
         styles.container,
         status === 'Deactivated' && {
           opacity: 0.3,
           fontStyle: 'italic',
         },
-        selected && styles.selected,
         style,
       )}`}
       {...props}
