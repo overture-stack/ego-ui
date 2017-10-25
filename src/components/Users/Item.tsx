@@ -17,6 +17,8 @@ const styles = {
     color: '#aaa',
     fontWeight: 200,
     fontSize: '0.9em',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   userAdmin: {
     marginLeft: 5,
