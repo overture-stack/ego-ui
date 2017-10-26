@@ -13,7 +13,7 @@ const resetList = {
 
 const Nav = () => (
   <div className={`Nav ${css(styles.container)}`}>
-    <img className={`Emblem ${css(styles.logo)}`} src={require('assets/emblem-white.svg')} alt="" />
+    <img className={`Emblem ${css(styles.logo)}`} src={require('assets/brand-image.svg')} alt="" />
     <ul className={`LinkList ${css(resetList, styles.linkList)}`}>
       <li>
         <NavLink className={`NavLink ${css(styles.link)}`} to="/users" activeClassName={'active'}>

@@ -1,6 +1,22 @@
 # kf-auth-ui
 UI for Authentication and Authorization services
 
+## Setup
+
+### Requirements
+
+- [Node 8+](https://nodejs.org/en/download/current/)
+- [yarnpkg](https://yarnpkg.com/en/docs/install)
+
+### Build
+
+1. create a `.env` file at the root of the repo, following the schema of the [.env.schema](.env.schema) at the repo root
+1. run `yarn build`. 
+1. deploy the resulting `build/` folder
+
+### Configure
+1. To change the brand image, replace the svg in [src/assets/brand-image.svg](src/assets/brand-image.svg) with your own brand image file
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
