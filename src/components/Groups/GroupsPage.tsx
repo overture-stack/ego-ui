@@ -16,7 +16,8 @@ import ListPane from 'components/ListPane';
 import Content from 'components/Content';
 import EmptyContent from 'components/EmptyContent';
 import Associator from 'components/Associator/Associator';
-import { removeGroupFromUser } from '../services/updateUser';
+import { removeGroupFromUser } from 'services/updateUser';
+import GroupListItem from './GroupListItem';
 
 const styles = {
   container: {
@@ -24,27 +25,10 @@ const styles = {
     height: '100%',
     width: '100%',
     flexWrap: 'initial',
+    '&:not(.bump-specificity)': {
+      flexWrap: 'initial',
+    },
   },
-};
-
-const Group = ({ item: { name }, className = '', style, ...props }) => {
-  return (
-    <div
-      className={`${className} ${css(
-        {
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '10px 0',
-          fontSize: 20,
-        },
-        style,
-      )}`}
-      {...props}
-    >
-      {name}
-    </div>
-  );
 };
 
 export default class extends React.Component<any, any> {
@@ -99,9 +83,10 @@ export default class extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
-          Component={Group}
+          Component={GroupListItem}
           getData={getGroups}
           selectedItem={currentGroup}
+          rowHeight={44}
           onSelect={group => {
             if (group.id === groupId) {
               this.props.history.push('/groups');

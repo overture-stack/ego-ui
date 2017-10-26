@@ -2,6 +2,7 @@ import React from 'react';
 import { Route } from 'react-router';
 import { storiesOf } from '@storybook/react';
 import Users from './Users';
+import Groups from 'components/Groups';
 import Pagination from './Pagination';
 
 class PaginationTest extends React.Component {
@@ -23,4 +24,6 @@ class PaginationTest extends React.Component {
 }
 storiesOf('Screens', module)
   .add('Users', () => <Route path="/:any?/:id?" component={Users} />)
-  .add('Pagination', () => <PaginationTest />);
+  .add('Groups', () => <Route path="/:any?/:id?" component={Groups} />);
+
+storiesOf('Widgets', module).add('Pagination', () => <PaginationTest />);
