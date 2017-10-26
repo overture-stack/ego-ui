@@ -19,7 +19,7 @@ import EmptyContent from 'components/EmptyContent';
 
 import Associator from 'components/Associator/Associator';
 
-import Item from './Item';
+import ListItem from './ListItem';
 import { getApps } from 'services';
 
 const styles = {
@@ -84,7 +84,7 @@ export default class extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
-          Component={Item}
+          Component={ListItem}
           columnWidth={200}
           rowHeight={50}
           getData={getUsers}

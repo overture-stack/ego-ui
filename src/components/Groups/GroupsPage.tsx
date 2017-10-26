@@ -17,7 +17,7 @@ import Content from 'components/Content';
 import EmptyContent from 'components/EmptyContent';
 import Associator from 'components/Associator/Associator';
 import { removeGroupFromUser } from 'services/updateUser';
-import GroupListItem from './GroupListItem';
+import ListItem from './ListItem';
 
 const styles = {
   container: {
@@ -83,7 +83,7 @@ export default class extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
-          Component={GroupListItem}
+          Component={ListItem}
           getData={getGroups}
           selectedItem={currentGroup}
           rowHeight={44}
