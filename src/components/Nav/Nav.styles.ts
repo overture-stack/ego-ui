@@ -7,7 +7,7 @@ const styles = {
     color: '#fff',
     width: 240,
     padding: '30px 50px',
-    flex: 'none',
+    flexShrink: 0,
     display: 'flex',
     flexDirection: 'column',
   },
