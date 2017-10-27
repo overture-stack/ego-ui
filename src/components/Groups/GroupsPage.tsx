@@ -26,11 +26,10 @@ import ListPane from 'components/ListPane';
 import Content from 'components/Content';
 import { AssociatorFetchInitial } from 'components/Associator/Associator';
 
-import ListItem from './ListItem';
-import GroupListItem from './ListItem';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import GroupListItem from 'components/Groups/ListItem';
 import UserListItem from 'components/Users/ListItem';
 import AppListItem from 'components/Applications/ListItem';
-import { NavLink } from 'react-router-dom';
 
 const styles = {
   container: {
@@ -51,27 +50,6 @@ const styles = {
   },
 };
 
-const resourceMap = {
-  users: {
-    name: 'users',
-    ListItem: UserListItem,
-    getData: getUsers,
-    rowHeight: 50,
-  },
-  groups: {
-    name: 'groups',
-    ListItem: GroupListItem,
-    getData: getGroups,
-    rowHeight: 44,
-  },
-  apps: {
-    name: 'apps',
-    ListItem: AppListItem,
-    getData: getApps,
-    rowHeight: 30,
-  },
-};
-
 const contentWidth = 500;
 
 const enhance = compose(
@@ -79,12 +57,10 @@ const enhance = compose(
     refreshRate: 100,
     monitorHeight: false,
   }),
-  withProps(({ location, match }) => {
+  withProps(({ match }) => {
     const shouldListSubResource = !!match.params.subResourceType;
-    // const subListResource = match && resourceMap[match.params.subResourceType];
     return {
       shouldListSubResource,
-      // subListResource,
     };
   }),
 );
@@ -107,7 +83,7 @@ const render = props => {
         })}`}
       >
         <ListPane
-          Component={ListItem}
+          Component={GroupListItem}
           getData={getGroups}
           selectedItem={{ id: groupId }}
           rowHeight={44}
@@ -163,7 +139,7 @@ const render = props => {
         <Route
           path="/groups/:id/users/:userId?"
           render={({ match }) => {
-            const resource = resourceMap.users;
+            const resource = RESOURCE_MAP.users;
             const userId = match.params.userId;
             return (
               <Aux>
