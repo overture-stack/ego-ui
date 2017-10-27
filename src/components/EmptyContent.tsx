@@ -13,6 +13,13 @@ const styles = {
     fontWeight: 200,
   },
 };
-export default ({ message, className = '' }) => (
-  <div className={`${className} ${css(styles.container)}`}>{message}</div>
+
+const EmptyContent: React.SFC<{
+  message: string;
+  className?: string;
+  styles?: any;
+}> = ({ message, className = '', styles: stylesProp }) => (
+  <div className={`${className} ${css(styles.container, stylesProp)}`}>{message}</div>
 );
+
+export default EmptyContent;
