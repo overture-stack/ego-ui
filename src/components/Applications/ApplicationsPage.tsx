@@ -2,31 +2,26 @@ import React from 'react';
 import { css } from 'glamor';
 
 import {
-  getGroups,
-  getUsers,
   getApps,
+  getApp,
+  getUsers,
+  getGroups,
+  addApplicationToUser,
+  removeApplicationFromUser,
   addApplicationToGroup,
   removeApplicationFromGroup,
-  getGroupApplications,
-  getGroupUsers,
-  addGroupToUser,
-  getGroup,
-  removeGroupFromUser,
+  getAppUsers,
+  getAppGroups,
 } from 'services';
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
-
 import ListItem from './ListItem';
-
 const styles = {
   container: {
     backgroundColor: '#fff',
     height: '100%',
     width: '100%',
     flexWrap: 'initial',
-    '&:not(.bump-specificity)': {
-      flexWrap: 'initial',
-    },
   },
 };
 
@@ -38,40 +33,38 @@ export default class extends React.Component<any, any> {
       <div className={`row ${css(styles.container)}`}>
         <ListPane
           Component={ListItem}
-          getData={getGroups}
+          getData={getApps}
           selectedItem={{ id }}
-          rowHeight={44}
-          onSelect={group => {
-            if (group.id === id) {
-              this.props.history.push('/groups');
+          onSelect={app => {
+            if (app.id === id) {
+              this.props.history.push(`/apps`);
             } else {
-              this.props.history.push(`/groups/${group.id}`);
+              this.props.history.push(`/apps/${app.id}`);
             }
           }}
         />
-
         <Content
           id={id}
-          type="group"
-          emptyMessage="Please select a group"
-          getData={getGroup}
+          emptyMessage="Please select an application"
+          getData={getApp}
+          type="application"
           associators={[
             {
               key: 'user',
-              fetchInitial: () => getGroupUsers(id),
+              fetchInitial: () => getAppUsers(id),
               fetchItems: getUsers,
-              add: addGroupToUser,
-              remove: removeGroupFromUser,
+              add: addApplicationToUser,
+              remove: removeApplicationFromUser,
             },
             {
-              key: 'application',
-              fetchInitial: () => getGroupApplications(id),
-              fetchItems: getApps,
+              key: 'group',
+              fetchInitial: () => getAppGroups(id),
+              fetchItems: getGroups,
               add: addApplicationToGroup,
               remove: removeApplicationFromGroup,
             },
           ]}
-          keys={['name', 'description', 'id', 'status']}
+          keys={['name', 'clientId', 'clientSecret', 'description', 'id', 'redirectUri', 'status']}
         />
       </div>
     );

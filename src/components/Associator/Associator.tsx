@@ -48,14 +48,7 @@ const enhance = compose(
   ),
 );
 
-const render = ({
-  addItem,
-  itemsInList,
-  removeItem,
-  getName,
-  getKey,
-  fetchItems,
-}) => {
+const render = ({ addItem, itemsInList, removeItem, getName, getKey, fetchItems }) => {
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <ItemSelector

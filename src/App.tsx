@@ -7,7 +7,7 @@ import { injectState } from 'freactal';
 import Login from 'components/Login';
 import Users from 'components/Users';
 import Groups from 'components/Groups';
-import Apps from 'components/Apps';
+import Applications from 'components/Applications';
 import NoAccess from 'components/NoAccess';
 import Nav from 'components/Nav';
 
@@ -27,7 +27,7 @@ class App extends React.Component<any, any> {
             <Route path="/" exact component={Login} />
             <ProtectedRoute path="/users/:id?" component={Users} renderLogin />
             <ProtectedRoute path="/groups/:id?" component={Groups} renderLogin />
-            <ProtectedRoute path="/apps/:id?" component={Apps} renderLogin />
+            <ProtectedRoute path="/apps/:id?" component={Applications} renderLogin />
             <Route path="/no-access" exact component={NoAccess} />
           </Switch>
         </div>
