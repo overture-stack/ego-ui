@@ -22,12 +22,28 @@ class App extends React.Component<any, any> {
     return (
       <Router>
         <div style={{ height: '100%', display: 'flex' }}>
-          <ProtectedRoute path="/(users|groups|apps)/:id?" exact component={Nav} />
+          <ProtectedRoute
+            path="/(users|groups|apps)/:id?/:subResourceType?/:subResourceId?"
+            exact
+            component={Nav}
+          />
           <Switch>
             <Route path="/" exact component={Login} />
-            <ProtectedRoute path="/users/:id?" component={Users} renderLogin />
-            <ProtectedRoute path="/groups/:id?" component={Groups} renderLogin />
-            <ProtectedRoute path="/apps/:id?" component={Applications} renderLogin />
+            <ProtectedRoute
+              path="/users/:id?/:subResourceType?/:subResourceId?"
+              component={Users}
+              renderLogin
+            />
+            <ProtectedRoute
+              path="/groups/:id?/:subResourceType?/:subResourceId?"
+              component={Groups}
+              renderLogin
+            />
+            <ProtectedRoute
+              path="/apps/:id?/:subResourceType?/:subResourceId?"
+              component={Applications}
+              renderLogin
+            />
             <Route path="/no-access" exact component={NoAccess} />
           </Switch>
         </div>
