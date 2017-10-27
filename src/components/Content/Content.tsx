@@ -3,18 +3,6 @@ import { css } from 'glamor';
 
 import EmptyContent from 'components/EmptyContent';
 import ContentTable from './ContentTable';
-import Associator from 'components/Associator/Associator';
-
-export class AssociatorFetchInitial extends React.Component<any, any> {
-  state = { items: null };
-  async componentDidMount() {
-    const items = this.props.fetchInitial ? (await this.props.fetchInitial()).resultSet : [];
-    this.setState({ items });
-  }
-  render() {
-    return this.state.items ? <Associator {...this.props} initialItems={this.state.items} /> : null;
-  }
-}
 
 const styles = {
   container: {
@@ -53,31 +41,14 @@ export default class Content extends React.Component<any, any> {
   }
 
   render() {
-    const { keys, styles: stylesProp = {}, id, emptyMessage, associators, type } = this.props;
+    const { rows, styles: stylesProp = {}, id, emptyMessage } = this.props;
     const data = this.state.data as any;
+
     return !id || !data ? (
       <EmptyContent message={!id ? emptyMessage : 'loading'} />
     ) : (
       <div className={`Content ${css(styles.container, stylesProp)}`}>
-        <ContentTable
-          keys={[...keys, ...associators.map(p => p.key)]}
-          data={{
-            ...data,
-            ...associators.reduce((acc, { key, add, remove, ...opts }) => {
-              return {
-                ...acc,
-                [key]: (
-                  <AssociatorFetchInitial
-                    key={`${data.id}-${key}`}
-                    {...opts}
-                    onAdd={selected => add({ [type]: data, [key]: selected })}
-                    onRemove={selected => remove({ [type]: data, [key]: selected })}
-                  />
-                ),
-              };
-            }, {}),
-          }}
-        />
+        <ContentTable rows={rows} data={data} />
       </div>
     );
   }

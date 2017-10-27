@@ -16,6 +16,7 @@ import {
 
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
+import { AssociatorFetchInitial } from 'components/Associator/Associator';
 
 import ListItem from './ListItem';
 
@@ -54,24 +55,7 @@ export default class extends React.Component<any, any> {
           id={id}
           emptyMessage="Please select a user"
           getData={getUser}
-          type="user"
-          associators={[
-            {
-              key: 'group',
-              fetchInitial: () => getUserGroups(id),
-              fetchItems: getGroups,
-              add: addGroupToUser,
-              remove: removeGroupFromUser,
-            },
-            {
-              key: 'application',
-              fetchInitial: () => getUserApplications(id),
-              fetchItems: getApps,
-              add: addApplicationToUser,
-              remove: removeApplicationFromUser,
-            },
-          ]}
-          keys={[
+          rows={[
             'id',
             'firstName',
             'lastName',
@@ -81,6 +65,28 @@ export default class extends React.Component<any, any> {
             'createdAt',
             'lastLogin',
             'preferredLanguage',
+            {
+              fieldName: 'groups',
+              fieldValue: ({ data }) => (
+                <AssociatorFetchInitial
+                  fetchInitial={() => getUserGroups(data.id)}
+                  fetchItems={getGroups}
+                  onAdd={group => addGroupToUser({ user: data, group })}
+                  onRemove={group => removeGroupFromUser({ user: data, group })}
+                />
+              ),
+            },
+            {
+              fieldName: 'applications',
+              fieldValue: ({ data }) => (
+                <AssociatorFetchInitial
+                  fetchInitial={() => getUserApplications(data.id)}
+                  fetchItems={getApps}
+                  onAdd={application => addApplicationToUser({ user: data, application })}
+                  onRemove={application => removeApplicationFromUser({ user: data, application })}
+                />
+              ),
+            },
           ]}
         />
       </div>

@@ -16,6 +16,8 @@ import {
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
 import ListItem from './ListItem';
+import { AssociatorFetchInitial } from 'components/Associator/Associator';
+
 const styles = {
   container: {
     backgroundColor: '#fff',
@@ -47,24 +49,37 @@ export default class extends React.Component<any, any> {
           id={id}
           emptyMessage="Please select an application"
           getData={getApp}
-          type="application"
-          associators={[
+          rows={[
+            'id',
+            'name',
+            'clientId',
+            'clientSecret',
+            'description',
+            'redirectUri',
+            'status',
             {
-              key: 'user',
-              fetchInitial: () => getAppUsers(id),
-              fetchItems: getUsers,
-              add: addApplicationToUser,
-              remove: removeApplicationFromUser,
+              fieldName: 'users',
+              fieldValue: ({ data }) => (
+                <AssociatorFetchInitial
+                  fetchInitial={() => getAppUsers(data.id)}
+                  fetchItems={getUsers}
+                  onAdd={user => addApplicationToUser({ application: data, user })}
+                  onRemove={user => removeApplicationFromUser({ application: data, user })}
+                />
+              ),
             },
             {
-              key: 'group',
-              fetchInitial: () => getAppGroups(id),
-              fetchItems: getGroups,
-              add: addApplicationToGroup,
-              remove: removeApplicationFromGroup,
+              fieldName: 'groups',
+              fieldValue: ({ data }) => (
+                <AssociatorFetchInitial
+                  fetchInitial={() => getAppGroups(data.id)}
+                  fetchItems={getGroups}
+                  onAdd={group => addApplicationToGroup({ application: data, group })}
+                  onRemove={group => removeApplicationFromGroup({ application: data, group })}
+                />
+              ),
             },
           ]}
-          keys={['name', 'clientId', 'clientSecret', 'description', 'id', 'redirectUri', 'status']}
         />
       </div>
     );

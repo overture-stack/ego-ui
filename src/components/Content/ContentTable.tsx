@@ -5,13 +5,42 @@ import { format } from 'date-fns';
 
 const DATE_KEYS = ['createdAt', 'lastLogin'];
 
-export default ({ keys, data }) => {
+function normalizeRow(row: string | { fieldName: any; fieldValue: any }, data: Object[]) {
+  const rowData =
+    typeof row === 'string'
+      ? {
+          fieldName: row,
+          fieldValue: data[row] ? (
+            DATE_KEYS.indexOf(row) >= 0 ? (
+              format(data[row], 'MMMM Do YYYY [a]t h:mmA')
+            ) : (
+              data[row]
+            )
+          ) : (
+            <div style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</div>
+          ),
+        }
+      : row;
+
+  return {
+    fieldName:
+      typeof rowData.fieldName === 'function'
+        ? rowData.fieldName({ data })
+        : _.upperCase(rowData.fieldName),
+    fieldValue:
+      typeof rowData.fieldValue === 'function' ? rowData.fieldValue({ data }) : rowData.fieldValue,
+  };
+}
+
+export default ({ rows, data }) => {
   return (
     <Table basic="very" style={{ fontSize: 18 }}>
       <Table.Body>
-        {keys.map(key => {
+        {rows.map(row => {
+          const { fieldName, fieldValue } = normalizeRow(row, data);
+
           return (
-            <Table.Row key={key} style={{ verticalAlign: 'baseline' }}>
+            <Table.Row key={`${data.id}-${fieldName}`} style={{ verticalAlign: 'baseline' }}>
               <Table.Cell
                 style={{
                   fontSize: '0.65em',
@@ -20,20 +49,9 @@ export default ({ keys, data }) => {
                   width: '6em',
                 }}
               >
-                {_.upperCase(key)}
+                {fieldName}
               </Table.Cell>
-              <Table.Cell style={{ border: 'none' }}>
-                {data[key] ? (
-                  DATE_KEYS.indexOf(key) >= 0 ? (
-                    format(data[key], 'MMMM Do YYYY [a]t h:mmA')
-                  ) : (
-                    data[key]
-                  )
-                ) : (
-                  <div style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</div>
-                )}
-                {}
-              </Table.Cell>
+              <Table.Cell style={{ border: 'none' }}>{fieldValue}</Table.Cell>
             </Table.Row>
           );
         })}

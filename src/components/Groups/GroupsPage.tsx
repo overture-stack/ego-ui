@@ -15,6 +15,7 @@ import {
 } from 'services';
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
+import { AssociatorFetchInitial } from 'components/Associator/Associator';
 
 import ListItem from './ListItem';
 
@@ -52,26 +53,36 @@ export default class extends React.Component<any, any> {
 
         <Content
           id={id}
-          type="group"
           emptyMessage="Please select a group"
           getData={getGroup}
-          associators={[
+          rows={[
+            'id',
+            'name',
+            'description',
+            'status',
             {
-              key: 'user',
-              fetchInitial: () => getGroupUsers(id),
-              fetchItems: getUsers,
-              add: addGroupToUser,
-              remove: removeGroupFromUser,
+              fieldName: 'users',
+              fieldValue: ({ data }) => (
+                <AssociatorFetchInitial
+                  fetchInitial={() => getGroupUsers(data.id)}
+                  fetchItems={getUsers}
+                  onAdd={user => addGroupToUser({ user, group: data })}
+                  onRemove={user => removeGroupFromUser({ user, group: data })}
+                />
+              ),
             },
             {
-              key: 'application',
-              fetchInitial: () => getGroupApplications(id),
-              fetchItems: getApps,
-              add: addApplicationToGroup,
-              remove: removeApplicationFromGroup,
+              fieldName: 'applications',
+              fieldValue: ({ data }) => (
+                <AssociatorFetchInitial
+                  fetchInitial={() => getGroupApplications(data.id)}
+                  fetchItems={getApps}
+                  onAdd={application => addApplicationToGroup({ group: data, application })}
+                  onRemove={application => removeApplicationFromGroup({ group: data, application })}
+                />
+              ),
             },
           ]}
-          keys={['name', 'description', 'id', 'status']}
         />
       </div>
     );

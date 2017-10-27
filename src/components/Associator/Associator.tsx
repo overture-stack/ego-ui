@@ -68,4 +68,14 @@ const render = ({ addItem, itemsInList, removeItem, getName, getKey, fetchItems 
 
 const Component = enhance(render);
 
+export class AssociatorFetchInitial extends React.Component<any, any> {
+  state = { items: null };
+  async componentDidMount() {
+    const items = this.props.fetchInitial ? (await this.props.fetchInitial()).resultSet : [];
+    this.setState({ items });
+  }
+  render() {
+    return this.state.items ? <Component {...this.props} initialItems={this.state.items} /> : null;
+  }
+}
 export default Component;
