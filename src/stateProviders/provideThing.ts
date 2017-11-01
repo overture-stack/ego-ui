@@ -37,6 +37,7 @@ const provideThing = provideState({
     },
     stageChange: async (effects, change) => {
       return state => {
+        // TODO: refactor to keep single timeline of changes and reconcile on save.
         return {
           ...state,
           staged: { ...state.staged, ..._.omit(change, RESOURCE_MAP[state.type].associatedTypes) },
