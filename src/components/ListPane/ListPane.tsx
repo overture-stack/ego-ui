@@ -4,9 +4,10 @@ import { css } from 'glamor';
 import withSize from 'react-sizeme';
 import { compose, withPropsOnChange, defaultProps, withProps, withState } from 'recompose';
 
+import colors from 'common/colors';
 import Pagination from 'components/Pagination';
 import styles from './ListPane.styles';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Button, Input } from 'semantic-ui-react';
 
 interface IListProps {
   onSelect: Function;
@@ -27,6 +28,8 @@ interface IListProps {
   initialSortOrder: 'ASC' | 'DESC';
   sortField;
   setSortField;
+  query;
+  setQuery;
 }
 
 interface IListState {
@@ -42,6 +45,7 @@ const enhance = compose(
     getKey: item => item.id,
     onSelect: _.noop,
   }),
+  withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('sortField', 'setSortField', props => props.initialSortField),
   withState('sortOrder', 'setSortOrder', props => props.initialSortOrder),
   withSize({
@@ -73,11 +77,23 @@ const paneControls = {
   container: {
     backgroundColor: 'rgba(144, 144, 144, 0.05)',
     borderBottom: '1px solid #eaeaea',
-    padding: '20px 24px',
+    padding: '0 0',
     display: 'flex',
   },
   sortContainer: {
     marginLeft: 'auto',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  searchContainer: {
+    marginLeft: 10,
+    marginRight: 'auto',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  sortOrderWrapper: {
+    marginLeft: '10px',
+    marginRight: '10px',
   },
 };
 
@@ -89,12 +105,13 @@ class List extends React.Component<IListProps, IListState> {
   };
 
   fetchData = async ({ offset }) => {
-    const { getData, pageSize, sortField, sortOrder } = this.props;
+    const { getData, pageSize, sortField, sortOrder, query } = this.props;
     const { resultSet, count = 0 } = await getData({
       offset,
       limit: pageSize,
       sortField: sortField.key,
       sortOrder: sortOrder,
+      query,
     });
     this.setState({ items: resultSet, count });
   };
@@ -108,8 +125,10 @@ class List extends React.Component<IListProps, IListState> {
       prevProps.pageSize !== this.props.pageSize ||
       prevProps.getData !== this.props.getData ||
       prevProps.sortField.key !== this.props.sortField.key ||
-      prevProps.sortOrder !== this.props.sortOrder
+      prevProps.sortOrder !== this.props.sortOrder ||
+      prevProps.query !== this.props.query
     ) {
+      console.log(this.props.query);
       this.fetchData({ offset: 0 });
     } else if (prevState.offset !== this.state.offset) {
       this.fetchData({ offset: this.state.offset });
@@ -129,6 +148,8 @@ class List extends React.Component<IListProps, IListState> {
       setSortField,
       sortOrder,
       setSortOrder,
+      query,
+      setQuery,
     } = this.props;
     const { items, count, offset } = this.state;
 
@@ -137,7 +158,10 @@ class List extends React.Component<IListProps, IListState> {
     return (
       <div className={`List ${css(styles.container)}`}>
         <div className={`pane-controls ${css(paneControls.container)}`}>
-          <div className={`${css(paneControls.sortContainer)}`}>
+          <div className={`search-container ${css(paneControls.searchContainer)}`}>
+            <Input placeholder="Search..." onChange={(event, { value }) => setQuery(value)} />
+          </div>
+          <div className={`sort-container ${css(paneControls.sortContainer)}`}>
             Sort by:
             <Dropdown
               selection
@@ -148,14 +172,24 @@ class List extends React.Component<IListProps, IListState> {
               onChange={(event, { value }) =>
                 setSortField(sortableFields.find(field => field.key === value))}
             />
-            <Dropdown
-              selection
-              compact
-              selectOnNavigation={false}
-              options={[{ text: 'ASC', value: 'ASC' }, { text: 'DESC', value: 'DESC' }]}
-              text={sortOrder}
-              onChange={(event, { value }) => setSortOrder(value)}
-            />
+            <Button.Group className={`${css(paneControls.sortOrderWrapper)}`} vertical>
+              <Button
+                style={Object.assign(
+                  { paddingBottom: 0, backgroundColor: 'transparent' },
+                  sortOrder === 'ASC' && { color: colors.purple },
+                )}
+                onClick={() => setSortOrder('ASC')}
+                icon="chevron up"
+              />
+              <Button
+                style={Object.assign(
+                  { paddingTop: 0, backgroundColor: 'transparent' },
+                  sortOrder === 'DESC' && { color: colors.purple },
+                )}
+                onClick={() => setSortOrder('DESC')}
+                icon="chevron down"
+              />
+            </Button.Group>
           </div>
         </div>
         <div className={`items-wrapper`}>
