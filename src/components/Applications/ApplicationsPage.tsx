@@ -1,23 +1,12 @@
 import React from 'react';
 import { css } from 'glamor';
 
-import {
-  getApps,
-  getApp,
-  getUsers,
-  getGroups,
-  addApplicationToUser,
-  removeApplicationFromUser,
-  addApplicationToGroup,
-  removeApplicationFromGroup,
-  getAppUsers,
-  getAppGroups,
-} from 'services';
+import { getApps, getUsers, getGroups } from 'services';
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
 import ListItem from './ListItem';
-import { AssociatorFetchInitial } from 'components/Associator/Associator';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import Associator from 'components/Associator/Associator';
 
 const styles = {
   container: {
@@ -51,8 +40,8 @@ export default class extends React.Component<any, any> {
         />
         <Content
           id={id}
+          type="apps"
           emptyMessage="Please select an application"
-          getData={getApp}
           rows={[
             'id',
             'name',
@@ -62,26 +51,32 @@ export default class extends React.Component<any, any> {
             'redirectUri',
             'status',
             {
-              fieldName: 'users',
-              fieldValue: ({ data }) => (
-                <AssociatorFetchInitial
-                  fetchInitial={() => getAppUsers(data.id)}
-                  fetchItems={getUsers}
-                  onAdd={user => addApplicationToUser({ application: data, user })}
-                  onRemove={user => removeApplicationFromUser({ application: data, user })}
-                />
-              ),
+              key: 'users',
+              fieldContent: ({ associated, editing, stageChange }) => {
+                return (
+                  <Associator
+                    initialItems={associated.users.resultSet}
+                    editing={editing}
+                    fetchItems={getUsers}
+                    onAdd={item => stageChange({ users: { add: item } })}
+                    onRemove={item => stageChange({ users: { remove: item } })}
+                  />
+                );
+              },
             },
             {
-              fieldName: 'groups',
-              fieldValue: ({ data }) => (
-                <AssociatorFetchInitial
-                  fetchInitial={() => getAppGroups(data.id)}
-                  fetchItems={getGroups}
-                  onAdd={group => addApplicationToGroup({ application: data, group })}
-                  onRemove={group => removeApplicationFromGroup({ application: data, group })}
-                />
-              ),
+              key: 'groups',
+              fieldContent: ({ associated, editing, stageChange }) => {
+                return (
+                  <Associator
+                    initialItems={associated.groups.resultSet}
+                    editing={editing}
+                    fetchItems={getGroups}
+                    onAdd={item => stageChange({ groups: { add: item } })}
+                    onRemove={item => stageChange({ groups: { remove: item } })}
+                  />
+                );
+              },
             },
           ]}
         />

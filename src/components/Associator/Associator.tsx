@@ -48,18 +48,20 @@ const enhance = compose(
   ),
 );
 
-const render = ({ addItem, itemsInList, removeItem, getName, getKey, fetchItems }) => {
+const render = ({ addItem, itemsInList, removeItem, getName, getKey, fetchItems, editing }) => {
   return (
     <div className={`Associator ${css(styles.container)}`}>
-      <ItemSelector
-        fetchItems={args => fetchItems({ ...args, limit: 10 })}
-        onSelect={addItem}
-        disabledItems={itemsInList}
-      />
+      {editing && (
+        <ItemSelector
+          fetchItems={args => fetchItems({ ...args, limit: 10 })}
+          onSelect={addItem}
+          disabledItems={itemsInList}
+        />
+      )}
       {itemsInList.map(item => (
         <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
           {getName(item)}
-          <Icon name="delete" onClick={() => removeItem(item)} />
+          {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
         </Label>
       ))}
     </div>

@@ -8,10 +8,13 @@ import dummyUsers from './dummyData/users';
 export const getUsers = ({
   offset = 0,
   limit = 20,
-  query = '',
+  query,
   sortField,
   sortOrder,
+  groupsId,
+  appsId,
 }): Promise<{ count: number; resultSet: User[] }> => {
+  const baseUrl = groupsId ? `/groups/${groupsId}` : appsId ? `/applications/${appsId}` : '';
   return useDummyData
     ? Promise.resolve({
         count: dummyUsers.length,
@@ -19,7 +22,7 @@ export const getUsers = ({
       })
     : ajax
         .get(
-          `/users?${queryString.stringify(
+          `${baseUrl}/users?${queryString.stringify(
             _.omitBy({ limit, offset, query, sort: sortField, sortOrder }, _.isNil),
           )}`,
         )

@@ -6,7 +6,7 @@ import { linkTo } from '@storybook/addon-links';
 import StoryRouter from 'storybook-router';
 import 'flexboxgrid';
 
-import providerUsers from 'stateProviders/provideUser';
+import provideLoggedInUser from 'stateProviders/provideLoggedInUser';
 
 import 'common/injectGlobals';
 
@@ -18,13 +18,9 @@ css.global('#root > div', {
   height: '100%',
 });
 
-const req = require.context(
-  '../src/components',
-  true,
-  /\.stories\.(js|ts|tsx)$/,
-);
+const req = require.context('../src/components', true, /\.stories\.(js|ts|tsx)$/);
 
-const StateProviders = providerUsers(({ children }) => children);
+const StateProviders = provideLoggedInUser(({ children }) => children);
 
 addDecorator(storyFn => <StateProviders>{storyFn()}</StateProviders>);
 addDecorator(StoryRouter());

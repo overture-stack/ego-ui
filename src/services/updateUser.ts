@@ -3,6 +3,7 @@ import ajax from 'services/ajax';
 import { useDummyData } from 'common/injectGlobals';
 import dummyUsers from './dummyData/users';
 
+const BLOCKED_KEYS = ['groups', 'applications'];
 function add({ user, key, value }: any) {
   if (useDummyData) {
     const foundUser = _.find(dummyUsers, u => u.id === user.id);
@@ -27,6 +28,10 @@ function remove({ user, key, value }: any) {
   }
 }
 
+export const updateUser = ({ item }) => {
+  return ajax.put(`/users/${item.id}`, _.omit(item, BLOCKED_KEYS)).then(r => r.data);
+};
+
 export const addGroupToUser = ({ user, group }) => {
   return add({ user, key: 'groups', value: group.id });
 };
@@ -41,4 +46,9 @@ export const addApplicationToUser = ({ user, application }) => {
 
 export const removeApplicationFromUser = ({ user, application }) => {
   return remove({ user, key: 'applications', value: application.id });
+};
+
+export const diffAndSaveUser = ({ user, changes }) => {
+  console.log(user, changes);
+  return Promise.resolve();
 };

@@ -1,1 +1,2 @@
-export { default as provideUser } from './provideUser';
+export { default as provideLoggedInUser } from './provideLoggedInUser';
+export { default as provideThing } from './provideThing';

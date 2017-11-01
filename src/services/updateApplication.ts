@@ -3,12 +3,11 @@ import ajax from 'services/ajax';
 import { useDummyData } from 'common/injectGlobals';
 import dummyApplications from './dummyData/applications';
 
+const BLOCKED_KEYS = ['groups', 'users'];
+
 function add({ application, key, value }: any) {
   if (useDummyData) {
-    const fountApplication = _.find(
-      dummyApplications,
-      u => u.id === application.id,
-    );
+    const fountApplication = _.find(dummyApplications, u => u.id === application.id);
     if (fountApplication) {
       fountApplication[key] = _.uniq([...fountApplication[key], value]);
     }
@@ -24,20 +23,19 @@ function add({ application, key, value }: any) {
 
 function remove({ application, key, value }: any) {
   if (useDummyData) {
-    const foundApplication = _.find(
-      dummyApplications,
-      u => u.id === application.id,
-    );
+    const foundApplication = _.find(dummyApplications, u => u.id === application.id);
     if (foundApplication) {
       foundApplication[key] = foundApplication[key].filter(id => id !== value);
     }
     return Promise.resolve();
   } else {
-    return ajax
-      .patch(`/applications/${application.id}`, { [key]: [value] })
-      .then(r => r.data);
+    return ajax.patch(`/applications/${application.id}`, { [key]: [value] }).then(r => r.data);
   }
 }
+
+export const updateApplication = ({ item }) => {
+  return ajax.put(`/applications/${item.id}`, _.omit(item, BLOCKED_KEYS)).then(r => r.data);
+};
 
 export const addGroupToApplication = ({ application, group }) => {
   return add({ application, key: 'groups', value: group.id });

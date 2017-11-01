@@ -4,7 +4,6 @@ import colors from 'common/colors';
 
 const styles = {
   container: {
-    minWidth: 500,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

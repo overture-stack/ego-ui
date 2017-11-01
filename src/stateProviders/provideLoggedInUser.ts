@@ -3,14 +3,14 @@ import { setToken } from 'services/ajax';
 
 export default provideState({
   initialState: () => ({
-    user: null,
-    token: '',
+    loggedInUser: null,
+    loggedInUserToken: '',
   }),
   effects: {
-    setUser: (effects, user) => state => ({ ...state, user }),
+    setUser: (effects, user) => state => ({ ...state, loggedInUser: user }),
     setToken: (effects, token) => state => {
       setToken(token);
-      return { ...state, token };
+      return { ...state, loggedInUserToken: token };
     },
   },
 });

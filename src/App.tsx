@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { compose } from 'recompose';
-import { provideUser } from 'stateProviders';
+import { provideLoggedInUser } from 'stateProviders';
 import { injectState } from 'freactal';
 
 import Login from 'components/Login';
@@ -11,10 +11,10 @@ import Applications from 'components/Applications';
 import NoAccess from 'components/NoAccess';
 import Nav from 'components/Nav';
 
-const enhance = compose(provideUser);
+const enhance = compose(provideLoggedInUser);
 
 const ProtectedRoute = injectState(({ renderLogin, component, state, ...rest }) => (
-  <Route {...rest} component={state.token ? component : renderLogin && Login} />
+  <Route {...rest} component={state.loggedInUserToken ? component : renderLogin && Login} />
 ));
 
 class App extends React.Component<any, any> {

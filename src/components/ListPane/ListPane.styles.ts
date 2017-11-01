@@ -25,7 +25,7 @@ const styles = ({ columnWidth, rowHeight }) => ({
   listItem: {
     flexGrow: 1,
     cursor: 'pointer',
-    padding: '0 1em',
+    padding: '0 14px',
     width: columnWidth,
     height: rowHeight,
     borderRadius: 3,

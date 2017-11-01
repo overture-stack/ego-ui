@@ -9,10 +9,14 @@ import dummyApplications from './dummyData/applications';
 export const getApps = ({
   offset = 0,
   limit = 20,
-  query = '',
+  query,
+  usersId,
+  groupsId,
   sortField,
   sortOrder,
 }): Promise<{ count: number; resultSet: Application[] }> => {
+  const baseUrl = usersId ? `/users/${usersId}` : groupsId ? `/groups/${groupsId}` : '';
+
   return useDummyData
     ? Promise.resolve({
         count: dummyApplications.length,
@@ -20,7 +24,7 @@ export const getApps = ({
       })
     : ajax
         .get(
-          `/applications?${queryString.stringify(
+          `${baseUrl}/applications?${queryString.stringify(
             _.omitBy({ limit, offset, query, sort: sortField, sortOrder }, _.isNil),
           )}`,
         )

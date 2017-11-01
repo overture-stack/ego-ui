@@ -1,12 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import {
-  compose,
-  withProps,
-  defaultProps,
-  withState,
-  withHandlers,
-} from 'recompose';
+import { compose, withProps, defaultProps, withState, withHandlers } from 'recompose';
 import { css } from 'glamor';
 import Downshift from 'downshift';
 import { Input, Icon, Button, Menu } from 'semantic-ui-react';
@@ -46,10 +40,7 @@ const enhance = compose(
     },
   })),
   withHandlers({
-    handleStateChange: ({ requestItems }) => async (
-      changes,
-      stateAndHelpers,
-    ) => {
+    handleStateChange: ({ requestItems }) => async (changes, stateAndHelpers) => {
       if (changes.inputValue) {
         requestItems(changes.inputValue);
       }
@@ -79,22 +70,12 @@ const render = ({
       {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
         <div className={`ItemSelector ${css(styles.container)}`}>
           {!isEntryMode && (
-            <Button
-              size="mini"
-              color="blue"
-              onClick={() => setIsEntryMode(true, requestItems)}
-            >
+            <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
               <Icon name="add" />Add
             </Button>
           )}
           {isEntryMode && (
-            <Input
-              {...getInputProps()}
-              value={inputValue}
-              focus
-              autoFocus
-              size="mini"
-            />
+            <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
           )}
           {isEntryMode ? (
             <Menu
@@ -104,9 +85,7 @@ const render = ({
               style={{ zIndex: 1 }}
             >
               {items.filter(matchFor(inputValue, getName)).map((item, i) => {
-                const isDisabled = disabledItems
-                  .map(getKey)
-                  .includes(getKey(item));
+                const isDisabled = disabledItems.map(getKey).includes(getKey(item));
                 return (
                   <Menu.Item
                     key={getKey(item)}

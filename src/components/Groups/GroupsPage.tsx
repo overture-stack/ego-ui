@@ -1,35 +1,17 @@
 import React from 'react';
 import { compose, withProps } from 'recompose';
-import { Route, matchPath } from 'react-router';
+import { Route } from 'react-router';
 import { css } from 'glamor';
 import withSize from 'react-sizeme';
 
-import {
-  getGroups,
-  getUsers,
-  getApps,
-  getUser,
-  getUserGroups,
-  getUserApplications,
-  addApplicationToGroup,
-  addApplicationToUser,
-  removeApplicationFromUser,
-  removeApplicationFromGroup,
-  getGroupApplications,
-  getGroupUsers,
-  addGroupToUser,
-  getGroup,
-  removeGroupFromUser,
-} from 'services';
+import { getGroups, getUsers, getApps } from 'services';
 import Aux from 'components/Aux';
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
-import { AssociatorFetchInitial } from 'components/Associator/Associator';
+import Associator from 'components/Associator/Associator';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import GroupListItem from 'components/Groups/ListItem';
-import UserListItem from 'components/Users/ListItem';
-import AppListItem from 'components/Applications/ListItem';
 
 const styles = {
   container: {
@@ -101,34 +83,40 @@ const render = props => {
 
         <Content
           id={groupId}
+          type="groups"
           emptyMessage="Please select a group"
-          getData={getGroup}
           rows={[
             'id',
             'name',
             'description',
             'status',
             {
-              fieldName: 'users',
-              fieldValue: ({ data }) => (
-                <AssociatorFetchInitial
-                  fetchInitial={() => getGroupUsers(data.id)}
-                  fetchItems={getUsers}
-                  onAdd={user => addGroupToUser({ user, group: data })}
-                  onRemove={user => removeGroupFromUser({ user, group: data })}
-                />
-              ),
+              key: 'users',
+              fieldContent: ({ associated, editing, stageChange }) => {
+                return (
+                  <Associator
+                    initialItems={associated.users.resultSet}
+                    editing={editing}
+                    fetchItems={getUsers}
+                    onAdd={item => stageChange({ users: { add: item } })}
+                    onRemove={item => stageChange({ users: { remove: item } })}
+                  />
+                );
+              },
             },
             {
-              fieldName: 'applications',
-              fieldValue: ({ data }) => (
-                <AssociatorFetchInitial
-                  fetchInitial={() => getGroupApplications(data.id)}
-                  fetchItems={getApps}
-                  onAdd={application => addApplicationToGroup({ group: data, application })}
-                  onRemove={application => removeApplicationFromGroup({ group: data, application })}
-                />
-              ),
+              key: 'applications',
+              fieldContent: ({ associated, editing, stageChange }) => {
+                return (
+                  <Associator
+                    initialItems={associated.apps.resultSet}
+                    editing={editing}
+                    fetchItems={getApps}
+                    onAdd={item => stageChange({ apps: { add: item } })}
+                    onRemove={item => stageChange({ apps: { remove: item } })}
+                  />
+                );
+              },
             },
           ]}
         />
@@ -148,7 +136,7 @@ const render = props => {
               <Aux>
                 <ListPane
                   Component={resource.ListItem}
-                  getData={resource.getData}
+                  getData={resource.getList}
                   rowHeight={resource.rowHeight}
                   onSelect={user => {
                     if (user.id.toString() === userId) {
@@ -160,8 +148,8 @@ const render = props => {
                 />
                 <Content
                   id={userId}
+                  type="users"
                   emptyMessage="Please select a user"
-                  getData={getUser}
                   rows={[
                     'id',
                     'firstName',
@@ -173,25 +161,28 @@ const render = props => {
                     'lastLogin',
                     'preferredLanguage',
                     {
-                      fieldName: 'groups',
-                      fieldValue: ({ data }) => (
-                        <AssociatorFetchInitial
-                          fetchInitial={() => getUserGroups(data.id)}
-                          fetchItems={getGroups}
-                          onAdd={group => addGroupToUser({ user: data, group })}
-                          onRemove={group => removeGroupFromUser({ user: data, group })}
-                        />
-                      ),
+                      key: 'groups',
+                      fieldContent: ({ associated, editing, stageChange }) => {
+                        return (
+                          <Associator
+                            initialItems={associated.groups.resultSet}
+                            editing={editing}
+                            fetchItems={getGroups}
+                            onAdd={item => stageChange({ groups: { add: item } })}
+                            onRemove={item => stageChange({ groups: { remove: item } })}
+                          />
+                        );
+                      },
                     },
                     {
-                      fieldName: 'applications',
-                      fieldValue: ({ data }) => (
-                        <AssociatorFetchInitial
-                          fetchInitial={() => getUserApplications(data.id)}
+                      key: 'applications',
+                      fieldContent: ({ associated, editing, stageChange }) => (
+                        <Associator
+                          initialItems={associated.apps.resultSet}
+                          editing={editing}
                           fetchItems={getApps}
-                          onAdd={application => addApplicationToUser({ user: data, application })}
-                          onRemove={application =>
-                            removeApplicationFromUser({ user: data, application })}
+                          onAdd={item => stageChange({ apps: { add: item } })}
+                          onRemove={item => stageChange({ apps: { remove: item } })}
                         />
                       ),
                     },
