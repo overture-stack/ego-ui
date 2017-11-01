@@ -10,6 +10,7 @@ const styles = {
     flexShrink: 0,
     display: 'flex',
     flexDirection: 'column',
+    zIndex: 100,
   },
 
   logo: {
