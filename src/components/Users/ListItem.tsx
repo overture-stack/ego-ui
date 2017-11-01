@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { css } from 'glamor';
 import colors from 'common/colors';
@@ -10,7 +11,7 @@ const styles = {
     justifyContent: 'center',
     padding: '10px 0',
   },
-  email: {
+  secondaryField: {
     color: '#aaa',
     fontWeight: 200,
     fontSize: '0.9em',
@@ -24,12 +25,9 @@ const styles = {
   },
 };
 
-export default ({
-  item: { firstName, lastName, email, status, role },
-  className = '',
-  style,
-  ...props,
-}) => {
+export default ({ item, sortField, className = '', style, ...props }) => {
+  const { firstName, lastName, email, status, role } = item;
+  const secondaryField = sortField === 'lastName' ? 'email' : sortField;
   return (
     <div
       className={`Item ${className} ${css(
@@ -43,7 +41,8 @@ export default ({
       {...props}
     >
       <DisplayName firstName={firstName} lastName={lastName} role={role} />
-      <span className={`email ${css(styles.email)}`}>{email}</span>
+
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
     </div>
   );
 };

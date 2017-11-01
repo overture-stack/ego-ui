@@ -10,6 +10,8 @@ export const getApps = ({
   offset = 0,
   limit = 20,
   query = '',
+  sortField,
+  sortOrder,
 }): Promise<{ count: number; resultSet: Application[] }> => {
   return useDummyData
     ? Promise.resolve({
@@ -19,7 +21,7 @@ export const getApps = ({
     : ajax
         .get(
           `/applications?${queryString.stringify(
-            _.omitBy({ limit, offset, query }, _.isNil),
+            _.omitBy({ limit, offset, query, sort: sortField, sortOrder }, _.isNil),
           )}`,
         )
         .then(r => r.data);

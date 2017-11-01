@@ -18,6 +18,7 @@ const styles = ({ columnWidth, rowHeight }) => ({
       justifyContent: 'space-evenly',
       paddingLeft: 10,
       paddingRight: 10,
+      paddingTop: 10,
     },
   },
 

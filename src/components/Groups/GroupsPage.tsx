@@ -83,6 +83,9 @@ const render = props => {
         })}`}
       >
         <ListPane
+          sortableFields={RESOURCE_MAP.groups.sortableFields}
+          initialSortOrder={RESOURCE_MAP.groups.initialSortOrder}
+          initialSortField={RESOURCE_MAP.groups.initialSortField}
           Component={GroupListItem}
           getData={getGroups}
           selectedItem={{ id: groupId }}

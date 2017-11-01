@@ -17,6 +17,7 @@ import ListPane from 'components/ListPane';
 import Content from 'components/Content';
 import ListItem from './ListItem';
 import { AssociatorFetchInitial } from 'components/Associator/Associator';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const styles = {
   container: {
@@ -34,6 +35,9 @@ export default class extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
+          sortableFields={RESOURCE_MAP.apps.sortableFields}
+          initialSortOrder={RESOURCE_MAP.apps.initialSortOrder}
+          initialSortField={RESOURCE_MAP.apps.initialSortField}
           Component={ListItem}
           getData={getApps}
           selectedItem={{ id }}
