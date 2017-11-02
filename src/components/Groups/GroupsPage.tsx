@@ -12,6 +12,7 @@ import Associator from 'components/Associator/Associator';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import GroupListItem from 'components/Groups/ListItem';
+import { NavLink } from 'react-router-dom';
 
 const styles = {
   container: {
@@ -94,13 +95,21 @@ const render = props => {
               key: 'users',
               fieldContent: ({ associated, editing, stageChange }) => {
                 return (
-                  <Associator
-                    initialItems={associated.users.resultSet}
-                    editing={editing}
-                    fetchItems={getUsers}
-                    onAdd={item => stageChange({ users: { add: item } })}
-                    onRemove={item => stageChange({ users: { remove: item } })}
-                  />
+                  <Aux>
+                    <Associator
+                      initialItems={associated.users.resultSet}
+                      editing={editing}
+                      fetchItems={getUsers}
+                      getName={x => `${x.lastName}, ${x.firstName[0]}`}
+                      onAdd={item => stageChange({ users: { add: item } })}
+                      onRemove={item => stageChange({ users: { remove: item } })}
+                    />
+                    {associated.users.count > associated.users.resultSet.length && (
+                      <NavLink to={`/groups/${groupId}/users`} style={{ fontSize: 14 }}>
+                        View all {associated.users.count} users
+                      </NavLink>
+                    )}
+                  </Aux>
                 );
               },
             },
@@ -135,6 +144,9 @@ const render = props => {
             return (
               <Aux>
                 <ListPane
+                  sortableFields={RESOURCE_MAP.users.sortableFields}
+                  initialSortOrder={RESOURCE_MAP.users.initialSortOrder}
+                  initialSortField={RESOURCE_MAP.users.initialSortField}
                   Component={resource.ListItem}
                   getData={resource.getList}
                   rowHeight={resource.rowHeight}
