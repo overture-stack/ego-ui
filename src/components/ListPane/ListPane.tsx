@@ -43,13 +43,7 @@ const enhance = compose(
   defaultProps({
     columnWidth: 200,
     rowHeight: 60,
-    getKey: item => {
-      if (!item.id) {
-        console.log(item);
-        debugger;
-      }
-      return item.id.toString();
-    },
+    getKey: item => item.id.toString(),
     onSelect: _.noop,
   }),
   withState('query', 'setQuery', props => props.initialQuery || ''),
