@@ -28,9 +28,9 @@ class UsersPage extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
-          sortableFields={RESOURCE_MAP.users.sortableFields}
+          sortableFields={RESOURCE_MAP.users.schema.filter(field => field.sortable)}
           initialSortOrder={RESOURCE_MAP.users.initialSortOrder}
-          initialSortField={RESOURCE_MAP.users.initialSortField}
+          initialSortField={RESOURCE_MAP.users.schema.find(field => field.initialSort)}
           Component={ListItem}
           columnWidth={200}
           rowHeight={50}
@@ -49,15 +49,7 @@ class UsersPage extends React.Component<any, any> {
           type="users"
           emptyMessage="Please select a user"
           rows={[
-            'id',
-            'firstName',
-            'lastName',
-            'email',
-            'role',
-            'status',
-            'createdAt',
-            'lastLogin',
-            'preferredLanguage',
+            ...RESOURCE_MAP.users.schema.map(f => f.key),
             {
               key: 'groups',
               fieldContent: ({ associated, editing, stageChange }) => {

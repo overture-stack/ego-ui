@@ -10,6 +10,7 @@ import Groups from 'components/Groups';
 import Applications from 'components/Applications';
 import NoAccess from 'components/NoAccess';
 import Nav from 'components/Nav';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const enhance = compose(provideLoggedInUser);
 
@@ -17,33 +18,34 @@ const ProtectedRoute = injectState(({ renderLogin, component, state, ...rest }) 
   <Route {...rest} component={state.loggedInUserToken ? component : renderLogin && Login} />
 ));
 
+const PageComponents = {
+  users: Users,
+  groups: Groups,
+  apps: Applications,
+};
+
 class App extends React.Component<any, any> {
   render() {
     return (
       <Router>
         <div style={{ height: '100%', display: 'flex' }}>
           <ProtectedRoute
-            path="/(users|groups|apps)/:id?/:subResourceType?/:subResourceId?"
+            path={`/(${Object.keys(RESOURCE_MAP)
+              .map(key => key)
+              .join('|')})/:id?/:subResourceType?/:subResourceId?`}
             exact
             component={Nav}
           />
           <Switch>
             <Route path="/" exact component={Login} />
-            <ProtectedRoute
-              path="/users/:id?/:subResourceType?/:subResourceId?"
-              component={Users}
-              renderLogin
-            />
-            <ProtectedRoute
-              path="/groups/:id?/:subResourceType?/:subResourceId?"
-              component={Groups}
-              renderLogin
-            />
-            <ProtectedRoute
-              path="/apps/:id?/:subResourceType?/:subResourceId?"
-              component={Applications}
-              renderLogin
-            />
+            {Object.keys(RESOURCE_MAP).map(key => (
+              <ProtectedRoute
+                key={key}
+                path={`/${key}/:id?/:subResourceType?/:subResourceId?`}
+                component={PageComponents[key]}
+                renderLogin
+              />
+            ))}
             <Route path="/no-access" exact component={NoAccess} />
           </Switch>
         </div>

@@ -24,41 +24,27 @@ import GroupListItem from 'components/Groups/ListItem';
 import UserListItem from 'components/Users/ListItem';
 import AppListItem from 'components/Applications/ListItem';
 
-const userSortFields = [
-  { key: 'id', value: 'ID' },
-  { key: 'email', value: 'Email' },
-  { key: 'role', value: 'Role' },
-  { key: 'firstName', value: 'First Name' },
-  { key: 'lastName', value: 'Last Name' },
-  { key: 'createdAt', value: 'Date Created' },
-  { key: 'lastLogin', value: 'Last Login' },
-];
-
-const groupSortFields = [
-  { key: 'id', value: 'ID' },
-  { key: 'name', value: 'Name' },
-  { key: 'description', value: 'Description' },
-  { key: 'status', value: 'Status' },
-];
-
-const applicationSortFields = [
-  { key: 'id', value: 'ID' },
-  { key: 'name', value: 'Name' },
-  { key: 'clientId', value: 'Client ID' },
-  { key: 'description', value: 'Description' },
-  { key: 'status', value: 'Status' },
-];
+type Schema = { key: string; value: string; sortable: boolean; initialSort: boolean }[];
 
 export default {
   users: {
+    schema: [
+      { key: 'id', value: 'ID', sortable: true, immutable: true },
+      { key: 'firstName', value: 'First Name', sortable: true },
+      { key: 'lastName', value: 'Last Name', sortable: true, initialSort: true },
+      { key: 'email', value: 'Email', sortable: true },
+      { key: 'role', value: 'Role', sortable: true },
+      { key: 'status', value: 'Status' },
+      { key: 'createdAt', value: 'Date Created', sortable: true, immutable: true },
+      { key: 'lastLogin', value: 'Last Login', sortable: true, immutable: true },
+      { key: 'preferredLanguage', value: 'Preferred Language' },
+    ] as Schema,
     name: 'users',
     ListItem: UserListItem,
     getList: getUsers,
     getItem: getUser,
     updateItem: updateUser,
     rowHeight: 50,
-    sortableFields: userSortFields,
-    initialSortField: userSortFields.find(field => field.key === 'lastName'),
     initialSortOrder: 'DESC',
     associatedTypes: ['groups', 'apps'],
     add: {
@@ -71,14 +57,18 @@ export default {
     },
   },
   groups: {
+    schema: [
+      { key: 'id', value: 'ID', sortable: true, immutable: true },
+      { key: 'name', value: 'Name', sortable: true, initialSort: true },
+      { key: 'description', value: 'Description', sortable: true },
+      { key: 'status', value: 'Status', sortable: true },
+    ] as Schema,
     name: 'groups',
     ListItem: GroupListItem,
     getList: getGroups,
     updateItem: updateGroup,
     getItem: getGroup,
     rowHeight: 44,
-    sortableFields: groupSortFields,
-    initialSortField: groupSortFields.find(field => field.key === 'name'),
     initialSortOrder: 'ASC',
     associatedTypes: ['users', 'apps'],
     add: {
@@ -91,14 +81,19 @@ export default {
     },
   },
   apps: {
+    schema: [
+      { key: 'id', value: 'ID', sortable: true, immutable: true },
+      { key: 'name', value: 'Name', sortable: true, initialSort: true },
+      { key: 'clientId', value: 'Client ID', sortable: true },
+      { key: 'description', value: 'Description', sortable: true },
+      { key: 'status', value: 'Status', sortable: true },
+    ] as Schema,
     name: 'apps',
     ListItem: AppListItem,
     getList: getApps,
     updateItem: updateApplication,
     getItem: getApp,
     rowHeight: 30,
-    sortableFields: applicationSortFields,
-    initialSortField: applicationSortFields.find(field => field.key === 'name'),
     initialSortOrder: 'ASC',
     associatedTypes: ['groups', 'users'],
     add: {

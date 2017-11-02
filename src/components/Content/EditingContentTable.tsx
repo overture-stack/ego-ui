@@ -4,7 +4,7 @@ import { Table, Input } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
 
-const UNEDITABLE_KEYS = ['id'];
+const IMMUTABLE_KEYS = ['id'];
 
 function normalizeRow({
   row,
@@ -22,7 +22,7 @@ function normalizeRow({
       ? {
           key: row,
           fieldName: row,
-          fieldContent: UNEDITABLE_KEYS.includes(row) ? (
+          fieldContent: IMMUTABLE_KEYS.includes(row) ? (
             data[row] || ''
           ) : (
             <Input

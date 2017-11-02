@@ -24,9 +24,9 @@ export default class extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
-          sortableFields={RESOURCE_MAP.apps.sortableFields}
+          sortableFields={RESOURCE_MAP.apps.schema.filter(field => field.sortable)}
           initialSortOrder={RESOURCE_MAP.apps.initialSortOrder}
-          initialSortField={RESOURCE_MAP.apps.initialSortField}
+          initialSortField={RESOURCE_MAP.apps.schema.find(field => field.initialSort)}
           Component={ListItem}
           getData={getApps}
           selectedItemId={id}
@@ -43,13 +43,7 @@ export default class extends React.Component<any, any> {
           type="apps"
           emptyMessage="Please select an application"
           rows={[
-            'id',
-            'name',
-            'clientId',
-            'clientSecret',
-            'description',
-            'redirectUri',
-            'status',
+            ...RESOURCE_MAP.apps.schema.map(f => f.key),
             {
               key: 'users',
               fieldContent: ({ associated, editing, stageChange }) => {
