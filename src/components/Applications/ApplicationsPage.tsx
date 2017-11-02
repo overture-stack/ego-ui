@@ -32,9 +32,9 @@ export default class extends React.Component<any, any> {
           selectedItemId={id}
           onSelect={app => {
             if (app.id.toString() === id) {
-              this.props.history.push(`/apps`);
+              this.props.history.replace(`/apps`);
             } else {
-              this.props.history.push(`/apps/${app.id}`);
+              this.props.history.replace(`/apps/${app.id}`);
             }
           }}
         />

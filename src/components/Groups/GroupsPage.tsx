@@ -76,9 +76,9 @@ const render = props => {
           rowHeight={44}
           onSelect={group => {
             if (group.id.toString() === groupId) {
-              props.history.push('/groups');
+              props.history.replace('/groups');
             } else {
-              props.history.push(`/groups/${group.id}`);
+              props.history.replace(`/groups/${group.id}`);
             }
           }}
         />
@@ -151,9 +151,9 @@ const render = props => {
                   rowHeight={resource.rowHeight}
                   onSelect={user => {
                     if (user.id.toString() === userId) {
-                      props.history.push(`/groups/${groupId}/users`);
+                      props.history.replace(`/groups/${groupId}/users`);
                     } else {
-                      props.history.push(`/groups/${groupId}/users/${user.id}`);
+                      props.history.replace(`/groups/${groupId}/users/${user.id}`);
                     }
                   }}
                 />

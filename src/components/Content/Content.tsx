@@ -116,7 +116,7 @@ class Content extends React.Component<any, any> {
                   if (newItem.id === id) {
                     this.setState({ ...INITIAL_STATE });
                   } else {
-                    history.push(`/${type}/${newItem.id}`);
+                    history.replace(`/${type}/${newItem.id}`);
                   }
                 }}
                 size="tiny"
