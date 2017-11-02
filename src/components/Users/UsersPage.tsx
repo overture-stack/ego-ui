@@ -37,7 +37,7 @@ class UsersPage extends React.Component<any, any> {
           getData={getUsers}
           selectedItemId={id}
           onSelect={user => {
-            if (user.id === id) {
+            if (user.id.toString() === id) {
               this.props.history.push(`/users/`);
             } else {
               this.props.history.push(`/users/${user.id}`);

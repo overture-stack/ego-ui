@@ -31,7 +31,7 @@ export default class extends React.Component<any, any> {
           getData={getApps}
           selectedItemId={id}
           onSelect={app => {
-            if (app.id === id) {
+            if (app.id.toString() === id) {
               this.props.history.push(`/apps`);
             } else {
               this.props.history.push(`/apps/${app.id}`);
