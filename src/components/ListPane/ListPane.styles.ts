@@ -35,7 +35,7 @@ const styles = ({ columnWidth, rowHeight }) => ({
     '&:active': { backgroundColor: '#e0e0e0' },
     '&.selected': {
       backgroundColor: '#fbfbfb',
-      boxShadow: `-1px 2px 1px 0px rgba(199, 194, 199, 0.9), 0px 0px 2px 0px rgba(195, 184, 195, 0.9)`,
+      boxShadow: `-1px 2px 1px 0px rgba(199, 194, 199, 0.4), 0px 0px 2px 0px rgba(195, 184, 195, 0.3)`,
     },
   },
 
