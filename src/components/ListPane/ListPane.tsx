@@ -124,7 +124,6 @@ class List extends React.Component<IListProps, IListState> {
       prevProps.sortOrder !== this.props.sortOrder ||
       prevProps.query !== this.props.query
     ) {
-      console.log(this.props.query);
       this.fetchData({ offset: 0 });
     } else if (prevState.offset !== this.state.offset) {
       this.fetchData({ offset: this.state.offset });
