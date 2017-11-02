@@ -13,7 +13,7 @@ const provideThing = provideState({
         ? await Promise.all([
             RESOURCE_MAP[type].getItem(id),
             ...RESOURCE_MAP[type].associatedTypes.map(associatedType =>
-              RESOURCE_MAP[associatedType].getList({ [`${type}Id`]: id }),
+              RESOURCE_MAP[associatedType].getList({ [`${type}Id`]: id, limit: 10 }),
             ),
           ])
         : [null, ...RESOURCE_MAP[type].associatedTypes.map(() => null)];
