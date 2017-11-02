@@ -147,6 +147,7 @@ const render = props => {
                   sortableFields={RESOURCE_MAP.users.sortableFields}
                   initialSortOrder={RESOURCE_MAP.users.initialSortOrder}
                   initialSortField={RESOURCE_MAP.users.initialSortField}
+                  selectedItemId={userId}
                   Component={resource.ListItem}
                   getData={resource.getList}
                   rowHeight={resource.rowHeight}
