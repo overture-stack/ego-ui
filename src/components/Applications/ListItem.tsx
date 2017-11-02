@@ -31,7 +31,7 @@ export default ({ item, sortField, style, className = '', ...props }) => {
   const secondaryField = sortField === 'name' ? 'clientId' : sortField;
   return (
     <div className={`AppListItem ${className} ${css(styles.container, style)}`} {...props}>
-      {item.name}
+      <span className={`primary-field ${css(styles.primaryField)}`}>{item.name}</span>
       <span className={`secondary-field ${css(styles.secondaryField)}`}>
         <Truncate lines={1}>{item[secondaryField]}</Truncate>
       </span>
