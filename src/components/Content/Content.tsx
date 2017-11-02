@@ -64,12 +64,23 @@ class Content extends React.Component<any, any> {
           <div>
             {!this.state.editing &&
               id && (
-                <Button color="blue" onClick={() => this.setState({ editing: true })}>
+                <Button
+                  color="blue"
+                  onClick={() => this.setState({ editing: true })}
+                  size="tiny"
+                  style={{ fontWeight: 'normal' }}
+                >
                   Edit
                 </Button>
               )}
             {!this.state.editing && (
-              <Button basic color="green" onClick={() => {}}>
+              <Button
+                basic
+                color="green"
+                onClick={() => {}}
+                size="tiny"
+                style={{ fontWeight: 'bold' }}
+              >
                 Create
               </Button>
             )}
@@ -77,12 +88,17 @@ class Content extends React.Component<any, any> {
 
           {this.state.editing && (
             <Aux>
-              <Button basic onClick={() => this.setState({ editing: false, updates: null })}>
+              <Button
+                basic
+                onClick={() => this.setState({ editing: false, updates: null })}
+                size="tiny"
+                style={{ fontWeight: 'bold' }}
+              >
                 Cancel
               </Button>
               <Button
                 color="blue"
-                style={{ marginLeft: 'auto' }}
+                style={{ marginLeft: 'auto', fontWeight: 'normal' }}
                 onClick={async () => {
                   if (this.state.editing) {
                     this.setState({ saving: true });
@@ -92,6 +108,7 @@ class Content extends React.Component<any, any> {
                     this.setState({ editing: true });
                   }
                 }}
+                size="tiny"
               >
                 Save
               </Button>
