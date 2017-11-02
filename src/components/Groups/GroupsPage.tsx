@@ -70,7 +70,7 @@ const render = props => {
           initialSortField={RESOURCE_MAP.groups.initialSortField}
           Component={GroupListItem}
           getData={getGroups}
-          selectedItem={{ id: groupId }}
+          selectedItemId={groupId}
           rowHeight={44}
           onSelect={group => {
             if (group.id.toString() === groupId) {

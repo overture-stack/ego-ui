@@ -35,7 +35,7 @@ class UsersPage extends React.Component<any, any> {
           columnWidth={200}
           rowHeight={50}
           getData={getUsers}
-          selectedItem={{ id }}
+          selectedItemId={id}
           onSelect={user => {
             if (user.id === id) {
               this.props.history.push(`/users/`);

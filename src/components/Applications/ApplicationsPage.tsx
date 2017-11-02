@@ -29,7 +29,7 @@ export default class extends React.Component<any, any> {
           initialSortField={RESOURCE_MAP.apps.initialSortField}
           Component={ListItem}
           getData={getApps}
-          selectedItem={{ id }}
+          selectedItemId={id}
           onSelect={app => {
             if (app.id === id) {
               this.props.history.push(`/apps`);

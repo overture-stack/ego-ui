@@ -18,7 +18,7 @@ interface IListProps {
   size: any;
   pageSize: number;
   styles: any;
-  selectedItem: any;
+  selectedItemId: string;
   sortableFields: {
     key: string;
     value: string;
@@ -43,7 +43,13 @@ const enhance = compose(
   defaultProps({
     columnWidth: 200,
     rowHeight: 60,
-    getKey: item => item.id.toString(),
+    getKey: item => {
+      if (!item.id) {
+        console.log(item);
+        debugger;
+      }
+      return item.id.toString();
+    },
     onSelect: _.noop,
   }),
   withState('query', 'setQuery', props => props.initialQuery || ''),
@@ -137,7 +143,7 @@ class List extends React.Component<IListProps, IListState> {
       getKey,
       pageSize,
       styles,
-      selectedItem,
+      selectedItemId,
       sortableFields,
       sortField,
       setSortField,
@@ -191,12 +197,12 @@ class List extends React.Component<IListProps, IListState> {
           {items.map(item => (
             <Component
               sortField={sortField.key}
-              className={selectedItem && getKey(item) === getKey(selectedItem) ? 'selected' : ''}
+              className={selectedItemId && getKey(item) === selectedItemId ? 'selected' : ''}
               item={item}
               style={styles.listItem}
               key={getKey(item)}
               onClick={() => onSelect(item)}
-              selected={selectedItem && getKey(item) === getKey(selectedItem)}
+              selected={selectedItemId && getKey(item) === selectedItemId}
             />
           ))}
           {_.range(fillersRequired).map(i => (
