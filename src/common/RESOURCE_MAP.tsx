@@ -55,6 +55,12 @@ export default {
       groups: ({ groups, item }) => removeGroupFromUser({ user: item, group: groups }),
       apps: ({ apps, item }) => removeApplicationFromUser({ user: item, application: apps }),
     },
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
   },
   groups: {
     schema: [
@@ -78,6 +84,12 @@ export default {
     remove: {
       users: ({ users, item }) => removeGroupFromUser({ group: item, user: users }),
       apps: ({ apps, item }) => removeApplicationFromGroup({ group: item, application: apps }),
+    },
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
     },
   },
   apps: {
@@ -104,6 +116,12 @@ export default {
       users: ({ users, item }) => removeUserFromApplication({ application: item, user: users }),
       groups: ({ groups, item }) =>
         removeGroupFromApplication({ application: item, group: groups }),
+    },
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
     },
   },
 };

@@ -24,9 +24,9 @@ export default class extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
-          sortableFields={RESOURCE_MAP.apps.schema.filter(field => field.sortable)}
+          sortableFields={RESOURCE_MAP.apps.sortableFields}
           initialSortOrder={RESOURCE_MAP.apps.initialSortOrder}
-          initialSortField={RESOURCE_MAP.apps.schema.find(field => field.initialSort)}
+          initialSortField={RESOURCE_MAP.apps.initialSortField}
           Component={ListItem}
           getData={getApps}
           selectedItemId={id}
