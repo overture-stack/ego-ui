@@ -62,17 +62,6 @@ class Content extends React.Component<any, any> {
       <div className={`content ${css(styles.container, stylesProp)}`}>
         <ControlContainer style={styles.controls}>
           <div>
-            {!this.state.editing &&
-              id && (
-                <Button
-                  color="blue"
-                  onClick={() => this.setState({ editing: true })}
-                  size="tiny"
-                  style={{ fontWeight: 'normal' }}
-                >
-                  Edit
-                </Button>
-              )}
             {!this.state.editing && (
               <Button
                 basic
@@ -84,6 +73,17 @@ class Content extends React.Component<any, any> {
                 Create
               </Button>
             )}
+            {!this.state.editing &&
+              id && (
+                <Button
+                  color="blue"
+                  onClick={() => this.setState({ editing: true })}
+                  size="tiny"
+                  style={{ fontWeight: 'normal' }}
+                >
+                  Edit
+                </Button>
+              )}
           </div>
 
           {this.state.editing && (
