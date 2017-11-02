@@ -18,6 +18,9 @@ import {
   removeUserFromApplication,
   updateApplication,
   updateGroup,
+  createGroup,
+  createUser,
+  createApplication,
 } from 'services';
 
 import GroupListItem from 'components/Groups/ListItem';
@@ -30,11 +33,11 @@ export default {
   users: {
     schema: [
       { key: 'id', value: 'ID', sortable: true, immutable: true },
-      { key: 'firstName', value: 'First Name', sortable: true },
-      { key: 'lastName', value: 'Last Name', sortable: true, initialSort: true },
-      { key: 'email', value: 'Email', sortable: true },
-      { key: 'role', value: 'Role', sortable: true },
-      { key: 'status', value: 'Status' },
+      { key: 'firstName', value: 'First Name', sortable: true, required: true },
+      { key: 'lastName', value: 'Last Name', sortable: true, initialSort: true, required: true },
+      { key: 'email', value: 'Email', sortable: true, required: true },
+      { key: 'role', value: 'Role', sortable: true, required: true },
+      { key: 'status', value: 'Status', immutable: true },
       { key: 'createdAt', value: 'Date Created', sortable: true, immutable: true },
       { key: 'lastLogin', value: 'Last Login', sortable: true, immutable: true },
       { key: 'preferredLanguage', value: 'Preferred Language' },
@@ -44,6 +47,7 @@ export default {
     getList: getUsers,
     getItem: getUser,
     updateItem: updateUser,
+    createItem: createUser,
     rowHeight: 50,
     initialSortOrder: 'DESC',
     associatedTypes: ['groups', 'apps'],
@@ -65,7 +69,7 @@ export default {
   groups: {
     schema: [
       { key: 'id', value: 'ID', sortable: true, immutable: true },
-      { key: 'name', value: 'Name', sortable: true, initialSort: true },
+      { key: 'name', value: 'Name', sortable: true, initialSort: true, required: true },
       { key: 'description', value: 'Description', sortable: true },
       { key: 'status', value: 'Status', sortable: true },
     ] as Schema,
@@ -73,6 +77,7 @@ export default {
     ListItem: GroupListItem,
     getList: getGroups,
     updateItem: updateGroup,
+    createItem: createGroup,
     getItem: getGroup,
     rowHeight: 44,
     initialSortOrder: 'ASC',
@@ -95,8 +100,8 @@ export default {
   apps: {
     schema: [
       { key: 'id', value: 'ID', sortable: true, immutable: true },
-      { key: 'name', value: 'Name', sortable: true, initialSort: true },
-      { key: 'clientId', value: 'Client ID', sortable: true },
+      { key: 'name', value: 'Name', sortable: true, initialSort: true, required: true },
+      { key: 'clientId', value: 'Client ID', sortable: true, required: true },
       { key: 'description', value: 'Description', sortable: true },
       { key: 'status', value: 'Status', sortable: true },
     ] as Schema,
@@ -104,6 +109,7 @@ export default {
     ListItem: AppListItem,
     getList: getApps,
     updateItem: updateApplication,
+    createItem: createApplication,
     getItem: getApp,
     rowHeight: 30,
     initialSortOrder: 'ASC',

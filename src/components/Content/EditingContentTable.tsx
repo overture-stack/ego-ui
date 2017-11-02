@@ -3,26 +3,27 @@ import _ from 'lodash';
 import { Table, Input } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
-
-const IMMUTABLE_KEYS = ['id'];
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 function normalizeRow({
   row,
   data,
   associated,
   stageChange,
+  immutableKeys,
 }: {
   row: string | { key: string; fieldName: any; fieldContent: any };
   data: Object[];
   associated: Object[];
   stageChange: Function;
+  immutableKeys: string[];
 }) {
   const rowData =
     typeof row === 'string'
       ? {
           key: row,
           fieldName: row,
-          fieldContent: IMMUTABLE_KEYS.includes(row) ? (
+          fieldContent: immutableKeys.includes(row) ? (
             data[row] || ''
           ) : (
             <Input
@@ -52,35 +53,45 @@ const enhance = compose(injectState);
 
 class EditingContentTable extends React.Component<any, any> {
   render() {
-    const { rows, state: { staged, associated }, effects: { stageChange } } = this.props;
+    const {
+      rows,
+      state: { staged, associated, type },
+      effects: { stageChange },
+      hideImmutable,
+    } = this.props;
+
+    const immutableKeys = RESOURCE_MAP[type].schema.filter(f => f.immutable).map(f => f.key);
 
     return (
       <Table basic="very" style={{ fontSize: 18 }}>
         <Table.Body>
-          {rows.map(row => {
-            const { key, fieldName, fieldContent } = normalizeRow({
-              row,
-              data: staged,
-              associated,
-              stageChange,
-            });
+          {rows
+            .filter(field => !hideImmutable || !immutableKeys.includes(field.key || field))
+            .map(row => {
+              const { key, fieldName, fieldContent } = normalizeRow({
+                row,
+                data: staged,
+                associated,
+                stageChange,
+                immutableKeys,
+              });
 
-            return (
-              <Table.Row key={`${staged.id}-${key}`} style={{ verticalAlign: 'baseline' }}>
-                <Table.Cell
-                  style={{
-                    fontSize: '0.65em',
-                    border: 'none',
-                    textAlign: 'right',
-                    width: '6em',
-                  }}
-                >
-                  {fieldName}
-                </Table.Cell>
-                <Table.Cell style={{ border: 'none' }}>{fieldContent}</Table.Cell>
-              </Table.Row>
-            );
-          })}
+              return (
+                <Table.Row key={`${staged.id}-${key}`} style={{ verticalAlign: 'baseline' }}>
+                  <Table.Cell
+                    style={{
+                      fontSize: '0.65em',
+                      border: 'none',
+                      textAlign: 'right',
+                      width: '6em',
+                    }}
+                  >
+                    {fieldName}
+                  </Table.Cell>
+                  <Table.Cell style={{ border: 'none' }}>{fieldContent}</Table.Cell>
+                </Table.Row>
+              );
+            })}
         </Table.Body>
       </Table>
     );

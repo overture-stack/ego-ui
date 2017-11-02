@@ -10,6 +10,7 @@ import { provideThing } from 'stateProviders';
 import { injectState } from 'freactal';
 import ControlContainer from 'components/ControlsContainer';
 import Aux from 'components/Aux';
+import { withRouter } from 'react-router';
 
 const styles = {
   container: {
@@ -25,9 +26,9 @@ const styles = {
   },
 };
 
-const INITIAL_STATE = { entity: null, editing: false, saving: false };
+const INITIAL_STATE = { editing: false, saving: false, creating: false };
 
-const enhance = compose(provideThing, injectState);
+const enhance = compose(provideThing, injectState, withRouter);
 
 class Content extends React.Component<any, any> {
   state = INITIAL_STATE;
@@ -54,43 +55,51 @@ class Content extends React.Component<any, any> {
       styles: stylesProp = {},
       id,
       emptyMessage,
-      effects: { saveChanges },
-      state: { item },
+      effects: { saveChanges, setItem },
+      state: { item, valid },
+      type,
+      history,
     } = this.props;
 
+    const { creating, editing, saving } = this.state;
     return (
       <div className={`content ${css(styles.container, stylesProp)}`}>
         <ControlContainer style={styles.controls}>
-          <div>
-            {!this.state.editing && (
-              <Button
-                basic
-                color="green"
-                onClick={() => {}}
-                size="tiny"
-                style={{ fontWeight: 'bold' }}
-              >
-                Create
-              </Button>
-            )}
-            {!this.state.editing &&
-              id && (
+          {!editing &&
+            !creating && (
+              <div>
                 <Button
-                  color="blue"
-                  onClick={() => this.setState({ editing: true })}
+                  basic
+                  color="green"
+                  onClick={async () => {
+                    await setItem(null, type);
+                    this.setState({ creating: true, editing: false });
+                  }}
                   size="tiny"
-                  style={{ fontWeight: 'normal' }}
+                  style={{ fontWeight: 'bold' }}
                 >
-                  Edit
+                  Create
                 </Button>
-              )}
-          </div>
-
-          {this.state.editing && (
+                {id && (
+                  <Button
+                    color="blue"
+                    onClick={() => this.setState({ editing: true, creating: false })}
+                    size="tiny"
+                    style={{ fontWeight: 'normal' }}
+                  >
+                    Edit
+                  </Button>
+                )}
+              </div>
+            )}
+          {(editing || creating) && (
             <Aux>
               <Button
                 basic
-                onClick={() => this.setState({ editing: false, updates: null })}
+                onClick={async () => {
+                  await this.fetchData(this.props);
+                  this.setState({ editing: false, creating: false });
+                }}
                 size="tiny"
                 style={{ fontWeight: 'bold' }}
               >
@@ -99,13 +108,15 @@ class Content extends React.Component<any, any> {
               <Button
                 color="blue"
                 style={{ marginLeft: 'auto', fontWeight: 'normal' }}
+                disabled={saving || !valid}
+                loading={saving}
                 onClick={async () => {
-                  if (this.state.editing) {
-                    this.setState({ saving: true });
-                    await saveChanges();
-                    this.setState({ saving: false, editing: false, updates: null });
+                  this.setState({ saving: true });
+                  const newItem = await saveChanges();
+                  if (newItem.id === id) {
+                    this.setState({ ...INITIAL_STATE });
                   } else {
-                    this.setState({ editing: true });
+                    history.push(`/${type}/${newItem.id}`);
                   }
                 }}
                 size="tiny"
@@ -116,11 +127,13 @@ class Content extends React.Component<any, any> {
           )}
         </ControlContainer>
         <div className={`${css(styles.content)}`}>
-          {!id ? (
+          {creating ? (
+            <EditingContentTable rows={rows} hideImmutable />
+          ) : !id ? (
             <EmptyContent message={emptyMessage} />
           ) : !item ? (
             <EmptyContent message={'loading'} />
-          ) : this.state.editing ? (
+          ) : editing ? (
             <EditingContentTable rows={rows} />
           ) : (
             <ContentTable rows={rows} />

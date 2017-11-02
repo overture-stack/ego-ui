@@ -3,6 +3,7 @@ import { compose, withProps } from 'recompose';
 import { Route } from 'react-router';
 import { css } from 'glamor';
 import withSize from 'react-sizeme';
+import _ from 'lodash';
 
 import { getGroups, getUsers, getApps } from 'services';
 import Aux from 'components/Aux';
@@ -101,7 +102,7 @@ const render = props => {
                       onAdd={item => stageChange({ users: { add: item } })}
                       onRemove={item => stageChange({ users: { remove: item } })}
                     />
-                    {associated.users.count > associated.users.resultSet.length && (
+                    {associated.users.count > _.get(associated, 'users.resultSet.length', 0) && (
                       <NavLink to={`/groups/${groupId}/users`} style={{ fontSize: 14 }}>
                         View all {associated.users.count} users
                       </NavLink>

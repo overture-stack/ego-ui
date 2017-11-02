@@ -18,7 +18,7 @@ const ProtectedRoute = injectState(({ renderLogin, component, state, ...rest }) 
   <Route {...rest} component={state.loggedInUserToken ? component : renderLogin && Login} />
 ));
 
-const PageComponents = {
+const pageComponents = {
   users: Users,
   groups: Groups,
   apps: Applications,
@@ -30,9 +30,9 @@ class App extends React.Component<any, any> {
       <Router>
         <div style={{ height: '100%', display: 'flex' }}>
           <ProtectedRoute
-            path={`/(${Object.keys(RESOURCE_MAP)
-              .map(key => key)
-              .join('|')})/:id?/:subResourceType?/:subResourceId?`}
+            path={`/(${Object.keys(RESOURCE_MAP).join(
+              '|',
+            )})/:id?/:subResourceType?/:subResourceId?`}
             exact
             component={Nav}
           />
@@ -42,7 +42,7 @@ class App extends React.Component<any, any> {
               <ProtectedRoute
                 key={key}
                 path={`/${key}/:id?/:subResourceType?/:subResourceId?`}
-                component={PageComponents[key]}
+                component={pageComponents[key]}
                 renderLogin
               />
             ))}
