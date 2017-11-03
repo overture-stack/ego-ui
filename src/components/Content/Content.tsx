@@ -27,23 +27,28 @@ const styles = {
   },
 };
 
-const INITIAL_STATE = {
-  editing: false,
-  saving: false,
-  creating: false,
-  disabling: false,
-  confirmingDelete: false,
-  deleting: false,
-};
-
 const enhance = compose(provideThing, injectState, withRouter);
 
-class Content extends React.Component<any, any> {
-  state = INITIAL_STATE;
+enum ContentState {
+  displaying,
+  creating,
+  editing,
+  disabling,
+  deleting,
+  confirmDelete,
+  saving,
+}
+
+interface IContentState {
+  contentState: ContentState;
+}
+
+class Content extends React.Component<any, IContentState> {
+  state = { contentState: ContentState.displaying };
 
   fetchData = async ({ id, effects: { setItem }, type }) => {
     await setItem(id, type);
-    this.setState({ ...INITIAL_STATE });
+    this.setState({ contentState: ContentState.displaying });
   };
 
   componentDidMount() {
@@ -69,7 +74,7 @@ class Content extends React.Component<any, any> {
       history,
     } = this.props;
 
-    const { creating, editing, saving, disabling, confirmingDelete, deleting } = this.state;
+    const { contentState } = this.state;
 
     const CreateButton = () => (
       <Button
@@ -77,7 +82,7 @@ class Content extends React.Component<any, any> {
         color="green"
         onClick={async () => {
           await setItem(null, type);
-          this.setState({ creating: true, editing: false });
+          this.setState({ contentState: ContentState.creating });
         }}
         size="tiny"
         style={{ fontWeight: 'bold' }}
@@ -89,7 +94,7 @@ class Content extends React.Component<any, any> {
     const EditButton = () => (
       <Button
         color="blue"
-        onClick={() => this.setState({ editing: true, creating: false })}
+        onClick={() => this.setState({ contentState: ContentState.editing })}
         size="tiny"
         style={{ fontWeight: 'normal' }}
       >
@@ -100,13 +105,13 @@ class Content extends React.Component<any, any> {
     const DisableButton = () => (
       <Button
         basic
-        disabled={disabling || (item || {}).status === 'Disabled'}
-        loading={disabling}
+        disabled={contentState === ContentState.disabling || (item || {}).status === 'Disabled'}
+        loading={contentState === ContentState.disabling}
         onClick={async () => {
-          this.setState({ disabling: true });
+          this.setState({ contentState: ContentState.disabling });
           await stageChange({ status: 'Disabled' });
           await saveChanges();
-          this.setState({ ...INITIAL_STATE });
+          this.setState({ contentState: ContentState.displaying });
         }}
         size="tiny"
         color="red"
@@ -118,10 +123,10 @@ class Content extends React.Component<any, any> {
 
     const ConfirmDeleteButton = () => (
       <Button
-        disabled={deleting}
-        loading={deleting}
+        disabled={contentState === ContentState.deleting}
+        loading={contentState === ContentState.deleting}
         onClick={async () => {
-          this.setState({ deleting: true });
+          this.setState({ contentState: ContentState.deleting });
           await deleteItem();
           history.replace(`/${type}`);
         }}
@@ -132,10 +137,11 @@ class Content extends React.Component<any, any> {
         Confirm Delete
       </Button>
     );
+
     const DeleteButton = () => (
       <Button
         basic
-        onClick={() => this.setState({ confirmingDelete: true })}
+        onClick={() => this.setState({ contentState: ContentState.confirmDelete })}
         size="tiny"
         color="red"
         style={{ fontWeight: 'bold' }}
@@ -147,10 +153,7 @@ class Content extends React.Component<any, any> {
     const CancelButton = () => (
       <Button
         basic
-        onClick={async () => {
-          await this.fetchData(this.props);
-          this.setState({ ...INITIAL_STATE });
-        }}
+        onClick={() => this.fetchData(this.props)}
         size="tiny"
         style={{ fontWeight: 'bold' }}
       >
@@ -158,45 +161,46 @@ class Content extends React.Component<any, any> {
       </Button>
     );
 
-    const SaveButton = () => (
-      <Button
-        color="blue"
-        style={{ marginLeft: 'auto', fontWeight: 'normal' }}
-        disabled={saving || !valid}
-        loading={saving}
-        onClick={async () => {
-          this.setState({ saving: true });
-          const newState = await saveChanges();
-          this.setState({ ...INITIAL_STATE });
-          history.replace(`/${type}/${newState.thing.item.id}`);
-        }}
-        size="tiny"
-      >
-        Save
-      </Button>
-    );
+    const SaveButton = () => {
+      const isSaving = contentState === ContentState.saving;
+      return (
+        <Button
+          color="blue"
+          style={{ marginLeft: 'auto', fontWeight: 'normal' }}
+          disabled={isSaving || !valid}
+          loading={isSaving}
+          onClick={async () => {
+            this.setState({ contentState: ContentState.saving });
+            const newState = await saveChanges();
+            this.setState({ contentState: ContentState.displaying });
+            history.replace(`/${type}/${newState.thing.item.id}`);
+          }}
+          size="tiny"
+        >
+          Save
+        </Button>
+      );
+    };
 
     return (
       <div className={`content ${css(styles.container, stylesProp)}`}>
         <ControlContainer style={styles.controls}>
-          {!editing &&
-            !creating && (
-              <Aux>
-                <div>
-                  <CreateButton />
-                  {id && <EditButton />}
-                </div>
-                {id &&
-                  (RESOURCE_MAP[type].noDelete ? (
-                    <DisableButton />
-                  ) : confirmingDelete ? (
-                    <ConfirmDeleteButton />
-                  ) : (
-                    <DeleteButton />
-                  ))}
-              </Aux>
-            )}
-          {(editing || creating) && (
+          {![ContentState.editing, ContentState.creating].includes(contentState) ? (
+            <Aux>
+              <div>
+                <CreateButton />
+                {id && <EditButton />}
+              </div>
+              {id &&
+                (RESOURCE_MAP[type].noDelete ? (
+                  <DisableButton />
+                ) : contentState === ContentState.confirmDelete ? (
+                  <ConfirmDeleteButton />
+                ) : (
+                  <DeleteButton />
+                ))}
+            </Aux>
+          ) : (
             <Aux>
               <CancelButton />
               <SaveButton />
@@ -204,13 +208,13 @@ class Content extends React.Component<any, any> {
           )}
         </ControlContainer>
         <div className={`${css(styles.content)}`}>
-          {creating ? (
+          {contentState === ContentState.creating ? (
             <EditingContentTable rows={rows} hideImmutable />
           ) : !id ? (
             <EmptyContent message={emptyMessage} />
           ) : !item ? (
             <EmptyContent message={'loading'} />
-          ) : editing ? (
+          ) : contentState === ContentState.editing ? (
             <EditingContentTable rows={rows} />
           ) : (
             <ContentTable rows={rows} />
