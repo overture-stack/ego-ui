@@ -22,3 +22,7 @@ export const addApplicationToGroup = ({ application, group }) => {
 export const removeApplicationFromGroup = ({ application, group }) => {
   return remove({ group, key: 'applications', value: application.id });
 };
+
+export const deleteGroup = ({ item }) => {
+  return ajax.delete(`/groups/${item.id}`).then(r => r.data);
+};

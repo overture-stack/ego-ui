@@ -52,3 +52,7 @@ export const addUserToApplication = ({ application, user }) => {
 export const removeUserFromApplication = ({ application, user }) => {
   return remove({ application, key: 'users', value: user.id });
 };
+
+export const deleteApplication = ({ item }) => {
+  return ajax.delete(`/applications/${item.id}`).then(r => r.data);
+};

@@ -136,6 +136,11 @@ const provideThing = provideState({
 
       return state => ({ ...state });
     },
+    deleteItem: async effects => {
+      const { thing: { item, type } } = await effects.getState();
+      await RESOURCE_MAP[type].deleteItem({ item });
+      return state => ({ ...state });
+    },
   },
 });
 

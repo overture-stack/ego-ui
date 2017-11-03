@@ -11,6 +11,7 @@ import { injectState } from 'freactal';
 import ControlContainer from 'components/ControlsContainer';
 import Aux from 'components/Aux';
 import { withRouter } from 'react-router';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const styles = {
   container: {
@@ -26,7 +27,14 @@ const styles = {
   },
 };
 
-const INITIAL_STATE = { editing: false, saving: false, creating: false };
+const INITIAL_STATE = {
+  editing: false,
+  saving: false,
+  creating: false,
+  disabling: false,
+  confirmingDelete: false,
+  deleting: false,
+};
 
 const enhance = compose(provideThing, injectState, withRouter);
 
@@ -55,71 +63,143 @@ class Content extends React.Component<any, any> {
       styles: stylesProp = {},
       id,
       emptyMessage,
-      effects: { saveChanges, setItem },
+      effects: { saveChanges, setItem, deleteItem, stageChange },
       state: { thing: { item, valid } },
       type,
       history,
     } = this.props;
 
-    const { creating, editing, saving } = this.state;
+    const { creating, editing, saving, disabling, confirmingDelete, deleting } = this.state;
+
+    const CreateButton = () => (
+      <Button
+        basic
+        color="green"
+        onClick={async () => {
+          await setItem(null, type);
+          this.setState({ creating: true, editing: false });
+        }}
+        size="tiny"
+        style={{ fontWeight: 'bold' }}
+      >
+        Create
+      </Button>
+    );
+
+    const EditButton = () => (
+      <Button
+        color="blue"
+        onClick={() => this.setState({ editing: true, creating: false })}
+        size="tiny"
+        style={{ fontWeight: 'normal' }}
+      >
+        Edit
+      </Button>
+    );
+
+    const DisableButton = () => (
+      <Button
+        basic
+        disabled={disabling || (item || {}).status === 'Disabled'}
+        loading={disabling}
+        onClick={async () => {
+          this.setState({ disabling: true });
+          await stageChange({ status: 'Disabled' });
+          await saveChanges();
+          this.setState({ ...INITIAL_STATE });
+        }}
+        size="tiny"
+        color="red"
+        style={{ fontWeight: 'bold' }}
+      >
+        Disable
+      </Button>
+    );
+
+    const ConfirmDeleteButton = () => (
+      <Button
+        disabled={deleting}
+        loading={deleting}
+        onClick={async () => {
+          this.setState({ deleting: true });
+          await deleteItem();
+          history.replace(`/${type}`);
+        }}
+        size="tiny"
+        color="red"
+        style={{ fontWeight: 'bold' }}
+      >
+        Confirm Delete
+      </Button>
+    );
+    const DeleteButton = () => (
+      <Button
+        basic
+        onClick={() => this.setState({ confirmingDelete: true })}
+        size="tiny"
+        color="red"
+        style={{ fontWeight: 'bold' }}
+      >
+        Delete
+      </Button>
+    );
+
+    const CancelButton = () => (
+      <Button
+        basic
+        onClick={async () => {
+          await this.fetchData(this.props);
+          this.setState({ ...INITIAL_STATE });
+        }}
+        size="tiny"
+        style={{ fontWeight: 'bold' }}
+      >
+        Cancel
+      </Button>
+    );
+
+    const SaveButton = () => (
+      <Button
+        color="blue"
+        style={{ marginLeft: 'auto', fontWeight: 'normal' }}
+        disabled={saving || !valid}
+        loading={saving}
+        onClick={async () => {
+          this.setState({ saving: true });
+          const newState = await saveChanges();
+          this.setState({ ...INITIAL_STATE });
+          history.replace(`/${type}/${newState.thing.item.id}`);
+        }}
+        size="tiny"
+      >
+        Save
+      </Button>
+    );
+
     return (
       <div className={`content ${css(styles.container, stylesProp)}`}>
         <ControlContainer style={styles.controls}>
           {!editing &&
             !creating && (
-              <div>
-                <Button
-                  basic
-                  color="green"
-                  onClick={async () => {
-                    await setItem(null, type);
-                    this.setState({ creating: true, editing: false });
-                  }}
-                  size="tiny"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  Create
-                </Button>
-                {id && (
-                  <Button
-                    color="blue"
-                    onClick={() => this.setState({ editing: true, creating: false })}
-                    size="tiny"
-                    style={{ fontWeight: 'normal' }}
-                  >
-                    Edit
-                  </Button>
-                )}
-              </div>
+              <Aux>
+                <div>
+                  <CreateButton />
+                  {id && <EditButton />}
+                </div>
+                {id &&
+                  (RESOURCE_MAP[type].noDelete ? (
+                    <DisableButton />
+                  ) : confirmingDelete ? (
+                    <ConfirmDeleteButton />
+                  ) : (
+                    <DeleteButton />
+                  ))}
+              </Aux>
             )}
           {(editing || creating) && (
             <Aux>
-              <Button
-                basic
-                onClick={async () => {
-                  await this.fetchData(this.props);
-                  this.setState({ editing: false, creating: false });
-                }}
-                size="tiny"
-                style={{ fontWeight: 'bold' }}
-              >
-                Cancel
-              </Button>
-              <Button
-                color="blue"
-                style={{ marginLeft: 'auto', fontWeight: 'normal' }}
-                disabled={saving || !valid}
-                loading={saving}
-                onClick={async () => {
-                  this.setState({ saving: true });
-                  const newState = await saveChanges();
-                  this.setState({ ...INITIAL_STATE });
-                  history.replace(`/${type}/${newState.thing.item.id}`);
-                }}
-                size="tiny"
-              >
-                Save
-              </Button>
+              <CancelButton />
+              <SaveButton />
             </Aux>
           )}
         </ControlContainer>
