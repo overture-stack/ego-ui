@@ -107,9 +107,11 @@ export default {
     schema: [
       { key: 'id', value: 'ID', sortable: true, immutable: true },
       { key: 'name', value: 'Name', sortable: true, initialSort: true, required: true },
-      { key: 'clientId', value: 'Client ID', sortable: true, required: true },
       { key: 'description', value: 'Description', sortable: true },
       { key: 'status', value: 'Status', sortable: true },
+      { key: 'clientId', value: 'Client ID', required: true },
+      { key: 'clientSecret', value: 'Client Secret', required: true },
+      { key: 'redirectUri', value: 'Redirect Uri', required: true },
     ] as Schema,
     name: 'apps',
     ListItem: AppListItem,
