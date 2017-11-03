@@ -4,7 +4,7 @@ import { provideState } from 'freactal';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const provideThing = provideState({
-  initialState: () => ({ item: null, staged: {}, associated: {}, valid: false }),
+  initialState: () => ({ thing: { item: null, staged: {}, associated: {}, valid: false } }),
 
   effects: {
     getState: () => state => ({ ...state }),
@@ -22,79 +22,87 @@ const provideThing = provideState({
         const staged = item || {};
         return {
           ...s,
-          type,
-          item,
-          id,
-          staged,
-          valid: RESOURCE_MAP[type].schema.filter(f => f.required).every(f => staged[f.key]),
-          associated: associated.reduce(
-            (acc, a, i) => ({
-              ...acc,
-              [RESOURCE_MAP[type].associatedTypes[i]]: a,
-            }),
-            {},
-          ),
+          thing: {
+            ...s.thing,
+            type,
+            item,
+            id,
+            staged,
+            valid: RESOURCE_MAP[type].schema.filter(f => f.required).every(f => staged[f.key]),
+            associated: associated.reduce(
+              (acc, a, i) => ({
+                ...acc,
+                [RESOURCE_MAP[type].associatedTypes[i]]: a,
+              }),
+              {},
+            ),
+          },
         };
       };
     },
     stageChange: async (effects, change) => {
-      return state => {
+      return ({ thing, ...state }) => {
         // TODO: refactor to keep single timeline of changes and reconcile on save.
         const staged = {
-          ...state.staged,
-          ..._.omit(change, RESOURCE_MAP[state.type].associatedTypes),
+          ...thing.staged,
+          ..._.omit(change, RESOURCE_MAP[thing.type].associatedTypes),
         };
         return {
           ...state,
-          staged,
-          valid: RESOURCE_MAP[state.type].schema.filter(f => f.required).every(f => staged[f.key]),
-          associated: Object.keys(state.associated).reduce((acc, currentType) => {
-            if (change[currentType]) {
-              return {
-                ...acc,
-                [currentType]: {
-                  ...state.associated[currentType],
-                  ...Object.keys(change[currentType]).reduce((acc, action) => {
-                    const otherAction = action === 'add' ? 'remove' : 'add';
-                    if (
-                      (state.associated[currentType][otherAction] || []).includes(
-                        change[currentType][action],
-                      )
-                    ) {
-                      return {
-                        ...acc,
-                        [otherAction]: (state.associated[currentType][otherAction] || []).filter(
-                          ({ id }) => id !== change[currentType][action].id,
-                        ),
-                      };
-                    } else {
-                      return {
-                        ...acc,
-                        [action]: _.uniq([
-                          ...(state.associated[currentType][action] || []),
+          thing: {
+            ...thing,
+            staged,
+            valid: RESOURCE_MAP[thing.type].schema
+              .filter(f => f.required)
+              .every(f => staged[f.key]),
+            associated: Object.keys(thing.associated).reduce((acc, currentType) => {
+              if (change[currentType]) {
+                return {
+                  ...acc,
+                  [currentType]: {
+                    ...thing.associated[currentType],
+                    ...Object.keys(change[currentType]).reduce((acc, action) => {
+                      const otherAction = action === 'add' ? 'remove' : 'add';
+                      if (
+                        (thing.associated[currentType][otherAction] || []).includes(
                           change[currentType][action],
-                        ]),
-                      };
-                    }
-                  }, {}),
-                },
-              };
-            } else {
-              return { ...acc, [currentType]: state.associated[currentType] };
-            }
-          }, {}),
+                        )
+                      ) {
+                        return {
+                          ...acc,
+                          [otherAction]: (thing.associated[currentType][otherAction] || []).filter(
+                            ({ id }) => id !== change[currentType][action].id,
+                          ),
+                        };
+                      } else {
+                        return {
+                          ...acc,
+                          [action]: _.uniq([
+                            ...(thing.associated[currentType][action] || []),
+                            change[currentType][action],
+                          ]),
+                        };
+                      }
+                    }, {}),
+                  },
+                };
+              } else {
+                return { ...acc, [currentType]: thing.associated[currentType] };
+              }
+            }, {}),
+          },
         };
       };
     },
     undoChanges: async effects => {
-      const { id, type } = await effects.getState();
+      const { thing: { id, type } } = await effects.getState();
       await effects.setItem(id, type);
       return state => ({ ...state });
     },
     saveChanges: async effects => {
-      const { type, staged, associated, ...s } = await effects.getState();
+      const { thing: { type, staged, associated, ...rest } } = await effects.getState();
 
-      let id = s.id;
+      let id = rest.id;
 
       const saveAssociated = item =>
         Promise.all(

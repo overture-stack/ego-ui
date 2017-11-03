@@ -55,7 +55,7 @@ class EditingContentTable extends React.Component<any, any> {
   render() {
     const {
       rows,
-      state: { staged, associated, type },
+      state: { thing: { staged, associated, type } },
       effects: { stageChange },
       hideImmutable,
     } = this.props;

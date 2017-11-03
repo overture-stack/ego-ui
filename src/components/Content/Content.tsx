@@ -56,7 +56,7 @@ class Content extends React.Component<any, any> {
       id,
       emptyMessage,
       effects: { saveChanges, setItem },
-      state: { item, valid },
+      state: { thing: { item, valid } },
       type,
       history,
     } = this.props;
@@ -112,12 +112,9 @@ class Content extends React.Component<any, any> {
                 loading={saving}
                 onClick={async () => {
                   this.setState({ saving: true });
-                  const newItem = await saveChanges();
-                  if (newItem.id === id) {
-                    this.setState({ ...INITIAL_STATE });
-                  } else {
-                    history.replace(`/${type}/${newItem.id}`);
-                  }
+                  const newState = await saveChanges();
+                  this.setState({ ...INITIAL_STATE });
+                  history.replace(`/${type}/${newState.thing.item.id}`);
                 }}
                 size="tiny"
               >

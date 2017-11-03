@@ -44,7 +44,7 @@ function normalizeRow(
 
 const enhance = compose(injectState);
 
-const ContentTable = ({ rows, state: { item, associated } }) => {
+const ContentTable = ({ rows, state: { thing: { item, associated } } }) => {
   return (
     <Table basic="very" style={{ fontSize: 18 }}>
       <Table.Body>
