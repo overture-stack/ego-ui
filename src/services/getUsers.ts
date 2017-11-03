@@ -8,11 +8,11 @@ import dummyUsers from './dummyData/users';
 export const getUsers = ({
   offset = 0,
   limit = 20,
-  query,
-  sortField,
-  sortOrder,
-  groupsId,
-  appsId,
+  query = null,
+  sortField = null,
+  sortOrder = null,
+  groupsId = null,
+  appsId = null,
 }): Promise<{ count: number; resultSet: User[] }> => {
   const baseUrl = groupsId ? `/groups/${groupsId}` : appsId ? `/applications/${appsId}` : '';
   return useDummyData
