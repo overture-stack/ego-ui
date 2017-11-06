@@ -10,7 +10,6 @@ import ItemsWrapper from './ItemsWrapper';
 import { Dropdown, Button, Input } from 'semantic-ui-react';
 import ControlContainer from 'components/ControlsContainer';
 import { injectState } from 'freactal';
-import { provideList } from 'stateProviders';
 
 interface IListProps {
   onSelect: Function;
@@ -51,7 +50,6 @@ interface IListProps {
 interface IListState {}
 
 const enhance = compose(
-  provideList,
   injectState,
   defaultProps({
     columnWidth: 200,

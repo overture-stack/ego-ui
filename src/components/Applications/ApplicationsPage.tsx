@@ -1,12 +1,9 @@
 import React from 'react';
 import { css } from 'glamor';
 
-import { getUsers, getGroups } from 'services';
-import ListPane from 'components/ListPane';
-import Content from 'components/Content';
 import ListItem from './ListItem';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import Associator from 'components/Associator/Associator';
+
+import ResourceExplorer from 'components/ResourceExplorer';
 
 const styles = {
   container: {
@@ -20,60 +17,9 @@ const styles = {
 export default class extends React.Component<any, any> {
   render() {
     const id = this.props.match.params.id;
-
     return (
       <div className={`row ${css(styles.container)}`}>
-        <ListPane
-          type="apps"
-          sortableFields={RESOURCE_MAP.apps.sortableFields}
-          initialSortOrder={RESOURCE_MAP.apps.initialSortOrder}
-          initialSortField={RESOURCE_MAP.apps.initialSortField}
-          Component={ListItem}
-          selectedItemId={id}
-          onSelect={app => {
-            if (app.id.toString() === id) {
-              this.props.history.replace(`/apps`);
-            } else {
-              this.props.history.replace(`/apps/${app.id}`);
-            }
-          }}
-        />
-        <Content
-          id={id}
-          type="apps"
-          emptyMessage="Please select an application"
-          rows={[
-            ...RESOURCE_MAP.apps.schema.map(f => f.key),
-            {
-              key: 'users',
-              fieldContent: ({ associated, editing, stageChange }) => {
-                return (
-                  <Associator
-                    initialItems={associated.users.resultSet}
-                    editing={editing}
-                    fetchItems={getUsers}
-                    onAdd={item => stageChange({ users: { add: item } })}
-                    onRemove={item => stageChange({ users: { remove: item } })}
-                  />
-                );
-              },
-            },
-            {
-              key: 'groups',
-              fieldContent: ({ associated, editing, stageChange }) => {
-                return (
-                  <Associator
-                    initialItems={associated.groups.resultSet}
-                    editing={editing}
-                    fetchItems={getGroups}
-                    onAdd={item => stageChange({ groups: { add: item } })}
-                    onRemove={item => stageChange({ groups: { remove: item } })}
-                  />
-                );
-              },
-            },
-          ]}
-        />
+        <ResourceExplorer id={id} ListItem={ListItem} type="apps" />
       </div>
     );
   }

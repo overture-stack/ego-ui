@@ -34,6 +34,8 @@ type Schema = { key: string; value: string; sortable: boolean; initialSort: bool
 
 export default {
   users: {
+    getName: x => `${x.lastName}, ${x.firstName[0]}`,
+    emptyMessage: 'Please select a user',
     schema: [
       { key: 'id', value: 'ID', sortable: true, immutable: true },
       { key: 'firstName', value: 'First Name', sortable: true, required: true },
@@ -72,6 +74,7 @@ export default {
     },
   },
   groups: {
+    emptyMessage: 'Please select a group',
     schema: [
       { key: 'id', value: 'ID', sortable: true, immutable: true },
       { key: 'name', value: 'Name', sortable: true, initialSort: true, required: true },
@@ -104,6 +107,7 @@ export default {
     },
   },
   apps: {
+    emptyMessage: 'Please select an application',
     schema: [
       { key: 'id', value: 'ID', sortable: true, immutable: true },
       { key: 'name', value: 'Name', sortable: true, initialSort: true, required: true },
