@@ -1,9 +1,8 @@
 import React from 'react';
 import { Route } from 'react-router';
 import { storiesOf } from '@storybook/react';
-import Users from './Users';
-import Groups from 'components/Groups';
 import Pagination from './Pagination';
+import ResourceRoute from 'components/ResourceRoute';
 
 class PaginationTest extends React.Component {
   state = {
@@ -23,7 +22,11 @@ class PaginationTest extends React.Component {
   }
 }
 storiesOf('Screens', module)
-  .add('Users', () => <Route path="/:any?/:id?" component={Users} />)
-  .add('Groups', () => <Route path="/:any?/:id?" component={Groups} />);
+  .add('Users', () => (
+    <Route path="/:any?/:id?" component={props => <ResourceRoute type="users" {...props} />} />
+  ))
+  .add('Groups', () => (
+    <Route path="/:any?/:id?" component={props => <ResourceRoute type="groups" {...props} />} />
+  ));
 
 storiesOf('Widgets', module).add('Pagination', () => <PaginationTest />);

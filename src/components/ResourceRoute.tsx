@@ -4,8 +4,9 @@ import { Route } from 'react-router';
 import { css } from 'glamor';
 import withSize from 'react-sizeme';
 
-import GroupListItem from 'components/Groups/ListItem';
 import ResourceExplorer from 'components/ResourceExplorer';
+
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const styles = {
   container: {
@@ -41,8 +42,8 @@ const enhance = compose(
   }),
 );
 
-const render = props => {
-  const groupId = props.match.params.id;
+const ResourceRoute = ({ type, ...props }) => {
+  const id = props.match.params.id;
   const shouldListSubResource = props.shouldListSubResource;
   const shouldShowSubResourceDetails = props.match.params.subResourceId !== undefined;
 
@@ -58,12 +59,7 @@ const render = props => {
           transform: `translateX(${translateX})`,
         })}`}
       >
-        <ResourceExplorer
-          id={groupId}
-          ListItem={GroupListItem}
-          type="groups"
-          getName={x => `${x.lastName}, ${x.firstName[0]}`}
-        />
+        <ResourceExplorer id={id} type={type} />
       </div>
       <div
         className={`Screen ${css(styles.screen, {
@@ -71,26 +67,24 @@ const render = props => {
           transform: `translateX(${translateX})`,
         })}`}
       >
-        <Route
-          path="/groups/:id/users/:userId?"
-          render={({ match }) => {
-            const userId = match.params.userId;
+        {RESOURCE_MAP[type].associatedTypes.map(associatedType => {
+          return (
+            <Route
+              key={associatedType}
+              path={`/${type}/:id/${associatedType}/:associatedId?`}
+              render={({ match }) => {
+                const associatedId = match.params.associatedId;
 
-            return (
-              <ResourceExplorer
-                id={userId}
-                type="users"
-                getName={x => `${x.lastName}, ${x.firstName[0]}`}
-                parent={{ type: 'groups', id: groupId }}
-              />
-            );
-          }}
-        />
+                return (
+                  <ResourceExplorer id={associatedId} type={associatedType} parent={{ type, id }} />
+                );
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );
 };
 
-const Component = enhance(render);
-
-export default Component;
+export default enhance(ResourceRoute);
