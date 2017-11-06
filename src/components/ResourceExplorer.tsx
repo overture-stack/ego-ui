@@ -31,7 +31,7 @@ const ResourceExplorer = ({ id, type, history, parent }) => {
           if (item.id.toString() === id) {
             history.replace(`${parent ? `/${parent.type}/${parent.id}` : ''}/${type}`);
           } else {
-            history.replace(`/${type}/${item.id}`);
+            history.replace(`${parent ? `/${parent.type}/${parent.id}` : ''}/${type}/${item.id}`);
           }
         }}
       />
