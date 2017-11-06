@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from 'glamor';
 
-import { getUsers, getGroups, getApps } from 'services';
+import { getGroups, getApps } from 'services';
 
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
@@ -28,13 +28,13 @@ class UsersPage extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
+          type="users"
           sortableFields={RESOURCE_MAP.users.sortableFields}
           initialSortOrder={RESOURCE_MAP.users.initialSortOrder}
           initialSortField={RESOURCE_MAP.users.initialSortField}
           Component={ListItem}
           columnWidth={200}
           rowHeight={50}
-          getData={getUsers}
           selectedItemId={id}
           onSelect={user => {
             if (user.id.toString() === id) {

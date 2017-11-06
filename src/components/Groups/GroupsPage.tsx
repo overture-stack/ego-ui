@@ -67,11 +67,11 @@ const render = props => {
         })}`}
       >
         <ListPane
+          type="groups"
           sortableFields={RESOURCE_MAP.groups.sortableFields}
           initialSortOrder={RESOURCE_MAP.groups.initialSortOrder}
           initialSortField={RESOURCE_MAP.groups.initialSortField}
           Component={GroupListItem}
-          getData={getGroups}
           selectedItemId={groupId}
           rowHeight={44}
           onSelect={group => {
@@ -142,12 +142,13 @@ const render = props => {
             return (
               <Aux>
                 <ListPane
+                  type="users"
                   sortableFields={RESOURCE_MAP.users.sortableFields}
                   initialSortOrder={RESOURCE_MAP.users.initialSortOrder}
                   initialSortField={RESOURCE_MAP.users.initialSortField}
                   selectedItemId={userId}
                   Component={resource.ListItem}
-                  getData={options => resource.getList({ groupsId: groupId, ...options })}
+                  extraListParams={{ groupsId: groupId }}
                   rowHeight={resource.rowHeight}
                   onSelect={user => {
                     if (user.id.toString() === userId) {

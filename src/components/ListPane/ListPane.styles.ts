@@ -16,9 +16,9 @@ const styles = ({ columnWidth, rowHeight }) => ({
       flexWrap: 'wrap',
       flexGrow: 1,
       justifyContent: 'space-evenly',
-      paddingLeft: 10,
-      paddingRight: 10,
-      paddingTop: 10,
+      marginLeft: 10,
+      marginRight: 10,
+      marginTop: 10,
     },
   },
 

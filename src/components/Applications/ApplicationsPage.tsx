@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from 'glamor';
 
-import { getApps, getUsers, getGroups } from 'services';
+import { getUsers, getGroups } from 'services';
 import ListPane from 'components/ListPane';
 import Content from 'components/Content';
 import ListItem from './ListItem';
@@ -24,11 +24,11 @@ export default class extends React.Component<any, any> {
     return (
       <div className={`row ${css(styles.container)}`}>
         <ListPane
+          type="apps"
           sortableFields={RESOURCE_MAP.apps.sortableFields}
           initialSortOrder={RESOURCE_MAP.apps.initialSortOrder}
           initialSortField={RESOURCE_MAP.apps.initialSortField}
           Component={ListItem}
-          getData={getApps}
           selectedItemId={id}
           onSelect={app => {
             if (app.id.toString() === id) {
