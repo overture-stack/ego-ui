@@ -8,7 +8,7 @@ import colors from 'common/colors';
 import { googleLogin, facebookLogin } from 'services/login';
 import FacebookLogin from 'components/FacebookLogin';
 
-const GOOGLE_CLIENT_ID = '814606937527-kk7ooglk6pj2tvpn7ldip6g3b74f8o72.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_APP_ID;
 
 const styles = {
   container: {
