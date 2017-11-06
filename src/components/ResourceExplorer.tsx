@@ -40,7 +40,7 @@ const ResourceExplorer = ({ id, type, history, parent }) => {
         type={type}
         emptyMessage={resource.emptyMessage}
         rows={[
-          ...resource.schema.map(f => f.key),
+          ...resource.schema,
           ...resource.associatedTypes.map(associatedType => {
             return {
               key: associatedType,

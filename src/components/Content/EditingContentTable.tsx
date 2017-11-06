@@ -1,9 +1,33 @@
 import React from 'react';
 import _ from 'lodash';
-import { Table, Input } from 'semantic-ui-react';
+import { Table, Input, Dropdown } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
+
+function rowInput({ data, row, stageChange }) {
+  switch (row.type) {
+    case 'dropdown':
+      return (
+        <Dropdown
+          selection
+          options={row.options.map(text => ({ text, value: text }))}
+          text={data[row.key]}
+          onChange={(event, { value }) => stageChange({ [row.key]: value })}
+          style={{ fontSize: 14.1429 }}
+        />
+      );
+    default:
+      return (
+        <Input
+          size="mini"
+          onChange={(e, { value }) => stageChange({ [row.key]: value })}
+          type="text"
+          value={data[row.key] || ''}
+        />
+      );
+  }
+}
 
 function normalizeRow({
   row,
@@ -12,36 +36,28 @@ function normalizeRow({
   stageChange,
   immutableKeys,
 }: {
-  row: string | { key: string; fieldName: any; fieldContent: any };
+  row: { key: string; fieldName: any; fieldContent: any; type: string; options: any };
   data: Object[];
   associated: Object[];
   stageChange: Function;
   immutableKeys: string[];
 }) {
-  const rowData =
-    typeof row === 'string'
-      ? {
-          key: row,
-          fieldName: row,
-          fieldContent: immutableKeys.includes(row) ? (
-            data[row] || ''
-          ) : (
-            <Input
-              size="mini"
-              onChange={(e, { value }) => stageChange({ [row]: value })}
-              type="text"
-              value={data[row] || ''}
-            />
-          ),
-        }
-      : { ...row, fieldName: row.fieldName || row.key };
+  const rowData = {
+    ...row,
+    fieldName: row.fieldName || row.key,
+    fieldContent:
+      row.fieldContent ||
+      (immutableKeys.includes(row.key)
+        ? data[row.key] || ''
+        : rowInput({ row, data, stageChange })),
+  };
 
   return {
     ...rowData,
     fieldName:
-      typeof rowData.key === 'function'
-        ? rowData.key({ associated, data, editing: true, stageChange })
-        : _.upperCase(rowData.key),
+      typeof rowData.fieldName === 'function'
+        ? rowData.fieldName({ associated, data, editing: true, stageChange })
+        : _.upperCase(rowData.fieldName),
     fieldContent:
       typeof rowData.fieldContent === 'function'
         ? rowData.fieldContent({ associated, data, editing: true, stageChange })

@@ -30,22 +30,54 @@ import GroupListItem from 'components/Groups/ListItem';
 import UserListItem from 'components/Users/ListItem';
 import AppListItem from 'components/Applications/ListItem';
 
-type Schema = { key: string; value: string; sortable: boolean; initialSort: boolean }[];
+type FieldType = 'dropdown' | 'text';
+type Schema = {
+  key: string;
+  fieldName: string;
+  sortable?: boolean;
+  initialSort: boolean;
+  fieldType: FieldType;
+  options?: string[];
+  required?: boolean;
+}[];
 
 export default {
   users: {
     getName: x => `${x.lastName}, ${x.firstName[0]}`,
     emptyMessage: 'Please select a user',
     schema: [
-      { key: 'id', value: 'ID', sortable: true, immutable: true },
-      { key: 'firstName', value: 'First Name', sortable: true, required: true },
-      { key: 'lastName', value: 'Last Name', sortable: true, initialSort: true, required: true },
-      { key: 'email', value: 'Email', sortable: true, required: true },
-      { key: 'role', value: 'Role', sortable: true, required: true },
-      { key: 'status', value: 'Status', immutable: true },
-      { key: 'createdAt', value: 'Date Created', sortable: true, immutable: true },
-      { key: 'lastLogin', value: 'Last Login', sortable: true, immutable: true },
-      { key: 'preferredLanguage', value: 'Preferred Language' },
+      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
+      { key: 'firstName', fieldName: 'First Name', sortable: true, required: true },
+      {
+        key: 'lastName',
+        fieldName: 'Last Name',
+        sortable: true,
+        initialSort: true,
+        required: true,
+      },
+      { key: 'email', fieldName: 'Email', sortable: true, required: true },
+      {
+        key: 'role',
+        fieldName: 'Role',
+        sortable: true,
+        required: true,
+        type: 'dropdown',
+        options: ['Admin', 'User'],
+      },
+      {
+        key: 'status',
+        fieldName: 'Status',
+        type: 'dropdown',
+        options: ['Disabled', 'Approved', 'Pending'],
+      },
+      { key: 'createdAt', fieldName: 'Date Created', sortable: true, immutable: true },
+      { key: 'lastLogin', fieldName: 'Last Login', sortable: true, immutable: true },
+      {
+        key: 'preferredLanguage',
+        fieldName: 'Preferred Language',
+        type: 'dropdown',
+        options: ['English', 'Spanish'],
+      },
     ] as Schema,
     noDelete: true,
     name: 'users',
@@ -76,10 +108,16 @@ export default {
   groups: {
     emptyMessage: 'Please select a group',
     schema: [
-      { key: 'id', value: 'ID', sortable: true, immutable: true },
-      { key: 'name', value: 'Name', sortable: true, initialSort: true, required: true },
-      { key: 'description', value: 'Description', sortable: true },
-      { key: 'status', value: 'Status', sortable: true },
+      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
+      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
+      { key: 'description', fieldName: 'Description', sortable: true },
+      {
+        key: 'status',
+        fieldName: 'Status',
+        sortable: true,
+        type: 'dropdown',
+        options: ['Disabled', 'Approved', 'Pending'],
+      },
     ] as Schema,
     name: 'groups',
     ListItem: GroupListItem,
@@ -109,13 +147,19 @@ export default {
   apps: {
     emptyMessage: 'Please select an application',
     schema: [
-      { key: 'id', value: 'ID', sortable: true, immutable: true },
-      { key: 'name', value: 'Name', sortable: true, initialSort: true, required: true },
-      { key: 'description', value: 'Description', sortable: true },
-      { key: 'status', value: 'Status', sortable: true },
-      { key: 'clientId', value: 'Client ID', required: true },
-      { key: 'clientSecret', value: 'Client Secret', required: true },
-      { key: 'redirectUri', value: 'Redirect Uri', required: true },
+      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
+      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
+      { key: 'description', fieldName: 'Description', sortable: true },
+      {
+        key: 'status',
+        fieldName: 'Status',
+        sortable: true,
+        type: 'dropdown',
+        options: ['Disabled', 'Approved', 'Pending'],
+      },
+      { key: 'clientId', fieldName: 'Client ID', required: true },
+      { key: 'clientSecret', fieldName: 'Client Secret', required: true },
+      { key: 'redirectUri', fieldName: 'Redirect Uri', required: true },
     ] as Schema,
     name: 'apps',
     ListItem: AppListItem,

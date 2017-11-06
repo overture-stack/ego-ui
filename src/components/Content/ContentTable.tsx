@@ -8,26 +8,25 @@ import { injectState } from 'freactal';
 const DATE_KEYS = ['createdAt', 'lastLogin'];
 
 function normalizeRow(
-  row: string | { key: string; fieldName: any; fieldContent: any },
+  row: { key: string; fieldName?: any; fieldContent?: any },
   data: Object[],
   associated: any,
 ) {
-  const rowData =
-    typeof row === 'string'
-      ? {
-          key: row,
-          fieldName: row,
-          fieldContent: data[row] ? (
-            DATE_KEYS.indexOf(row) >= 0 ? (
-              format(data[row], 'MMMM Do YYYY [a]t h:mmA')
-            ) : (
-              data[row]
-            )
-          ) : (
-            <div style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</div>
-          ),
-        }
-      : { ...row, fieldName: row.fieldName || row.key };
+  const rowData = {
+    ...row,
+    fieldName: row.fieldName || row.key,
+    fieldContent:
+      row.fieldContent ||
+      (data[row.key] ? (
+        DATE_KEYS.indexOf(row.key) >= 0 ? (
+          format(data[row.key], 'MMMM Do YYYY [a]t h:mmA')
+        ) : (
+          data[row.key]
+        )
+      ) : (
+        <div style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</div>
+      )),
+  };
 
   return {
     ...rowData,
