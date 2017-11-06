@@ -68,7 +68,7 @@ class Content extends React.Component<any, IContentState> {
       styles: stylesProp = {},
       id,
       emptyMessage,
-      effects: { saveChanges, setItem, deleteItem, stageChange },
+      effects: { saveChanges, setItem, deleteItem, stageChange, refreshList },
       state: { thing: { item, valid } },
       type,
       history,
@@ -111,6 +111,7 @@ class Content extends React.Component<any, IContentState> {
           this.setState({ contentState: ContentState.disabling });
           await stageChange({ status: 'Disabled' });
           await saveChanges();
+          await refreshList();
           this.setState({ contentState: ContentState.displaying });
         }}
         size="tiny"
@@ -128,6 +129,7 @@ class Content extends React.Component<any, IContentState> {
         onClick={async () => {
           this.setState({ contentState: ContentState.deleting });
           await deleteItem();
+          await refreshList();
           history.replace(`/${type}`);
         }}
         size="tiny"
@@ -172,6 +174,7 @@ class Content extends React.Component<any, IContentState> {
           onClick={async () => {
             this.setState({ contentState: ContentState.saving });
             const newState = await saveChanges();
+            await refreshList();
             this.setState({ contentState: ContentState.displaying });
             history.replace(`/${type}/${newState.thing.item.id}`);
           }}
