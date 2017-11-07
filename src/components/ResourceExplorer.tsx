@@ -20,7 +20,7 @@ const ResourceExplorer = ({ id, type, history, parent }) => {
     <Aux>
       <ListPane
         rowHeight={resource.rowHeight}
-        extraListParams={parent && { [`${parent.type}Id`]: parent.id }}
+        parent={parent}
         type={type}
         sortableFields={resource.sortableFields}
         initialSortOrder={resource.initialSortOrder}
@@ -39,6 +39,7 @@ const ResourceExplorer = ({ id, type, history, parent }) => {
         id={id}
         type={type}
         emptyMessage={resource.emptyMessage}
+        parent={parent}
         rows={[
           ...resource.schema,
           ...resource.associatedTypes.map(associatedType => {

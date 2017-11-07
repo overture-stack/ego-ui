@@ -22,12 +22,15 @@ const styles = ({ columnWidth, rowHeight }) => ({
     },
   },
 
-  listItem: {
-    flexGrow: 1,
-    cursor: 'pointer',
-    padding: '0 14px',
+  listItemWrapper: {
     width: columnWidth,
     height: rowHeight,
+    flexGrow: 1,
+    position: 'relative',
+  },
+  listItem: {
+    cursor: 'pointer',
+    padding: '0 14px',
     borderRadius: 3,
     '&:not(.selected):not(:active):hover': {
       background: 'linear-gradient(to right, #f0f0f0, #f9f9f9)',

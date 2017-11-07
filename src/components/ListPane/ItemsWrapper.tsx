@@ -4,6 +4,7 @@ import { css } from 'glamor';
 import { compose, withPropsOnChange } from 'recompose';
 import withSize from 'react-sizeme';
 import { injectState } from 'freactal';
+import { Icon } from 'semantic-ui-react';
 
 const enhance = compose(
   withSize({
@@ -31,6 +32,7 @@ const ItemsWrapper = ({
   selectedItemId,
   onSelect,
   styles,
+  onRemove,
   state: { list: { resultSet, params: { offset, limit } } },
 }) => {
   const fillersRequired = Math.max(limit - resultSet.length, 0);
@@ -38,15 +40,23 @@ const ItemsWrapper = ({
   return (
     <div className={`items-wrapper`}>
       {resultSet.map(item => (
-        <Component
-          sortField={sortField.key}
-          className={selectedItemId && getKey(item) === selectedItemId ? 'selected' : ''}
-          item={item}
-          style={styles.listItem}
-          key={getKey(item)}
-          onClick={() => onSelect(item)}
-          selected={selectedItemId && getKey(item) === selectedItemId}
-        />
+        <div key={getKey(item)} style={styles.listItemWrapper}>
+          <Component
+            sortField={sortField.key}
+            className={selectedItemId && getKey(item) === selectedItemId ? 'selected' : ''}
+            item={item}
+            style={styles.listItem}
+            onClick={() => onSelect(item)}
+            selected={selectedItemId && getKey(item) === selectedItemId}
+          />
+          {onRemove && (
+            <Icon
+              name="close"
+              style={{ cursor: 'pointer', position: 'absolute', top: 0, right: 0 }}
+              onClick={() => onRemove(item)}
+            />
+          )}
+        </div>
       ))}
       {_.range(fillersRequired).map(i => (
         <div key={i + offset} className={`filler ${css(styles.filler)}`} />

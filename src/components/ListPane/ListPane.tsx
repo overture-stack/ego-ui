@@ -10,12 +10,12 @@ import ItemsWrapper from './ItemsWrapper';
 import { Dropdown, Button, Input } from 'semantic-ui-react';
 import ControlContainer from 'components/ControlsContainer';
 import { injectState } from 'freactal';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 interface IListProps {
   onSelect: Function;
   Component: any;
   getKey: Function;
-  extraListParams: any;
   columnWidth: number;
   rowHeight: number;
   styles: any;
@@ -35,6 +35,7 @@ interface IListProps {
   type: string;
   effects: {
     updateList: Function;
+    refreshList: Function;
     setListType: Function;
   };
   state: {
@@ -44,6 +45,10 @@ interface IListProps {
       count: number;
       params: any;
     };
+  };
+  parent: {
+    id: string;
+    type: string;
   };
 }
 
@@ -87,7 +92,7 @@ const paneControls = {
 class List extends React.Component<IListProps, any> {
   updateData = async ({ offset }) => {
     const {
-      extraListParams,
+      parent,
       sortField,
       sortOrder,
       query,
@@ -102,7 +107,7 @@ class List extends React.Component<IListProps, any> {
       sortField: sortField.key,
       sortOrder,
       query,
-      ...extraListParams,
+      ...(parent && { [`${parent.type}Id`]: parent.id }),
     });
   };
 
@@ -135,9 +140,11 @@ class List extends React.Component<IListProps, any> {
       setSortOrder,
       setQuery,
       state: { list: { count = 0, params: { offset, limit } } },
-      effects: { updateList },
+      effects: { updateList, refreshList },
       columnWidth,
       rowHeight,
+      parent,
+      type,
     } = this.props;
 
     return (
@@ -186,6 +193,13 @@ class List extends React.Component<IListProps, any> {
           styles={styles}
           columnWidth={columnWidth}
           rowHeight={rowHeight}
+          onRemove={
+            parent &&
+            (async item => {
+              await RESOURCE_MAP[parent.type].remove[type]({ [type]: item, item: parent });
+              refreshList();
+            })
+          }
         />
         {(limit < count || offset > 0) && (
           <Pagination
