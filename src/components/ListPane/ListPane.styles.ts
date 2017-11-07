@@ -40,6 +40,8 @@ const styles = ({ columnWidth, rowHeight }) => ({
   },
 
   filler: {
+    flexGrow: 1,
+    padding: '0 14px',
     width: columnWidth,
     height: rowHeight,
   },
