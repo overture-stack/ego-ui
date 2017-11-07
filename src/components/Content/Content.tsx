@@ -36,7 +36,8 @@ enum ContentState {
   disabling,
   deleting,
   confirmDelete,
-  saving,
+  savingEdit,
+  savingCreate,
 }
 
 interface IContentState {
@@ -164,7 +165,8 @@ class Content extends React.Component<any, IContentState> {
     );
 
     const SaveButton = () => {
-      const isSaving = contentState === ContentState.saving;
+      const isSaving =
+        contentState === ContentState.savingEdit || contentState === ContentState.savingCreate;
       return (
         <Button
           color="blue"
@@ -172,7 +174,12 @@ class Content extends React.Component<any, IContentState> {
           disabled={isSaving || !valid}
           loading={isSaving}
           onClick={async () => {
-            this.setState({ contentState: ContentState.saving });
+            this.setState({
+              contentState:
+                contentState === ContentState.editing
+                  ? ContentState.savingEdit
+                  : ContentState.savingCreate,
+            });
             const newState = await saveChanges();
             await refreshList();
             this.setState({ contentState: ContentState.displaying });
@@ -217,7 +224,7 @@ class Content extends React.Component<any, IContentState> {
             <EmptyContent message={emptyMessage} />
           ) : !item ? (
             <EmptyContent message={'loading'} />
-          ) : contentState === ContentState.editing ? (
+          ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (
             <EditingContentTable rows={rows} />
           ) : (
             <ContentTable rows={rows} />

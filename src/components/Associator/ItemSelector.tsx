@@ -41,7 +41,10 @@ const enhance = compose(
   })),
   withHandlers({
     handleStateChange: ({ requestItems }) => async (changes, stateAndHelpers) => {
-      if (changes.inputValue) {
+      if (
+        changes.hasOwnProperty('inputValue') &&
+        changes.type === '__autocomplete_change_input__'
+      ) {
         requestItems(changes.inputValue);
       }
     },
