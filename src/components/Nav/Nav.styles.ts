@@ -6,35 +6,64 @@ const styles = {
     backgroundColor: colors.purple,
     color: '#fff',
     width: 240,
-    padding: '30px 50px',
     flexShrink: 0,
     display: 'flex',
     flexDirection: 'column',
     zIndex: 100,
+    transition: 'width 0.5s cubic-bezier(0.19, 1, 0.22, 1)',
+    '&.collapsed': {
+      width: 50,
+    },
   },
 
-  logo: {
-    width: '100%',
-    margin: '30px 0 70px',
+  emblem: {
+    margin: '60px auto 0',
+    '.collapsed &': {
+      margin: '30px auto 0',
+    },
+    '& img': {
+      display: 'block',
+      width: '60%',
+      margin: 'auto',
+      '&.small': {
+        height: 0,
+        visibility: 'hidden',
+      },
+      '.collapsed &': {
+        '&.small': {
+          height: 'auto',
+          visibility: 'visible',
+        },
+        '&.regular': {
+          height: 0,
+          visibility: 'hidden',
+        },
+      },
+    },
   },
 
   linkList: {
     flexGrow: 1,
-    fontSize: 22,
-    fontWeight: 'lighter',
-    lineHeight: '35px',
-    margin: '0 -50px',
   },
 
   link: {
+    fontWeight: 'lighter',
+    lineHeight: '35px',
+    fontSize: 22,
     color: '#fff',
     position: 'relative',
     display: 'flex',
     width: '100%',
-    padding: '4px 50px',
-    '& span': {
+    padding: 4,
+    '& div': {
+      width: '60%',
+      margin: 'auto',
       position: 'relative',
       zIndex: 2,
+      display: 'flex',
+    },
+    '& i': {
+      flex: 'none',
     },
     '&::before': {
       display: 'block',
@@ -57,13 +86,45 @@ const styles = {
       backgroundColor: '#771872',
     },
     '&.active': {
-      '& span': {
+      '& div': {
         textShadow: '-3px 2px 2px rgba(0,0,0,0.2)',
       },
       '&::before': {
         transform: 'scaleX(1.03) scaleY(1.05)',
         boxShadow: '-3px 3px 1px 1px rgba(0, 0, 0, 0.1)',
         opacity: 1,
+      },
+    },
+    '& .text': {
+      marginLeft: 5,
+      transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+      '.collapsed &': {
+        opacity: 0,
+      },
+    },
+  },
+  collapse: {
+    textAlign: 'right',
+    borderTop: '1px solid rgba(255, 255, 255, 0.3)',
+    '& button': {
+      color: '#fff',
+      fontSize: 22,
+      margin: 10,
+    },
+  },
+  currentUser: {
+    paddingLeft: '20%',
+    paddingRight: '20%',
+    paddingTop: 12,
+    paddingBottom: 12,
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#771872',
+    },
+    '& .display-name': {
+      transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+      '.collapsed &': {
+        opacity: 0,
       },
     },
   },

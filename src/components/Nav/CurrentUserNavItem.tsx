@@ -26,7 +26,7 @@ const styles = {
   avatarContainer: {
     position: 'relative',
     overflow: 'hidden',
-
+    flex: 'none',
     '&::after': {
       position: 'absolute',
       borderRadius: '50%',
@@ -49,7 +49,7 @@ const styles = {
     position: 'absolute',
     left: '100%',
     bottom: 0,
-    width: '100%',
+    width: 240,
     boxShadow: '-2px 2px 2px 0 rgba(51, 7, 49, 0.24)',
     border: `1px solid ${colors.purple}`,
     borderTopRightRadius: 3,

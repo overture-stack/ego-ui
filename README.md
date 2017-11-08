@@ -15,7 +15,7 @@ UI for Authentication and Authorization services
 1. deploy the resulting `build/` folder
 
 ### Configure
-1. To change the brand image, replace the svg in [src/assets/brand-image.svg](src/assets/brand-image.svg) with your own brand image file
+1. To change the brand image, replace the svg in [src/assets/brand-image.svg](src/assets/brand-image.svg) and [src/assets/brand-image-small.svg](src/assets/brand-image-small.svg) with your own brand image files
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
