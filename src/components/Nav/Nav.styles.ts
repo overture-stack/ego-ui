@@ -105,7 +105,7 @@ const styles = {
   },
   collapse: {
     textAlign: 'right',
-    borderTop: '1px solid rgba(255, 255, 255, 0.3)',
+    background: 'linear-gradient(to right, #6a0e65, #5f0c5b)',
     '& button': {
       color: '#fff',
       fontSize: 22,

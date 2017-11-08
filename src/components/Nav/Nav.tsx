@@ -21,12 +21,12 @@ const enhance = compose(injectState);
 
 class Nav extends React.Component<any, any> {
   state = { collapsed: false, windowSizeSmall: false };
-  onResize = () => {
+  onResize = _.throttle(() => {
     const windowSizeSmall = window.innerWidth < 1200;
     if (windowSizeSmall !== this.state.windowSizeSmall) {
       this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     }
-  };
+  }, 100);
   componentDidMount() {
     window.addEventListener('resize', this.onResize);
   }
@@ -68,7 +68,7 @@ class Nav extends React.Component<any, any> {
           <UnstyledButton
             onClick={() => this.setState({ collapsed: !collapsed, userSetCollapsed: true })}
           >
-            {collapsed ? <Icon name="long arrow right" /> : <Icon name="long arrow left" />}
+            {collapsed ? <Icon name="chevron right" /> : <Icon name="chevron left" />}
           </UnstyledButton>
         </div>
       </div>
