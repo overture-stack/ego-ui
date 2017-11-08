@@ -32,6 +32,7 @@ const styles = ({ columnWidth, rowHeight }) => ({
     cursor: 'pointer',
     padding: '0 14px',
     borderRadius: 3,
+    height: '100%',
     '&:not(.selected):not(:active):hover': {
       background: 'linear-gradient(to right, #f0f0f0, #f9f9f9)',
     },

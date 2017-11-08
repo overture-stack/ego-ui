@@ -168,7 +168,7 @@ export default {
     createItem: createApplication,
     deleteItem: deleteApplication,
     getItem: getApp,
-    rowHeight: 30,
+    rowHeight: 44,
     initialSortOrder: 'ASC',
     associatedTypes: ['groups', 'users'],
     add: {
