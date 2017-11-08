@@ -27,7 +27,9 @@ class Nav extends React.Component<any, any> {
       this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     }
   }, 100);
-  componentDidMount() {
+  componentWillMount() {
+    const windowSizeSmall = window.innerWidth < 1200;
+    this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     window.addEventListener('resize', this.onResize);
   }
   componentWillUnmount() {
