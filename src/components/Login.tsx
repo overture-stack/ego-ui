@@ -89,7 +89,11 @@ class Component extends React.Component {
 
     if (response.status === 200) {
       const jwt = response.data;
-      const user = jwtDecode(jwt).context.user;
+      const jwtData = jwtDecode(jwt);
+      const user = {
+        ...jwtData.context.user,
+        id: jwtData.sub,
+      };
       await props.effects.setUser(user);
       await props.effects.setToken(jwt);
 

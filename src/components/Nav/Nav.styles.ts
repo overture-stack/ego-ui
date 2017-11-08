@@ -26,11 +26,6 @@ const styles = {
     margin: '0 -50px',
   },
 
-  logout: {
-    textAlign: 'left',
-    fontSize: 22,
-    fontWeight: 'lighter',
-  },
   link: {
     color: '#fff',
     position: 'relative',

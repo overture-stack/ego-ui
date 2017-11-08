@@ -2,8 +2,10 @@ import React from 'react';
 import { css } from 'glamor';
 import { NavLink } from 'react-router-dom';
 
-import Logout from 'components/Logout';
+import CurrentUserNavItem from './CurrentUserNavItem';
 import styles from './Nav.styles';
+import { compose } from 'recompose';
+import { injectState } from 'freactal';
 
 const resetList = {
   listStyleType: 'none',
@@ -11,7 +13,9 @@ const resetList = {
   padding: 0,
 };
 
-const Nav = () => (
+const enhance = compose(injectState);
+
+const render = ({ state }) => (
   <div className={`Nav ${css(styles.container)}`}>
     <img className={`Emblem ${css(styles.logo)}`} src={require('assets/brand-image.svg')} alt="" />
     <ul className={`LinkList ${css(resetList, styles.linkList)}`}>
@@ -31,8 +35,23 @@ const Nav = () => (
         </NavLink>
       </li>
     </ul>
-    <Logout className={`Logout ${css(styles.logout)}`} />
+    <CurrentUserNavItem
+      style={{
+        marginLeft: -50,
+        paddingLeft: 50,
+        marginRight: -50,
+        paddingTop: 12,
+        paddingBottom: 12,
+        cursor: 'pointer',
+        width: 'calc(100% + 100px)',
+        '&:hover': {
+          backgroundColor: '#771872',
+        },
+      }}
+    />
   </div>
 );
+
+const Nav = enhance(render);
 
 export default Nav;
