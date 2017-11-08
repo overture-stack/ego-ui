@@ -98,7 +98,7 @@ class Component extends React.Component {
       await props.effects.setToken(jwt);
 
       if (user.roles.includes('ADMIN')) {
-        if (props.match.path === '/') {
+        if (props.location.pathname === '/') {
           props.history.push('/users');
         }
       } else {

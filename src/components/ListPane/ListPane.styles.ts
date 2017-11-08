@@ -27,6 +27,16 @@ const styles = ({ columnWidth, rowHeight }) => ({
     height: rowHeight,
     flexGrow: 1,
     position: 'relative',
+    '& .remove': {
+      opacity: 0,
+    },
+    '&:hover .remove': {
+      opacity: 0.4,
+
+      '&:hover': {
+        opacity: 1,
+      },
+    },
   },
   listItem: {
     cursor: 'pointer',

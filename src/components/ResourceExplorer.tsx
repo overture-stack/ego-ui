@@ -60,7 +60,7 @@ const ResourceExplorer = ({ id, type, history, parent }) => {
                       associated[associatedType].count >
                         _.get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink to={`/${type}/${id}/${associatedType}`} style={{ fontSize: 14 }}>
-                          View all {associated[associatedType].count} {associatedType}
+                          View {associated[associatedType].count} {associatedType}
                         </NavLink>
                       )}
                   </Aux>

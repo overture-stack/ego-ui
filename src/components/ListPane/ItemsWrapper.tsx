@@ -40,7 +40,7 @@ const ItemsWrapper = ({
   return (
     <div className={`items-wrapper`}>
       {resultSet.map(item => (
-        <div key={getKey(item)} style={styles.listItemWrapper}>
+        <div key={getKey(item)} className={`${css(styles.listItemWrapper)}`}>
           <Component
             sortField={sortField.key}
             className={selectedItemId && getKey(item) === selectedItemId ? 'selected' : ''}
@@ -53,7 +53,7 @@ const ItemsWrapper = ({
             <Button
               icon="close"
               compact
-              className={`${css({
+              className={`remove ${css({
                 cursor: 'pointer',
                 position: 'absolute',
                 top: '0.2em',

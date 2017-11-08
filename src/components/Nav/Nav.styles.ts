@@ -10,7 +10,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     zIndex: 100,
-    transition: 'width 0.5s cubic-bezier(0.19, 1, 0.22, 1)',
+    // transition: 'width 0.5s cubic-bezier(0.19, 1, 0.22, 1)',
     '&.collapsed': {
       width: 50,
     },
@@ -76,7 +76,7 @@ const styles = {
       height: '100%',
       width: '100%',
       padding: '0.5em 0.5em',
-      transition: 'opacity 0.15s, transform 0.2s 0.15s, box-shadow 0.2s 0.15s',
+      // transition: 'opacity 0.15s, transform 0.2s 0.15s, box-shadow 0.2s 0.15s',
       transform: 'scaleX(1) scaleY(1)',
       boxShadow: '-3px 0px 1px 1px rgba(0, 0, 0, 0.1)',
       opacity: 0,
@@ -97,7 +97,7 @@ const styles = {
     },
     '& .text': {
       marginLeft: 5,
-      transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+      // transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
       '.collapsed &': {
         opacity: 0,
       },
@@ -122,7 +122,7 @@ const styles = {
       backgroundColor: '#771872',
     },
     '& .display-name': {
-      transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+      // transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
       '.collapsed &': {
         opacity: 0,
       },

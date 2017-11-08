@@ -17,6 +17,7 @@ const styles = {
       flexWrap: 'initial',
     },
     overflow: 'hidden',
+    flexGrow: 1,
   },
   screen: {
     position: 'relative',
