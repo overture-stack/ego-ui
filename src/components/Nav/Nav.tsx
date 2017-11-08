@@ -29,6 +29,7 @@ class Nav extends React.Component<any, any> {
   }, 100);
   componentWillMount() {
     const windowSizeSmall = window.innerWidth < 1200;
+    ``;
     this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     window.addEventListener('resize', this.onResize);
   }
@@ -57,7 +58,7 @@ class Nav extends React.Component<any, any> {
                   activeClassName={'active'}
                 >
                   <div>
-                    <Icon />
+                    <Icon style={{ opacity: 0.9 }} />
                     <span className="text">{_.capitalize(`${RESOURCE_MAP[key].name}s`)}</span>
                   </div>
                 </NavLink>

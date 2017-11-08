@@ -45,7 +45,7 @@ type Schema = {
 
 export default {
   users: {
-    Icon: () => <Icon name="user" />,
+    Icon: ({ style }) => <Icon name="user" style={style} />,
     getName: x => `${x.lastName}, ${x.firstName[0]}`,
     emptyMessage: 'Please select a user',
     schema: [
@@ -109,7 +109,7 @@ export default {
     },
   },
   groups: {
-    Icon: () => <Icon name="group" />,
+    Icon: ({ style }) => <Icon name="group" style={style} />,
     emptyMessage: 'Please select a group',
     schema: [
       { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
@@ -149,12 +149,13 @@ export default {
     },
   },
   apps: {
-    Icon: () => (
+    Icon: ({ style }) => (
       <i
         className="icon"
         style={{
           background: `url("${require('assets/icons/layers-icon.svg')}") no-repeat`,
           marginTop: '0.2em',
+          ...style,
         }}
       />
     ),
