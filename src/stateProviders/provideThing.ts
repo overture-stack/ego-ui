@@ -3,6 +3,7 @@ import { provideState } from 'freactal';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
+const MAX_ASSOCIATED = 5;
 const provideThing = provideState({
   initialState: () => ({ thing: { item: null, staged: {}, associated: {}, valid: false } }),
 
@@ -13,7 +14,7 @@ const provideThing = provideState({
         ? await Promise.all([
             RESOURCE_MAP[type].getItem(id),
             ...RESOURCE_MAP[type].associatedTypes.map(associatedType =>
-              RESOURCE_MAP[associatedType].getList({ [`${type}Id`]: id, limit: 10 }),
+              RESOURCE_MAP[associatedType].getList({ [`${type}Id`]: id, limit: MAX_ASSOCIATED }),
             ),
           ])
         : [null, ...RESOURCE_MAP[type].associatedTypes.map(() => ({}))];
@@ -32,7 +33,10 @@ const provideThing = provideState({
             associated: associated.reduce(
               (acc, a, i) => ({
                 ...acc,
-                [RESOURCE_MAP[type].associatedTypes[i]]: a,
+                [RESOURCE_MAP[type].associatedTypes[i]]: {
+                  ...a,
+                  resultSet: a.count > MAX_ASSOCIATED ? [] : a.resultSet,
+                },
               }),
               {},
             ),
