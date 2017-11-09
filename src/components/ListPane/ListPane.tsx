@@ -31,11 +31,12 @@ interface IListProps {
     fieldName: string;
   }[];
   initialSortField: string;
-  sortOrder: 'ASC' | 'DESC';
-  setSortOrder: Function;
+  currentSort: {
+    order: 'ASC' | 'DESC';
+    field: any;
+  };
+  setCurrentSort: Function;
   initialSortOrder: 'ASC' | 'DESC';
-  sortField: any;
-  setSortField: Function;
   query: string;
   setQuery: Function;
   type: string;
@@ -72,8 +73,10 @@ const enhance = compose(
   }),
   withState('displayMode', 'setDisplayMode', DisplayMode.Grid),
   withState('query', 'setQuery', props => props.initialQuery || ''),
-  withState('sortField', 'setSortField', props => props.initialSortField),
-  withState('sortOrder', 'setSortOrder', props => props.initialSortOrder),
+  withState('currentSort', 'setCurrentSort', props => ({
+    field: props.initialSortField,
+    order: props.initialSortOrder,
+  })),
   withProps(({ columnWidth, rowHeight, styles: stylesProp }) => ({
     styles: _.merge(styles({ columnWidth, rowHeight }), [stylesProp]),
   })),
@@ -105,8 +108,7 @@ class List extends React.Component<IListProps, any> {
   updateData = async ({ offset }) => {
     const {
       parent,
-      sortField,
-      sortOrder,
+      currentSort: { field, order },
       query,
       type,
       effects: { updateList, setListType },
@@ -116,8 +118,8 @@ class List extends React.Component<IListProps, any> {
 
     updateList({
       offset,
-      sortField: sortField.key,
-      sortOrder,
+      sortField: field.key,
+      sortOrder: order,
       query,
       ...(parent && { [`${parent.type}Id`]: parent.id }),
     });
@@ -130,8 +132,8 @@ class List extends React.Component<IListProps, any> {
   componentDidUpdate(prevProps: IListProps, prevState: IListState) {
     if (
       prevProps.type !== this.props.type ||
-      prevProps.sortField.key !== this.props.sortField.key ||
-      prevProps.sortOrder !== this.props.sortOrder ||
+      prevProps.currentSort.field.key !== this.props.currentSort.field.key ||
+      prevProps.currentSort.order !== this.props.currentSort.order ||
       prevProps.query !== this.props.query
     ) {
       this.updateData({ offset: 0 });
@@ -146,10 +148,8 @@ class List extends React.Component<IListProps, any> {
       styles,
       selectedItemId,
       sortableFields,
-      sortField,
-      setSortField,
-      sortOrder,
-      setSortOrder,
+      currentSort,
+      setCurrentSort,
       setQuery,
       state: { list: { count = 0, params: { offset, limit } } },
       effects: { updateList, refreshList },
@@ -174,25 +174,28 @@ class List extends React.Component<IListProps, any> {
               style={{ minWidth: '10em', marginLeft: '0.5em' }}
               selectOnNavigation={false}
               options={sortableFields.map(field => ({ text: field.fieldName, value: field.key }))}
-              text={sortField.fieldName}
+              text={currentSort.field.fieldName}
               onChange={(event, { value }) =>
-                setSortField(sortableFields.find(field => field.key === value))}
+                setCurrentSort({
+                  ...currentSort,
+                  field: sortableFields.find(field => field.key === value),
+                })}
             />
             <Button.Group className={`${css(paneControls.sortOrderWrapper)}`} vertical>
               <Button
                 style={Object.assign(
                   { paddingBottom: 0, backgroundColor: 'transparent' },
-                  sortOrder === 'ASC' && { color: colors.purple },
+                  currentSort.order === 'ASC' && { color: colors.purple },
                 )}
-                onClick={() => setSortOrder('ASC')}
+                onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
                 icon="chevron up"
               />
               <Button
                 style={Object.assign(
                   { paddingTop: 0, backgroundColor: 'transparent' },
-                  sortOrder === 'DESC' && { color: colors.purple },
+                  currentSort.order === 'DESC' && { color: colors.purple },
                 )}
-                onClick={() => setSortOrder('DESC')}
+                onClick={() => setCurrentSort({ ...currentSort, order: 'DESC' })}
                 icon="chevron down"
               />
             </Button.Group>
@@ -214,7 +217,7 @@ class List extends React.Component<IListProps, any> {
           <ItemGrid
             Component={Component}
             getKey={getKey}
-            sortField={sortField}
+            sortField={currentSort.field}
             selectedItemId={selectedItemId}
             onSelect={onSelect}
             styles={styles}
@@ -233,13 +236,16 @@ class List extends React.Component<IListProps, any> {
             Component={Component}
             resource={RESOURCE_MAP[type]}
             getKey={getKey}
-            sortField={sortField}
+            currentSort={currentSort}
             selectedItemId={selectedItemId}
             onSelect={onSelect}
             styles={styles}
-            onSortChange={(sortField, sortOrder) => {
-              setSortField(sortableFields.find(field => field.key === sortField));
-              setSortOrder(sortOrder);
+            onSortChange={(newSortField, newSortOrder) => {
+              setCurrentSort({
+                ...currentSort,
+                order: newSortOrder,
+                field: sortableFields.find(field => field.key === newSortField),
+              });
             }}
             defaultSortMethod={() => {}}
             onRemove={

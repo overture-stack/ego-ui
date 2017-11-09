@@ -4,7 +4,6 @@ import { css } from 'glamor';
 import { compose, withPropsOnChange, defaultProps } from 'recompose';
 import withSize from 'react-sizeme';
 import { injectState } from 'freactal';
-import { Icon } from 'semantic-ui-react';
 import ReactTable from 'react-table';
 
 import 'react-table/react-table.css';
@@ -53,6 +52,7 @@ const ItemsWrapper = ({
   onSelect,
   state: { list: { resultSet } },
   limit,
+  currentSort,
   onSortChange,
   ...props,
 }) => {
@@ -60,6 +60,7 @@ const ItemsWrapper = ({
     Header: schema.fieldName,
     accessor: schema.key,
     sortable: schema.sortable,
+    sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
   }));
 
   return (
@@ -70,6 +71,7 @@ const ItemsWrapper = ({
         pageSize={limit}
         data={resultSet}
         showPagination={false}
+        sorted={[{ id: currentSort.field.key, desc: currentSort.order === 'DESC' }]}
         onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
         getTdProps={(state, rowInfo, column, instance) =>
           Object.assign(

@@ -87,7 +87,7 @@ export default {
     createItem: createUser,
     deleteItem: deleteUser,
     rowHeight: 50,
-    initialSortOrder: 'DESC',
+    initialSortOrder: 'ASC',
     associatedTypes: ['groups', 'apps'],
     add: {
       groups: ({ groups, item }) => addGroupToUser({ user: item, group: groups }),
