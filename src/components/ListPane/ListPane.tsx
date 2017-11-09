@@ -22,7 +22,7 @@ interface IListProps {
   selectedItemId: string;
   sortableFields: {
     key: string;
-    value: string;
+    fieldName: string;
   }[];
   initialSortField: string;
   sortOrder: 'ASC' | 'DESC';
@@ -155,12 +155,13 @@ class List extends React.Component<IListProps, any> {
           </div>
           <div className={`sort-container ${css(paneControls.sortContainer)}`}>
             Sort by:
+            {console.log(sortableFields)}
             <Dropdown
               selection
               style={{ minWidth: '10em', marginLeft: '0.5em' }}
               selectOnNavigation={false}
-              options={sortableFields.map(field => ({ text: field.value, value: field.key }))}
-              text={sortField.value}
+              options={sortableFields.map(field => ({ text: field.fieldName, value: field.key }))}
+              text={sortField.fieldName}
               onChange={(event, { value }) =>
                 setSortField(sortableFields.find(field => field.key === value))}
             />
