@@ -106,11 +106,9 @@ const styles = {
   collapse: {
     textAlign: 'right',
     background: 'linear-gradient(to right, #6a0e65, #5f0c5b)',
-    '& button': {
-      color: '#fff',
-      fontSize: 22,
-      margin: 10,
-    },
+    color: '#fff',
+    fontSize: 22,
+    padding: 10,
   },
   currentUser: {
     paddingLeft: '20%',

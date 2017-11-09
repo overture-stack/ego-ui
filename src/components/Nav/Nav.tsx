@@ -67,13 +67,12 @@ class Nav extends React.Component<any, any> {
           })}
         </ul>
         <CurrentUserNavItem style={styles.currentUser} />
-        <div className={`${css(styles.collapse)}`}>
-          <UnstyledButton
-            onClick={() => this.setState({ collapsed: !collapsed, userSetCollapsed: true })}
-          >
-            {collapsed ? <Icon name="chevron right" /> : <Icon name="chevron left" />}
-          </UnstyledButton>
-        </div>
+        <UnstyledButton
+          style={styles.collapse}
+          onClick={() => this.setState({ collapsed: !collapsed, userSetCollapsed: true })}
+        >
+          {collapsed ? <Icon name="chevron right" /> : <Icon name="chevron left" />}
+        </UnstyledButton>
       </div>
     );
   }
