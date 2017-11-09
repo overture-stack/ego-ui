@@ -6,11 +6,17 @@ import { compose, defaultProps, withProps, withState } from 'recompose';
 import colors from 'common/colors';
 import Pagination from 'components/Pagination';
 import styles from './ListPane.styles';
-import ItemsWrapper from './ItemsWrapper';
+import ItemGrid from './ItemGrid';
+import ItemTable from './ItemTable';
 import { Dropdown, Button, Input } from 'semantic-ui-react';
 import ControlContainer from 'components/ControlsContainer';
 import { injectState } from 'freactal';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
+
+enum DisplayMode {
+  Table,
+  Grid,
+}
 
 interface IListProps {
   onSelect: Function;
@@ -50,6 +56,8 @@ interface IListProps {
     id: string;
     type: string;
   };
+  displayMode: DisplayMode;
+  setDisplayMode: Function;
 }
 
 interface IListState {}
@@ -62,6 +70,7 @@ const enhance = compose(
     getKey: item => item.id.toString(),
     onSelect: _.noop,
   }),
+  withState('displayMode', 'setDisplayMode', DisplayMode.Grid),
   withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('sortField', 'setSortField', props => props.initialSortField),
   withState('sortOrder', 'setSortOrder', props => props.initialSortOrder),
@@ -85,6 +94,9 @@ const paneControls = {
   },
   sortOrderWrapper: {
     marginLeft: '10px',
+    marginRight: '10px',
+  },
+  displayModeContainer: {
     marginRight: '10px',
   },
 };
@@ -145,6 +157,8 @@ class List extends React.Component<IListProps, any> {
       rowHeight,
       parent,
       type,
+      displayMode,
+      setDisplayMode,
     } = this.props;
 
     return (
@@ -184,24 +198,55 @@ class List extends React.Component<IListProps, any> {
               />
             </Button.Group>
           </div>
+          <div className={`display-mode-container ${css(paneControls.displayModeContainer)}`}>
+            <Button
+              icon="list layout"
+              style={displayMode === DisplayMode.Table ? { color: colors.purple } : {}}
+              onClick={() => setDisplayMode(DisplayMode.Table)}
+            />
+            <Button
+              icon="grid layout"
+              style={displayMode === DisplayMode.Grid ? { color: colors.purple } : {}}
+              onClick={() => setDisplayMode(DisplayMode.Grid)}
+            />
+          </div>
         </ControlContainer>
-        <ItemsWrapper
-          Component={Component}
-          getKey={getKey}
-          sortField={sortField}
-          selectedItemId={selectedItemId}
-          onSelect={onSelect}
-          styles={styles}
-          columnWidth={columnWidth}
-          rowHeight={rowHeight}
-          onRemove={
-            parent &&
-            (async item => {
-              await RESOURCE_MAP[parent.type].remove[type]({ [type]: item, item: parent });
-              refreshList();
-            })
-          }
-        />
+        {displayMode === DisplayMode.Grid ? (
+          <ItemGrid
+            Component={Component}
+            getKey={getKey}
+            sortField={sortField}
+            selectedItemId={selectedItemId}
+            onSelect={onSelect}
+            styles={styles}
+            columnWidth={columnWidth}
+            rowHeight={rowHeight}
+            onRemove={
+              parent &&
+              (async item => {
+                await RESOURCE_MAP[parent.type].remove[type]({ [type]: item, item: parent });
+                refreshList();
+              })
+            }
+          />
+        ) : (
+          <ItemTable
+            Component={Component}
+            resource={RESOURCE_MAP[type]}
+            getKey={getKey}
+            sortField={sortField}
+            selectedItemId={selectedItemId}
+            onSelect={onSelect}
+            styles={styles}
+            onRemove={
+              parent &&
+              (async item => {
+                await RESOURCE_MAP[parent.type].remove[type]({ [type]: item, item: parent });
+                refreshList();
+              })
+            }
+          />
+        )}
         {(limit < count || offset > 0) && (
           <Pagination
             onChange={page => updateList({ offset: page * limit })}

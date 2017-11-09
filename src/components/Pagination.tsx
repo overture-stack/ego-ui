@@ -10,6 +10,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     padding: '1em 0',
+    flexShrink: 0,
   },
 };
 
@@ -40,20 +41,14 @@ export default ({
             totalPages - range - 2,
           ),
           Math.max(
-            totalPages - 1 - currentPage < halfRange + 3
-              ? totalPages - 1
-              : currentPage + halfRange,
+            totalPages - 1 - currentPage < halfRange + 3 ? totalPages - 1 : currentPage + halfRange,
             range + 1,
           ),
         ];
   const menuItems = Array(totalPages)
     .fill(null)
     .map((d, i) => {
-      if (
-        i === 0 ||
-        i === totalPages - 1 ||
-        (i >= currentRange[0] && i <= currentRange[1])
-      ) {
+      if (i === 0 || i === totalPages - 1 || (i >= currentRange[0] && i <= currentRange[1])) {
         return (
           <Menu.Item
             key={i}
@@ -87,11 +82,7 @@ export default ({
         style={{ width: 'auto' }}
         pagination
         size="mini"
-        widths={
-          WIDTHS.includes(menuItems.length)
-            ? menuItems.length as WIDTHS
-            : undefined
-        }
+        widths={WIDTHS.includes(menuItems.length) ? menuItems.length as WIDTHS : undefined}
         items={menuItems}
       />
     </div>
