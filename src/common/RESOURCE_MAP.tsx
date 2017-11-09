@@ -6,9 +6,6 @@ import {
   getApp,
   getUser,
   getGroup,
-  addUserToApplication,
-  addGroupToApplication,
-  removeGroupFromApplication,
   updateUser,
   addGroupToUser,
   addApplicationToUser,
@@ -16,7 +13,6 @@ import {
   removeGroupFromUser,
   addApplicationToGroup,
   removeApplicationFromGroup,
-  removeUserFromApplication,
   updateApplication,
   updateGroup,
   createGroup,
@@ -186,13 +182,13 @@ export default {
     initialSortOrder: 'ASC',
     associatedTypes: ['groups', 'users'],
     add: {
-      users: ({ users, item }) => addUserToApplication({ application: item, user: users }),
-      groups: ({ groups, item }) => addGroupToApplication({ application: item, group: groups }),
+      users: ({ users, item }) => addApplicationToUser({ application: item, user: users }),
+      groups: ({ groups, item }) => addApplicationToGroup({ application: item, group: groups }),
     },
     remove: {
-      users: ({ users, item }) => removeUserFromApplication({ application: item, user: users }),
+      users: ({ users, item }) => removeApplicationFromUser({ application: item, user: users }),
       groups: ({ groups, item }) =>
-        removeGroupFromApplication({ application: item, group: groups }),
+        removeApplicationFromGroup({ application: item, group: groups }),
     },
     get initialSortField() {
       return this.schema.find(field => field.initialSort);
