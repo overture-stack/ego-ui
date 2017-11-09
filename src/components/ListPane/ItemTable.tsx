@@ -24,7 +24,7 @@ const enhance = compose(
       nextProps.size.width !== 0,
     _.debounce(({ size, rowHeight, effects: { updateList } }) => {
       const heightBuffer = 30;
-      const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight), 1);
+      const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight) - 1, 1);
       const limit = rows;
       updateList({ limit, rows });
     }, 200),
@@ -48,7 +48,14 @@ const styles = {
   },
 };
 
-const ItemsWrapper = ({ resource, onSelect, state: { list: { resultSet } }, ...props }) => {
+const ItemsWrapper = ({
+  resource,
+  onSelect,
+  state: { list: { resultSet } },
+  limit,
+  onSortChange,
+  ...props,
+}) => {
   const columns = resource.schema.map(schema => ({
     Header: schema.fieldName,
     accessor: schema.key,
@@ -60,9 +67,10 @@ const ItemsWrapper = ({ resource, onSelect, state: { list: { resultSet } }, ...p
       <ReactTable
         className={`-striped -highlight ${css(styles.table)}`}
         columns={columns}
-        pageSize={resultSet.length}
+        pageSize={limit}
         data={resultSet}
         showPagination={false}
+        onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
         getTdProps={(state, rowInfo, column, instance) =>
           Object.assign(
             {

@@ -169,7 +169,6 @@ class List extends React.Component<IListProps, any> {
           </div>
           <div className={`sort-container ${css(paneControls.sortContainer)}`}>
             Sort by:
-            {console.log(sortableFields)}
             <Dropdown
               selection
               style={{ minWidth: '10em', marginLeft: '0.5em' }}
@@ -238,6 +237,11 @@ class List extends React.Component<IListProps, any> {
             selectedItemId={selectedItemId}
             onSelect={onSelect}
             styles={styles}
+            onSortChange={(sortField, sortOrder) => {
+              setSortField(sortableFields.find(field => field.key === sortField));
+              setSortOrder(sortOrder);
+            }}
+            defaultSortMethod={() => {}}
             onRemove={
               parent &&
               (async item => {

@@ -25,6 +25,7 @@ const styles = {
     flexShrink: 0,
     flexBasis: '100%',
     transition: 'transform 0.3s',
+    maxWidth: '100%',
   },
 };
 
