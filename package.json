@@ -29,7 +29,8 @@
     "ts-loader": "^2.3.7"
   },
   "scripts": {
-    "start": "NODE_PATH=src react-scripts-ts start",
+    "start": "NODE_PATH=src nodemon --watch .env --exec npm run dev",
+    "dev": "NODE_PATH=src react-scripts-ts start",
     "build": "NODE_PATH=src react-scripts-ts build",
     "test": "NODE_PATH=src react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject",
@@ -47,6 +48,7 @@
     "@types/react-dom": "^16.0.1",
     "@types/storybook__react": "^3.0.5",
     "lorem-ipsum": "^1.0.4",
+    "nodemon": "^1.12.1",
     "tslint": "4.5.1"
   },
   "prettier": {
