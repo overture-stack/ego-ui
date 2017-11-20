@@ -14,6 +14,7 @@ export const getApps = ({
   groupsId,
   sortField,
   sortOrder,
+  status,
 }): Promise<{ count: number; resultSet: Application[] }> => {
   const baseUrl = usersId ? `/users/${usersId}` : groupsId ? `/groups/${groupsId}` : '';
 
@@ -25,7 +26,17 @@ export const getApps = ({
     : ajax
         .get(
           `${baseUrl}/applications?${queryString.stringify(
-            _.omitBy({ limit, offset, query, sort: sortField, sortOrder }, _.isNil),
+            _.omitBy(
+              {
+                limit,
+                offset,
+                query,
+                sort: sortField,
+                sortOrder,
+                status: status === 'All' ? null : status,
+              },
+              _.isNil,
+            ),
           )}`,
         )
         .then(r => r.data);

@@ -6,5 +6,6 @@ localStorage.setItem('debug', process.env.REACT_APP_DEBUG || ''); // manually se
 const debug = require('debug') as Function;
 global.log = debug('app');
 
+export const STATUSES = ['Disabled', 'Approved', 'Pending'];
 export const apiRoot = process.env.REACT_APP_API;
 export const useDummyData = process.env.REACT_APP_DUMMY;

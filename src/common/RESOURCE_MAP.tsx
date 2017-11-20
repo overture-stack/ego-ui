@@ -23,6 +23,8 @@ import {
   deleteApplication,
 } from 'services';
 
+import { STATUSES } from 'common/injectGlobals';
+
 import GroupListItem from 'components/Groups/ListItem';
 import UserListItem from 'components/Users/ListItem';
 import AppListItem from 'components/Applications/ListItem';
@@ -67,7 +69,7 @@ export default {
         key: 'status',
         fieldName: 'Status',
         type: 'dropdown',
-        options: ['Disabled', 'Approved', 'Pending'],
+        options: STATUSES,
       },
       { key: 'createdAt', fieldName: 'Date Created', sortable: true, immutable: true },
       { key: 'lastLogin', fieldName: 'Last Login', sortable: true, immutable: true },
@@ -116,7 +118,7 @@ export default {
         fieldName: 'Status',
         sortable: true,
         type: 'dropdown',
-        options: ['Disabled', 'Approved', 'Pending'],
+        options: STATUSES,
       },
     ] as Schema,
     name: 'group',
@@ -165,7 +167,7 @@ export default {
         fieldName: 'Status',
         sortable: true,
         type: 'dropdown',
-        options: ['Disabled', 'Approved', 'Pending'],
+        options: STATUSES,
       },
       { key: 'clientId', fieldName: 'Client ID', required: true },
       { key: 'clientSecret', fieldName: 'Client Secret', required: true },

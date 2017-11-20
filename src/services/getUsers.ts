@@ -13,6 +13,7 @@ export const getUsers = ({
   sortOrder = null,
   groupsId = null,
   appsId = null,
+  status = null,
 }): Promise<{ count: number; resultSet: User[] }> => {
   const baseUrl = groupsId ? `/groups/${groupsId}` : appsId ? `/applications/${appsId}` : '';
   return useDummyData
@@ -23,7 +24,17 @@ export const getUsers = ({
     : ajax
         .get(
           `${baseUrl}/users?${queryString.stringify(
-            _.omitBy({ limit, offset, query, sort: sortField, sortOrder }, _.isNil),
+            _.omitBy(
+              {
+                limit,
+                offset,
+                query,
+                sort: sortField,
+                sortOrder,
+                status: status === 'All' ? null : status,
+              },
+              _.isNil,
+            ),
           )}`,
         )
         .then(r => r.data);

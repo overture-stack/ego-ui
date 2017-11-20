@@ -12,6 +12,7 @@ import { Dropdown, Button, Input } from 'semantic-ui-react';
 import ControlContainer from 'components/ControlsContainer';
 import { injectState } from 'freactal';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import { STATUSES } from 'common/injectGlobals';
 
 enum DisplayMode {
   Table,
@@ -171,7 +172,7 @@ class List extends React.Component<IListProps, any> {
             Sort by:
             <Dropdown
               selection
-              style={{ minWidth: '10em', marginLeft: '0.5em' }}
+              style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
               selectOnNavigation={false}
               options={sortableFields.map(field => ({ text: field.fieldName, value: field.key }))}
               text={currentSort.field.fieldName}

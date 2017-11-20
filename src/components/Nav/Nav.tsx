@@ -18,17 +18,17 @@ const resetList = {
 };
 
 const enhance = compose(injectState);
-
+const MIN_SCREEN_WIDTH = 1400;
 class Nav extends React.Component<any, any> {
   state = { collapsed: false, windowSizeSmall: false };
   onResize = _.throttle(() => {
-    const windowSizeSmall = window.innerWidth < 1200;
+    const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
     if (windowSizeSmall !== this.state.windowSizeSmall) {
       this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     }
   }, 100);
   componentWillMount() {
-    const windowSizeSmall = window.innerWidth < 1200;
+    const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
     ``;
     this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     window.addEventListener('resize', this.onResize);

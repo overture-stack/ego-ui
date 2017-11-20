@@ -14,6 +14,7 @@ export const getGroups = ({
   appsId,
   sortField,
   sortOrder,
+  status,
 }): Promise<{ count: number; resultSet: Group[] }> => {
   const baseUrl = usersId ? `/users/${usersId}` : appsId ? `/applications/${appsId}` : '';
 
@@ -25,7 +26,17 @@ export const getGroups = ({
     : ajax
         .get(
           `${baseUrl}/groups?${queryString.stringify(
-            _.omitBy({ limit, offset, query, sort: sortField, sortOrder }, _.isNil),
+            _.omitBy(
+              {
+                limit,
+                offset,
+                query,
+                sort: sortField,
+                sortOrder,
+                status: status === 'All' ? null : status,
+              },
+              _.isNil,
+            ),
           )}`,
         )
         .then(r => r.data);
