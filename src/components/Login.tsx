@@ -7,8 +7,7 @@ import jwtDecode from 'jwt-decode';
 import colors from 'common/colors';
 import { googleLogin, facebookLogin } from 'services/login';
 import FacebookLogin from 'components/FacebookLogin';
-
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_APP_ID;
+import { googleAppId } from 'common/injectGlobals';
 
 const styles = {
   container: {
@@ -54,7 +53,7 @@ class Component extends React.Component {
          * client.
          */
         gapi.auth2.init({
-          client_id: GOOGLE_CLIENT_ID,
+          client_id: googleAppId,
         });
         gapi.signin2.render('googleSignin', {
           scope: 'profile email',

@@ -9,3 +9,5 @@ global.log = debug('app');
 export const STATUSES = ['Disabled', 'Approved', 'Pending'];
 export const apiRoot = process.env.REACT_APP_API;
 export const useDummyData = process.env.REACT_APP_DUMMY;
+export const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
+export const googleAppId = process.env.REACT_APP_GOOGLE_APP_ID;

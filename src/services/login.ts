@@ -1,9 +1,13 @@
 import ajax from 'services/ajax';
+import { facebookAppId, googleAppId } from 'common/injectGlobals';
 
 const gapi = global.gapi;
 gapi.load('auth2');
 
-export const googleLogin = token => ajax.get('/oauth/google/token', { headers: { token } });
+export const googleLogin = token =>
+  ajax.get(`/oauth/google/token?app_id=${googleAppId}`, {
+    headers: { token },
+  });
 
 export const googleLogout = () => {
   const authInstance = gapi.auth2.getAuthInstance();
@@ -15,7 +19,8 @@ export const googleLogout = () => {
   }
 };
 
-export const facebookLogin = token => ajax.get('/oauth/facebook/token', { headers: { token } });
+export const facebookLogin = token =>
+  ajax.get(`/oauth/facebook/token?app_id=${facebookAppId}`, { headers: { token } });
 
 export const facebookLogout = () => {
   return new Promise((resolve, reject) => {
