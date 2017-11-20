@@ -8,11 +8,11 @@ import ItemName from './ItemName';
 const styles = {
   container: {
     padding: '0 20px',
-    height: 46,
+    height: 36,
     display: 'flex',
     alignItems: 'center',
     background: 'linear-gradient(to left, #f3f3f3, #f9f9f9)',
-    borderTop: '1px solid #eaeaea',
+    borderBottom: '1px solid #eaeaea',
     textTransform: 'capitalize',
   },
   link: {
