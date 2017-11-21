@@ -11,7 +11,6 @@ import { injectState } from 'freactal';
 import ControlContainer from 'components/ControlsContainer';
 import Aux from 'components/Aux';
 import { withRouter } from 'react-router';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const styles = {
   container: {
@@ -47,8 +46,8 @@ interface IContentState {
 class Content extends React.Component<any, IContentState> {
   state = { contentState: ContentState.displaying };
 
-  fetchData = async ({ id, effects: { setItem }, type }) => {
-    await setItem(id, type);
+  fetchData = async ({ id, effects: { setItem }, resource }) => {
+    await setItem(id, resource);
     this.setState({ contentState: ContentState.displaying });
   };
 
@@ -68,10 +67,9 @@ class Content extends React.Component<any, IContentState> {
       rows,
       styles: stylesProp = {},
       id,
-      emptyMessage,
       effects: { saveChanges, setItem, deleteItem, stageChange, refreshList },
       state: { thing: { item, valid } },
-      type,
+      resource,
       history,
       parent,
     } = this.props;
@@ -83,7 +81,7 @@ class Content extends React.Component<any, IContentState> {
         basic
         color="green"
         onClick={async () => {
-          await setItem(null, type);
+          await setItem(null, resource);
           this.setState({ contentState: ContentState.creating });
         }}
         size="tiny"
@@ -132,7 +130,7 @@ class Content extends React.Component<any, IContentState> {
           this.setState({ contentState: ContentState.deleting });
           await deleteItem();
           await refreshList();
-          history.replace(`/${type}`);
+          history.replace(`/${resource.name.plural}`);
         }}
         size="tiny"
         color="red"
@@ -184,7 +182,7 @@ class Content extends React.Component<any, IContentState> {
             const newState = await saveChanges();
             await refreshList();
             this.setState({ contentState: ContentState.displaying });
-            history.replace(`/${type}/${newState.thing.item.id}`);
+            history.replace(`/${resource.name.plural}/${newState.thing.item.id}`);
           }}
           size="tiny"
         >
@@ -195,12 +193,12 @@ class Content extends React.Component<any, IContentState> {
 
     const GoToButton = () => (
       <Button
-        onClick={() => history.push(`/${type}/${id}`)}
+        onClick={() => history.push(`/${resource.name.plural}/${id}`)}
         size="tiny"
         color="blue"
         style={{ fontWeight: 'bold' }}
       >
-        Go to {type} page
+        Go to {resource.name.plural} page
       </Button>
     );
 
@@ -208,15 +206,18 @@ class Content extends React.Component<any, IContentState> {
       <Button
         basic
         onClick={async () => {
-          await RESOURCE_MAP[parent.type].remove[type]({ [type]: item, item: parent });
+          await parent.resource.remove[resource.name.plural]({
+            [resource.name.singular]: item,
+            item: parent,
+          });
           await refreshList();
-          history.replace(`/${parent.type}/${parent.id}/${type}`);
+          history.replace(`/${parent.resource.name.plural}/${parent.id}/${resource.name.plural}`);
         }}
         size="tiny"
         color="red"
         style={{ fontWeight: 'bold' }}
       >
-        Remove from {RESOURCE_MAP[parent.type].name}
+        Remove from {parent.resource.name.singular}
       </Button>
     );
 
@@ -235,7 +236,7 @@ class Content extends React.Component<any, IContentState> {
                 {id && <EditButton />}
               </div>
               {id &&
-                (RESOURCE_MAP[type].noDelete ? (
+                (resource.noDelete ? (
                   <DisableButton />
                 ) : contentState === ContentState.confirmDelete ? (
                   <ConfirmDeleteButton />
@@ -254,7 +255,7 @@ class Content extends React.Component<any, IContentState> {
           {contentState === ContentState.creating ? (
             <EditingContentTable rows={rows} hideImmutable />
           ) : !id ? (
-            <EmptyContent message={emptyMessage} />
+            <EmptyContent message={resource.emptyMessage} />
           ) : !item ? (
             <EmptyContent message={'loading'} />
           ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (

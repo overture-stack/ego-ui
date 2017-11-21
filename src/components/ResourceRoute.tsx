@@ -44,14 +44,13 @@ const enhance = compose(
   }),
 );
 
-const ResourceRoute = ({ type, ...props }) => {
-  const id = props.match.params.id;
-  const shouldListSubResource = props.shouldListSubResource;
-  const shouldShowSubResourceDetails = props.match.params.subResourceId !== undefined;
+const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
+  const id = match.params.id;
+  const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
 
   const translateX = shouldShowSubResourceDetails
     ? '-100%'
-    : shouldListSubResource ? `${-(props.size.width - contentWidth)}px` : 0;
+    : shouldListSubResource ? `${-(size.width - contentWidth)}px` : 0;
 
   return (
     <div className={`row ${css(styles.container)}`}>
@@ -61,7 +60,7 @@ const ResourceRoute = ({ type, ...props }) => {
           transform: `translateX(${translateX})`,
         })}`}
       >
-        <ResourceExplorer id={id} type={type} />
+        <ResourceExplorer id={id} resource={resource} />
       </div>
       <div
         className={`Screen ${css(styles.screen, {
@@ -69,16 +68,22 @@ const ResourceRoute = ({ type, ...props }) => {
           transform: `translateX(${translateX})`,
         })}`}
       >
-        {RESOURCE_MAP[type].associatedTypes.map(associatedType => {
+        {resource.associatedTypes.map(associatedType => {
+          const associatedResource = RESOURCE_MAP[associatedType];
+
           return (
             <Route
               key={associatedType}
-              path={`/${type}/:id/${associatedType}/:associatedId?`}
-              render={({ match }) => {
-                const associatedId = match.params.associatedId;
+              path={`/${resource.name.plural}/:id/${associatedResource.name.plural}/:associatedId?`}
+              render={props => {
+                const associatedId = props.match.params.associatedId;
 
                 return (
-                  <ResourceExplorer id={associatedId} type={associatedType} parent={{ type, id }} />
+                  <ResourceExplorer
+                    id={associatedId}
+                    resource={associatedResource}
+                    parent={{ resource, id }}
+                  />
                 );
               }}
             />

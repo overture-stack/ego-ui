@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { provideState } from 'freactal';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 export default provideState({
   initialState: () => ({
@@ -23,17 +22,17 @@ export default provideState({
       list: { ...state.list, params: { ...state.list.params, ...params } },
     }),
 
-    setListType: (effects, type) => state => ({
+    setListResource: (effects, resource) => state => ({
       ...state,
-      list: { ...state.list, type },
+      list: { ...state.list, resource },
     }),
 
     refreshList: async effects => {
-      const { list: { params, type } } = await effects.getState();
+      const { list: { params, resource } } = await effects.getState();
       const match = (params.query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
       const [, before, , statusQuoted, statusUnquoted, after] = match || Array(5);
 
-      const response = await RESOURCE_MAP[type].getList({
+      const response = await resource.getList({
         ...params,
         query:
           (match ? `${before || ''}${after || ''}` : params.query || '')

@@ -29,7 +29,6 @@ class Nav extends React.Component<any, any> {
   }, 100);
   componentWillMount() {
     const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
-    ``;
     this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     window.addEventListener('resize', this.onResize);
   }
@@ -49,17 +48,18 @@ class Nav extends React.Component<any, any> {
         </div>
         <ul className={`LinkList ${css(resetList, styles.linkList)}`}>
           {Object.keys(RESOURCE_MAP).map(key => {
-            const Icon = RESOURCE_MAP[key].Icon;
+            const resource = RESOURCE_MAP[key];
+
             return (
               <li key={key}>
                 <NavLink
                   className={`NavLink ${css(styles.link)}`}
-                  to={`/${key}`}
+                  to={`/${resource.name.plural}`}
                   activeClassName={'active'}
                 >
                   <div>
-                    <Icon style={{ opacity: 0.9 }} />
-                    <span className="text">{_.capitalize(`${RESOURCE_MAP[key].name}s`)}</span>
+                    <resource.Icon style={{ opacity: 0.9 }} />
+                    <span className="text">{_.capitalize(`${resource.name.plural}`)}</span>
                   </div>
                 </NavLink>
               </li>

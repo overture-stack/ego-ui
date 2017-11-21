@@ -11,11 +11,11 @@ export const getUsers = ({
   query = null,
   sortField = null,
   sortOrder = null,
-  groupsId = null,
-  appsId = null,
+  groupId = null,
+  appId = null,
   status = null,
 }): Promise<{ count: number; resultSet: User[] }> => {
-  const baseUrl = groupsId ? `/groups/${groupsId}` : appsId ? `/applications/${appsId}` : '';
+  const baseUrl = groupId ? `/groups/${groupId}` : appId ? `/applications/${appId}` : '';
   return useDummyData
     ? Promise.resolve({
         count: dummyUsers.length,

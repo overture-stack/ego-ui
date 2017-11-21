@@ -10,13 +10,13 @@ export const getApps = ({
   offset = 0,
   limit = 20,
   query,
-  usersId,
-  groupsId,
+  userId,
+  groupId,
   sortField,
   sortOrder,
   status,
 }): Promise<{ count: number; resultSet: Application[] }> => {
-  const baseUrl = usersId ? `/users/${usersId}` : groupsId ? `/groups/${groupsId}` : '';
+  const baseUrl = userId ? `/users/${userId}` : groupId ? `/groups/${groupId}` : '';
 
   return useDummyData
     ? Promise.resolve({

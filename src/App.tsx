@@ -35,14 +35,17 @@ class App extends React.Component<any, any> {
                   <div style={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                     <BreadCrumb path={props.location.pathname} />
                     <Switch>
-                      {Object.keys(RESOURCE_MAP).map(key => (
-                        <ProtectedRoute
-                          key={key}
-                          path={`/${key}/:id?/:subResourceType?/:subResourceId?`}
-                          render={props => <ResourceRoute {...props} type={key} />}
-                          renderLogin
-                        />
-                      ))}
+                      {Object.keys(RESOURCE_MAP).map(key => {
+                        const resource = RESOURCE_MAP[key];
+                        return (
+                          <ProtectedRoute
+                            key={key}
+                            path={`/${resource.name.plural}/:id?/:subResourceType?/:subResourceId?`}
+                            render={p => <ResourceRoute {...p} resource={resource} />}
+                            renderLogin
+                          />
+                        );
+                      })}
                     </Switch>
                   </div>
                 </Aux>

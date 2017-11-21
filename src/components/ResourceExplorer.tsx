@@ -13,32 +13,23 @@ import { provideList } from 'stateProviders';
 
 const enhance = compose(withRouter, provideList);
 
-const ResourceExplorer = ({ id, type, history, parent }) => {
-  const resource = RESOURCE_MAP[type];
-
+const ResourceExplorer = ({ id, resource, history, parent }) => {
   return (
     <Aux>
       <ListPane
-        rowHeight={resource.rowHeight}
+        resource={resource}
         parent={parent}
-        type={type}
-        sortableFields={resource.sortableFields}
-        initialSortOrder={resource.initialSortOrder}
-        initialSortField={resource.initialSortField}
-        Component={resource.ListItem}
         selectedItemId={id}
         onSelect={item => {
-          if (item.id.toString() === id) {
-            history.replace(`${parent ? `/${parent.type}/${parent.id}` : ''}/${type}`);
-          } else {
-            history.replace(`${parent ? `/${parent.type}/${parent.id}` : ''}/${type}/${item.id}`);
-          }
+          history.replace(
+            `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${resource.name
+              .plural}${item.id.toString() === id ? '' : `/${item.id}`}`,
+          );
         }}
       />
       <Content
         id={id}
-        type={type}
-        emptyMessage={resource.emptyMessage}
+        resource={resource}
         parent={parent}
         rows={[
           ...resource.schema,
@@ -59,7 +50,10 @@ const ResourceExplorer = ({ id, type, history, parent }) => {
                     {!parent &&
                       associated[associatedType].count >
                         _.get(associated[associatedType], 'resultSet.length', 0) && (
-                        <NavLink to={`/${type}/${id}/${associatedType}`} style={{ fontSize: 14 }}>
+                        <NavLink
+                          to={`/${resource.name.plural}/${id}/${associatedType}`}
+                          style={{ fontSize: 14 }}
+                        >
                           View {associated[associatedType].count} {associatedType}
                         </NavLink>
                       )}

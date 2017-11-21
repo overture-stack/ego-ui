@@ -3,15 +3,23 @@ import _ from 'lodash';
 import { Table, Input, Dropdown } from 'semantic-ui-react';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import { TField } from 'common/typedefs/Resource';
 
-function rowInput({ data, row, stageChange }) {
-  switch (row.type) {
+function rowInput({
+  data,
+  row,
+  stageChange,
+}: {
+  data: Object;
+  row: TField;
+  stageChange: Function;
+}) {
+  switch (row.fieldType) {
     case 'dropdown':
       return (
         <Dropdown
           selection
-          options={row.options.map(text => ({ text, value: text }))}
+          options={(row.options || []).map(text => ({ text, value: text }))}
           text={data[row.key]}
           onChange={(event, { value }) => stageChange({ [row.key]: value })}
           style={{ fontSize: 14.1429 }}
@@ -36,7 +44,7 @@ function normalizeRow({
   stageChange,
   immutableKeys,
 }: {
-  row: { key: string; fieldName: any; fieldContent: any; type: string; options: any };
+  row: TField;
   data: Object[];
   associated: Object[];
   stageChange: Function;
@@ -71,12 +79,12 @@ class EditingContentTable extends React.Component<any, any> {
   render() {
     const {
       rows,
-      state: { thing: { staged, associated, type } },
+      state: { thing: { staged, associated, resource } },
       effects: { stageChange },
       hideImmutable,
     } = this.props;
 
-    const immutableKeys = RESOURCE_MAP[type].schema.filter(f => f.immutable).map(f => f.key);
+    const immutableKeys = resource.schema.filter(f => f.immutable).map(f => f.key);
 
     return (
       <Table basic="very" style={{ fontSize: 18 }}>
