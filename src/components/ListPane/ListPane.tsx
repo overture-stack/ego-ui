@@ -11,7 +11,7 @@ import ItemTable from './ItemTable';
 import { Dropdown, Button, Input } from 'semantic-ui-react';
 import ControlContainer from 'components/ControlsContainer';
 import { injectState } from 'freactal';
-import { TSortDirection, IResource, TField } from 'common/typedefs/Resource';
+import { TSortDirection, IResource } from 'common/typedefs/Resource';
 import { TThing } from 'common/typedefs';
 
 enum DisplayMode {
@@ -38,8 +38,12 @@ interface IListProps {
     updateList: Function;
     refreshList: Function;
     setListResource: Function;
+    setUserPreferences: Function;
   };
   state: {
+    preferences: {
+      listDisplayMode: DisplayMode;
+    };
     list: {
       limit: number;
       resultSet: TThing[];
@@ -51,8 +55,6 @@ interface IListProps {
     id: string;
     resource: IResource;
   };
-  displayMode: DisplayMode;
-  setDisplayMode: Function;
 }
 
 interface IListState {}
@@ -65,7 +67,6 @@ const enhance = compose(
     getKey: item => item.id.toString(),
     onSelect: _.noop,
   }),
-  withState('displayMode', 'setDisplayMode', DisplayMode.Grid),
   withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('currentSort', 'setCurrentSort', props => ({
     field: props.resource.initialSortField,
@@ -143,14 +144,15 @@ class List extends React.Component<IListProps, any> {
       currentSort,
       setCurrentSort,
       setQuery,
-      state: { list: { count = 0, params: { offset, limit } } },
-      effects: { updateList, refreshList },
+      state: { preferences: { listDisplayMode }, list: { count = 0, params: { offset, limit } } },
+      effects: { updateList, refreshList, setUserPreferences },
       columnWidth,
       parent,
-      displayMode,
-      setDisplayMode,
       resource,
     } = this.props;
+
+    const displayMode: any =
+      typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Grid;
 
     return (
       <div className={`List ${css(styles.container)}`}>
@@ -198,12 +200,12 @@ class List extends React.Component<IListProps, any> {
             <Button
               icon="list layout"
               style={displayMode === DisplayMode.Table ? { color: colors.purple } : {}}
-              onClick={() => setDisplayMode(DisplayMode.Table)}
+              onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
             />
             <Button
               icon="grid layout"
               style={displayMode === DisplayMode.Grid ? { color: colors.purple } : {}}
-              onClick={() => setDisplayMode(DisplayMode.Grid)}
+              onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
             />
           </div>
         </ControlContainer>
