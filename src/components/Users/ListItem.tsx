@@ -26,20 +26,10 @@ const styles = {
 };
 
 export default ({ item, sortField, className = '', style, ...props }) => {
-  const { firstName, lastName, email, status, role } = item;
+  const { firstName, lastName, role } = item;
   const secondaryField = sortField === 'lastName' ? 'email' : sortField;
   return (
-    <div
-      className={`Item ${className} ${css(
-        styles.container,
-        status === 'Deactivated' && {
-          opacity: 0.3,
-          fontStyle: 'italic',
-        },
-        style,
-      )}`}
-      {...props}
-    >
+    <div className={`Item ${className} ${css(styles.container, style)}`} {...props}>
       <DisplayName firstName={firstName} lastName={lastName} role={role} />
 
       <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>

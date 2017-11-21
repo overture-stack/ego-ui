@@ -234,7 +234,6 @@ class List extends React.Component<IListProps, any> {
           />
         ) : (
           <ItemTable
-            Component={resource.ListItem}
             resource={resource}
             getKey={getKey}
             currentSort={currentSort}

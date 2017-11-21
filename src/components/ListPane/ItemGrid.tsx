@@ -45,7 +45,15 @@ const ItemsWrapper = ({
             sortField={sortField.key}
             className={selectedItemId && getKey(item) === selectedItemId ? 'selected' : ''}
             item={item}
-            style={styles.listItem}
+            style={{
+              ...styles.listItem,
+              ...item.status === 'Disabled'
+                ? {
+                    opacity: 0.3,
+                    fontStyle: 'italic',
+                  }
+                : {},
+            }}
             onClick={() => onSelect(item)}
             selected={selectedItemId && getKey(item) === selectedItemId}
           />

@@ -12,7 +12,7 @@ class ItemName extends React.Component<IItemNameProps, { name: string }> {
     const { type, id } = props;
     const { getName = ({ name }) => name, getItem } = RESOURCE_MAP[type];
     const item = await getItem(id);
-    this.setState({ name: getName(item) });
+    this.setState({ name: item ? getName(item) : id });
   }
 
   componentWillMount() {
