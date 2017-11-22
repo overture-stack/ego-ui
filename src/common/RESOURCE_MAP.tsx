@@ -25,9 +25,8 @@ import {
 
 import { STATUSES } from 'common/injectGlobals';
 
-import GroupListItem from 'components/Groups/ListItem';
-import UserListItem from 'components/Users/ListItem';
-import AppListItem from 'components/Applications/ListItem';
+import { GroupListItem, UserListItem, ApplicationListItem } from 'components/ListItem';
+
 import { Icon } from 'semantic-ui-react';
 import { IResource, TResourceType } from 'common/typedefs/Resource';
 
@@ -166,7 +165,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'redirectUri', fieldName: 'Redirect Uri', required: true },
     ],
     name: { singular: 'application', plural: 'applications' },
-    ListItem: AppListItem,
+    ListItem: ApplicationListItem,
     getList: getApps,
     updateItem: updateApplication,
     createItem: createApplication,
