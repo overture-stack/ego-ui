@@ -10,6 +10,7 @@ import { injectState } from 'freactal';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { Icon } from 'semantic-ui-react';
 import UnstyledButton from 'components/UnstyledButton';
+import Ripple from 'components/Ripple';
 
 const resetList = {
   listStyleType: 'none',
@@ -52,16 +53,17 @@ class Nav extends React.Component<any, any> {
 
             return (
               <li key={key}>
-                <NavLink
-                  className={`NavLink ${css(styles.link)}`}
+                <Ripple
+                  as={NavLink}
+                  style={styles.link}
                   to={`/${resource.name.plural}`}
                   activeClassName={'active'}
                 >
-                  <div>
+                  <div className="content">
                     <resource.Icon style={{ opacity: 0.9 }} />
                     <span className="text">{_.capitalize(`${resource.name.plural}`)}</span>
                   </div>
-                </NavLink>
+                </Ripple>
               </li>
             );
           })}

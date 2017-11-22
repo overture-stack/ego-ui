@@ -55,7 +55,7 @@ const styles = {
     display: 'flex',
     width: '100%',
     padding: 4,
-    '& div': {
+    '& .content': {
       width: '60%',
       margin: 'auto',
       position: 'relative',
@@ -90,9 +90,11 @@ const styles = {
         textShadow: '-3px 2px 2px rgba(0,0,0,0.2)',
       },
       '&::before': {
-        transform: 'scaleX(1.03) scaleY(1.05)',
         boxShadow: '-3px 3px 1px 1px rgba(0, 0, 0, 0.1)',
         opacity: 1,
+      },
+      '&::before, & .rippleJS': {
+        transform: 'scaleX(1.03) scaleY(1.05)',
       },
     },
     '& .text': {

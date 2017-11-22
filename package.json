@@ -27,7 +27,8 @@
     "semantic-ui-react": "0.75.0",
     "storybook-router": "^0.3.1",
     "ts-loader": "^2.3.7",
-    "url-join": "^2.0.2"
+    "url-join": "^2.0.2",
+    "vanilla-ripplejs": "^1.0.3"
   },
   "scripts": {
     "start": "NODE_PATH=src nodemon --watch .env --exec npm run dev",

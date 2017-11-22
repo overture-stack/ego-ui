@@ -3,6 +3,7 @@ import { css } from 'glamor';
 import Truncate from 'react-truncate';
 import colors from 'common/colors';
 import UserDisplayName from 'components/UserDisplayName';
+import Ripple from 'components/Ripple';
 
 const styles = {
   container: {
@@ -37,24 +38,32 @@ const styles = {
 export const GroupListItem = ({ item, sortField, className = '', style, ...props }) => {
   const secondaryField = sortField === 'name' ? 'description' : sortField;
   return (
-    <div className={`GroupListItem ${className} ${css(styles.container, style)}`} {...props}>
+    <Ripple
+      className={`GroupListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
       <div className={`name ${css(styles.primaryField)}`}>{item.name}</div>
       <div className={`secondary-field ${css(styles.secondaryField)}`}>
         <Truncate lines={1}>{item[secondaryField]}</Truncate>
       </div>
-    </div>
+    </Ripple>
   );
 };
 
 export const ApplicationListItem = ({ item, sortField, className = '', style, ...props }) => {
   const secondaryField = sortField === 'name' ? 'clientId' : sortField;
   return (
-    <div className={`AppListItem ${className} ${css(styles.container, style)}`} {...props}>
+    <Ripple
+      className={`AppListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
       <div className={`primary-field ${css(styles.primaryField)}`}>{item.name}</div>
       <div className={`secondary-field ${css(styles.secondaryField)}`}>
         <Truncate lines={1}>{item[secondaryField]}</Truncate>
       </div>
-    </div>
+    </Ripple>
   );
 };
 
@@ -62,9 +71,13 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
   const { firstName, lastName, role } = item;
   const secondaryField = sortField === 'lastName' ? 'email' : sortField;
   return (
-    <div className={`Item ${className} ${css(styles.container, style)}`} {...props}>
+    <Ripple
+      className={`UserListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
       <UserDisplayName firstName={firstName} lastName={lastName} role={role} />
       <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
-    </div>
+    </Ripple>
   );
 };

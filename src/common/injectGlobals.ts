@@ -1,3 +1,4 @@
+import 'vanilla-ripplejs';
 import 'semantic-ui-css/semantic.min.css';
 import 'flexboxgrid';
 import 'index.css';
