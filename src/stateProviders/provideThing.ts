@@ -12,17 +12,19 @@ const provideThing = provideState({
   effects: {
     getState: () => state => ({ ...state }),
     setItem: async (effects, id, resource) => {
-      const [item, ...associated] = id
-        ? await Promise.all([
-            resource.getItem(id),
-            ...resource.associatedTypes.map(associatedType =>
-              RESOURCE_MAP[associatedType].getList({
-                [`${resource.name.singular}Id`]: id,
-                limit: MAX_ASSOCIATED,
-              }),
-            ),
-          ])
-        : [null, ...resource.associatedTypes.map(() => ({}))];
+      const isCreate = id === 'create';
+      const [item, ...associated] =
+        id && !isCreate
+          ? await Promise.all([
+              resource.getItem(id),
+              ...resource.associatedTypes.map(associatedType =>
+                RESOURCE_MAP[associatedType].getList({
+                  [`${resource.name.singular}Id`]: id,
+                  limit: MAX_ASSOCIATED,
+                }),
+              ),
+            ])
+          : [null, ...resource.associatedTypes.map(() => ({}))];
 
       return s => {
         const staged = item || {};
@@ -32,7 +34,7 @@ const provideThing = provideState({
             ...s.thing,
             resource,
             item,
-            id,
+            id: isCreate ? null : id,
             staged,
             valid: resource.schema.filter(f => f.required).every(f => staged[f.key]),
             associated: associated.reduce(
@@ -126,7 +128,6 @@ const provideThing = provideState({
             );
           }),
         );
-
       if (!id) {
         const item = await resource.createItem({ item: staged });
         id = item.id;

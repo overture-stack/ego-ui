@@ -11,8 +11,12 @@ class ItemName extends React.Component<IItemNameProps, { name: string }> {
   async fetchName(props: IItemNameProps) {
     const { type, id } = props;
     const { getName = ({ name }) => name, getItem } = RESOURCE_MAP[type];
-    const item = await getItem(id);
-    this.setState({ name: item ? getName(item) : id });
+    if (id === 'create') {
+      this.setState({ name: id });
+    } else {
+      const item = await getItem(id);
+      this.setState({ name: item ? getName(item) : id });
+    }
   }
 
   componentWillMount() {

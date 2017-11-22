@@ -45,10 +45,25 @@ interface IContentState {
 
 class Content extends React.Component<any, IContentState> {
   state = { contentState: ContentState.displaying };
+  lastValidId = null;
+  fetchData = async ({
+    id,
+    effects: { setItem },
+    resource,
+    match: { params: { subResourceType } },
+  }) => {
+    if (id !== 'create') {
+      this.lastValidId = id;
+    }
 
-  fetchData = async ({ id, effects: { setItem }, resource }) => {
     await setItem(id, resource);
-    this.setState({ contentState: ContentState.displaying });
+
+    this.setState({
+      contentState:
+        id === 'create'
+          ? ContentState.creating
+          : subResourceType === 'edit' ? ContentState.editing : ContentState.displaying,
+    });
   };
 
   componentDidMount() {
@@ -56,9 +71,13 @@ class Content extends React.Component<any, IContentState> {
   }
 
   componentWillReceiveProps(nextProps: any) {
-    const { id } = nextProps;
+    const { id, match: { params: { subResourceType } } } = nextProps;
     if (id !== this.props.id) {
       this.fetchData(nextProps);
+    } else if (subResourceType !== this.props.match.params.subResourceType) {
+      this.setState({
+        contentState: subResourceType === 'edit' ? ContentState.editing : ContentState.displaying,
+      });
     }
   }
 
@@ -67,7 +86,7 @@ class Content extends React.Component<any, IContentState> {
       rows,
       styles: stylesProp = {},
       id,
-      effects: { saveChanges, setItem, deleteItem, stageChange, refreshList },
+      effects: { saveChanges, deleteItem, stageChange, refreshList },
       state: { thing: { item, valid } },
       resource,
       history,
@@ -76,14 +95,15 @@ class Content extends React.Component<any, IContentState> {
 
     const { contentState } = this.state;
 
+    const isSaving =
+      contentState === ContentState.savingEdit || contentState === ContentState.savingCreate;
+
     const CreateButton = () => (
       <Button
         basic
         color="green"
-        onClick={async () => {
-          await setItem(null, resource);
-          this.setState({ contentState: ContentState.creating });
-        }}
+        disabled={isSaving}
+        onClick={() => history.push(`/${resource.name.plural}/create`)}
         size="tiny"
         style={{ fontWeight: 'bold' }}
       >
@@ -94,7 +114,8 @@ class Content extends React.Component<any, IContentState> {
     const EditButton = () => (
       <Button
         color="blue"
-        onClick={() => this.setState({ contentState: ContentState.editing })}
+        disabled={isSaving}
+        onClick={() => history.push(`/${resource.name.plural}/${id}/edit`)}
         size="tiny"
         style={{ fontWeight: 'normal' }}
       >
@@ -155,7 +176,8 @@ class Content extends React.Component<any, IContentState> {
     const CancelButton = () => (
       <Button
         basic
-        onClick={() => this.fetchData(this.props)}
+        disabled={isSaving}
+        onClick={() => history.push(`/${resource.name.plural}/${this.lastValidId || ''}`)}
         size="tiny"
         style={{ fontWeight: 'bold' }}
       >
@@ -164,8 +186,6 @@ class Content extends React.Component<any, IContentState> {
     );
 
     const SaveButton = () => {
-      const isSaving =
-        contentState === ContentState.savingEdit || contentState === ContentState.savingCreate;
       return (
         <Button
           color="blue"
@@ -229,7 +249,7 @@ class Content extends React.Component<any, IContentState> {
               <GoToButton />
               <DeleteFromParentButton />
             </Aux>
-          ) : ![ContentState.editing, ContentState.creating].includes(contentState) ? (
+          ) : ![ContentState.editing, ContentState.creating].includes(contentState) && !isSaving ? (
             <Aux>
               <div>
                 <CreateButton />
@@ -238,7 +258,8 @@ class Content extends React.Component<any, IContentState> {
               {id &&
                 (resource.noDelete ? (
                   <DisableButton />
-                ) : contentState === ContentState.confirmDelete ? (
+                ) : contentState === ContentState.confirmDelete ||
+                contentState === ContentState.deleting ? (
                   <ConfirmDeleteButton />
                 ) : (
                   <DeleteButton />

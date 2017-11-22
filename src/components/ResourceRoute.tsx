@@ -5,7 +5,6 @@ import { css } from 'glamor';
 import withSize from 'react-sizeme';
 
 import ResourceExplorer from 'components/ResourceExplorer';
-
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const styles = {
@@ -37,7 +36,8 @@ const enhance = compose(
     monitorHeight: false,
   }),
   withProps(({ match }) => {
-    const shouldListSubResource = !!match.params.subResourceType;
+    const shouldListSubResource = Object.keys(RESOURCE_MAP).includes(match.params.subResourceType);
+
     return {
       shouldListSubResource,
     };
@@ -46,8 +46,8 @@ const enhance = compose(
 
 const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
   const id = match.params.id;
-  const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
 
+  const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
   const translateX = shouldShowSubResourceDetails
     ? '-100%'
     : shouldListSubResource ? `${-(size.width - contentWidth)}px` : 0;
