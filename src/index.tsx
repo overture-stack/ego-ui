@@ -11,7 +11,7 @@ const { locale } = qs.parse('?locale=en', { ignoreQueryPrefix: true });
 const messages = {};
 
 ReactDOM.render(
-  <IntlProvider locale={locale}>
+  <IntlProvider locale={locale} messages={messages}>
     <App />
   </IntlProvider>,
   document.getElementById('root') as HTMLElement,

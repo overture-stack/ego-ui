@@ -20,9 +20,9 @@ export default provideState({
     },
 
     setUser: (effects, loggedInUser) => state => {
-      const preferences = JSON.parse(
-        localStorage.getItem(`user-preferences-${loggedInUser.id}`) || '{}',
-      );
+      const preferences = loggedInUser
+        ? JSON.parse(localStorage.getItem(`user-preferences-${loggedInUser.id}`) || '{}')
+        : {};
 
       return { ...state, loggedInUser, preferences };
     },

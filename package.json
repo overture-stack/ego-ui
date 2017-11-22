@@ -26,7 +26,8 @@
     "semantic-ui-css": "2.2.12",
     "semantic-ui-react": "0.75.0",
     "storybook-router": "^0.3.1",
-    "ts-loader": "^2.3.7"
+    "ts-loader": "^2.3.7",
+    "url-join": "^2.0.2"
   },
   "scripts": {
     "start": "NODE_PATH=src nodemon --watch .env --exec npm run dev",
