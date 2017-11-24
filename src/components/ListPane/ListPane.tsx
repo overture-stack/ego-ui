@@ -5,7 +5,7 @@ import { compose, defaultProps, withProps, withState } from 'recompose';
 
 import colors from 'common/colors';
 import Pagination from 'components/Pagination';
-import styles from './ListPane.styles';
+import getStyles from './ListPane.styles';
 import ItemGrid from './ItemGrid';
 import ItemTable from './ItemTable';
 import { Dropdown, Button, Input } from 'semantic-ui-react';
@@ -73,7 +73,7 @@ const enhance = compose(
     order: props.resource.initialSortOrder,
   })),
   withProps(({ columnWidth, resource, styles: stylesProp }) => ({
-    styles: _.merge(styles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
+    styles: _.merge(getStyles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
   })),
 );
 
@@ -247,7 +247,6 @@ class List extends React.Component<IListProps, any> {
                 field: resource.sortableFields.find(field => field.key === newSortField),
               });
             }}
-            defaultSortMethod={() => {}}
             onRemove={
               parent &&
               (async item => {

@@ -70,7 +70,7 @@ const provideThing = provideState({
                   ...acc,
                   [currentType]: {
                     ...thing.associated[currentType],
-                    ...Object.keys(change[currentType]).reduce((acc, action) => {
+                    ...Object.keys(change[currentType]).reduce((actions, action) => {
                       const otherAction = action === 'add' ? 'remove' : 'add';
                       if (
                         (thing.associated[currentType][otherAction] || []).includes(
@@ -78,7 +78,7 @@ const provideThing = provideState({
                         )
                       ) {
                         return {
-                          ...acc,
+                          ...actions,
                           [otherAction]: (thing.associated[currentType][otherAction] || []).filter(
                             ({ id }) => id !== change[currentType][action].id,
                           ),
