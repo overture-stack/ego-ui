@@ -5508,6 +5508,10 @@ podda@^1.2.2:
     babel-runtime "^6.11.6"
     immutable "^3.8.1"
 
+popback@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/popback/-/popback-0.0.3.tgz#5ca7f7f222afed404eaabbafca4c6602ac126d6e"
+
 portfinder@^1.0.9:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.13.tgz#bb32ecd87c27104ae6ee44b5a3ccbf0ebb1aede9"

@@ -2,7 +2,7 @@ import React from 'react';
 import queryString from 'query-string';
 import urlJoin from 'url-join';
 
-import popup from 'components/popup';
+import popBack from 'popback';
 import { defaultRedirectUri } from 'common/injectGlobals';
 
 export default ({ onLogin, ...props }) => {
@@ -14,7 +14,7 @@ export default ({ onLogin, ...props }) => {
           redirect_uri: urlJoin(window.location.origin, 'redirected'),
         });
 
-        popup({
+        popBack({
           id: 'external-authorize',
           url: urlJoin(defaultRedirectUri, 'auth-redirect', `?${search}`),
           height: 1000,
