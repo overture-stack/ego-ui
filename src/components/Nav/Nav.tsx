@@ -25,12 +25,17 @@ class Nav extends React.Component<any, any> {
   onResize = _.throttle(() => {
     const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
     if (windowSizeSmall !== this.state.windowSizeSmall) {
+      this.props.effects.setUserPreferences({ collapsed: undefined });
       this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     }
   }, 100);
   componentWillMount() {
     const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
-    this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
+    const userSelected = this.props.state.preferences.collapsed;
+    this.setState({
+      windowSizeSmall,
+      collapsed: userSelected === undefined ? windowSizeSmall : userSelected,
+    });
     window.addEventListener('resize', this.onResize);
   }
   componentWillUnmount() {
@@ -71,7 +76,10 @@ class Nav extends React.Component<any, any> {
         <CurrentUserNavItem style={styles.currentUser} />
         <UnstyledButton
           style={styles.collapse}
-          onClick={() => this.setState({ collapsed: !collapsed, userSetCollapsed: true })}
+          onClick={() => {
+            this.props.effects.setUserPreferences({ collapsed: !collapsed });
+            this.setState({ collapsed: !collapsed });
+          }}
         >
           {collapsed ? <Icon name="chevron right" /> : <Icon name="chevron left" />}
         </UnstyledButton>
