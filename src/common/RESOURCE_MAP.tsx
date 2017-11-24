@@ -144,6 +144,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         style={{
           background: `url("${require('assets/icons/layers-icon.svg')}") no-repeat`,
           marginTop: '0.2em',
+          height: '1.2em',
           ...style,
         }}
       />
