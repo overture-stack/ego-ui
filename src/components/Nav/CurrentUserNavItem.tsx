@@ -86,7 +86,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
           />
         </div>
         <div className={`display-name ${css(styles.displayName)}`}>
-          {state.loggedInUser.first_name}
+          {state.loggedInUser.firstName}
         </div>
         {shouldShowMenu && (
           <div className={`user-actions ${css(styles.userActions)}`}>
