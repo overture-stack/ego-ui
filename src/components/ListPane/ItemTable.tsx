@@ -56,12 +56,15 @@ const ItemsWrapper = ({
   onSortChange,
   ...props,
 }) => {
-  const columns = resource.schema.map(schema => ({
-    Header: schema.fieldName,
-    accessor: schema.key,
-    sortable: schema.sortable,
-    sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
-  }));
+  const columns = resource.schema.map(schema => {
+    return {
+      ...schema.key === 'id' ? { width: 80 } : {},
+      Header: schema.fieldName,
+      accessor: schema.key,
+      sortable: schema.sortable,
+      sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
+    };
+  });
 
   return (
     <div className={`ItemTable ${css(styles.container, props.styles)}`}>
