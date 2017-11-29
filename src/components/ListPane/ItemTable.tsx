@@ -61,7 +61,7 @@ const ItemsWrapper = ({
       ...schema.key === 'id' ? { width: 80 } : {},
       Header: schema.fieldName,
       accessor: schema.key,
-      sortable: schema.sortable,
+      sortable: schema.sortable || false,
       sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
     };
   });
