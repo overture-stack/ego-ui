@@ -8,11 +8,12 @@ import Pagination from 'components/Pagination';
 import getStyles from './ListPane.styles';
 import ItemGrid from './ItemGrid';
 import ItemTable from './ItemTable';
-import { Dropdown, Button, Input } from 'semantic-ui-react';
+import { Dropdown, Button, Input, Icon } from 'semantic-ui-react';
 import ControlContainer from 'components/ControlsContainer';
 import { injectState } from 'freactal';
 import { TSortDirection, IResource } from 'common/typedefs/Resource';
 import { TThing } from 'common/typedefs';
+import { RippleButton } from 'components/Ripple';
 
 enum DisplayMode {
   Table,
@@ -197,16 +198,24 @@ class List extends React.Component<IListProps, any> {
             </Button.Group>
           </div>
           <div className={`display-mode-container ${css(paneControls.displayModeContainer)}`}>
-            <Button
-              icon="list layout"
+            <RippleButton
+              compact
               style={displayMode === DisplayMode.Table ? { color: colors.purple } : {}}
               onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
-            />
-            <Button
-              icon="grid layout"
+            >
+              <Button.Content>
+                <Icon name="list" fitted />
+              </Button.Content>
+            </RippleButton>
+            <RippleButton
+              compact
               style={displayMode === DisplayMode.Grid ? { color: colors.purple } : {}}
               onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
-            />
+            >
+              <Button.Content>
+                <Icon name="grid layout" fitted />
+              </Button.Content>
+            </RippleButton>
           </div>
         </ControlContainer>
         {displayMode === DisplayMode.Grid ? (

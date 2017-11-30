@@ -1,6 +1,5 @@
 import React from 'react';
 import { css } from 'glamor';
-import { Button } from 'semantic-ui-react';
 
 import EmptyContent from 'components/EmptyContent';
 import ContentTable from './ContentTable';
@@ -11,6 +10,7 @@ import { injectState } from 'freactal';
 import ControlContainer from 'components/ControlsContainer';
 import Aux from 'components/Aux';
 import { withRouter } from 'react-router';
+import { RippleButton } from 'components/Ripple';
 
 const styles = {
   container: {
@@ -99,7 +99,7 @@ class Content extends React.Component<any, IContentState> {
       contentState === ContentState.savingEdit || contentState === ContentState.savingCreate;
 
     const CreateButton = () => (
-      <Button
+      <RippleButton
         basic
         color="green"
         disabled={isSaving}
@@ -108,11 +108,11 @@ class Content extends React.Component<any, IContentState> {
         style={{ fontWeight: 'bold' }}
       >
         Create
-      </Button>
+      </RippleButton>
     );
 
     const EditButton = () => (
-      <Button
+      <RippleButton
         color="blue"
         disabled={isSaving}
         onClick={() => history.push(`/${resource.name.plural}/${id}/edit`)}
@@ -120,11 +120,11 @@ class Content extends React.Component<any, IContentState> {
         style={{ fontWeight: 'normal' }}
       >
         Edit
-      </Button>
+      </RippleButton>
     );
 
     const DisableButton = () => (
-      <Button
+      <RippleButton
         basic
         disabled={contentState === ContentState.disabling || (item || {}).status === 'Disabled'}
         loading={contentState === ContentState.disabling}
@@ -140,11 +140,11 @@ class Content extends React.Component<any, IContentState> {
         style={{ fontWeight: 'bold' }}
       >
         Disable
-      </Button>
+      </RippleButton>
     );
 
     const ConfirmDeleteButton = () => (
-      <Button
+      <RippleButton
         disabled={contentState === ContentState.deleting}
         loading={contentState === ContentState.deleting}
         onClick={async () => {
@@ -158,11 +158,11 @@ class Content extends React.Component<any, IContentState> {
         style={{ fontWeight: 'bold' }}
       >
         Confirm Delete
-      </Button>
+      </RippleButton>
     );
 
     const DeleteButton = () => (
-      <Button
+      <RippleButton
         basic
         onClick={() => this.setState({ contentState: ContentState.confirmDelete })}
         size="tiny"
@@ -170,11 +170,11 @@ class Content extends React.Component<any, IContentState> {
         style={{ fontWeight: 'bold' }}
       >
         Delete
-      </Button>
+      </RippleButton>
     );
 
     const CancelButton = () => (
-      <Button
+      <RippleButton
         basic
         disabled={isSaving}
         onClick={() => history.push(`/${resource.name.plural}/${this.lastValidId || ''}`)}
@@ -182,12 +182,12 @@ class Content extends React.Component<any, IContentState> {
         style={{ fontWeight: 'bold' }}
       >
         Cancel
-      </Button>
+      </RippleButton>
     );
 
     const SaveButton = () => {
       return (
-        <Button
+        <RippleButton
           color="blue"
           style={{ marginLeft: 'auto', fontWeight: 'normal' }}
           disabled={isSaving || !valid}
@@ -207,23 +207,23 @@ class Content extends React.Component<any, IContentState> {
           size="tiny"
         >
           Save
-        </Button>
+        </RippleButton>
       );
     };
 
     const GoToButton = () => (
-      <Button
+      <RippleButton
         onClick={() => history.push(`/${resource.name.plural}/${id}`)}
         size="tiny"
         color="blue"
         style={{ fontWeight: 'bold' }}
       >
         Go to {resource.name.plural} page
-      </Button>
+      </RippleButton>
     );
 
     const DeleteFromParentButton = () => (
-      <Button
+      <RippleButton
         basic
         onClick={async () => {
           await parent.resource.remove[resource.name.plural]({
@@ -238,7 +238,7 @@ class Content extends React.Component<any, IContentState> {
         style={{ fontWeight: 'bold' }}
       >
         Remove from {parent.resource.name.singular}
-      </Button>
+      </RippleButton>
     );
 
     return (

@@ -12,7 +12,7 @@ const styles = {
 };
 
 export default ({ children, style, className = '', ...props }: any) => (
-  <button {...props} className={`Logout ${className} ${css(styles.button, style)}`}>
+  <button {...props} className={`${className} ${css(styles.button, style)}`}>
     {children}
   </button>
 );

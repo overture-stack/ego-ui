@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom';
 
 import Logout from 'components/Logout';
 import colors from 'common/colors';
+import Ripple from 'components/Ripple';
 
 const enhance = compose(injectState, withState('shouldShowMenu', 'setShouldShowMenu', false));
 
@@ -73,7 +74,7 @@ const styles = {
 const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
   return (
     state.loggedInUser && (
-      <div
+      <Ripple
         className={`CurrentUserNavItem ${css(styles.container, style)}`}
         ref={ref}
         onClick={() => setShouldShowMenu(!shouldShowMenu)}
@@ -99,7 +100,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
             <Logout className={`menu-item Logout ${css(styles.menuItem)}`} />
           </div>
         )}
-      </div>
+      </Ripple>
     )
   );
 };

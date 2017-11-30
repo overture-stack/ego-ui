@@ -73,8 +73,12 @@ class Nav extends React.Component<any, any> {
             );
           })}
         </ul>
+
         <CurrentUserNavItem style={styles.currentUser} />
-        <UnstyledButton
+
+        <Ripple
+          passStyle
+          as={UnstyledButton}
           style={styles.collapse}
           onClick={() => {
             this.props.effects.setUserPreferences({ collapsed: !collapsed });
@@ -82,7 +86,7 @@ class Nav extends React.Component<any, any> {
           }}
         >
           {collapsed ? <Icon name="chevron right" /> : <Icon name="chevron left" />}
-        </UnstyledButton>
+        </Ripple>
       </div>
     );
   }
