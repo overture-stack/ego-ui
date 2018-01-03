@@ -1,10 +1,24 @@
 import _ from 'lodash';
 import React from 'react';
-import { compose, defaultProps, withStateHandlers } from 'recompose';
+import { compose, defaultProps, withStateHandlers, lifecycle } from 'recompose';
 import { css } from 'glamor';
 import { Icon, Label } from 'semantic-ui-react';
 
 import ItemSelector from './ItemSelector';
+
+interface TProps {
+  addItem: Function;
+  allAssociatedItems: any[];
+  itemsInList: any[];
+  removeItem: Function;
+  getName: Function;
+  getKey: Function;
+  fetchItems: Function;
+  editing: Boolean;
+  fetchExitingAssociations: Function;
+  setAllAssociatedItems: Function;
+  fetchInitial: Function;
+}
 
 const styles = {
   container: {
@@ -14,6 +28,22 @@ const styles = {
     flexWrap: 'wrap',
   },
 };
+
+async function fetchAllAssociatedItems({
+  fetchExitingAssociations,
+  setAllAssociatedItems,
+}: TProps) {
+  let items: any = [];
+  let count: number = 0;
+
+  do {
+    const data = await fetchExitingAssociations({ limit: 1000 });
+    items = [...items, ...data.resultSet];
+    count = data.count;
+  } while (items.length < count);
+
+  setAllAssociatedItems(items);
+}
 
 const enhance = compose(
   defaultProps({
@@ -25,6 +55,7 @@ const enhance = compose(
   withStateHandlers(
     ({ initialItems }) => ({
       itemsInList: initialItems || [],
+      allAssociatedItems: [],
     }),
     {
       setItemsInList: () => items => ({
@@ -44,18 +75,42 @@ const enhance = compose(
           itemsInList: _.without(itemsInList, item),
         };
       },
+      setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
     },
   ),
+  lifecycle({
+    componentDidMount() {
+      if (this.props.editing) {
+        fetchAllAssociatedItems(this.props);
+      }
+    },
+    componentWillReceiveProps(nextProps: TProps) {
+      const { editing } = nextProps;
+
+      if (editing && this.props.editing !== editing) {
+        fetchAllAssociatedItems(nextProps);
+      }
+    },
+  }),
 );
 
-const render = ({ addItem, itemsInList, removeItem, getName, getKey, fetchItems, editing }) => {
+const render = ({
+  addItem,
+  allAssociatedItems,
+  itemsInList,
+  removeItem,
+  getName,
+  getKey,
+  fetchItems,
+  editing,
+}: TProps) => {
   return (
     <div className={`Associator ${css(styles.container)}`}>
       {editing && (
         <ItemSelector
           fetchItems={args => fetchItems({ ...args, limit: 10 })}
           onSelect={addItem}
-          disabledItems={itemsInList}
+          disabledItems={[...allAssociatedItems, ...itemsInList]}
         />
       )}
       {itemsInList.map(item => (
@@ -70,7 +125,7 @@ const render = ({ addItem, itemsInList, removeItem, getName, getKey, fetchItems,
 
 const Component = enhance(render);
 
-export class AssociatorFetchInitial extends React.Component<any, any> {
+export class AssociatorFetchInitial extends React.Component<TProps, any> {
   state = { items: null };
   async componentDidMount() {
     const items = this.props.fetchInitial ? (await this.props.fetchInitial()).resultSet : [];

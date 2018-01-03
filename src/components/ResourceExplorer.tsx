@@ -43,6 +43,11 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       initialItems={associated[associatedType].resultSet}
                       editing={editing}
                       fetchItems={RESOURCE_MAP[associatedType].getList}
+                      fetchExitingAssociations={params =>
+                        RESOURCE_MAP[associatedType].getList({
+                          ...params,
+                          [`${resource.name.singular}Id`]: id,
+                        })}
                       getName={RESOURCE_MAP[associatedType].getName}
                       onAdd={item => stageChange({ [associatedType]: { add: item } })}
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
