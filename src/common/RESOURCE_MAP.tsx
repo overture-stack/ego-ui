@@ -21,6 +21,7 @@ import {
   deleteUser,
   deleteGroup,
   deleteApplication,
+  getAcls,
 } from 'services';
 
 import { STATUSES } from 'common/injectGlobals';
@@ -168,6 +169,49 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     name: { singular: 'application', plural: 'applications' },
     ListItem: ApplicationListItem,
     getList: getApps,
+    updateItem: updateApplication,
+    createItem: createApplication,
+    deleteItem: deleteApplication,
+    getItem: getApp,
+    rowHeight: 44,
+    initialSortOrder: 'ASC',
+    associatedTypes: ['groups', 'users'],
+    add: {
+      users: ({ user, item }) => addApplicationToUser({ application: item, user }),
+      groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
+    },
+    remove: {
+      users: ({ user, item }) => removeApplicationFromUser({ application: item, user }),
+      groups: ({ group, item }) => removeApplicationFromGroup({ application: item, group }),
+    },
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+  },
+  acls: {
+    Icon: ({ style }) => (
+      <i
+        className="icon"
+        style={{
+          background: `url("${require('assets/icons/layers-icon.svg')}") no-repeat`,
+          marginTop: '0.2em',
+          height: '1.2em',
+          ...style,
+        }}
+      />
+    ),
+    emptyMessage: 'Please select an ACL',
+    schema: [
+      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
+      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
+      { key: 'owner', fieldName: 'Owner', sortable: true },
+    ],
+    name: { singular: 'ACL', plural: 'Access' },
+    ListItem: ApplicationListItem,
+    getList: getAcls,
     updateItem: updateApplication,
     createItem: createApplication,
     deleteItem: deleteApplication,

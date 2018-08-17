@@ -39,7 +39,8 @@
     "eject": "react-scripts-ts eject",
     "storybook": "REACT_APP_DUMMY=true start-storybook -p 6006",
     "build-storybook": "REACT_APP_DUMMY=true build-storybook",
-    "build-with-storybook": "npm run build && npm run build-storybook && mv storybook-static build/storybook"
+    "build-with-storybook":
+      "npm run build && npm run build-storybook && mv storybook-static build/storybook"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.2.12",

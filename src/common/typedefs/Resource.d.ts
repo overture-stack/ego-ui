@@ -18,7 +18,7 @@ export type TField = {
 
 export type TSchema = Field[];
 
-export type TResourceType = 'groups' | 'applications' | 'users';
+export type TResourceType = 'groups' | 'applications' | 'users' | 'acls';
 
 export type TSortDirection = 'DESC' | 'ASC';
 
@@ -28,7 +28,7 @@ export interface IResource {
   emptyMessage: string;
   schema: Schema;
   noDelete?: true;
-  name: { singular: string; plural: TResourceType };
+  name: { singular: string; plural: TResourceType | string };
   ListItem: any;
   getList: Function;
   getItem: Function;
