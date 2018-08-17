@@ -182,7 +182,7 @@ class List extends React.Component<IListProps, any> {
               <Button
                 style={Object.assign(
                   { paddingBottom: 0, backgroundColor: 'transparent' },
-                  currentSort.order === 'ASC' && { color: colors.purple },
+                  currentSort.order === 'ASC' && { color: colors.teal },
                 )}
                 onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
                 icon="chevron up"
@@ -190,7 +190,7 @@ class List extends React.Component<IListProps, any> {
               <Button
                 style={Object.assign(
                   { paddingTop: 0, backgroundColor: 'transparent' },
-                  currentSort.order === 'DESC' && { color: colors.purple },
+                  currentSort.order === 'DESC' && { color: colors.teal },
                 )}
                 onClick={() => setCurrentSort({ ...currentSort, order: 'DESC' })}
                 icon="chevron down"
@@ -200,7 +200,7 @@ class List extends React.Component<IListProps, any> {
           <div className={`display-mode-container ${css(paneControls.displayModeContainer)}`}>
             <RippleButton
               compact
-              style={displayMode === DisplayMode.Table ? { color: colors.purple } : {}}
+              style={displayMode === DisplayMode.Table ? { color: colors.teal } : {}}
               onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
             >
               <Button.Content>
@@ -209,7 +209,7 @@ class List extends React.Component<IListProps, any> {
             </RippleButton>
             <RippleButton
               compact
-              style={displayMode === DisplayMode.Grid ? { color: colors.purple } : {}}
+              style={displayMode === DisplayMode.Grid ? { color: colors.teal } : {}}
               onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
             >
               <Button.Content>
