@@ -16,7 +16,7 @@ import Aux from 'components/Aux';
 
 const styles = {
   container: {
-    backgroundColor: colors.purple,
+    backgroundColor: colors.teal,
     color: '#fff',
     display: 'flex',
     flexDirection: 'column',
@@ -26,7 +26,8 @@ const styles = {
     width: '100%',
   },
   logo: {
-    marginLeft: 80,
+    marginLeft: 0,
+    width: '20%',
   },
   loginIcon: {
     width: 20,

@@ -31,7 +31,7 @@ const styles = {
   userAdmin: {
     marginLeft: 5,
     fontSize: '0.5em',
-    color: colors.purple,
+    color: colors.teal,
   },
 };
 

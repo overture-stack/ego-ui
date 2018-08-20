@@ -3,7 +3,7 @@ import colors from 'common/colors';
 const styles = {
   container: {
     position: 'relative',
-    backgroundColor: colors.purple,
+    backgroundColor: colors.teal,
     color: '#fff',
     width: 240,
     flexShrink: 0,
@@ -23,19 +23,24 @@ const styles = {
     },
     '& img': {
       display: 'block',
-      width: '60%',
       margin: 'auto',
       '&.small': {
         height: 0,
         visibility: 'hidden',
       },
+      '&.regular': {
+        width: '33%',
+        visibility: 'visible',
+      },
       '.collapsed &': {
         '&.small': {
           height: 'auto',
+          width: '66%',
           visibility: 'visible',
         },
         '&.regular': {
           height: 0,
+          width: '33%',
           visibility: 'hidden',
         },
       },
@@ -69,7 +74,7 @@ const styles = {
       display: 'block',
       position: 'absolute',
       zIndex: 1,
-      backgroundColor: '#6a0e65',
+      backgroundColor: '#00a1d8',
       content: '""',
       top: 0,
       left: 0,
@@ -83,7 +88,7 @@ const styles = {
     },
     '&:hover': {
       color: '#fff',
-      backgroundColor: '#771872',
+      backgroundColor: '#53bfe5',
     },
     '&.active': {
       '& div': {
@@ -107,7 +112,7 @@ const styles = {
   },
   collapse: {
     textAlign: 'right',
-    background: 'linear-gradient(to right, #6a0e65, #5f0c5b)',
+    background: '#00a1d8',
     color: '#fff',
     fontSize: 22,
     padding: 10,
@@ -119,7 +124,7 @@ const styles = {
     paddingBottom: 12,
     cursor: 'pointer',
     '&:hover': {
-      backgroundColor: '#771872',
+      backgroundColor: '#53bfe5',
     },
     '& .display-name': {
       // transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',

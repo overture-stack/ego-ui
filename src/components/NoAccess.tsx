@@ -5,7 +5,7 @@ import Logout from 'components/Logout';
 
 const styles = {
   container: {
-    backgroundColor: colors.purple,
+    backgroundColor: colors.teal,
     color: '#fff',
     display: 'flex',
     flexDirection: 'column',
