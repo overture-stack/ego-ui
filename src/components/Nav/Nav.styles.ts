@@ -94,6 +94,11 @@ const styles = {
       '& div': {
         textShadow: '-3px 2px 2px rgba(0,0,0,0.2)',
       },
+      '& i': {
+        '&.customSvg': {
+          filter: 'drop-shadow(-3px 2px 2px rgba(0,0,0,0.2))',
+        },
+      },
       '&::before': {
         boxShadow: '-3px 3px 1px 1px rgba(0, 0, 0, 0.1)',
         opacity: 1,

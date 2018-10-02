@@ -12,3 +12,4 @@ export * from './getApp';
 export * from './updateApplication';
 export * from './createApplication';
 export * from './getAcls';
+export * from './createAcl';

@@ -22,6 +22,7 @@ import {
   deleteGroup,
   deleteApplication,
   getAcls,
+  createAcl,
 } from 'services';
 
 import { STATUSES } from 'common/injectGlobals';
@@ -80,7 +81,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     deleteItem: deleteUser,
     rowHeight: 50,
     initialSortOrder: 'ASC',
-    associatedTypes: ['groups', 'applications'],
+    associatedTypes: ['groups', 'applications', 'acls'],
     add: {
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
       applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
@@ -141,7 +142,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   applications: {
     Icon: ({ style }) => (
       <i
-        className="icon"
+        className="icon customSvg"
         style={{
           background: `url("${require('assets/icons/layers-icon.svg')}") no-repeat`,
           marginTop: '0.2em',
@@ -194,10 +195,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   acls: {
     Icon: ({ style }) => (
       <i
-        className="icon"
+        className="icon customSvg"
         style={{
-          background: `url("${require('assets/icons/layers-icon.svg')}") no-repeat`,
+          background: `url("${require('assets/icons/icon-permissions.svg')}") no-repeat`,
           marginTop: '0.2em',
+          marginLeft: '0.15em',
+          marginRight: '0em',
           height: '1.2em',
           ...style,
         }}
@@ -209,11 +212,11 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
       { key: 'owner', fieldName: 'Owner', sortable: true },
     ],
-    name: { singular: 'ACL', plural: 'Access' },
+    name: { singular: 'acl', plural: 'acls' },
     ListItem: ApplicationListItem,
     getList: getAcls,
     updateItem: updateApplication,
-    createItem: createApplication,
+    createItem: createAcl,
     deleteItem: deleteApplication,
     getItem: getApp,
     rowHeight: 44,
