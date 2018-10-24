@@ -11,12 +11,16 @@ export const getGroups = ({
   limit = 20,
   query,
   userId,
-  appId,
+  applicationId,
   sortField,
   sortOrder,
   status,
 }): Promise<{ count: number; resultSet: Group[] }> => {
-  const baseUrl = userId ? `/users/${userId}` : appId ? `/applications/${appId}` : '';
+  const baseUrl = userId
+    ? `/users/${userId}`
+    : applicationId
+      ? `/applications/${applicationId}`
+      : '';
 
   return useDummyData
     ? Promise.resolve({
