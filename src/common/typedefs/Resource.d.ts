@@ -1,6 +1,7 @@
 import { User } from 'common/typedefs/User';
 import { Group } from 'common/typedefs/Group';
 import { Application } from 'common/typedefs/Application';
+import { Policy } from 'common/typedefs/Policy';
 
 export type TFieldType = 'dropdown' | 'text';
 
@@ -18,7 +19,7 @@ export type TField = {
 
 export type TSchema = Field[];
 
-export type TResourceType = 'groups' | 'applications' | 'users';
+export type TResourceType = 'groups' | 'applications' | 'users' | 'policies';
 
 export type TSortDirection = 'DESC' | 'ASC';
 
@@ -38,6 +39,7 @@ export interface IResource {
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];
+  aggregates: String[];
   add: { [key in TResourceType]?: (params: any) => Promise<any> };
   remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   initialSortField: string;

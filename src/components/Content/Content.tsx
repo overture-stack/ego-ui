@@ -84,6 +84,7 @@ class Content extends React.Component<any, IContentState> {
   render() {
     const {
       rows,
+      aggregates,
       styles: stylesProp = {},
       id,
       effects: { saveChanges, deleteItem, stageChange, refreshList },
@@ -259,18 +260,18 @@ class Content extends React.Component<any, IContentState> {
                 (resource.noDelete ? (
                   <DisableButton />
                 ) : contentState === ContentState.confirmDelete ||
-                contentState === ContentState.deleting ? (
-                  <ConfirmDeleteButton />
-                ) : (
-                  <DeleteButton />
-                ))}
+                  contentState === ContentState.deleting ? (
+                      <ConfirmDeleteButton />
+                    ) : (
+                      <DeleteButton />
+                    ))}
             </Aux>
           ) : (
-            <Aux>
-              <CancelButton />
-              <SaveButton />
-            </Aux>
-          )}
+                <Aux>
+                  <CancelButton />
+                  <SaveButton />
+                </Aux>
+              )}
         </ControlContainer>
         <div className={`${css(styles.content)}`}>
           {contentState === ContentState.creating ? (
@@ -282,8 +283,8 @@ class Content extends React.Component<any, IContentState> {
           ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (
             <EditingContentTable rows={rows} />
           ) : (
-            <ContentTable rows={rows} />
-          )}
+                    <ContentTable rows={rows} />
+                  )}
         </div>
       </div>
     );

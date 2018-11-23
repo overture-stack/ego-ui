@@ -81,3 +81,19 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
     </Ripple>
   );
 };
+
+export const PolicyListItem = ({ item, sortField, className = '', style, ...props }) => {
+  const secondaryField = sortField === 'name' ? 'id' : sortField;
+  return (
+    <Ripple
+      className={`AppListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
+      <div className={`primary-field ${css(styles.primaryField)}`}>{item.name}</div>
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>
+        <Truncate lines={1}>{item[secondaryField]}</Truncate>
+      </div>
+    </Ripple>
+  );
+};

@@ -21,11 +21,14 @@ import {
   deleteUser,
   deleteGroup,
   deleteApplication,
+  createPolicy,
+  getPolicy,
+  getPolicies
 } from 'services';
 
 import { STATUSES } from 'common/injectGlobals';
 
-import { GroupListItem, UserListItem, ApplicationListItem } from 'components/ListItem';
+import { GroupListItem, UserListItem, ApplicationListItem, PolicyListItem } from 'components/ListItem';
 
 import { Icon } from 'semantic-ui-react';
 import { IResource, TResourceType } from 'common/typedefs/Resource';
@@ -80,6 +83,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     rowHeight: 50,
     initialSortOrder: 'ASC',
     associatedTypes: ['groups', 'applications'],
+    aggregates: [],
     add: {
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
       applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
@@ -121,6 +125,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     rowHeight: 44,
     initialSortOrder: 'ASC',
     associatedTypes: ['users', 'applications'],
+    aggregates: [],
     add: {
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
       applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
@@ -175,6 +180,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     rowHeight: 44,
     initialSortOrder: 'ASC',
     associatedTypes: ['groups', 'users'],
+    aggregates: [],
     add: {
       users: ({ user, item }) => addApplicationToUser({ application: item, user }),
       groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
@@ -190,6 +196,45 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return this.schema.filter(field => field.sortable);
     },
   },
+  policies: {
+    Icon: ({ style }) => (
+      <i
+        className="icon"
+        style={{
+          background: `url("${require('assets/icons/security.svg')}") no-repeat`,
+          marginTop: '0.2em',
+          height: '1.2em',
+          ...style,
+        }}
+      />
+    ),
+    emptyMessage: 'Please select a policy',
+    schema: [
+      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
+      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
+    ],
+    name: { singular: 'policy', plural: 'policies' },
+    ListItem: PolicyListItem,
+    getList: getPolicies,
+    updateItem: updateApplication,
+    createItem: createPolicy,
+    deleteItem: deleteApplication,
+    getItem: getPolicy,
+    rowHeight: 44,
+    initialSortOrder: 'ASC',
+    associatedTypes: [],
+    aggregates: ['write', 'read', 'deny'],
+    add: {
+    },
+    remove: {
+    },
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+  }
 };
 
 export default RESOURCE_MAP;

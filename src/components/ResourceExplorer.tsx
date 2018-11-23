@@ -14,6 +14,58 @@ import { provideList } from 'stateProviders';
 const enhance = compose(withRouter, provideList);
 
 const ResourceExplorer = ({ id, resource, history, parent }) => {
+  const rows = [
+    ...resource.schema,
+    ...resource.associatedTypes.map(associatedType => {
+      return {
+        key: associatedType,
+        fieldContent: ({ associated, editing, stageChange }) => {
+          return (
+            <Aux>
+              <Associator
+                initialItems={associated[associatedType].resultSet}
+                editing={editing}
+                fetchItems={RESOURCE_MAP[associatedType].getList}
+                fetchExitingAssociations={params =>
+                  RESOURCE_MAP[associatedType].getList({
+                    ...params,
+                    [`${resource.name.singular}Id`]: id,
+                  })}
+                getName={RESOURCE_MAP[associatedType].getName}
+                onAdd={item => stageChange({ [associatedType]: { add: item } })}
+                onRemove={item => stageChange({ [associatedType]: { remove: item } })}
+              />
+              {!parent &&
+                associated[associatedType].count >
+                _.get(associated[associatedType], 'resultSet.length', 0) && (
+                  <NavLink
+                    to={`/${resource.name.plural}/${id}/${associatedType}`}
+                    style={{ fontSize: 14 }}
+                  >
+                    View {associated[associatedType].count} {associatedType}
+                  </NavLink>
+                )}
+            </Aux>
+          );
+        },
+      };
+    }),
+    ...resource.aggregates
+      .map(mask => [{ mask: mask, entity: 'users' }, { mask: mask, entity: 'groups' }])
+      .flatMap(x => x)
+      .map(({ mask, entity }) => {
+        return {
+          key: `${mask} ${entity}`,
+          fieldContent: () => {
+            return (
+              <div>{id}</div>
+            );
+          }
+        }
+      })
+
+  ]
+
   return (
     <Aux>
       <ListPane
@@ -31,43 +83,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
         id={id}
         resource={resource}
         parent={parent}
-        rows={[
-          ...resource.schema,
-          ...resource.associatedTypes.map(associatedType => {
-            return {
-              key: associatedType,
-              fieldContent: ({ associated, editing, stageChange }) => {
-                return (
-                  <Aux>
-                    <Associator
-                      initialItems={associated[associatedType].resultSet}
-                      editing={editing}
-                      fetchItems={RESOURCE_MAP[associatedType].getList}
-                      fetchExitingAssociations={params =>
-                        RESOURCE_MAP[associatedType].getList({
-                          ...params,
-                          [`${resource.name.singular}Id`]: id,
-                        })}
-                      getName={RESOURCE_MAP[associatedType].getName}
-                      onAdd={item => stageChange({ [associatedType]: { add: item } })}
-                      onRemove={item => stageChange({ [associatedType]: { remove: item } })}
-                    />
-                    {!parent &&
-                      associated[associatedType].count >
-                        _.get(associated[associatedType], 'resultSet.length', 0) && (
-                        <NavLink
-                          to={`/${resource.name.plural}/${id}/${associatedType}`}
-                          style={{ fontSize: 14 }}
-                        >
-                          View {associated[associatedType].count} {associatedType}
-                        </NavLink>
-                      )}
-                  </Aux>
-                );
-              },
-            };
-          }),
-        ]}
+        rows={rows}
       />
     </Aux>
   );
