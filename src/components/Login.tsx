@@ -35,6 +35,9 @@ const styles = {
   title: {
     fontWeight: 400,
   },
+  linkedin: {
+    marginTop: 10,
+  },
 };
 
 const enhance = compose(injectState);
@@ -82,6 +85,13 @@ class Component extends React.Component<any, any> {
     }
   };
 
+  linkedIn = () => {
+    location.href =
+      'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77lcvdl8p350ib&redirect_uri=' +
+      encodeURI('http://localhost:8081/auth/linkedin') +
+      `&state=1&scope=r_basicprofile`;
+  };
+
   render() {
     const { shouldNotRedirect } = this.props;
     const renderSocialLoginButtons =
@@ -95,6 +105,9 @@ class Component extends React.Component<any, any> {
           <Aux>
             <GoogleLogin onLogin={this.onGoogleLogin} />
             <FacebookLogin onLogin={this.onFacebookLogin} />
+            <button className={`${css(styles.linkedin)}`} onClick={this.linkedIn}>
+              LinkedIn
+            </button>
           </Aux>
         ) : (
           <RedirectLogin onLogin={({ token }) => this.handleJWT(token)} />
