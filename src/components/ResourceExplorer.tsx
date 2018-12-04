@@ -10,6 +10,7 @@ import Aux from 'components/Aux';
 import { NavLink } from 'react-router-dom';
 import _ from 'lodash';
 import { provideList } from 'stateProviders';
+import PolicyEntityMask from 'components/PolicyEntityMask';
 
 const enhance = compose(withRouter, provideList);
 
@@ -37,7 +38,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
               />
               {!parent &&
                 associated[associatedType].count >
-                _.get(associated[associatedType], 'resultSet.length', 0) && (
+                  _.get(associated[associatedType], 'resultSet.length', 0) && (
                   <NavLink
                     to={`/${resource.name.plural}/${id}/${associatedType}`}
                     style={{ fontSize: 14 }}
@@ -57,14 +58,11 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
         return {
           key: `${mask} ${entity}`,
           fieldContent: () => {
-            return (
-              <div>{id}</div>
-            );
-          }
-        }
-      })
-
-  ]
+            return <PolicyEntityMask id={id} mask={mask} entity={entity} />;
+          },
+        };
+      }),
+  ];
 
   return (
     <Aux>
@@ -79,12 +77,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
           );
         }}
       />
-      <Content
-        id={id}
-        resource={resource}
-        parent={parent}
-        rows={rows}
-      />
+      <Content id={id} resource={resource} parent={parent} rows={rows} />
     </Aux>
   );
 };
