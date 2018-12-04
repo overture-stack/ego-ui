@@ -23,12 +23,18 @@ import {
   deleteApplication,
   createPolicy,
   getPolicy,
-  getPolicies
+  getPolicies,
+  deletePolicy,
 } from 'services';
 
 import { STATUSES } from 'common/injectGlobals';
 
-import { GroupListItem, UserListItem, ApplicationListItem, PolicyListItem } from 'components/ListItem';
+import {
+  GroupListItem,
+  UserListItem,
+  ApplicationListItem,
+  PolicyListItem,
+} from 'components/ListItem';
 
 import { Icon } from 'semantic-ui-react';
 import { IResource, TResourceType } from 'common/typedefs/Resource';
@@ -218,23 +224,21 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     getList: getPolicies,
     updateItem: updateApplication,
     createItem: createPolicy,
-    deleteItem: deleteApplication,
+    deleteItem: deletePolicy,
     getItem: getPolicy,
     rowHeight: 44,
     initialSortOrder: 'ASC',
     associatedTypes: [],
     aggregates: ['write', 'read', 'deny'],
-    add: {
-    },
-    remove: {
-    },
+    add: {},
+    remove: {},
     get initialSortField() {
       return this.schema.find(field => field.initialSort);
     },
     get sortableFields() {
       return this.schema.filter(field => field.sortable);
     },
-  }
+  },
 };
 
 export default RESOURCE_MAP;

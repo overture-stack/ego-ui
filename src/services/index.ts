@@ -14,3 +14,4 @@ export * from './createApplication';
 export * from './createPolicy';
 export * from './getPolicy';
 export * from './getPolicies';
+export * from './updatePolicy';
