@@ -9,6 +9,8 @@ server {
         root   /usr/share/nginx/html;
         index  index.html index.htm;
 
+        try_files $uri $uri/ /index.html;
+
         sub_filter "REACT_APP_API_PLACEHOLDER" $REACT_APP_API;
         sub_filter "REACT_APP_FACEBOOK_APP_ID_PLACEHOLDER" $REACT_APP_FACEBOOK_APP_ID;
         sub_filter "REACT_APP_GOOGLE_APP_ID_PLACEHOLDER" $REACT_APP_GOOGLE_APP_ID;

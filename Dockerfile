@@ -16,4 +16,4 @@ FROM nginx:alpine
 COPY nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY --from=0 /usr/src/app/build /usr/share/nginx/html
 
-CMD envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'
+CMD uri=\$uri envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'
