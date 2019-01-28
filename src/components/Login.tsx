@@ -73,7 +73,7 @@ class Component extends React.Component<any, any> {
     await props.effects.setUser(user);
     await props.effects.setToken(jwt);
 
-    if (user.roles.includes('ADMIN')) {
+    if (user.role === 'ADMIN') {
       if (props.location.pathname === '/') {
         props.history.push('/users');
       }
