@@ -1,0 +1,30 @@
+version: 2
+
+jobs:
+  build-docker-image:
+    machine: true
+    steps:
+      - checkout
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build . -t overture/ego-ui:$(git describe --always)-alpine
+      - run: docker push overture/ego-ui:$(git describe --always)-alpine
+
+  deploy-staging:
+    machine: true
+    steps:
+      - checkout
+      - run: mkdir ~/.kube && echo $KUBE_CONFIG | base64 --decode > ~/.kube/config
+      - run: wget https://storage.googleapis.com/kubernetes-helm/helm-v2.12.1-linux-amd64.tar.gz
+      - run: tar -xvf helm-v2.12.1-linux-amd64.tar.gz
+      - run: linux-amd64/helm init --client-only
+      - run: linux-amd64/helm repo add overture https://overture-stack.github.io/charts/
+      - run: linux-amd64/helm upgrade ego-staging overture/ego --reuse-values --set uiImage.tag=$(git describe --always)-alpine
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build-docker-image
+      - deploy-staging:
+          requires:
+            - build-docker-image

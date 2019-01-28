@@ -1,0 +1,53 @@
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+
+        try_files $uri $uri/ /index.html;
+
+        sub_filter "REACT_APP_API_PLACEHOLDER" $REACT_APP_API;
+        sub_filter "REACT_APP_FACEBOOK_APP_ID_PLACEHOLDER" $REACT_APP_FACEBOOK_APP_ID;
+        sub_filter "REACT_APP_GOOGLE_APP_ID_PLACEHOLDER" $REACT_APP_GOOGLE_APP_ID;
+        sub_filter "REACT_APP_DEFAULT_REDIRECT_URI_PLACEHOLDER" $REACT_APP_DEFAULT_REDIRECT_URI;
+        sub_filter_once off; # Don't stop at the first match, replace all of them
+        sub_filter_types "application/javascript";
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
