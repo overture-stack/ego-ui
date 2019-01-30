@@ -14,6 +14,7 @@ import Nav from 'components/Nav';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Aux from 'components/Aux';
 import AuthRedirect from 'components/AuthRedirect';
+import RedirectHandler from 'components/RedirectHandler';
 
 const enhance = compose(provideLoggedInUser);
 
@@ -28,7 +29,7 @@ class App extends React.Component<any, any> {
         <div style={{ height: '100%', display: 'flex' }}>
           <Switch>
             <Route path="/auth-redirect" exact component={AuthRedirect} />
-            <Route path="/redirected" exact component={() => null} />
+            <Route path="/login-cb" exact component={RedirectHandler} />
             <Route path="/" exact component={Login} />
             <Route path="/no-access" exact component={NoAccess} />
             <ProtectedRoute
