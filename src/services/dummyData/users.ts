@@ -1,7 +1,7 @@
 export default [
   {
     id: '59e7a13d5b24bf69e9a02d1b',
-    role: 'ADMIN',
+    userType: 'ADMIN',
     status: 'Active',
     firstName: 'Glenda',
     lastName: 'Mcgowan',
@@ -17,7 +17,7 @@ export default [
     id: '59e4ffa252c0231964a0c44a',
     userName: 'hesternash@otherside.com',
     email: 'hesternash@otherside.com',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName:
       'Taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu',
@@ -31,7 +31,7 @@ export default [
   },
   {
     id: '59e7a13d5153904ad7fd195a',
-    role: 'ADMIN',
+    userType: 'ADMIN',
     status: 'Deactivated',
     firstName: 'Cunningham',
     lastName: 'Hoffman',
@@ -45,7 +45,7 @@ export default [
   },
   {
     id: '59e7a13d60dd7fa018e0a0b1',
-    role: 'USER',
+    userType: 'USER',
     status: 'Deactivated',
     firstName: 'Gladys',
     lastName: 'Gutierrez',
@@ -59,7 +59,7 @@ export default [
   },
   {
     id: '59e7a13d0180a0df8aadb836',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Greta',
     lastName: 'Cobb',
@@ -73,7 +73,7 @@ export default [
   },
   {
     id: '59e7a13dd723c3d728109f2e',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Cooke',
     lastName: 'Montgomery',
@@ -87,7 +87,7 @@ export default [
   },
   {
     id: '59e7a13d696cc80a95727aff',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Deidre',
     lastName: 'Cote',
@@ -101,7 +101,7 @@ export default [
   },
   {
     id: '59e7a13d7b096515e7c9305d',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Whitehead',
     lastName: 'Terry',
@@ -115,7 +115,7 @@ export default [
   },
   {
     id: '59e7a13d5144666e9ffb660f',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Merritt',
     lastName: 'Dorsey',
@@ -129,7 +129,7 @@ export default [
   },
   {
     id: '59e7a13dc0299cddcbeed254',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Eliza',
     lastName: 'Keith',
@@ -143,7 +143,7 @@ export default [
   },
   {
     id: '59e7a13d98697efe63b80f21',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Hazel',
     lastName: 'Vinson',
@@ -157,7 +157,7 @@ export default [
   },
   {
     id: '59e7a13d805addd2cd0aedba',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Theresa',
     lastName: 'Beck',
@@ -171,7 +171,7 @@ export default [
   },
   {
     id: '59e7a13d0849a389f1d29d94',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Haney',
     lastName: 'Erickson',
@@ -185,7 +185,7 @@ export default [
   },
   {
     id: '59e7a13d00c1d1c46f7a64cf',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Suzanne',
     lastName: 'Ware',
@@ -199,7 +199,7 @@ export default [
   },
   {
     id: '59e7a13d390f508292fdc5cd',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Leon',
     lastName: 'Sanders',
@@ -213,7 +213,7 @@ export default [
   },
   {
     id: '59e7a13d783a51f55f6b8c28',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Pittman',
     lastName: 'Nash',
@@ -227,7 +227,7 @@ export default [
   },
   {
     id: '59e7a13d1077dd8760a922d3',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Pruitt',
     lastName: 'Robles',
@@ -241,7 +241,7 @@ export default [
   },
   {
     id: '59e7a13d1f3df9fdb8fd2681',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Joann',
     lastName: 'Conley',
@@ -255,7 +255,7 @@ export default [
   },
   {
     id: '59e7a13d5b76f60c215d1aa9',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Holder',
     lastName: 'Ewing',
@@ -269,7 +269,7 @@ export default [
   },
   {
     id: '59e7a13d665866c34016c354',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Imogene',
     lastName: 'Rhodes',
@@ -283,7 +283,7 @@ export default [
   },
   {
     id: '59e7a13d8a2c906511a18cfc',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Norma',
     lastName: 'Simmons',
@@ -297,7 +297,7 @@ export default [
   },
   {
     id: '59e7a13d30a03defc0ead330',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Winnie',
     lastName: 'Vincent',
@@ -311,7 +311,7 @@ export default [
   },
   {
     id: '59e7a13d25089d52b908f6df',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Samantha',
     lastName: 'Sosa',
@@ -325,7 +325,7 @@ export default [
   },
   {
     id: '59e7a13d1d41dc0295d27c09',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Mclean',
     lastName: 'Carey',
@@ -339,7 +339,7 @@ export default [
   },
   {
     id: '59e7a13dbd55f6a6d772704c',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Hallie',
     lastName: 'Barton',
@@ -353,7 +353,7 @@ export default [
   },
   {
     id: '59e7a13d1fc1dcb3b5007fbe',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Potter',
     lastName: 'Barber',
@@ -367,7 +367,7 @@ export default [
   },
   {
     id: '59e7a13e59a0b18d467299df',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Donaldson',
     lastName: 'Rogers',
@@ -381,7 +381,7 @@ export default [
   },
   {
     id: '59e7a13e9d2402011a54deb4',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Coleen',
     lastName: 'Johns',
@@ -395,7 +395,7 @@ export default [
   },
   {
     id: '59e7a13e7c2a9c11412b9965',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Beatriz',
     lastName: 'Norris',
@@ -409,7 +409,7 @@ export default [
   },
   {
     id: '59e7a13ed4b6ad1ed42be92c',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Jeanette',
     lastName: 'Hodge',
@@ -423,7 +423,7 @@ export default [
   },
   {
     id: '59e7a13e26b044b1d90ee70a',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Shauna',
     lastName: 'Clarke',
@@ -437,7 +437,7 @@ export default [
   },
   {
     id: '59e7a13edaa965a141839001',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'George',
     lastName: 'Sparks',
@@ -451,7 +451,7 @@ export default [
   },
   {
     id: '59e7a13e5ca8fbb0af8c195f',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Tyler',
     lastName: 'York',
@@ -465,7 +465,7 @@ export default [
   },
   {
     id: '59e7a13e3c53a968d56db795',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Griffin',
     lastName: 'Nichols',
@@ -479,7 +479,7 @@ export default [
   },
   {
     id: '59e7a13e4d9d7634c9c091f4',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Silva',
     lastName: 'Mcleod',
@@ -493,7 +493,7 @@ export default [
   },
   {
     id: '59e7a13ec83e42e54a6444ad',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Burgess',
     lastName: 'Shepard',
@@ -507,7 +507,7 @@ export default [
   },
   {
     id: '59e7a13e5e95fb36eac45367',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Felicia',
     lastName: 'Marshall',
@@ -521,7 +521,7 @@ export default [
   },
   {
     id: '59e7a13e05b1ce18faaaf307',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Rena',
     lastName: 'Riley',
@@ -535,7 +535,7 @@ export default [
   },
   {
     id: '59e7a13e484ed9215efff11c',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Ferguson',
     lastName: 'Larsen',
@@ -549,7 +549,7 @@ export default [
   },
   {
     id: '59e7a13e4e2c21f719da11a1',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Shelia',
     lastName: 'Hayden',
@@ -563,7 +563,7 @@ export default [
   },
   {
     id: '59e7a13ee70275b8c66543de',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Margie',
     lastName: 'Avery',
@@ -577,7 +577,7 @@ export default [
   },
   {
     id: '59e7a13e03be3e6d16968df0',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Joy',
     lastName: 'Medina',
@@ -591,7 +591,7 @@ export default [
   },
   {
     id: '59e7a13ebbae52986adf1eb2',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Angelia',
     lastName: 'Reese',
@@ -605,7 +605,7 @@ export default [
   },
   {
     id: '59e7a13effbb41db4b0e9f23',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Marina',
     lastName: 'Wiggins',
@@ -619,7 +619,7 @@ export default [
   },
   {
     id: '59e7a13e559386cd644be848',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Buchanan',
     lastName: 'Mendoza',
@@ -633,7 +633,7 @@ export default [
   },
   {
     id: '59e7a13ee764bea2f36d25d9',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Farley',
     lastName: 'Garrett',
@@ -647,7 +647,7 @@ export default [
   },
   {
     id: '59e7a13e16560a0088d93cbe',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Reyes',
     lastName: 'Stein',
@@ -661,7 +661,7 @@ export default [
   },
   {
     id: '59e7a13ea7b69db6c1cc195e',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Fitzgerald',
     lastName: 'Doyle',
@@ -675,7 +675,7 @@ export default [
   },
   {
     id: '59e7a13e56219b4f684db905',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Bianca',
     lastName: 'Terrell',
@@ -689,7 +689,7 @@ export default [
   },
   {
     id: '59e7a13e7f040f9a259af532',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Sharlene',
     lastName: 'Nielsen',
@@ -703,7 +703,7 @@ export default [
   },
   {
     id: '59e7a13ea9ca1e5d17971269',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Sallie',
     lastName: 'Justice',
@@ -717,7 +717,7 @@ export default [
   },
   {
     id: '59e7a13eb1b8c9482b802de1',
-    role: 'USER',
+    userType: 'USER',
     status: 'Active',
     firstName: 'Wanda',
     lastName: 'Faulkner',

@@ -44,9 +44,9 @@ const FormatName = ({ firstName = '', lastName = '' }) => (
   </span>
 );
 
-export default ({ firstName, lastName, role, style }: any) => (
+export default ({ firstName, lastName, userType, style }: any) => (
   <div className={`DisplayName ${css(styles.container, style)}`}>
     <FormatName firstName={firstName} lastName={lastName} />
-    {role === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
+    {userType === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
   </div>
 );

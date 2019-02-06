@@ -47,8 +47,8 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       },
       { key: 'email', fieldName: 'Email', sortable: true, required: true },
       {
-        key: 'role',
-        fieldName: 'Role',
+        key: 'userType',
+        fieldName: 'User Type',
         sortable: true,
         required: true,
         fieldType: 'dropdown',

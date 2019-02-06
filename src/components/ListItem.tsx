@@ -68,7 +68,7 @@ export const ApplicationListItem = ({ item, sortField, className = '', style, ..
 };
 
 export const UserListItem = ({ item, sortField, className = '', style, ...props }) => {
-  const { firstName, lastName, role } = item;
+  const { firstName, lastName, userType } = item;
   const secondaryField = sortField === 'lastName' ? 'email' : sortField;
   return (
     <Ripple
@@ -76,7 +76,7 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
       style={{ ...styles.container, ...style }}
       {...props}
     >
-      <UserDisplayName firstName={firstName} lastName={lastName} role={role} />
+      <UserDisplayName firstName={firstName} lastName={lastName} userType={userType} />
       <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
     </Ripple>
   );
