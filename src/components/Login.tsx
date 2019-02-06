@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import { injectState } from 'freactal';
 import jwtDecode from 'jwt-decode';
 import ajax from 'services/ajax';
-import { apiRoot } from 'common/injectGlobals';
+import { apiRoot, egoClientId } from 'common/injectGlobals';
 
 import colors from 'common/colors';
 
@@ -57,7 +57,7 @@ class Component extends React.Component<any, any> {
   };
   componentDidMount() {
     ajax
-      .post('/oauth/ego-token?client_id=ego', null, {
+      .post(`/oauth/ego-token?client_id=${egoClientId}`, null, {
         withCredentials: true,
       })
       .then(resp => {
@@ -97,25 +97,25 @@ class Component extends React.Component<any, any> {
         <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
         <h3 className={`${css(styles.title)}`}>Login with one of the following</h3>
         <a
-          href={`${apiRoot}/oauth/login/google?client_id=ego`}
+          href={`${apiRoot}/oauth/login/google?client_id=${egoClientId}`}
           className={`${css(styles.loginButton)}`}
         >
           <i className="fab fa-google" /> &nbsp; Google
         </a>
         <a
-          href={`${apiRoot}/oauth/login/facebook?client_id=ego`}
+          href={`${apiRoot}/oauth/login/facebook?client_id=${egoClientId}`}
           className={`${css(styles.loginButton)}`}
         >
           <i className="fab fa-facebook" /> &nbsp; Facebook
         </a>
         <a
-          href={`${apiRoot}/oauth/login/github?client_id=ego`}
+          href={`${apiRoot}/oauth/login/github?client_id=${egoClientId}`}
           className={`${css(styles.loginButton)}`}
         >
           <i className="fab fa-github" /> &nbsp; GitHub
         </a>
         <a
-          href={`${apiRoot}/oauth/login/linkedin?client_id=ego`}
+          href={`${apiRoot}/oauth/login/linkedin?client_id=${egoClientId}`}
           className={`${css(styles.loginButton)}`}
         >
           <i className="fab fa-linkedin" /> &nbsp; LinkedIn
