@@ -1,4 +1,3 @@
-export * from './login';
 export * from './getUsers';
 export * from './getUser';
 export * from './updateUser';

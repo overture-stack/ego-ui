@@ -9,12 +9,5 @@ global.log = debug('app');
 
 export const STATUSES = ['Disabled', 'Approved', 'Pending'];
 export const apiRoot = process.env.REACT_APP_API;
+export const egoClientId = process.env.REACT_APP_EGO_CLIENT_ID;
 export const useDummyData = process.env.REACT_APP_DUMMY;
-export const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
-export const googleAppId = process.env.REACT_APP_GOOGLE_APP_ID;
-
-export const defaultRedirectUri = process.env.REACT_APP_DEFAULT_REDIRECT_URI || '';
-export const allRedirectUris = (process.env.REACT_APP_LOGIN_REDIRECT_NOT_REQUIRED || '')
-  .split(',')
-  .concat(defaultRedirectUri)
-  .filter(Boolean);

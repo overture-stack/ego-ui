@@ -4,13 +4,10 @@ import { css } from 'glamor';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
 import jwtDecode from 'jwt-decode';
+import ajax from 'services/ajax';
+import { apiRoot, egoClientId } from 'common/injectGlobals';
 
 import colors from 'common/colors';
-import { googleLogin, facebookLogin } from 'services/login';
-import FacebookLogin from 'components/LoginButtons/FacebookLogin';
-import GoogleLogin from 'components/LoginButtons/GoogleLogin';
-import RedirectLogin from 'components/LoginButtons/RedirectLogin';
-import { allRedirectUris } from 'common/injectGlobals';
 
 import Aux from 'components/Aux';
 
@@ -29,11 +26,25 @@ const styles = {
     marginLeft: 0,
     width: '20%',
   },
-  loginIcon: {
-    width: 20,
-  },
   title: {
     fontWeight: 400,
+  },
+  loginButton: {
+    borderRadius: '.25rem',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '.5rem .75rem',
+    backgroundColor: '#00a1d8',
+    marginBottom: '1rem',
+    minWidth: '200px',
+    fontSize: '16px',
+    transition: 'all .15s ease-in-out',
+    ':hover': {
+      color: '#fff',
+      backgroundColor: '#53BFE5',
+    },
   },
 };
 
@@ -44,61 +55,71 @@ class Component extends React.Component<any, any> {
     effects: PropTypes.object,
     state: PropTypes.object,
   };
-  onFacebookLogin = response => {
-    this.handleFacebookToken(response.authResponse.accessToken);
-  };
-  onGoogleLogin = async token => {
-    const response = await googleLogin(token);
-    this.handleLoginResponse(response);
-  };
-  handleFacebookToken = async token => {
-    const response = await facebookLogin(token);
-    this.handleLoginResponse(response);
-  };
-  handleLoginResponse = async response => {
-    if (response.status === 200) {
-      const jwt = response.data;
-      await this.handleJWT(jwt);
-    } else {
-      console.warn('response error');
-    }
-  };
-  handleJWT = async jwt => {
-    const props = this.props as any;
-    const jwtData = jwtDecode(jwt);
-    const user = {
-      ...jwtData.context.user,
-      id: jwtData.sub,
-    };
-    await props.effects.setUser(user);
-    await props.effects.setToken(jwt);
+  componentDidMount() {
+    ajax
+      .post(`/oauth/ego-token?client_id=${egoClientId}`, null, {
+        withCredentials: true,
+      })
+      .then(resp => {
+        if (resp.status === 200) {
+          return resp.data;
+        } else {
+          return '';
+        }
+      })
+      .then(async jwt => {
+        if (jwt === '') {
+          return;
+        }
+        const jwtData = jwtDecode(jwt);
+        const user = {
+          ...jwtData.context.user,
+          id: jwtData.sub,
+        };
 
-    if (user.role === 'ADMIN') {
-      if (props.location.pathname === '/') {
-        props.history.push('/users');
-      }
-    } else {
-      props.history.push('/no-access');
-    }
-  };
+        await this.props.effects.setUser(user);
+        await this.props.effects.setToken(jwt);
+
+        if (user.role === 'ADMIN') {
+          if (this.props.location.pathname === '/') {
+            this.props.history.push('/users');
+          }
+        } else {
+          this.props.history.push('/no-access');
+        }
+      });
+  }
 
   render() {
-    const { shouldNotRedirect } = this.props;
-    const renderSocialLoginButtons =
-      shouldNotRedirect || allRedirectUris.includes(window.location.origin);
-
     return (
       <div className={`Login ${css(styles.container)}`}>
         <img src={require('assets/brand-image.svg')} alt="" className={`${css(styles.logo)}`} />
         <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
-        {renderSocialLoginButtons ? (
-          <Aux>
-            <GoogleLogin onLogin={this.onGoogleLogin} />
-            <FacebookLogin onLogin={this.onFacebookLogin} />
-          </Aux>
-        ) : (
-          <RedirectLogin onLogin={({ token }) => this.handleJWT(token)} />
-        )}
+        <h3 className={`${css(styles.title)}`}>Login with one of the following</h3>
+        <a
+          href={`${apiRoot}/oauth/login/google?client_id=${egoClientId}`}
+          className={`${css(styles.loginButton)}`}
+        >
+          <i className="fab fa-google" /> &nbsp; Google
+        </a>
+        <a
+          href={`${apiRoot}/oauth/login/facebook?client_id=${egoClientId}`}
+          className={`${css(styles.loginButton)}`}
+        >
+          <i className="fab fa-facebook" /> &nbsp; Facebook
+        </a>
+        <a
+          href={`${apiRoot}/oauth/login/github?client_id=${egoClientId}`}
+          className={`${css(styles.loginButton)}`}
+        >
+          <i className="fab fa-github" /> &nbsp; GitHub
+        </a>
+        <a
+          href={`${apiRoot}/oauth/login/linkedin?client_id=${egoClientId}`}
+          className={`${css(styles.loginButton)}`}
+        >
+          <i className="fab fa-linkedin" /> &nbsp; LinkedIn
+        </a>
       </div>
     );
   }

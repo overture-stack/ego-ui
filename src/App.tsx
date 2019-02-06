@@ -28,7 +28,6 @@ class App extends React.Component<any, any> {
         <div style={{ height: '100%', display: 'flex' }}>
           <Switch>
             <Route path="/auth-redirect" exact component={AuthRedirect} />
-            <Route path="/redirected" exact component={() => null} />
             <Route path="/" exact component={Login} />
             <Route path="/no-access" exact component={NoAccess} />
             <ProtectedRoute
