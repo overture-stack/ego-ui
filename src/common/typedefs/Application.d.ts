@@ -3,6 +3,7 @@ export interface Application {
   name: string;
   description: string;
   status: string;
+  applicationType: string;
   clientId?: string;
   redirectUri?: string;
 }

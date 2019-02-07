@@ -52,7 +52,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         sortable: true,
         required: true,
         fieldType: 'dropdown',
-        options: ['Admin', 'User'],
+        options: ['ADMIN', 'USER'],
       },
       {
         key: 'status',
@@ -160,6 +160,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         sortable: true,
         fieldType: 'dropdown',
         options: STATUSES,
+      },
+      {
+        key: 'applicationType',
+        fieldName: 'Application Type',
+        sortable: true,
+        fieldType: 'dropdown',
+        options: ['ADMIN', 'CLIENT'],
       },
       { key: 'clientId', fieldName: 'Client ID', required: true },
       { key: 'clientSecret', fieldName: 'Client Secret', required: true },
