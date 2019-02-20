@@ -12,9 +12,6 @@ server {
         try_files $uri $uri/ /index.html;
 
         sub_filter "REACT_APP_API_PLACEHOLDER" $REACT_APP_API;
-        sub_filter "REACT_APP_FACEBOOK_APP_ID_PLACEHOLDER" $REACT_APP_FACEBOOK_APP_ID;
-        sub_filter "REACT_APP_GOOGLE_APP_ID_PLACEHOLDER" $REACT_APP_GOOGLE_APP_ID;
-        sub_filter "REACT_APP_DEFAULT_REDIRECT_URI_PLACEHOLDER" $REACT_APP_DEFAULT_REDIRECT_URI;
         sub_filter_once off; # Don't stop at the first match, replace all of them
         sub_filter_types "application/javascript";
     }
