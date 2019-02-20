@@ -5,7 +5,6 @@ WORKDIR /usr/src/app
 COPY . .
 
 ENV REACT_APP_API=REACT_APP_API_PLACEHOLDER
-ENV REACT_APP_EGO_CLIENT_ID=ego
 
 RUN yarn install && yarn build
 
