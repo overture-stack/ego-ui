@@ -9,7 +9,7 @@ server {
         try_files $uri $uri/ /index.html;
 
         sub_filter "REACT_APP_API_PLACEHOLDER" $REACT_APP_API;
-        sub_filter "REACT_APP_EGO_CLIENT_PLACEHOLDER" $REACT_APP_EGO_CLIENT_ID;
+        sub_filter "REACT_APP_EGO_CLIENT_ID_PLACEHOLDER" $REACT_APP_EGO_CLIENT_ID;
         sub_filter_once off; # Don't stop at the first match, replace all of them
         sub_filter_types "application/javascript";
     }
