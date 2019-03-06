@@ -7,14 +7,14 @@ export const Ripple = ({ passStyle, as = 'div', children, className = '', style,
   React.createElement(
     as,
     {
-      ...passStyle
+      ...(passStyle
         ? {
             className,
             style: { position: 'relative', ...style },
           }
         : {
             className: `${className} ${css({ position: 'relative' }, style)}`,
-          },
+          }),
       ...props,
     },
     [

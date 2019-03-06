@@ -24,8 +24,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Do nostrud nulla magna tempor voluptate deserunt elit sint sunt enim irure.',
+    description: 'Do nostrud nulla magna tempor voluptate deserunt elit sint sunt enim irure.',
     id: '59e657230195233deb3ca3a7',
     name: 'Coash',
     status: 'Sanford',
@@ -39,8 +38,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Commodo et cillum exercitation Lorem anim esse aliquip culpa pariatur magna.',
+    description: 'Commodo et cillum exercitation Lorem anim esse aliquip culpa pariatur magna.',
     id: '59e657234f046cc832604910',
     name: 'Aquoavo',
     status: 'Velez',
@@ -54,24 +52,21 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Nisi eiusmod duis anim cillum sint nostrud reprehenderit sunt.',
+    description: 'Nisi eiusmod duis anim cillum sint nostrud reprehenderit sunt.',
     id: '59e657233e53e13f07d5b6fa',
     name: 'Assistia',
     status: 'Wiggins',
   },
   {
     applications: [],
-    description:
-      'Sint enim ut voluptate proident labore consequat mollit dolor et cupidatat.',
+    description: 'Sint enim ut voluptate proident labore consequat mollit dolor et cupidatat.',
     id: '59e65723246397ae67bb3769',
     name: 'Musanpoly',
     status: 'Berry',
   },
   {
     applications: [],
-    description:
-      'Ex ullamco consectetur labore incididunt adipisicing veniam nostrud ut.',
+    description: 'Ex ullamco consectetur labore incididunt adipisicing veniam nostrud ut.',
     id: '59e65723cfbee6f0c656787c',
     name: 'Geekology',
     status: 'Kelly',
@@ -85,16 +80,14 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Qui velit consequat officia voluptate aliqua velit aute tempor.',
+    description: 'Qui velit consequat officia voluptate aliqua velit aute tempor.',
     id: '59e65723cda0704cc3b89a75',
     name: 'Marvane',
     status: 'Whitney',
   },
   {
     applications: [],
-    description:
-      'Voluptate amet magna velit fugiat laboris tempor labore occaecat amet sunt.',
+    description: 'Voluptate amet magna velit fugiat laboris tempor labore occaecat amet sunt.',
     id: '59e65723b3faffa72c65796d',
     name: 'Turnabout',
     status: 'Torres',
@@ -148,8 +141,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Dolor reprehenderit quis irure enim voluptate aliqua voluptate eiusmod nisi.',
+    description: 'Dolor reprehenderit quis irure enim voluptate aliqua voluptate eiusmod nisi.',
     id: '59e657233396359d02980933',
     name: 'Isologia',
     status: 'Herrera',
@@ -170,24 +162,21 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Sunt ad eu enim pariatur irure tempor id ut ad in sint laboris.',
+    description: 'Sunt ad eu enim pariatur irure tempor id ut ad in sint laboris.',
     id: '59e65723dfadb60b71b206c6',
     name: 'Vurbo',
     status: 'Finch',
   },
   {
     applications: [],
-    description:
-      'Exercitation excepteur velit tempor duis sunt sunt est fugiat.',
+    description: 'Exercitation excepteur velit tempor duis sunt sunt est fugiat.',
     id: '59e6572335c43f30d67d1733',
     name: 'Duflex',
     status: 'Bradley',
   },
   {
     applications: [],
-    description:
-      'Duis elit duis deserunt elit nulla incididunt eu aliquip id exercitation.',
+    description: 'Duis elit duis deserunt elit nulla incididunt eu aliquip id exercitation.',
     id: '59e657232702a3e9537b922e',
     name: 'Furnafix',
     status: 'Holland',
@@ -201,8 +190,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Ullamco cillum commodo non esse amet esse nulla deserunt dolore ad.',
+    description: 'Ullamco cillum commodo non esse amet esse nulla deserunt dolore ad.',
     id: '59e657238fc11fd82e9dc242',
     name: 'Quarx',
     status: 'Woods',
@@ -231,8 +219,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Culpa quis est ex adipisicing magna mollit sunt magna nisi Lorem eiusmod sint.',
+    description: 'Culpa quis est ex adipisicing magna mollit sunt magna nisi Lorem eiusmod sint.',
     id: '59e65723ccb7553f3c7d6198',
     name: 'Fitcore',
     status: 'Reynolds',
@@ -247,8 +234,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Lorem consectetur veniam quis adipisicing ad mollit cillum mollit ex.',
+    description: 'Lorem consectetur veniam quis adipisicing ad mollit cillum mollit ex.',
     id: '59e657238f29ca1c3d1e2aa2',
     name: 'Acrodance',
     status: 'Hayes',
@@ -262,16 +248,14 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Incididunt laborum id pariatur elit cupidatat aliquip consequat.',
+    description: 'Incididunt laborum id pariatur elit cupidatat aliquip consequat.',
     id: '59e6572396d0aa92766d79f5',
     name: 'Xeronk',
     status: 'Mcbride',
   },
   {
     applications: [],
-    description:
-      'Laboris irure occaecat quis tempor esse quis aliqua proident.',
+    description: 'Laboris irure occaecat quis tempor esse quis aliqua proident.',
     id: '59e65723e22d2e92929c40cc',
     name: 'Tropoli',
     status: 'Owen',
@@ -317,8 +301,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Ullamco do consectetur excepteur officia pariatur et do nostrud.',
+    description: 'Ullamco do consectetur excepteur officia pariatur et do nostrud.',
     id: '59e657236a77a7efef51b573',
     name: 'Asimiline',
     status: 'Wheeler',
@@ -332,8 +315,7 @@ export default [
   },
   {
     applications: [],
-    description:
-      'Do exercitation do fugiat ipsum fugiat tempor ipsum ad sint eu dolor enim minim.',
+    description: 'Do exercitation do fugiat ipsum fugiat tempor ipsum ad sint eu dolor enim minim.',
     id: '59e65723b5546f8161a71261',
     name: 'Exozent',
     status: 'Neal',

@@ -33,18 +33,16 @@ function ItemsWrapper({
   rowHeight,
   effects: { updateList },
 }: any) {
-  useEffect(
-    () => {
-      if (size.width === 0) {
-        return;
-      }
+  useEffect(() => {
+    if (size.width === 0) {
+      return;
+    }
 
-      const columns = Math.max(Math.floor(size.width / columnWidth), 1);
-      const rows = Math.max(Math.floor(size.height / rowHeight), 1);
-      updateList({ limit: columns * rows });
-    },
-    [size.width, size.height],
-  );
+    const columns = Math.max(Math.floor(size.width / columnWidth), 1);
+    const rows = Math.max(Math.floor(size.height / rowHeight), 1);
+    updateList({ limit: columns * rows });
+  }, [size.width, size.height]);
+
   const fillersRequired = Math.max(limit - resultSet.length, 0);
 
   return (

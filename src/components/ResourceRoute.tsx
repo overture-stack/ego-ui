@@ -54,8 +54,8 @@ const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
   const translateX = shouldShowSubResourceDetails
     ? '-100%'
     : shouldListSubResource
-      ? `${-(size.width - contentWidth)}px`
-      : 0;
+    ? `${-(size.width - contentWidth)}px`
+    : 0;
 
   return (
     <div className={`row ${css(styles.container)}`}>

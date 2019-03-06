@@ -18,8 +18,8 @@ export const getUsers = ({
   const baseUrl = groupId
     ? `/groups/${groupId}`
     : applicationId
-      ? `/applications/${applicationId}`
-      : '';
+    ? `/applications/${applicationId}`
+    : '';
   return useDummyData
     ? Promise.resolve({
         count: dummyUsers.length,

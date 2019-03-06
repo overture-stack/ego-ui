@@ -15,8 +15,9 @@ export const getUser = id => {
 export const getUserGroups = id => {
   return useDummyData
     ? Promise.resolve(
-        (_.find(dummyUsers, user => id === user.id, {}).groups || []
-        ).map(groupId => dummyGroups.find(group => groupId === group.id)),
+        (_.find(dummyUsers, user => id === user.id, {}).groups || []).map(groupId =>
+          dummyGroups.find(group => groupId === group.id),
+        ),
       )
     : ajax.get(`/users/${id}/groups`).then(r => r.data);
 };
@@ -24,8 +25,7 @@ export const getUserGroups = id => {
 export const getUserApplications = id => {
   return useDummyData
     ? Promise.resolve(
-        (_.find(dummyUsers, user => id === user.id, {}).applications || []
-        ).map(appId =>
+        (_.find(dummyUsers, user => id === user.id, {}).applications || []).map(appId =>
           dummyApplications.find(application => appId === application.id),
         ),
       )

@@ -68,8 +68,8 @@ class Content extends React.Component<any, IContentState> {
         id === 'create'
           ? ContentState.creating
           : subResourceType === 'edit'
-            ? ContentState.editing
-            : ContentState.displaying,
+          ? ContentState.editing
+          : ContentState.displaying,
     });
   };
 
@@ -273,7 +273,7 @@ class Content extends React.Component<any, IContentState> {
                 (resource.noDelete ? (
                   <DisableButton />
                 ) : contentState === ContentState.confirmDelete ||
-                contentState === ContentState.deleting ? (
+                  contentState === ContentState.deleting ? (
                   <ConfirmDeleteButton />
                 ) : (
                   <DeleteButton />

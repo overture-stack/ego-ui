@@ -14,9 +14,7 @@ export const getGroup = id => {
 export const getGroupUsers = id => {
   return useDummyData
     ? Promise.resolve(
-        dummyUsers.filter((user: any) =>
-          (user.group || []).find(group => group.id === id),
-        ),
+        dummyUsers.filter((user: any) => (user.group || []).find(group => group.id === id)),
       )
     : ajax.get(`/groups/${id}/users`).then(r => r.data);
 };
@@ -24,8 +22,7 @@ export const getGroupUsers = id => {
 export const getGroupApplications = id => {
   return useDummyData
     ? Promise.resolve(
-        (_.find(dummyGroups, group => id === group.id, {}).applications || []
-        ).map(appId =>
+        (_.find(dummyGroups, group => id === group.id, {}).applications || []).map(appId =>
           dummyApplications.find(application => appId === application.id),
         ),
       )
