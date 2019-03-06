@@ -1,6 +1,5 @@
 import React from 'react';
 import { Breadcrumb } from 'semantic-ui-react';
-import Aux from 'components/Aux';
 import { NavLink } from 'react-router-dom';
 import { css } from 'glamor';
 import ItemName from './ItemName';
@@ -35,12 +34,12 @@ export default ({ path }) => (
     {path
       .split('/')
       .filter(Boolean)
-      .map((crumb, i, arr) => {
+      .map((crumb: string, i: number, arr: string[]) => {
         const isLast = i === arr.length - 1;
         const linkPath = `/${arr.slice(0, i + 1).join('/')}`;
 
         return (
-          <Aux key={`${linkPath}-section`}>
+          <React.Fragment key={`${linkPath}-section`}>
             <Breadcrumb.Section active={isLast} className={`${css(styles.link)}`}>
               <NavLink to={linkPath}>
                 {i % 2 === 1 ? <ItemName type={arr[i - 1]} id={crumb} /> : crumb}
@@ -50,7 +49,7 @@ export default ({ path }) => (
             {!isLast && (
               <Breadcrumb.Divider style={{ color: '#ccc', margin: '0px 0.4em 0 0.5em' }} />
             )}
-          </Aux>
+          </React.Fragment>
         );
       })}
   </Breadcrumb>

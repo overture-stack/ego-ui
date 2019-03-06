@@ -50,15 +50,17 @@ const styles = {
 const ItemsWrapper = ({
   resource,
   onSelect,
-  state: { list: { resultSet } },
+  state: {
+    list: { resultSet },
+  },
   limit,
   currentSort,
   onSortChange,
-  ...props,
+  ...props
 }) => {
   const columns = resource.schema.map(schema => {
     return {
-      ...schema.key === 'id' ? { width: 80 } : {},
+      ...(schema.key === 'id' ? { width: 80 } : {}),
       Header: schema.fieldName,
       accessor: schema.key,
       sortable: schema.sortable || false,
@@ -86,7 +88,8 @@ const ItemsWrapper = ({
                 textAlign: 'right',
               },
             },
-          )}
+          )
+        }
         getTheadThProps={(state, rowInfo, column, instance) =>
           column.id === 'id'
             ? {
@@ -98,7 +101,8 @@ const ItemsWrapper = ({
                 style: {
                   textAlign: 'left',
                 },
-              }}
+              }
+        }
       />
     </div>
   );

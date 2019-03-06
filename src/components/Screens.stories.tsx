@@ -23,17 +23,7 @@ class PaginationTest extends React.Component {
   }
 }
 storiesOf('Screens', module)
-  .add('Users', () => (
-    <Route
-      path="/:any?/:id?"
-      component={props => <ResourceRoute resource={RESOURCE_MAP.users} {...props} />}
-    />
-  ))
-  .add('Groups', () => (
-    <Route
-      path="/:any?/:id?"
-      component={props => <ResourceRoute resource={RESOURCE_MAP.groups} {...props} />}
-    />
-  ));
+  .add('Users', () => <ResourceRoute resource={RESOURCE_MAP.users} />)
+  .add('Groups', () => <ResourceRoute resource={RESOURCE_MAP.groups} />);
 
 storiesOf('Widgets', module).add('Pagination', () => <PaginationTest />);

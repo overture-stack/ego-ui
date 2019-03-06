@@ -9,7 +9,7 @@ import { apiRoot, egoClientId } from 'common/injectGlobals';
 
 import colors from 'common/colors';
 
-import Aux from 'components/Aux';
+import _ from 'lodash';
 
 const styles = {
   container: {
@@ -49,6 +49,20 @@ const styles = {
 };
 
 const enhance = compose(injectState);
+
+/* enum LoginProvider {
+ *   Google = 'GOOGLE',
+ *   Facebook = 'FACEBOOK',
+ *   Github = 'GITHUB',
+ *   LinkedIn = 'LINKEDIN',
+ * }
+ *  */
+const endpoints = {
+  google: `${apiRoot}/oauth/login/google?client_id=${egoClientId}`,
+  facebook: `${apiRoot}/oauth/login/facebook?client_id=${egoClientId}`,
+  github: `${apiRoot}/oauth/login/github?client_id=${egoClientId}`,
+  linkedin: `${apiRoot}/oauth/login/linkedin?client_id=${egoClientId}`,
+};
 
 class Component extends React.Component<any, any> {
   static propTypes = {
@@ -96,28 +110,16 @@ class Component extends React.Component<any, any> {
         <img src={require('assets/brand-image.svg')} alt="" className={`${css(styles.logo)}`} />
         <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
         <h3 className={`${css(styles.title)}`}>Login with one of the following</h3>
-        <a
-          href={`${apiRoot}/oauth/login/google?client_id=${egoClientId}`}
-          className={`${css(styles.loginButton)}`}
-        >
+        <a href={endpoints.google} className={`${css(styles.loginButton)}`}>
           <i className="fab fa-google" /> &nbsp; Google
         </a>
-        <a
-          href={`${apiRoot}/oauth/login/facebook?client_id=${egoClientId}`}
-          className={`${css(styles.loginButton)}`}
-        >
+        <a href={endpoints.facebook} className={`${css(styles.loginButton)}`}>
           <i className="fab fa-facebook" /> &nbsp; Facebook
         </a>
-        <a
-          href={`${apiRoot}/oauth/login/github?client_id=${egoClientId}`}
-          className={`${css(styles.loginButton)}`}
-        >
+        <a href={endpoints.github} className={`${css(styles.loginButton)}`}>
           <i className="fab fa-github" /> &nbsp; GitHub
         </a>
-        <a
-          href={`${apiRoot}/oauth/login/linkedin?client_id=${egoClientId}`}
-          className={`${css(styles.loginButton)}`}
-        >
+        <a href={endpoints.linkedin} className={`${css(styles.loginButton)}`}>
           <i className="fab fa-linkedin" /> &nbsp; LinkedIn
         </a>
       </div>

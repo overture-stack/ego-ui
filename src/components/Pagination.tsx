@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from 'glamor';
 
-import { Menu, Dropdown } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import { WIDTHS } from 'semantic-ui-react/dist/es/lib/SUI';
 
 const styles = {
@@ -61,20 +61,23 @@ export default ({
         return null;
       }
     })
-    .reduce((acc, item, i, arr) => {
-      if (item) {
-        return [...acc, item];
-      } else if (arr[i + 1]) {
-        return [
-          ...acc,
-          <Menu.Item key={`${i}...`} disabled>
-            ...
-          </Menu.Item>,
-        ];
-      } else {
-        return acc;
-      }
-    }, []);
+    .reduce(
+      (acc, item, i, arr) => {
+        if (item) {
+          return [...acc, item];
+        } else if (arr[i + 1]) {
+          return [
+            ...acc,
+            <Menu.Item key={`${i}...`} disabled>
+              ...
+            </Menu.Item>,
+          ];
+        } else {
+          return acc;
+        }
+      },
+      [] as any,
+    );
 
   return (
     <div className={`Pagination ${css(styles.container)}`}>
@@ -82,7 +85,7 @@ export default ({
         style={{ width: 'auto' }}
         pagination
         size="mini"
-        widths={WIDTHS.includes(menuItems.length) ? menuItems.length as WIDTHS : undefined}
+        widths={WIDTHS.includes(menuItems.length) ? (menuItems.length as WIDTHS) : undefined}
         items={menuItems}
       />
     </div>

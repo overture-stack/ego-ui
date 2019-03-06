@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import { css } from 'glamor';
-import { compose, withPropsOnChange } from 'recompose';
+import { compose } from 'recompose';
 import withSize from 'react-sizeme';
 import { injectState } from 'freactal';
 import { Button } from 'semantic-ui-react';
@@ -12,20 +12,9 @@ const enhance = compose(
     monitorHeight: true,
   }),
   injectState,
-  withPropsOnChange(
-    (props, nextProps) =>
-      (props.size.width !== nextProps.size.width || props.size.height !== nextProps.size.height) &&
-      nextProps.size.width !== 0,
-    ({ size, columnWidth, rowHeight, effects: { updateList } }) => {
-      const columns = Math.max(Math.floor(size.width / columnWidth), 1);
-      const rows = Math.max(Math.floor(size.height / rowHeight), 1);
-
-      updateList({ limit: columns * rows });
-    },
-  ),
 );
 
-const ItemsWrapper = ({
+function ItemsWrapper({
   Component,
   getKey,
   sortField,
@@ -33,8 +22,29 @@ const ItemsWrapper = ({
   onSelect,
   styles,
   onRemove,
-  state: { list: { resultSet, params: { offset, limit } } },
-}) => {
+  state: {
+    list: {
+      resultSet,
+      params: { offset, limit },
+    },
+  },
+  size,
+  columnWidth,
+  rowHeight,
+  effects: { updateList },
+}: any) {
+  useEffect(
+    () => {
+      if (size.width === 0) {
+        return;
+      }
+
+      const columns = Math.max(Math.floor(size.width / columnWidth), 1);
+      const rows = Math.max(Math.floor(size.height / rowHeight), 1);
+      updateList({ limit: columns * rows });
+    },
+    [size.width, size.height],
+  );
   const fillersRequired = Math.max(limit - resultSet.length, 0);
 
   return (
@@ -47,12 +57,12 @@ const ItemsWrapper = ({
             item={item}
             style={{
               ...styles.listItem,
-              ...item.status === 'Disabled'
+              ...(item.status === 'Disabled'
                 ? {
                     opacity: 0.3,
                     fontStyle: 'italic',
                   }
-                : {},
+                : {}),
             }}
             onClick={() => onSelect(item)}
             selected={selectedItemId && getKey(item) === selectedItemId}
@@ -82,6 +92,6 @@ const ItemsWrapper = ({
       ))}
     </div>
   );
-};
+}
 
 export default enhance(ItemsWrapper);

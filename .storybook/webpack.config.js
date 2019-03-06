@@ -1,25 +1,22 @@
 const path = require('path');
-// load the default config generator.
-const genDefaultConfig = require('@storybook/react/dist/server/config/defaults/webpack.config.js');
 const { EnvironmentPlugin } = require('webpack');
 
-module.exports = (baseConfig, env) => {
-  const config = genDefaultConfig(baseConfig, env);
-  // Extend it as you need.
-  // For example, add typescript loader:
+module.exports = ({ config }) => {
   config.module.rules.push({
     test: /\.(ts|tsx)$/,
-    loader: require.resolve('ts-loader'),
+    use: [
+      {
+        loader: require.resolve('awesome-typescript-loader'),
+      },
+    ],
   });
+  config.resolve.extensions.push('.ts', '.tsx');
 
   // Add the EnvironmentPlugin
   config.plugins.push(
-    new EnvironmentPlugin(
-      Object.assign({}, require('dotenv').config(), process.env),
-    ),
+    new EnvironmentPlugin(Object.assign({}, require('dotenv').config(), process.env)),
   );
 
-  config.resolve.extensions.push('.ts', '.tsx');
   config.resolve.modules = [
     path.resolve(__dirname, '..', process.env.NODE_PATH || 'src'),
     'node_modules',

@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { Table } from 'semantic-ui-react';
-import { format } from 'date-fns';
+import format from 'date-fns/format/index.js';
 import { compose } from 'recompose';
 import { injectState } from 'freactal';
 
@@ -43,7 +43,12 @@ function normalizeRow(
 
 const enhance = compose(injectState);
 
-const ContentTable = ({ rows, state: { thing: { item, associated } } }) => {
+const ContentTable = ({
+  rows,
+  state: {
+    thing: { item, associated },
+  },
+}) => {
   return (
     <Table basic="very" style={{ fontSize: 18 }}>
       <Table.Body>

@@ -3,6 +3,7 @@ import { compose, withProps } from 'recompose';
 import { Route } from 'react-router';
 import { css } from 'glamor';
 import withSize from 'react-sizeme';
+import path from 'ramda/src/path';
 
 import ResourceExplorer from 'components/ResourceExplorer';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
@@ -36,7 +37,9 @@ const enhance = compose(
     monitorHeight: false,
   }),
   withProps(({ match }) => {
-    const shouldListSubResource = Object.keys(RESOURCE_MAP).includes(match.params.subResourceType);
+    const shouldListSubResource = Object.keys(RESOURCE_MAP).includes(
+      path(['params', 'subResourceType'], match),
+    );
 
     return {
       shouldListSubResource,
@@ -50,7 +53,9 @@ const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
   const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
   const translateX = shouldShowSubResourceDetails
     ? '-100%'
-    : shouldListSubResource ? `${-(size.width - contentWidth)}px` : 0;
+    : shouldListSubResource
+      ? `${-(size.width - contentWidth)}px`
+      : 0;
 
   return (
     <div className={`row ${css(styles.container)}`}>

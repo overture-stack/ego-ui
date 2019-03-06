@@ -123,7 +123,7 @@ const render = ({
   );
 };
 
-const Component = enhance(render);
+const Component: any = enhance(render);
 
 export class AssociatorFetchInitial extends React.Component<TProps, any> {
   state = { items: null };

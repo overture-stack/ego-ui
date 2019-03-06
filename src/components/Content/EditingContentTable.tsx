@@ -64,7 +64,7 @@ function normalizeRow({
     ...rowData,
     fieldName:
       typeof rowData.fieldName === 'function'
-        ? rowData.fieldName({ associated, data, editing: true, stageChange })
+        ? (rowData.fieldName as any)({ associated, data, editing: true, stageChange })
         : _.upperCase(rowData.fieldName),
     fieldContent:
       typeof rowData.fieldContent === 'function'
@@ -79,7 +79,9 @@ class EditingContentTable extends React.Component<any, any> {
   render() {
     const {
       rows,
-      state: { thing: { staged, associated, resource } },
+      state: {
+        thing: { staged, associated, resource },
+      },
       effects: { stageChange },
       hideImmutable,
     } = this.props;

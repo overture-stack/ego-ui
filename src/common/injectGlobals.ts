@@ -1,6 +1,6 @@
 import 'vanilla-ripplejs';
 import 'semantic-ui-css/semantic.min.css';
-import 'flexboxgrid';
+import 'flexboxgrid/dist/flexboxgrid.css';
 import 'index.css';
 
 localStorage.setItem('debug', process.env.REACT_APP_DEBUG || ''); // manually set because CRA doesn't allow arbitrary env variable names.
