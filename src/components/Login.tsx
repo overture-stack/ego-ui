@@ -94,7 +94,7 @@ class Component extends React.Component<any, any> {
         await this.props.effects.setUser(user);
         await this.props.effects.setToken(jwt);
 
-        if (user.userType === 'ADMIN') {
+        if (user.userType === 'ADMIN' && user.status === 'Approved') {
           if (this.props.location.pathname === '/') {
             this.props.history.push('/users');
           }
