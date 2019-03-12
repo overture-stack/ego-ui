@@ -74,7 +74,8 @@ const render = ({
         <div className={`ItemSelector ${css(styles.container)}`}>
           {!isEntryMode && (
             <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
-              <Icon name="add" />Add
+              <Icon name="add" />
+              Add
             </Button>
           )}
           {isEntryMode && (

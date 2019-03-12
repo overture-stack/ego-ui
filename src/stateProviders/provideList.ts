@@ -28,7 +28,9 @@ export default provideState({
     }),
 
     refreshList: async effects => {
-      const { list: { params, resource } } = await effects.getState();
+      const {
+        list: { params, resource },
+      } = await effects.getState();
       const match = (params.query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
       const [, before, , statusQuoted, statusUnquoted, after] = match || Array(5);
 
@@ -51,8 +53,12 @@ export default provideState({
     },
 
     updateList: async (effects, params) => {
-      const { list: { params: lastParams } } = await effects.getState();
-      const { list: { params: newParams } } = await effects.updateListParams(params);
+      const {
+        list: { params: lastParams },
+      } = await effects.getState();
+      const {
+        list: { params: newParams },
+      } = await effects.updateListParams(params);
       if (!_.isEqual(lastParams, newParams)) {
         await effects.refreshList();
       }

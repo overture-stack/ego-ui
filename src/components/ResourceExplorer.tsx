@@ -6,24 +6,27 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Associator from 'components/Associator/Associator';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router';
-import Aux from 'components/Aux';
 import { NavLink } from 'react-router-dom';
 import _ from 'lodash';
 import { provideList } from 'stateProviders';
 
-const enhance = compose(withRouter, provideList);
+const enhance = compose(
+  withRouter,
+  provideList,
+);
 
 const ResourceExplorer = ({ id, resource, history, parent }) => {
   return (
-    <Aux>
+    <>
       <ListPane
         resource={resource}
         parent={parent}
         selectedItemId={id}
         onSelect={item => {
           history.replace(
-            `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${resource.name
-              .plural}${item.id.toString() === id ? '' : `/${item.id}`}`,
+            `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
+              resource.name.plural
+            }${item.id.toString() === id ? '' : `/${item.id}`}`,
           );
         }}
       />
@@ -38,7 +41,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
               key: associatedType,
               fieldContent: ({ associated, editing, stageChange }) => {
                 return (
-                  <Aux>
+                  <>
                     <Associator
                       initialItems={associated[associatedType].resultSet}
                       editing={editing}
@@ -47,7 +50,8 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                         RESOURCE_MAP[associatedType].getList({
                           ...params,
                           [`${resource.name.singular}Id`]: id,
-                        })}
+                        })
+                      }
                       getName={RESOURCE_MAP[associatedType].getName}
                       onAdd={item => stageChange({ [associatedType]: { add: item } })}
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
@@ -62,14 +66,14 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                           View {associated[associatedType].count} {associatedType}
                         </NavLink>
                       )}
-                  </Aux>
+                  </>
                 );
               },
             };
           }),
         ]}
       />
-    </Aux>
+    </>
   );
 };
 

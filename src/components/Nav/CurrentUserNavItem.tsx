@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withState, withProps } from 'recompose';
+import { compose, withState } from 'recompose';
 import { injectState } from 'freactal';
 import { css } from 'glamor';
 import Gravatar from 'react-gravatar';
@@ -9,7 +9,10 @@ import Logout from 'components/Logout';
 import colors from 'common/colors';
 import Ripple from 'components/Ripple';
 
-const enhance = compose(injectState, withState('shouldShowMenu', 'setShouldShowMenu', false));
+const enhance = compose(
+  injectState,
+  withState('shouldShowMenu', 'setShouldShowMenu', false),
+);
 
 const styles = {
   container: {
@@ -123,7 +126,7 @@ const Component = class extends React.Component<any, any> {
   };
 
   render() {
-    return render({ ...this.props, ref: c => (this.ref = c) });
+    return render({ ...this.props, ref: c => (this.ref = c) } as any);
   }
 };
 

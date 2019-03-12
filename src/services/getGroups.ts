@@ -19,8 +19,8 @@ export const getGroups = ({
   const baseUrl = userId
     ? `/users/${userId}`
     : applicationId
-      ? `/applications/${applicationId}`
-      : '';
+    ? `/applications/${applicationId}`
+    : '';
 
   return useDummyData
     ? Promise.resolve({

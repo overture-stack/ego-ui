@@ -104,12 +104,16 @@ const provideThing = provideState({
       };
     },
     undoChanges: async effects => {
-      const { thing: { id, resource } } = await effects.getState();
+      const {
+        thing: { id, resource },
+      } = await effects.getState();
       await effects.setItem(id, resource);
       return state => ({ ...state });
     },
     saveChanges: async effects => {
-      const { thing: { resource, staged, associated, ...rest } } = await effects.getState();
+      const {
+        thing: { resource, staged, associated, ...rest },
+      } = await effects.getState();
 
       let id = rest.id;
 
@@ -117,14 +121,20 @@ const provideThing = provideState({
         Promise.all(
           Object.keys(associated).map(key => {
             return Promise.all(
-              ['add', 'remove'].reduce((acc, action) => {
-                return [
-                  ...acc,
-                  ...(associated[key][action] || []).map(filterItem =>
-                    resource[action][key]({ item, [RESOURCE_MAP[key].name.singular]: filterItem }),
-                  ),
-                ];
-              }, []),
+              ['add', 'remove'].reduce(
+                (acc, action) => {
+                  return [
+                    ...acc,
+                    ...(associated[key][action] || []).map(filterItem =>
+                      resource[action][key]({
+                        item,
+                        [RESOURCE_MAP[key].name.singular]: filterItem,
+                      }),
+                    ),
+                  ];
+                },
+                [] as any,
+              ),
             );
           }),
         );
@@ -141,7 +151,9 @@ const provideThing = provideState({
       return state => ({ ...state });
     },
     deleteItem: async effects => {
-      const { thing: { item, resource } } = await effects.getState();
+      const {
+        thing: { item, resource },
+      } = await effects.getState();
       await resource.deleteItem({ item });
       return state => ({ ...state });
     },

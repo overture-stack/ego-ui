@@ -12,8 +12,7 @@ export default [
   {
     clientId: '59e66306413651b886257551',
     clientSecret: '59e66306a1535f1fb37e0933',
-    description:
-      'Consequat pariatur pariatur sunt reprehenderit deserunt laborum.',
+    description: 'Consequat pariatur pariatur sunt reprehenderit deserunt laborum.',
     id: '59e66306da193efc7247345f',
     name: 'Macronaut',
     redirectUri: 'rosannegomez@macronaut.com',
@@ -70,8 +69,7 @@ export default [
   {
     clientId: '59e663062c3eba7ab6945225',
     clientSecret: '59e66306f2e828da683914b1',
-    description:
-      'Amet tempor velit mollit minim quis reprehenderit velit tempor cillum.',
+    description: 'Amet tempor velit mollit minim quis reprehenderit velit tempor cillum.',
     id: '59e663061729687de36b2f93',
     name: 'Techtrix',
     redirectUri: 'rosannesalazar@techtrix.com',
@@ -80,8 +78,7 @@ export default [
   {
     clientId: '59e66306f6442d2b82ae264d',
     clientSecret: '59e663068651d883221e84dc',
-    description:
-      'Laboris ea cupidatat laborum nostrud incididunt dolore fugiat aliqua.',
+    description: 'Laboris ea cupidatat laborum nostrud incididunt dolore fugiat aliqua.',
     id: '59e66306e6dd82e9af200467',
     name: 'Mantrix',
     redirectUri: 'rosanneelliott@mantrix.com',
@@ -99,8 +96,7 @@ export default [
   {
     clientId: '59e66306c7fa6fe18d3c77be',
     clientSecret: '59e6630601302cbf6806153c',
-    description:
-      'Sit sint nulla commodo labore incididunt labore cupidatat voluptate.',
+    description: 'Sit sint nulla commodo labore incididunt labore cupidatat voluptate.',
     id: '59e6630631b8bae0113403f2',
     name: 'Zillacon',
     redirectUri: 'rosanneharmon@zillacon.com',
@@ -109,8 +105,7 @@ export default [
   {
     clientId: '59e66306d9e21f7bdef7d293',
     clientSecret: '59e6630633ae6c008f02f4b9',
-    description:
-      'Consectetur eu do deserunt sint anim culpa cupidatat est et dolor consectetur.',
+    description: 'Consectetur eu do deserunt sint anim culpa cupidatat est et dolor consectetur.',
     id: '59e663061d03c642d26e8ef4',
     name: 'Melbacor',
     redirectUri: 'rosannehahn@melbacor.com',
@@ -119,8 +114,7 @@ export default [
   {
     clientId: '59e66306edbc91a0baaa9edd',
     clientSecret: '59e66306b67bb0282a93b9ce',
-    description:
-      'Sunt quis consectetur magna nulla aliquip excepteur labore veniam nulla ex sit.',
+    description: 'Sunt quis consectetur magna nulla aliquip excepteur labore veniam nulla ex sit.',
     id: '59e66306bc4fab8f20db56d8',
     name: 'Quonk',
     redirectUri: 'rosannehooper@quonk.com',
@@ -138,8 +132,7 @@ export default [
   {
     clientId: '59e663062901073d92aa87fd',
     clientSecret: '59e663068446e57032efe6b9',
-    description:
-      'Ad sint proident cupidatat laboris voluptate laborum adipisicing.',
+    description: 'Ad sint proident cupidatat laboris voluptate laborum adipisicing.',
     id: '59e66306e64d1571160731f3',
     name: 'Utarian',
     redirectUri: 'rosannephelps@utarian.com',
@@ -187,8 +180,7 @@ export default [
   {
     clientId: '59e663063760df5f12f03566',
     clientSecret: '59e6630672f8bc42fcea5dd2',
-    description:
-      'Eiusmod Lorem in commodo aute amet commodo quis veniam minim commodo.',
+    description: 'Eiusmod Lorem in commodo aute amet commodo quis veniam minim commodo.',
     id: '59e6630638be0e04ecee895a',
     name: 'Pharmacon',
     redirectUri: 'rosannebowen@pharmacon.com',
@@ -206,8 +198,7 @@ export default [
   {
     clientId: '59e663060a7c57933de1f15d',
     clientSecret: '59e663061223d4f58c2bf9c5',
-    description:
-      'Tempor nisi eu duis consequat enim laboris in id labore enim.',
+    description: 'Tempor nisi eu duis consequat enim laboris in id labore enim.',
     id: '59e66306070aa48b4cb1c276',
     name: 'Suretech',
     redirectUri: 'rosanneholcomb@suretech.com',
@@ -245,8 +236,7 @@ export default [
   {
     clientId: '59e6630680709ef4c43ed4d0',
     clientSecret: '59e66306ee9e9a45acf8dd04',
-    description:
-      'Consectetur amet id anim nisi nisi non ipsum et reprehenderit consequat.',
+    description: 'Consectetur amet id anim nisi nisi non ipsum et reprehenderit consequat.',
     id: '59e663065e15907a00581173',
     name: 'Boink',
     redirectUri: 'rosannejimenez@boink.com',
@@ -284,8 +274,7 @@ export default [
   {
     clientId: '59e663066cf9cfb28e4cfc70',
     clientSecret: '59e66306da1ba01a61b342e1',
-    description:
-      'Elit mollit anim anim anim Lorem amet deserunt sunt nostrud non id duis sunt.',
+    description: 'Elit mollit anim anim anim Lorem amet deserunt sunt nostrud non id duis sunt.',
     id: '59e663065572fb533ccf60fc',
     name: 'Comvex',
     redirectUri: 'rosannefreeman@comvex.com',
@@ -304,8 +293,7 @@ export default [
   {
     clientId: '59e66306237e32964d7b2395',
     clientSecret: '59e66306085ad0e9547e877e',
-    description:
-      'Veniam dolor tempor fugiat quis nostrud aute nisi officia ex.',
+    description: 'Veniam dolor tempor fugiat quis nostrud aute nisi officia ex.',
     id: '59e663061781f2254d8ec156',
     name: 'Xinware',
     redirectUri: 'rosannehowe@xinware.com',
@@ -314,8 +302,7 @@ export default [
   {
     clientId: '59e66306eeec79bdc6b631c5',
     clientSecret: '59e66306a252f6c5fed5bbce',
-    description:
-      'Ex et nisi culpa elit occaecat eiusmod laboris adipisicing minim exercitation.',
+    description: 'Ex et nisi culpa elit occaecat eiusmod laboris adipisicing minim exercitation.',
     id: '59e66306a1d8cd96b8d39a4d',
     name: 'Entroflex',
     redirectUri: 'rosannedillard@entroflex.com',
@@ -324,8 +311,7 @@ export default [
   {
     clientId: '59e663067bab0f507192274f',
     clientSecret: '59e66306dee65d7c9d731054',
-    description:
-      'Et et aliquip veniam est adipisicing culpa et amet officia consequat.',
+    description: 'Et et aliquip veniam est adipisicing culpa et amet officia consequat.',
     id: '59e663063a0382cc7c01c039',
     name: 'Venoflex',
     redirectUri: 'rosannehansen@venoflex.com',
@@ -334,8 +320,7 @@ export default [
   {
     clientId: '59e66306fe073379cfa7456a',
     clientSecret: '59e66306985ddbc6c442bd5d',
-    description:
-      'Qui in amet eiusmod et aliqua eiusmod enim dolore aute culpa laboris sunt.',
+    description: 'Qui in amet eiusmod et aliqua eiusmod enim dolore aute culpa laboris sunt.',
     id: '59e6630651d9c6a864389e85',
     name: 'Ersum',
     redirectUri: 'rosanneknowles@ersum.com',
@@ -383,8 +368,7 @@ export default [
   {
     clientId: '59e6630602ef351161f78fcd',
     clientSecret: '59e66306ac3ca53602989eed',
-    description:
-      'Lorem deserunt sint voluptate eiusmod qui dolor cupidatat nisi.',
+    description: 'Lorem deserunt sint voluptate eiusmod qui dolor cupidatat nisi.',
     id: '59e66306db72ac5af58063a2',
     name: 'Comcubine',
     redirectUri: 'rosannehenderson@comcubine.com',
@@ -479,8 +463,7 @@ export default [
   {
     clientId: '59e66306a3938639204b9aa6',
     clientSecret: '59e663068ec1e3e2aa0f86c5',
-    description:
-      'Sit velit aliquip eu minim labore cupidatat dolore ipsum exercitation.',
+    description: 'Sit velit aliquip eu minim labore cupidatat dolore ipsum exercitation.',
     id: '59e66306be7c4b55f1a21335',
     name: 'Koffee',
     redirectUri: 'rosannekelly@koffee.com',
@@ -547,8 +530,7 @@ export default [
   {
     clientId: '59e663067596051df9a8dd44',
     clientSecret: '59e66306f4d9834f82e027a9',
-    description:
-      'Ea ex deserunt sit sint ex exercitation qui nulla cupidatat consequat nisi et.',
+    description: 'Ea ex deserunt sit sint ex exercitation qui nulla cupidatat consequat nisi et.',
     id: '59e66306c850688a131f29e2',
     name: 'Genekom',
     redirectUri: 'rosannegoff@genekom.com',

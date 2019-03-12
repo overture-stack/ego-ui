@@ -145,7 +145,13 @@ class List extends React.Component<IListProps, any> {
       currentSort,
       setCurrentSort,
       setQuery,
-      state: { preferences: { listDisplayMode }, list: { count = 0, params: { offset, limit } } },
+      state: {
+        preferences: { listDisplayMode },
+        list: {
+          count = 0,
+          params: { offset, limit },
+        },
+      },
       effects: { updateList, refreshList, setUserPreferences },
       columnWidth,
       parent,
@@ -176,7 +182,8 @@ class List extends React.Component<IListProps, any> {
                 setCurrentSort({
                   ...currentSort,
                   field: resource.sortableFields.find(field => field.key === value),
-                })}
+                })
+              }
             />
             <Button.Group className={`${css(paneControls.sortOrderWrapper)}`} vertical>
               <Button

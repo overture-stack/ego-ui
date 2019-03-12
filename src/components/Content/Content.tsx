@@ -8,7 +8,6 @@ import { compose } from 'recompose';
 import { provideThing } from 'stateProviders';
 import { injectState } from 'freactal';
 import ControlContainer from 'components/ControlsContainer';
-import Aux from 'components/Aux';
 import { withRouter } from 'react-router';
 import { RippleButton } from 'components/Ripple';
 
@@ -26,7 +25,11 @@ const styles = {
   },
 };
 
-const enhance = compose(provideThing, injectState, withRouter);
+const enhance = compose(
+  provideThing,
+  injectState,
+  withRouter,
+);
 
 enum ContentState {
   displaying,
@@ -50,7 +53,9 @@ class Content extends React.Component<any, IContentState> {
     id,
     effects: { setItem },
     resource,
-    match: { params: { subResourceType } },
+    match: {
+      params: { subResourceType },
+    },
   }) => {
     if (id !== 'create') {
       this.lastValidId = id;
@@ -62,16 +67,23 @@ class Content extends React.Component<any, IContentState> {
       contentState:
         id === 'create'
           ? ContentState.creating
-          : subResourceType === 'edit' ? ContentState.editing : ContentState.displaying,
+          : subResourceType === 'edit'
+          ? ContentState.editing
+          : ContentState.displaying,
     });
   };
 
   componentDidMount() {
-    this.fetchData(this.props);
+    this.fetchData(this.props as any);
   }
 
   componentWillReceiveProps(nextProps: any) {
-    const { id, match: { params: { subResourceType } } } = nextProps;
+    const {
+      id,
+      match: {
+        params: { subResourceType },
+      },
+    } = nextProps;
     if (id !== this.props.id) {
       this.fetchData(nextProps);
     } else if (subResourceType !== this.props.match.params.subResourceType) {
@@ -87,7 +99,9 @@ class Content extends React.Component<any, IContentState> {
       styles: stylesProp = {},
       id,
       effects: { saveChanges, deleteItem, stageChange, refreshList },
-      state: { thing: { item, valid } },
+      state: {
+        thing: { item, valid },
+      },
       resource,
       history,
       parent,
@@ -245,12 +259,12 @@ class Content extends React.Component<any, IContentState> {
       <div className={`content ${css(styles.container, stylesProp)}`}>
         <ControlContainer style={styles.controls}>
           {parent ? (
-            <Aux>
+            <>
               <GoToButton />
               <DeleteFromParentButton />
-            </Aux>
+            </>
           ) : ![ContentState.editing, ContentState.creating].includes(contentState) && !isSaving ? (
-            <Aux>
+            <>
               <div>
                 <CreateButton />
                 {id && <EditButton />}
@@ -259,17 +273,17 @@ class Content extends React.Component<any, IContentState> {
                 (resource.noDelete ? (
                   <DisableButton />
                 ) : contentState === ContentState.confirmDelete ||
-                contentState === ContentState.deleting ? (
+                  contentState === ContentState.deleting ? (
                   <ConfirmDeleteButton />
                 ) : (
                   <DeleteButton />
                 ))}
-            </Aux>
+            </>
           ) : (
-            <Aux>
+            <>
               <CancelButton />
               <SaveButton />
-            </Aux>
+            </>
           )}
         </ControlContainer>
         <div className={`${css(styles.content)}`}>
