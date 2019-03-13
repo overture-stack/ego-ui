@@ -66,7 +66,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         key: 'preferredLanguage',
         fieldName: 'Preferred Language',
         fieldType: 'dropdown',
-        options: ['English', 'Spanish'],
+        options: ['ENGLISH', 'FRENCH', 'SPANISH'],
       },
     ],
     noDelete: true,
