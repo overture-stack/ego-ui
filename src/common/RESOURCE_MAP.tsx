@@ -47,7 +47,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       },
       { key: 'email', fieldName: 'Email', sortable: true, required: true },
       {
-        key: 'userType',
+        key: 'type',
         fieldName: 'User Type',
         sortable: true,
         required: true,
@@ -66,7 +66,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         key: 'preferredLanguage',
         fieldName: 'Preferred Language',
         fieldType: 'dropdown',
-        options: ['English', 'Spanish'],
+        options: ['ENGLISH', 'FRENCH', 'SPANISH'],
       },
     ],
     noDelete: true,
@@ -162,7 +162,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         options: STATUSES,
       },
       {
-        key: 'applicationType',
+        key: 'type',
         fieldName: 'Application Type',
         sortable: true,
         fieldType: 'dropdown',
