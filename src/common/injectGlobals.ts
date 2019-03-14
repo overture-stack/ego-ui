@@ -7,7 +7,7 @@ localStorage.setItem('debug', process.env.REACT_APP_DEBUG || ''); // manually se
 const debug = require('debug') as Function;
 global.log = debug('app');
 
-export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING'];
+export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING', 'REJECTED'];
 export const apiRoot = process.env.REACT_APP_API;
 export const egoClientId = process.env.REACT_APP_EGO_CLIENT_ID;
 export const useDummyData = process.env.REACT_APP_DUMMY;

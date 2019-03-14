@@ -2,7 +2,7 @@ export default [
   {
     id: '59e7a13d5b24bf69e9a02d1b',
     type: 'ADMIN',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Glenda',
     lastName: 'Mcgowan',
     createdAt: 'Sat Mar 25 2000 18:33:29 GMT+0000 (UTC)',
@@ -18,7 +18,7 @@ export default [
     userName: 'hesternash@otherside.com',
     email: 'hesternash@otherside.com',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName:
       'Taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu',
     lastName:
@@ -60,7 +60,7 @@ export default [
   {
     id: '59e7a13d0180a0df8aadb836',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Greta',
     lastName: 'Cobb',
     createdAt: 'Sat Feb 08 2003 09:43:05 GMT+0000 (UTC)',
@@ -74,7 +74,7 @@ export default [
   {
     id: '59e7a13dd723c3d728109f2e',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Cooke',
     lastName: 'Montgomery',
     createdAt: 'Fri Dec 09 1994 05:05:13 GMT+0000 (UTC)',
@@ -88,7 +88,7 @@ export default [
   {
     id: '59e7a13d696cc80a95727aff',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Deidre',
     lastName: 'Cote',
     createdAt: 'Sat Jul 22 1989 22:13:51 GMT+0000 (UTC)',
@@ -102,7 +102,7 @@ export default [
   {
     id: '59e7a13d7b096515e7c9305d',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Whitehead',
     lastName: 'Terry',
     createdAt: 'Sun Jul 22 2007 18:28:32 GMT+0000 (UTC)',
@@ -116,7 +116,7 @@ export default [
   {
     id: '59e7a13d5144666e9ffb660f',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Merritt',
     lastName: 'Dorsey',
     createdAt: 'Sat May 29 1971 18:37:28 GMT+0000 (UTC)',
@@ -130,7 +130,7 @@ export default [
   {
     id: '59e7a13dc0299cddcbeed254',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Eliza',
     lastName: 'Keith',
     createdAt: 'Thu Feb 06 1986 00:42:53 GMT+0000 (UTC)',
@@ -144,7 +144,7 @@ export default [
   {
     id: '59e7a13d98697efe63b80f21',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Hazel',
     lastName: 'Vinson',
     createdAt: 'Sat Jun 02 2001 15:49:54 GMT+0000 (UTC)',
@@ -158,7 +158,7 @@ export default [
   {
     id: '59e7a13d805addd2cd0aedba',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Theresa',
     lastName: 'Beck',
     createdAt: 'Fri Apr 27 1979 05:56:49 GMT+0000 (UTC)',
@@ -172,7 +172,7 @@ export default [
   {
     id: '59e7a13d0849a389f1d29d94',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Haney',
     lastName: 'Erickson',
     createdAt: 'Sun Jan 11 2015 21:05:41 GMT+0000 (UTC)',
@@ -186,7 +186,7 @@ export default [
   {
     id: '59e7a13d00c1d1c46f7a64cf',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Suzanne',
     lastName: 'Ware',
     createdAt: 'Tue Dec 15 2015 11:55:42 GMT+0000 (UTC)',
@@ -200,7 +200,7 @@ export default [
   {
     id: '59e7a13d390f508292fdc5cd',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Leon',
     lastName: 'Sanders',
     createdAt: 'Wed Nov 18 2015 17:35:37 GMT+0000 (UTC)',
@@ -214,7 +214,7 @@ export default [
   {
     id: '59e7a13d783a51f55f6b8c28',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Pittman',
     lastName: 'Nash',
     createdAt: 'Tue Oct 26 1993 17:37:23 GMT+0000 (UTC)',
@@ -228,7 +228,7 @@ export default [
   {
     id: '59e7a13d1077dd8760a922d3',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Pruitt',
     lastName: 'Robles',
     createdAt: 'Wed Jul 11 1979 11:23:35 GMT+0000 (UTC)',
@@ -242,7 +242,7 @@ export default [
   {
     id: '59e7a13d1f3df9fdb8fd2681',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Joann',
     lastName: 'Conley',
     createdAt: 'Fri Jun 28 2002 06:11:24 GMT+0000 (UTC)',
@@ -256,7 +256,7 @@ export default [
   {
     id: '59e7a13d5b76f60c215d1aa9',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Holder',
     lastName: 'Ewing',
     createdAt: 'Wed Feb 12 1986 11:10:07 GMT+0000 (UTC)',
@@ -270,7 +270,7 @@ export default [
   {
     id: '59e7a13d665866c34016c354',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Imogene',
     lastName: 'Rhodes',
     createdAt: 'Wed May 20 2015 14:29:48 GMT+0000 (UTC)',
@@ -284,7 +284,7 @@ export default [
   {
     id: '59e7a13d8a2c906511a18cfc',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Norma',
     lastName: 'Simmons',
     createdAt: 'Sat Sep 01 1973 19:51:37 GMT+0000 (UTC)',
@@ -298,7 +298,7 @@ export default [
   {
     id: '59e7a13d30a03defc0ead330',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Winnie',
     lastName: 'Vincent',
     createdAt: 'Mon Sep 09 1985 12:09:30 GMT+0000 (UTC)',
@@ -312,7 +312,7 @@ export default [
   {
     id: '59e7a13d25089d52b908f6df',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Samantha',
     lastName: 'Sosa',
     createdAt: 'Sun Apr 16 1989 03:04:29 GMT+0000 (UTC)',
@@ -326,7 +326,7 @@ export default [
   {
     id: '59e7a13d1d41dc0295d27c09',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Mclean',
     lastName: 'Carey',
     createdAt: 'Fri Mar 27 1981 22:44:55 GMT+0000 (UTC)',
@@ -340,7 +340,7 @@ export default [
   {
     id: '59e7a13dbd55f6a6d772704c',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Hallie',
     lastName: 'Barton',
     createdAt: 'Sun Dec 10 1995 14:25:26 GMT+0000 (UTC)',
@@ -354,7 +354,7 @@ export default [
   {
     id: '59e7a13d1fc1dcb3b5007fbe',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Potter',
     lastName: 'Barber',
     createdAt: 'Tue Aug 06 1985 06:04:14 GMT+0000 (UTC)',
@@ -368,7 +368,7 @@ export default [
   {
     id: '59e7a13e59a0b18d467299df',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Donaldson',
     lastName: 'Rogers',
     createdAt: 'Fri Mar 20 2009 12:42:22 GMT+0000 (UTC)',
@@ -382,7 +382,7 @@ export default [
   {
     id: '59e7a13e9d2402011a54deb4',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Coleen',
     lastName: 'Johns',
     createdAt: 'Tue Oct 21 2014 11:14:36 GMT+0000 (UTC)',
@@ -396,7 +396,7 @@ export default [
   {
     id: '59e7a13e7c2a9c11412b9965',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Beatriz',
     lastName: 'Norris',
     createdAt: 'Sun Apr 06 1980 00:08:41 GMT+0000 (UTC)',
@@ -410,7 +410,7 @@ export default [
   {
     id: '59e7a13ed4b6ad1ed42be92c',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Jeanette',
     lastName: 'Hodge',
     createdAt: 'Mon May 30 2011 19:37:38 GMT+0000 (UTC)',
@@ -424,7 +424,7 @@ export default [
   {
     id: '59e7a13e26b044b1d90ee70a',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Shauna',
     lastName: 'Clarke',
     createdAt: 'Wed Dec 02 2009 23:04:04 GMT+0000 (UTC)',
@@ -438,7 +438,7 @@ export default [
   {
     id: '59e7a13edaa965a141839001',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'George',
     lastName: 'Sparks',
     createdAt: 'Fri Sep 19 2008 21:16:14 GMT+0000 (UTC)',
@@ -452,7 +452,7 @@ export default [
   {
     id: '59e7a13e5ca8fbb0af8c195f',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Tyler',
     lastName: 'York',
     createdAt: 'Sat Oct 10 2009 17:57:02 GMT+0000 (UTC)',
@@ -466,7 +466,7 @@ export default [
   {
     id: '59e7a13e3c53a968d56db795',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Griffin',
     lastName: 'Nichols',
     createdAt: 'Thu Feb 15 2001 08:14:47 GMT+0000 (UTC)',
@@ -480,7 +480,7 @@ export default [
   {
     id: '59e7a13e4d9d7634c9c091f4',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Silva',
     lastName: 'Mcleod',
     createdAt: 'Tue Jan 27 1976 22:27:02 GMT+0000 (UTC)',
@@ -494,7 +494,7 @@ export default [
   {
     id: '59e7a13ec83e42e54a6444ad',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Burgess',
     lastName: 'Shepard',
     createdAt: 'Mon May 11 2015 17:13:46 GMT+0000 (UTC)',
@@ -508,7 +508,7 @@ export default [
   {
     id: '59e7a13e5e95fb36eac45367',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Felicia',
     lastName: 'Marshall',
     createdAt: 'Mon Oct 08 1973 18:43:04 GMT+0000 (UTC)',
@@ -522,7 +522,7 @@ export default [
   {
     id: '59e7a13e05b1ce18faaaf307',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Rena',
     lastName: 'Riley',
     createdAt: 'Mon May 29 1989 10:09:36 GMT+0000 (UTC)',
@@ -536,7 +536,7 @@ export default [
   {
     id: '59e7a13e484ed9215efff11c',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Ferguson',
     lastName: 'Larsen',
     createdAt: 'Fri Dec 15 2006 21:23:29 GMT+0000 (UTC)',
@@ -550,7 +550,7 @@ export default [
   {
     id: '59e7a13e4e2c21f719da11a1',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Shelia',
     lastName: 'Hayden',
     createdAt: 'Sat Dec 24 1977 19:32:22 GMT+0000 (UTC)',
@@ -564,7 +564,7 @@ export default [
   {
     id: '59e7a13ee70275b8c66543de',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Margie',
     lastName: 'Avery',
     createdAt: 'Wed Feb 03 1988 12:48:32 GMT+0000 (UTC)',
@@ -578,7 +578,7 @@ export default [
   {
     id: '59e7a13e03be3e6d16968df0',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Joy',
     lastName: 'Medina',
     createdAt: 'Sat Jan 01 1977 12:42:01 GMT+0000 (UTC)',
@@ -592,7 +592,7 @@ export default [
   {
     id: '59e7a13ebbae52986adf1eb2',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Angelia',
     lastName: 'Reese',
     createdAt: 'Thu Jul 01 1982 19:59:23 GMT+0000 (UTC)',
@@ -606,7 +606,7 @@ export default [
   {
     id: '59e7a13effbb41db4b0e9f23',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Marina',
     lastName: 'Wiggins',
     createdAt: 'Sat May 01 2004 20:31:28 GMT+0000 (UTC)',
@@ -620,7 +620,7 @@ export default [
   {
     id: '59e7a13e559386cd644be848',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Buchanan',
     lastName: 'Mendoza',
     createdAt: 'Thu Jun 11 1992 03:41:51 GMT+0000 (UTC)',
@@ -634,7 +634,7 @@ export default [
   {
     id: '59e7a13ee764bea2f36d25d9',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Farley',
     lastName: 'Garrett',
     createdAt: 'Sun Mar 14 1971 14:03:47 GMT+0000 (UTC)',
@@ -648,7 +648,7 @@ export default [
   {
     id: '59e7a13e16560a0088d93cbe',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Reyes',
     lastName: 'Stein',
     createdAt: 'Thu May 19 1988 23:23:42 GMT+0000 (UTC)',
@@ -662,7 +662,7 @@ export default [
   {
     id: '59e7a13ea7b69db6c1cc195e',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Fitzgerald',
     lastName: 'Doyle',
     createdAt: 'Tue Apr 30 2013 07:54:59 GMT+0000 (UTC)',
@@ -676,7 +676,7 @@ export default [
   {
     id: '59e7a13e56219b4f684db905',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Bianca',
     lastName: 'Terrell',
     createdAt: 'Sun Dec 12 1971 06:37:04 GMT+0000 (UTC)',
@@ -690,7 +690,7 @@ export default [
   {
     id: '59e7a13e7f040f9a259af532',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Sharlene',
     lastName: 'Nielsen',
     createdAt: 'Sat Jan 01 2011 13:45:12 GMT+0000 (UTC)',
@@ -704,7 +704,7 @@ export default [
   {
     id: '59e7a13ea9ca1e5d17971269',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Sallie',
     lastName: 'Justice',
     createdAt: 'Sun May 27 2007 22:36:38 GMT+0000 (UTC)',
@@ -718,7 +718,7 @@ export default [
   {
     id: '59e7a13eb1b8c9482b802de1',
     type: 'USER',
-    status: 'Active',
+    status: 'APPROVED',
     firstName: 'Wanda',
     lastName: 'Faulkner',
     createdAt: 'Sat Dec 05 1992 16:15:32 GMT+0000 (UTC)',
