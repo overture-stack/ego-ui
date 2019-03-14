@@ -6,10 +6,10 @@ import ContentTable from './ContentTable';
 import EditingContentTable from './EditingContentTable';
 import { compose } from 'recompose';
 import { provideThing } from 'stateProviders';
-import { injectState } from 'freactal';
 import ControlContainer from 'components/ControlsContainer';
 import { withRouter } from 'react-router';
 import { RippleButton } from 'components/Ripple';
+import { injectState } from 'freactal';
 
 const styles = {
   container: {
@@ -27,8 +27,8 @@ const styles = {
 
 const enhance = compose(
   provideThing,
-  injectState,
   withRouter,
+  injectState,
 );
 
 enum ContentState {

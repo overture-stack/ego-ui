@@ -1,6 +1,5 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
-import { injectState } from 'freactal';
 import { css } from 'glamor';
 import Gravatar from 'react-gravatar';
 import { NavLink } from 'react-router-dom';
@@ -9,10 +8,9 @@ import Logout from 'components/Logout';
 import colors from 'common/colors';
 import Ripple from 'components/Ripple';
 
-const enhance = compose(
-  injectState,
-  withState('shouldShowMenu', 'setShouldShowMenu', false),
-);
+import { UserContext } from '../../Contexts';
+
+const enhance = compose(withState('shouldShowMenu', 'setShouldShowMenu', false));
 
 const styles = {
   container: {
@@ -74,9 +72,9 @@ const styles = {
   },
 };
 
-const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
+const render = ({ loggedInUser, style, shouldShowMenu, setShouldShowMenu, ref }) => {
   return (
-    state.loggedInUser && (
+    loggedInUser && (
       <Ripple
         className={`CurrentUserNavItem ${css(styles.container, style)}`}
         ref={ref}
@@ -85,17 +83,15 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
         <div className={`avatar-container ${css(styles.avatarContainer)}`}>
           <Gravatar
             className={`avatar ${css(styles.avatar)}`}
-            email={state.loggedInUser.email}
+            email={loggedInUser.email}
             size={30}
           />
         </div>
-        <div className={`display-name ${css(styles.displayName)}`}>
-          {state.loggedInUser.firstName}
-        </div>
+        <div className={`display-name ${css(styles.displayName)}`}>{loggedInUser.firstName}</div>
         {shouldShowMenu && (
           <div className={`user-actions ${css(styles.userActions)}`}>
             <NavLink
-              to={`/users/${state.loggedInUser.id}`}
+              to={`/users/${loggedInUser.id}`}
               className={`menu-item ${css(styles.menuItem)}`}
             >
               Profile Page
@@ -126,7 +122,13 @@ const Component = class extends React.Component<any, any> {
   };
 
   render() {
-    return render({ ...this.props, ref: c => (this.ref = c) } as any);
+    return (
+      <UserContext.Consumer>
+        {({ loggedInUser }) =>
+          render({ ...this.props, loggedInUser, ref: c => (this.ref = c) } as any)
+        }
+      </UserContext.Consumer>
+    );
   }
 };
 

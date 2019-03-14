@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'glamor';
-import { compose } from 'recompose';
-import { injectState } from 'freactal';
 import jwtDecode from 'jwt-decode';
 import ajax from 'services/ajax';
 import { apiRoot, egoClientId } from 'common/injectGlobals';
+
+import { UserContext } from '../Contexts';
 
 import colors from 'common/colors';
 
@@ -48,8 +48,6 @@ const styles = {
   },
 };
 
-const enhance = compose(injectState);
-
 /* enum LoginProvider {
  *   Google = 'GOOGLE',
  *   Facebook = 'FACEBOOK',
@@ -82,7 +80,7 @@ class Component extends React.Component<any, any> {
         }
       })
       .then(async jwt => {
-        if (jwt === '') {
+        if (!jwt) {
           return;
         }
         const jwtData = jwtDecode(jwt);
@@ -91,10 +89,10 @@ class Component extends React.Component<any, any> {
           id: jwtData.sub,
         };
 
-        await this.props.effects.setUser(user);
-        await this.props.effects.setToken(jwt);
+        await this.props.setLoggedInUser(user);
+        await this.props.setToken(jwt);
 
-        if (user.userType === 'ADMIN') {
+        if (user.type === 'ADMIN' && user.status === 'APPROVED') {
           if (this.props.location.pathname === '/') {
             this.props.history.push('/users');
           }
@@ -127,4 +125,12 @@ class Component extends React.Component<any, any> {
   }
 }
 
-export default enhance(Component);
+export default function Login(props: any) {
+  return (
+    <UserContext.Consumer>
+      {({ setLoggedInUser, setToken }) => (
+        <Component {...props} setToken={setToken} setLoggedInUser={setLoggedInUser} />
+      )}
+    </UserContext.Consumer>
+  );
+}

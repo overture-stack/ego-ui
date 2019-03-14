@@ -14,6 +14,7 @@ import { injectState } from 'freactal';
 import { TSortDirection, IResource } from 'common/typedefs/Resource';
 import { TThing } from 'common/typedefs';
 import { RippleButton } from 'components/Ripple';
+import { UserContext } from '../../Contexts';
 
 enum DisplayMode {
   Table,
@@ -34,17 +35,17 @@ interface IListProps {
   };
   setCurrentSort: Function;
   setQuery: Function;
+  setUserPreferences: Function;
   query: string;
+  preferences: {
+    listDisplayMode: DisplayMode;
+  };
   effects: {
     updateList: Function;
     refreshList: Function;
     setListResource: Function;
-    setUserPreferences: Function;
   };
   state: {
-    preferences: {
-      listDisplayMode: DisplayMode;
-    };
     list: {
       limit: number;
       resultSet: TThing[];
@@ -145,14 +146,15 @@ class List extends React.Component<IListProps, any> {
       currentSort,
       setCurrentSort,
       setQuery,
+      setUserPreferences,
+      preferences: { listDisplayMode = 0 },
       state: {
-        preferences: { listDisplayMode },
         list: {
           count = 0,
           params: { offset, limit },
         },
       },
-      effects: { updateList, refreshList, setUserPreferences },
+      effects: { updateList, refreshList },
       columnWidth,
       parent,
       resource,
@@ -291,4 +293,10 @@ class List extends React.Component<IListProps, any> {
   }
 }
 
-export default enhance(List);
+export default enhance((props: any) => (
+  <UserContext.Consumer>
+    {({ setUserPreferences, preferences }) => (
+      <List {...props} setUserPreferences={setUserPreferences} preferences={preferences} />
+    )}
+  </UserContext.Consumer>
+));

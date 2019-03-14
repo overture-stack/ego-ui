@@ -1,8 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { compose } from 'recompose';
-import { provideLoggedInUser } from 'stateProviders';
-import { injectState } from 'freactal';
 
 import BreadCrumb from 'components/BreadCrumb';
 import Login from 'components/Login';
@@ -13,15 +10,21 @@ import NoAccess from 'components/NoAccess';
 import Nav from 'components/Nav';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
-const enhance = compose(provideLoggedInUser);
+import { UserProvider, UserContext } from './Contexts';
 
-const ProtectedRoute = injectState(({ component, state, ...rest }) => (
-  <Route {...rest} component={state.loggedInUserToken ? component : Login} />
-));
+function ProtectedRoute({ component, ...rest }: any) {
+  return (
+    <UserContext.Consumer>
+      {({ loggedInUserToken }) => (
+        <Route {...rest} component={loggedInUserToken ? component : Login} />
+      )}
+    </UserContext.Consumer>
+  );
+}
 
-class App extends React.Component<any, any> {
-  render() {
-    return (
+export default function App() {
+  return (
+    <UserProvider>
       <Router>
         <div style={{ height: '100%', display: 'flex' }}>
           <Switch>
@@ -53,8 +56,6 @@ class App extends React.Component<any, any> {
           </Switch>
         </div>
       </Router>
-    );
-  }
+    </UserProvider>
+  );
 }
-
-export default enhance(App);

@@ -5,12 +5,11 @@ import _ from 'lodash';
 
 import CurrentUserNavItem from './CurrentUserNavItem';
 import styles from './Nav.styles';
-import { compose } from 'recompose';
-import { injectState } from 'freactal';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { Icon } from 'semantic-ui-react';
 import UnstyledButton from 'components/UnstyledButton';
 import Ripple from 'components/Ripple';
+import { UserContext } from '../../Contexts';
 
 const resetList = {
   listStyleType: 'none',
@@ -18,20 +17,19 @@ const resetList = {
   padding: 0,
 };
 
-const enhance = compose(injectState);
 const MIN_SCREEN_WIDTH = 1400;
 class Nav extends React.Component<any, any> {
   state = { collapsed: false, windowSizeSmall: false };
   onResize = _.throttle(() => {
     const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
     if (windowSizeSmall !== this.state.windowSizeSmall) {
-      this.props.effects.setUserPreferences({ collapsed: undefined });
+      this.props.setUserPreferences({ collapsed: undefined });
       this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     }
   }, 100);
   componentWillMount() {
     const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
-    const userSelected = this.props.state.preferences.collapsed;
+    const userSelected = this.props.preferences.collapsed;
     this.setState({
       windowSizeSmall,
       collapsed: userSelected === undefined ? windowSizeSmall : userSelected,
@@ -81,7 +79,7 @@ class Nav extends React.Component<any, any> {
           as={UnstyledButton}
           style={styles.collapse}
           onClick={() => {
-            this.props.effects.setUserPreferences({ collapsed: !collapsed });
+            this.props.setUserPreferences({ collapsed: !collapsed });
             this.setState({ collapsed: !collapsed });
           }}
         >
@@ -92,4 +90,12 @@ class Nav extends React.Component<any, any> {
   }
 }
 
-export default enhance(Nav);
+export default function() {
+  return (
+    <UserContext.Consumer>
+      {({ setUserPreferences, preferences }) => (
+        <Nav setUserPreferences={setUserPreferences} preferences={preferences} />
+      )}
+    </UserContext.Consumer>
+  );
+}
