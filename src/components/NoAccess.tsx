@@ -18,7 +18,7 @@ const styles = {
 
 export default () => (
   <div className={`${css(styles.container)}`}>
-    Your account does not have an administrator userType.
+    Your account does not have an administrator user type.
     <Logout />
   </div>
 );
