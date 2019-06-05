@@ -140,11 +140,11 @@ class Content extends React.Component<any, IContentState> {
     const DisableButton = () => (
       <RippleButton
         basic
-        disabled={contentState === ContentState.disabling || (item || {}).status === 'Disabled'}
+        disabled={contentState === ContentState.disabling || (item || {}).status === 'DISABLED'}
         loading={contentState === ContentState.disabling}
         onClick={async () => {
           this.setState({ contentState: ContentState.disabling });
-          await stageChange({ status: 'Disabled' });
+          await stageChange({ status: 'DISABLED' });
           await saveChanges();
           await refreshList();
           this.setState({ contentState: ContentState.displaying });
