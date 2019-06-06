@@ -33,7 +33,7 @@ import { IResource, TResourceType } from 'common/typedefs/Resource';
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   users: {
     Icon: ({ style }) => <Icon name="user" style={style} />,
-    getName: x => `${x.lastName}, ${x.firstName[0]}`,
+    getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
     emptyMessage: 'Please select a user',
     schema: [
       { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
