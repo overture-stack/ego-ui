@@ -55,7 +55,7 @@ function ItemsWrapper({
             item={item}
             style={{
               ...styles.listItem,
-              ...(item.status === 'Disabled'
+              ...(item.status === 'DISABLED'
                 ? {
                     opacity: 0.3,
                     fontStyle: 'italic',
