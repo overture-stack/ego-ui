@@ -40,7 +40,7 @@ const FormatName = ({ firstName = '', lastName = '' }) => (
     <span className={`last-name name-part`}>{lastName}</span>
     <span className={`punctuation`}>,</span>{' '}
     <span className={`first-name name-part`}>
-      {((firstName ? firstName[0] : '') || '').toUpperCase()} // Null safe property access
+      {((firstName ? firstName[0] : '') || '').toUpperCase()}
     </span>
     <span className={`punctuation`}>.</span>
   </span>
