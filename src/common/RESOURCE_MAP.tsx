@@ -33,7 +33,7 @@ import { IResource, TResourceType } from 'common/typedefs/Resource';
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   users: {
     Icon: ({ style }) => <Icon name="user" style={style} />,
-    getName: x => `${x.lastName}, ${x.firstName[0]}`,
+    getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
     emptyMessage: 'Please select a user',
     schema: [
       { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
@@ -47,7 +47,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       },
       { key: 'email', fieldName: 'Email', sortable: true, required: true },
       {
-        key: 'userType',
+        key: 'type',
         fieldName: 'User Type',
         sortable: true,
         required: true,
@@ -66,7 +66,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         key: 'preferredLanguage',
         fieldName: 'Preferred Language',
         fieldType: 'dropdown',
-        options: ['English', 'Spanish'],
+        options: ['ENGLISH', 'FRENCH', 'SPANISH'],
       },
     ],
     noDelete: true,
@@ -162,7 +162,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         options: STATUSES,
       },
       {
-        key: 'applicationType',
+        key: 'type',
         fieldName: 'Application Type',
         sortable: true,
         fieldType: 'dropdown',
