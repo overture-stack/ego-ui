@@ -4,6 +4,8 @@ import { compose } from 'recompose';
 import { provideLoggedInUser } from 'stateProviders';
 import { injectState } from 'freactal';
 
+import { setToken as setAjaxToken } from 'services/ajax';
+
 import BreadCrumb from 'components/BreadCrumb';
 import Login from 'components/Login';
 
@@ -15,7 +17,7 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const enhance = compose(provideLoggedInUser);
 
-const ProtectedRoute = injectState(({ component, state, ...rest }) => (
+const ProtectedRoute =  injectState(({ component, state, ...rest }) => (
   <Route {...rest} component={state.loggedInUserToken ? component : Login} />
 ));
 
@@ -29,7 +31,7 @@ class App extends React.Component<any, any> {
             <Route path="/no-access" exact component={NoAccess} />
             <ProtectedRoute
               component={props => (
-                <>
+                <React.Fragment>
                   <Nav />
                   <div style={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                     <BreadCrumb path={props.location.pathname} />
@@ -47,7 +49,7 @@ class App extends React.Component<any, any> {
                       })}
                     </Switch>
                   </div>
-                </>
+                </React.Fragment>
               )}
             />
           </Switch>

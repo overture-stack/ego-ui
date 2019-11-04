@@ -17,7 +17,7 @@ const enhance = compose(
 
 const ResourceExplorer = ({ id, resource, history, parent }) => {
   return (
-    <>
+    <React.Fragment>
       <ListPane
         resource={resource}
         parent={parent}
@@ -41,7 +41,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
               key: associatedType,
               fieldContent: ({ associated, editing, stageChange }) => {
                 return (
-                  <>
+                  <React.Fragment>
                     <Associator
                       initialItems={associated[associatedType].resultSet}
                       editing={editing}
@@ -66,14 +66,14 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                           View {associated[associatedType].count} {associatedType}
                         </NavLink>
                       )}
-                  </>
+                  </React.Fragment>
                 );
               },
             };
           }),
         ]}
       />
-    </>
+    </React.Fragment>
   );
 };
 

@@ -1,5 +1,5 @@
 import { provideState } from 'freactal';
-import { setToken } from 'services/ajax';
+import { setToken as setAjaxToken } from 'services/ajax';
 
 export default provideState({
   initialState: () => ({
@@ -7,7 +7,17 @@ export default provideState({
     loggedInUserToken: '',
     preferences: {},
   }),
+
   effects: {
+    initialize: (effects, preferences) => state => {
+      let loggedInUserToken = '';
+      const user = localStorage.getItem('user-token') || false;
+      if(user) {
+        setAjaxToken(user);
+        loggedInUserToken= user;
+      }
+      return {...state, loggedInUserToken}
+    },
     setUserPreferences: (effects, preference) => state => {
       const preferences = { ...state.preferences, ...preference };
 
@@ -28,7 +38,7 @@ export default provideState({
     },
 
     setToken: (effects, token) => state => {
-      setToken(token);
+      setAjaxToken(token);
       return { ...state, loggedInUserToken: token };
     },
   },
