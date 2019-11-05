@@ -14,19 +14,21 @@ export default provideState({
     initialize: (effects, preferences) => state => {
       let loggedInUserToken = '';
       let loggedInUser = {};
-      const userToken = localStorage.getItem('user-token') || null;
-      const jwtData = jwtDecode(userToken);
 
-      const user = {
-        ...jwtData.context.user,
-        id: jwtData.sub,
-      };
+      const userToken = localStorage.getItem('user-token') || null;
 
       if (userToken) {
+        const jwtData = jwtDecode(userToken);
+        const user = {
+          ...jwtData.context.user,
+          id: jwtData.sub,
+        }
+
         setAjaxToken(userToken);
         loggedInUserToken = userToken;
         loggedInUser = user;
       }
+
       return { ...state, loggedInUser, loggedInUserToken };
     },
     setUserPreferences: (effects, preference) => state => {
