@@ -4,8 +4,6 @@ import { compose } from 'recompose';
 import { provideLoggedInUser } from 'stateProviders';
 import { injectState } from 'freactal';
 
-import { setToken as setAjaxToken } from 'services/ajax';
-
 import BreadCrumb from 'components/BreadCrumb';
 import Login from 'components/Login';
 

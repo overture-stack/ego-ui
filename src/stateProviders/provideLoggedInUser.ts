@@ -1,5 +1,7 @@
 import { provideState } from 'freactal';
-import { setToken as setAjaxToken } from 'services/ajax';
+import jwtDecode from 'jwt-decode';
+
+import { setAjaxToken } from 'services/ajax';
 
 export default provideState({
   initialState: () => ({
@@ -11,12 +13,21 @@ export default provideState({
   effects: {
     initialize: (effects, preferences) => state => {
       let loggedInUserToken = '';
-      const user = localStorage.getItem('user-token') || false;
-      if(user) {
-        setAjaxToken(user);
-        loggedInUserToken= user;
+      let loggedInUser = {};
+      const userToken = localStorage.getItem('user-token') || null;
+      const jwtData = jwtDecode(userToken);
+
+      const user = {
+        ...jwtData.context.user,
+        id: jwtData.sub,
+      };
+
+      if (userToken) {
+        setAjaxToken(userToken);
+        loggedInUserToken = userToken;
+        loggedInUser = user;
       }
-      return {...state, loggedInUserToken}
+      return { ...state, loggedInUser, loggedInUserToken };
     },
     setUserPreferences: (effects, preference) => state => {
       const preferences = { ...state.preferences, ...preference };
@@ -37,6 +48,7 @@ export default provideState({
       return { ...state, loggedInUser, preferences };
     },
 
+    // currently called only on login
     setToken: (effects, token) => state => {
       setAjaxToken(token);
       return { ...state, loggedInUserToken: token };
