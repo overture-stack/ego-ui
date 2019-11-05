@@ -6,7 +6,7 @@ const ajax = axios.create({ baseURL: apiRoot });
 // export const getToken = () => token;
 
 export const setAjaxToken = t => {
-  localStorage.setItem('user-token', t)
+  localStorage.setItem('user-token', t);
   ajax.defaults.headers.common['Authorization'] = `Bearer ${t}`;
 };
 

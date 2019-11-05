@@ -22,7 +22,7 @@ export default provideState({
         const user = {
           ...jwtData.context.user,
           id: jwtData.sub,
-        }
+        };
 
         setAjaxToken(userToken);
         loggedInUserToken = userToken;
