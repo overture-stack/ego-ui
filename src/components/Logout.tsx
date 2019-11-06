@@ -1,10 +1,8 @@
-import React from 'react';
-import { compose } from 'recompose';
 import { injectState } from 'freactal';
-import { withRouter } from 'react-router';
 import { css } from 'glamor';
-
-import { clearAjaxToken } from 'services/ajax';
+import React from 'react';
+import { withRouter } from 'react-router';
+import { compose } from 'recompose';
 
 const styles = {
   container: { cursor: 'pointer' },
@@ -18,7 +16,6 @@ const enhance = compose(
 const Component = class extends React.Component<any, any> {
   handleClick = async () => {
     this.props.effects.setUser(null);
-    clearAjaxToken();
     this.props.history.push('/');
   };
   render() {

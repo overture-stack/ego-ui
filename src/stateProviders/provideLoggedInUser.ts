@@ -1,7 +1,7 @@
 import { provideState } from 'freactal';
 import jwtDecode from 'jwt-decode';
 
-import { setAjaxToken } from 'services/ajax';
+import { clearAjaxToken, setAjaxToken } from 'services/ajax';
 
 export default provideState({
   initialState: () => ({
@@ -46,7 +46,9 @@ export default provideState({
       const preferences = loggedInUser
         ? JSON.parse(localStorage.getItem(`user-preferences-${loggedInUser.id}`) || '{}')
         : {};
-
+      if (!loggedInUser) {
+        clearAjaxToken();
+      }
       return { ...state, loggedInUser, preferences };
     },
 
