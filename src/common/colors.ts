@@ -1,8 +1,9 @@
-const TEAL = '#24dcbe';
-const WHITE = '#fff';
-const LIGHT_GREY = '#f9f9f9';
-const GREY = '#F2F3F5';
-const MEDIUM_GREY = '#D8D8D8';
-const BLUE = '#00a1d8';
+const TEAL = '#24DCBE';
+const HIGH_CONTRAST_TEAL = '#268271';
+const WHITE = '#FFF';
+const LIGHT_GREY = '#F3F3F3'; // background
+const GREY = '#DFDEDF';
+const DARK_GREY = '#666';
+const BLUE = '#00A1D8';
 
-export { BLUE, GREY, LIGHT_GREY, MEDIUM_GREY, TEAL, WHITE };
+export { BLUE, GREY, HIGH_CONTRAST_TEAL, LIGHT_GREY, DARK_GREY, TEAL, WHITE };

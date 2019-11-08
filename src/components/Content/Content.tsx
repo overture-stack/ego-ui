@@ -1,15 +1,15 @@
-import React from 'react';
 import { css } from 'glamor';
+import React from 'react';
 
+import ControlContainer from 'components/ControlsContainer';
 import EmptyContent from 'components/EmptyContent';
-import ContentTable from './ContentTable';
-import EditingContentTable from './EditingContentTable';
+import { RippleButton } from 'components/Ripple';
+import { injectState } from 'freactal';
+import { withRouter } from 'react-router';
 import { compose } from 'recompose';
 import { provideThing } from 'stateProviders';
-import { injectState } from 'freactal';
-import ControlContainer from 'components/ControlsContainer';
-import { withRouter } from 'react-router';
-import { RippleButton } from 'components/Ripple';
+import ContentTable from './ContentTable';
+import EditingContentTable from './EditingContentTable';
 
 const styles = {
   container: {
@@ -19,9 +19,9 @@ const styles = {
   },
   controls: { paddingRight: 24, paddingLeft: 24, justifyContent: 'space-between' },
   content: {
-    paddingLeft: 60,
-    paddingRight: 60,
-    paddingTop: 30,
+    // paddingLeft: 60,
+    // paddingRight: 60,
+    // paddingTop: 30,
   },
 };
 

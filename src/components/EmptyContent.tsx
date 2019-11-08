@@ -1,4 +1,4 @@
-import { MEDIUM_GREY } from 'common/colors';
+import { GREY } from 'common/colors';
 import { css } from 'glamor';
 import React from 'react';
 
@@ -8,7 +8,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 20,
-    color: MEDIUM_GREY,
+    color: GREY,
     fontWeight: 200,
   },
 };
