@@ -1,6 +1,6 @@
-import React from 'react';
+import { TEAL } from 'common/colors';
 import { css } from 'glamor';
-import colors from 'common/colors';
+import React from 'react';
 
 const styles = {
   container: {
@@ -14,7 +14,7 @@ const styles = {
   userAdmin: {
     marginLeft: 5,
     fontSize: '0.5em',
-    color: colors.teal,
+    color: TEAL,
   },
   formattedName: {
     '& .name-part': {

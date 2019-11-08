@@ -1,19 +1,19 @@
+import { css } from 'glamor';
 import _ from 'lodash';
 import React from 'react';
-import { css } from 'glamor';
 import { compose, defaultProps, withProps, withState } from 'recompose';
 
-import colors from 'common/colors';
+import { TEAL } from 'common/colors';
+import { TThing } from 'common/typedefs';
+import { IResource, TSortDirection } from 'common/typedefs/Resource';
+import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
-import getStyles from './ListPane.styles';
+import { RippleButton } from 'components/Ripple';
+import { injectState } from 'freactal';
+import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
 import ItemGrid from './ItemGrid';
 import ItemTable from './ItemTable';
-import { Dropdown, Button, Input, Icon } from 'semantic-ui-react';
-import ControlContainer from 'components/ControlsContainer';
-import { injectState } from 'freactal';
-import { TSortDirection, IResource } from 'common/typedefs/Resource';
-import { TThing } from 'common/typedefs';
-import { RippleButton } from 'components/Ripple';
+import getStyles from './ListPane.styles';
 
 enum DisplayMode {
   Table,
@@ -187,18 +187,20 @@ class List extends React.Component<IListProps, any> {
             />
             <Button.Group className={`${css(paneControls.sortOrderWrapper)}`} vertical>
               <Button
-                style={Object.assign(
-                  { paddingBottom: 0, backgroundColor: 'transparent' },
-                  currentSort.order === 'ASC' && { color: colors.teal },
-                )}
+                style={{
+                  paddingBottom: 0,
+                  backgroundColor: 'transparent',
+                  ...(currentSort.order === 'ASC' && { color: TEAL }),
+                }}
                 onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
                 icon="chevron up"
               />
               <Button
-                style={Object.assign(
-                  { paddingTop: 0, backgroundColor: 'transparent' },
-                  currentSort.order === 'DESC' && { color: colors.teal },
-                )}
+                style={{
+                  paddingTop: 0,
+                  backgroundColor: 'transparent',
+                  ...(currentSort.order === 'DESC' && { color: TEAL }),
+                }}
                 onClick={() => setCurrentSort({ ...currentSort, order: 'DESC' })}
                 icon="chevron down"
               />
@@ -207,7 +209,7 @@ class List extends React.Component<IListProps, any> {
           <div className={`display-mode-container ${css(paneControls.displayModeContainer)}`}>
             <RippleButton
               compact
-              style={displayMode === DisplayMode.Table ? { color: colors.teal } : {}}
+              style={displayMode === DisplayMode.Table ? { color: TEAL } : {}}
               onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
             >
               <Button.Content>
@@ -216,7 +218,7 @@ class List extends React.Component<IListProps, any> {
             </RippleButton>
             <RippleButton
               compact
-              style={displayMode === DisplayMode.Grid ? { color: colors.teal } : {}}
+              style={displayMode === DisplayMode.Grid ? { color: TEAL } : {}}
               onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
             >
               <Button.Content>

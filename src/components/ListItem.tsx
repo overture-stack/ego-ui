@@ -1,9 +1,9 @@
-import React from 'react';
-import { css } from 'glamor';
-import Truncate from 'react-truncate';
-import colors from 'common/colors';
-import UserDisplayName from 'components/UserDisplayName';
+import { TEAL } from 'common/colors';
 import Ripple from 'components/Ripple';
+import UserDisplayName from 'components/UserDisplayName';
+import { css } from 'glamor';
+import React from 'react';
+import Truncate from 'react-truncate';
 
 const styles = {
   container: {
@@ -31,7 +31,7 @@ const styles = {
   userAdmin: {
     marginLeft: 5,
     fontSize: '0.5em',
-    color: colors.teal,
+    color: TEAL,
   },
 };
 

@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { css } from 'glamor';
-import { compose } from 'recompose';
-import { injectState } from 'freactal';
-import jwtDecode from 'jwt-decode';
-import ajax from 'services/ajax';
 import { apiRoot, egoClientId } from 'common/injectGlobals';
+import { injectState } from 'freactal';
+import { css } from 'glamor';
+import jwtDecode from 'jwt-decode';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { compose } from 'recompose';
+import ajax from 'services/ajax';
 
-import colors from 'common/colors';
+import { TEAL } from 'common/colors';
 
 import _ from 'lodash';
 
 const styles = {
   container: {
-    backgroundColor: colors.teal,
+    backgroundColor: TEAL,
     color: '#fff',
     display: 'flex',
     flexDirection: 'column',

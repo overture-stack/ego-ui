@@ -1,12 +1,12 @@
-import React from 'react';
-import { compose, withState } from 'recompose';
 import { injectState } from 'freactal';
 import { css } from 'glamor';
+import React from 'react';
 import Gravatar from 'react-gravatar';
 import { NavLink } from 'react-router-dom';
+import { compose, withState } from 'recompose';
 
+import { TEAL } from 'common/colors';
 import Logout from 'components/Logout';
-import colors from 'common/colors';
 import Ripple from 'components/Ripple';
 
 const enhance = compose(
@@ -55,7 +55,7 @@ const styles = {
     bottom: 0,
     width: 240,
     boxShadow: '-2px 2px 2px 0 rgba(51, 7, 49, 0.24)',
-    border: `1px solid ${colors.teal}`,
+    border: `1px solid ${TEAL}`,
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
     overflow: 'hidden',

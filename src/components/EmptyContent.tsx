@@ -1,6 +1,6 @@
-import React from 'react';
+import { MEDIUM_GREY } from 'common/colors';
 import { css } from 'glamor';
-import colors from 'common/colors';
+import React from 'react';
 
 const styles = {
   container: {
@@ -8,7 +8,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 20,
-    color: colors.mediumGrey,
+    color: MEDIUM_GREY,
     fontWeight: 200,
   },
 };
