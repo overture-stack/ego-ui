@@ -1,7 +1,7 @@
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { upperCase } from 'lodash';
+import { groupBy, upperCase } from 'lodash';
 import React from 'react';
 import { compose } from 'recompose';
 import { Grid, Table } from 'semantic-ui-react';
@@ -9,6 +9,12 @@ import { Grid, Table } from 'semantic-ui-react';
 import { DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
 
 const DATE_KEYS = ['createdAt', 'lastLogin'];
+const FIELD_NAME_WIDTHS = {
+  application: 5,
+  group: 3,
+  policy: 3,
+  user: 3,
+};
 
 const getFieldContent = (row, data) => {
   return DATE_KEYS.indexOf(row.key) >= 0
@@ -75,27 +81,26 @@ const styles = {
 };
 
 const ContentTable = ({
+  entity,
   rows,
   state: {
     thing: { item, associated },
   },
 }) => {
-  const section1 = rows.filter(row => row.panelSection === 1);
-  const section2 = rows
-    .filter(row => row.panelSection === 2)
-    .map(row => normalizeRow(row, item, associated));
+  const panelSections = groupBy(rows, 'panelSection');
+
   return (
     <div>
-      <div className={`contentPanel one ${css(styles.section)}`}>
+      <div className={`contentPanel id ${css(styles.section)}`}>
         <Grid>
-          {section1.map(row => {
+          {panelSections['id'].map(row => {
             const { key, fieldName, fieldContent } = normalizeRow(row, item, associated);
             if (row.key === 'firstName') {
               return null;
             }
             return (
-              <Grid.Row key={key}>
-                <Grid.Column width={3}>
+              <Grid.Row key={`${item.id}-${key}`}>
+                <Grid.Column width={FIELD_NAME_WIDTHS[entity]}>
                   <span
                     className={`contentFieldName ${css(styles.fieldName, styles.fieldNamePadding)}`}
                   >
@@ -112,96 +117,120 @@ const ContentTable = ({
           })}
         </Grid>
       </div>
-      <div className={`contentPanel two ${css(styles.section)}`}>
-        <Grid columns="equal">
-          <Grid.Row centered>
-            {/* need to do with map to retain custom field order */}
-            {section2
-              .filter(rowItem => !DATE_KEYS.includes(rowItem.key))
-              .map(({ key, fieldName, fieldContent }) => {
-                return (
-                  <Grid.Column key={key}>
-                    <Grid.Row>
-                      <Grid.Column>
-                        <span
-                          className={`contentFieldName ${css(
-                            styles.fieldName,
-                            styles.fieldNamePadding,
-                          )}`}
-                        >
-                          {fieldName}
-                        </span>
 
-                        <span
-                          className={`contentFieldContent ${css(
-                            styles.fieldContent,
-                            ...(key === 'type' ? [{ color: HIGH_CONTRAST_TEAL }] : []),
-                          )}`}
-                        >
-                          {fieldContent}
-                        </span>
+      {panelSections['meta'].length > 0 && (
+        <div className={`contentPanel meta ${css(styles.section)}`}>
+          <Grid columns="equal">
+            {entity === 'user' ? (
+              <React.Fragment>
+                <Grid.Row>
+                  {panelSections['meta'].slice(0, 2).map(row => {
+                    const { key, fieldName, fieldContent } = normalizeRow(row, item, associated);
+                    return (
+                      <Grid.Column key={`${item.id}-${key}`}>
+                        <Grid.Row>
+                          <span
+                            className={`contentFieldName ${css(
+                              styles.fieldName,
+                              styles.fieldNamePadding,
+                              { display: 'inline-block', width: 80 },
+                            )}`}
+                          >
+                            {fieldName}
+                          </span>
+
+                          <span
+                            className={`contentFieldContent ${css(
+                              styles.fieldContent,
+                              ...(entity === 'user' &&
+                              key === 'type' &&
+                              fieldContent.toLowerCase() === 'admin'
+                                ? [{ color: HIGH_CONTRAST_TEAL }]
+                                : []),
+                            )}`}
+                          >
+                            {fieldContent}
+                          </span>
+                        </Grid.Row>
                       </Grid.Column>
-                    </Grid.Row>
-                  </Grid.Column>
-                );
-              })}
-          </Grid.Row>
-          <Grid.Row centered>
-            {section2
-              .filter(rowItem => DATE_KEYS.includes(rowItem.key))
-              .map(({ key, fieldName, fieldContent }) => {
+                    );
+                  })}
+                </Grid.Row>
+
+                <Grid.Row>
+                  {panelSections['meta'].slice(2, 4).map(row => {
+                    const { key, fieldName, fieldContent } = normalizeRow(row, item, associated);
+                    return (
+                      <Grid.Column key={`${item.id}-${key}`}>
+                        <Grid.Row>
+                          <span
+                            className={`contentFieldName ${css(
+                              styles.fieldName,
+                              styles.fieldNamePadding,
+                              { display: 'inline-block', width: 80 },
+                            )}`}
+                          >
+                            {fieldName}
+                          </span>
+                          <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                            {fieldContent}
+                          </span>
+                        </Grid.Row>
+                      </Grid.Column>
+                    );
+                  })}
+                </Grid.Row>
+              </React.Fragment>
+            ) : (
+              panelSections['meta'].map(row => {
+                const { key, fieldName, fieldContent } = normalizeRow(row, item, associated);
                 return (
-                  <Grid.Column key={key}>
-                    <Grid.Row>
-                      <Grid.Column verticalAlign={'top'}>
-                        <span
-                          className={`contentFieldName ${css(
-                            styles.fieldName,
-                            styles.fieldNamePadding,
-                          )}`}
-                        >
-                          {fieldName}
-                        </span>
-                        <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
-                          {fieldContent}
-                        </span>
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid.Column>
+                  <Grid.Row key={`${item.id}-${key}`}>
+                    <Grid.Column width={FIELD_NAME_WIDTHS[entity]}>
+                      <span
+                        className={`contentFieldName ${css(
+                          styles.fieldName,
+                          styles.fieldNamePadding,
+                        )}`}
+                      >
+                        {fieldName}
+                      </span>
+                    </Grid.Column>
+                    <Grid.Column width={10}>
+                      <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                        {fieldContent}
+                      </span>
+                    </Grid.Column>
+                  </Grid.Row>
                 );
-              })}
-          </Grid.Row>
+              })
+            )}
+          </Grid>
+        </div>
+      )}
+
+      <div className={`contentPanel associatedTypes ${css(styles.section)}`}>
+        <Grid>
+          {panelSections['associatedTypes'].map(row => {
+            const { key, fieldName, fieldContent } = normalizeRow(row, item, associated);
+            return (
+              <Grid.Row key={`${item.id}-${key}`}>
+                <Grid.Column verticalAlign={'top'}>
+                  <span
+                    className={`contentFieldName ${css(styles.fieldName, styles.fieldNamePadding)}`}
+                  >
+                    {fieldName}
+                  </span>
+                  <div className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                    {fieldContent}
+                  </div>
+                </Grid.Column>
+              </Grid.Row>
+            );
+          })}
         </Grid>
       </div>
     </div>
-    // {/* // <Table basic="very" style={{ fontSize: 18 }}>
-    // //   <Table.Body>
-    // //     {rows.map(row => {
-    // //       const { key, fieldName, fieldContent } = normalizeRow(row, item, associated);
-    // //       if (row.key === 'firstName') {
-    // //         return null;
-    // //       }
-    // //       return (
-    // //         <div>
-    // //           <Table.Row key={`${item.id}-${key}`} style={{ verticalAlign: 'baseline' }}>
-    // //             <Table.Cell
-    // //               style={{
-    // //                 border: 'none',
-    // //                 fontSize: '0.65em',
-    // //                 textAlign: 'right',
-    // //                 width: '6em',
-    // //               }}
-    // //             >
-    // //               {fieldName}
-    // //             </Table.Cell>
-    // //             <Table.Cell style={{ border: 'none' }}>{fieldContent}</Table.Cell>
-    // //           </Table.Row>
-    // //         </div>
-    // //
-    // //       );
-    // //     })}
-    // //   </Table.Body>
-    // // </Table> */}
   );
 };
 

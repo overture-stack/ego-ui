@@ -13,16 +13,11 @@ import EditingContentTable from './EditingContentTable';
 
 const styles = {
   container: {
-    minWidth: 500,
     boxShadow: '-2px 0 12px 0 rgba(0,0,0,0.1)',
+    minWidth: 500,
     position: 'relative',
   },
   controls: { paddingRight: 24, paddingLeft: 24, justifyContent: 'space-between' },
-  content: {
-    // paddingLeft: 60,
-    // paddingRight: 60,
-    // paddingTop: 30,
-  },
 };
 
 const enhance = compose(
@@ -286,7 +281,7 @@ class Content extends React.Component<any, IContentState> {
             </React.Fragment>
           )}
         </ControlContainer>
-        <div className={`${css(styles.content)}`}>
+        <div>
           {contentState === ContentState.creating ? (
             <EditingContentTable rows={rows} hideImmutable />
           ) : !id ? (
@@ -296,7 +291,7 @@ class Content extends React.Component<any, IContentState> {
           ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (
             <EditingContentTable rows={rows} />
           ) : (
-            <ContentTable rows={rows} />
+            <ContentTable entity={resource.name.singular} rows={rows} />
           )}
         </div>
       </div>

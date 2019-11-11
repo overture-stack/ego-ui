@@ -30,6 +30,7 @@ import { ApplicationListItem, GroupListItem, UserListItem } from 'components/Lis
 import { IResource, TResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
 
+// ignore tslint sort, resources listed in deliberate order
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   users: {
     add: {
@@ -61,7 +62,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     },
     rowHeight: 50,
     schema: [
-      { fieldName: 'ID', immutable: true, key: 'id', panelSection: 1, sortable: true },
+      { fieldName: 'ID', immutable: true, key: 'id', panelSection: 'id', sortable: true },
       {
         fieldName: 'First Name',
         key: 'firstName',
@@ -73,39 +74,18 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         fieldName: 'Last Name',
         initialSort: true,
         key: 'lastName',
-        panelSection: 1,
+        panelSection: 'id',
         required: true,
         sortable: true,
       },
-      { fieldName: 'Email', key: 'email', panelSection: 1, required: true, sortable: true },
+      { fieldName: 'Email', key: 'email', panelSection: 'id', required: true, sortable: true },
       {
         fieldName: 'User Type',
         fieldType: 'dropdown',
         key: 'type',
         options: ['ADMIN', 'USER'],
-        panelSection: 2,
+        panelSection: 'meta',
         required: true,
-        sortable: true,
-      },
-      {
-        fieldName: 'Status',
-        fieldType: 'dropdown',
-        key: 'status',
-        options: STATUSES,
-        panelSection: 2,
-      },
-      {
-        fieldName: 'Created',
-        immutable: true,
-        key: 'createdAt',
-        panelSection: 2,
-        sortable: true,
-      },
-      {
-        fieldName: 'Last Login',
-        immutable: true,
-        key: 'lastLogin',
-        panelSection: 2,
         sortable: true,
       },
       {
@@ -113,7 +93,28 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         fieldType: 'dropdown',
         key: 'preferredLanguage',
         options: ['ENGLISH', 'FRENCH', 'SPANISH'],
-        panelSection: 2,
+        panelSection: null,
+      },
+      {
+        fieldName: 'Status',
+        fieldType: 'dropdown',
+        key: 'status',
+        options: STATUSES,
+        panelSection: 'meta',
+      },
+      {
+        fieldName: 'Created',
+        immutable: true,
+        key: 'createdAt',
+        panelSection: 'meta',
+        sortable: true,
+      },
+      {
+        fieldName: 'Last Login',
+        immutable: true,
+        key: 'lastLogin',
+        panelSection: 'meta',
+        sortable: true,
       },
     ],
     updateItem: updateUser,
@@ -146,23 +147,31 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     },
     rowHeight: 44,
     schema: [
-      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
-      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
-      { key: 'description', fieldName: 'Description', sortable: true },
+      { key: 'id', fieldName: 'ID', panelSection: 'id', sortable: true, immutable: true },
+      {
+        key: 'name',
+        fieldName: 'Name',
+        panelSection: 'id',
+        sortable: true,
+        initialSort: true,
+        required: true,
+      },
       {
         fieldName: 'Status',
         fieldType: 'dropdown',
         key: 'status',
         options: STATUSES,
+        panelSection: 'meta',
         sortable: true,
       },
+      { key: 'description', fieldName: 'Description', panelSection: 'meta', sortable: true },
     ],
     updateItem: updateGroup,
   },
   applications: {
     add: {
-      users: ({ user, item }) => addApplicationToUser({ application: item, user }),
       groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
+      users: ({ user, item }) => addApplicationToUser({ application: item, user }),
     },
     associatedTypes: ['groups', 'users'],
     createItem: createApplication,
@@ -196,14 +205,22 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     },
     rowHeight: 44,
     schema: [
-      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
-      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
-      { key: 'description', fieldName: 'Description', sortable: true },
+      { key: 'id', fieldName: 'ID', panelSection: 'id', sortable: true, immutable: true },
+      {
+        fieldName: 'Name',
+        initialSort: true,
+        key: 'name',
+        panelSection: 'id',
+        required: true,
+        sortable: true,
+      },
+      { key: 'description', fieldName: 'Description', panelSection: null, sortable: true },
       {
         fieldName: 'Status',
         fieldType: 'dropdown',
         key: 'status',
         options: STATUSES,
+        panelSection: 'meta',
         sortable: true,
       },
       {
@@ -211,11 +228,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         fieldType: 'dropdown',
         key: 'type',
         options: ['ADMIN', 'CLIENT'],
+        panelSection: 'meta',
         sortable: true,
       },
-      { key: 'clientId', fieldName: 'Client ID', required: true },
-      { key: 'clientSecret', fieldName: 'Client Secret', required: true },
-      { key: 'redirectUri', fieldName: 'Redirect Uri', required: true },
+      { key: 'clientId', fieldName: 'Client ID', panelSection: 'meta', required: true },
+      { key: 'clientSecret', fieldName: 'Client Secret', panelSection: 'meta', required: true },
+      { key: 'redirectUri', fieldName: 'Redirect Uri', panelSection: 'meta', required: true },
     ],
     updateItem: updateApplication,
   },

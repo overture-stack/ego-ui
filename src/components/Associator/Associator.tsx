@@ -15,7 +15,7 @@ interface TProps {
   getKey: Function;
   fetchItems: Function;
   editing: Boolean;
-  fetchExitingAssociations: Function;
+  fetchExistingAssociations: Function;
   setAllAssociatedItems: Function;
   fetchInitial: Function;
 }
@@ -30,14 +30,14 @@ const styles = {
 };
 
 async function fetchAllAssociatedItems({
-  fetchExitingAssociations,
+  fetchExistingAssociations,
   setAllAssociatedItems,
 }: TProps) {
   let items: any = [];
   let count: number = 0;
 
   do {
-    const data = await fetchExitingAssociations({ limit: 1000 });
+    const data = await fetchExistingAssociations({ limit: 1000 });
     items = [...items, ...data.resultSet];
     count = data.count;
   } while (items.length < count);
