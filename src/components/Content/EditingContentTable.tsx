@@ -1,18 +1,41 @@
-import React from 'react';
-import _ from 'lodash';
-import { Table, Input, Dropdown } from 'semantic-ui-react';
-import { compose } from 'recompose';
-import { injectState } from 'freactal';
+import { Application, Group, User } from 'common/typedefs';
 import { TField } from 'common/typedefs/Resource';
+import format from 'date-fns/format/index.js';
+import { injectState } from 'freactal';
+import { css } from 'glamor';
+import { groupBy, upperCase } from 'lodash';
+import React from 'react';
+import { compose } from 'recompose';
+import { Dropdown, Grid, Input } from 'semantic-ui-react';
+
+import { getUserFieldName } from './ContentTable';
+import ContentView from './ContentView';
+
+const FIELD_NAME_WIDTHS = {
+  application: 5,
+  group: 3,
+  policy: 3,
+  user: 4,
+};
+
+const DATE_KEYS = ['createdAt', 'lastLogin'];
+
+const getFieldContent = (row, data, immutableKeys, stageChange) =>
+  row.fieldContent || // fieldContent is for associatedTypes
+  (immutableKeys.includes(row.key)
+    ? DATE_KEYS.indexOf(row.key) >= 0
+      ? format(data[row.key], 'YYYY-MM-DD hh:mm A')
+      : data[row.key] || ''
+    : rowInput({ row, data, stageChange })); // for all mutable fields
 
 function rowInput({
   data,
   row,
   stageChange,
 }: {
-  data: Object;
+  data: User | Group | Application;
   row: TField;
-  stageChange: Function;
+  stageChange: (object) => void;
 }) {
   switch (row.fieldType) {
     case 'dropdown':
@@ -27,12 +50,23 @@ function rowInput({
       );
     default:
       return (
-        <Input
-          size="mini"
-          onChange={(e, { value }) => stageChange({ [row.key]: value })}
-          type="text"
-          value={data[row.key] || ''}
-        />
+        <Grid.Row>
+          {row.key === 'lastName' ? (
+            <Input
+              className={`firstName ${css({ marginRight: 10 })}`}
+              size="mini"
+              onChange={(e, { value }) => stageChange({ firstName: value })}
+              type="text"
+              value={data['firstName'] || ''}
+            />
+          ) : null}
+          <Input
+            size="mini"
+            onChange={(e, { value }) => stageChange({ [row.key]: value })}
+            type="text"
+            value={data[row.key] || ''}
+          />
+        </Grid.Row>
       );
   }
 }
@@ -45,31 +79,27 @@ function normalizeRow({
   immutableKeys,
 }: {
   row: TField;
-  data: Object[];
-  associated: Object[];
-  stageChange: Function;
+  data: object[];
+  associated: object[];
+  stageChange: () => void;
   immutableKeys: string[];
 }) {
   const rowData = {
     ...row,
-    fieldName: row.fieldName || row.key,
-    fieldContent:
-      row.fieldContent ||
-      (immutableKeys.includes(row.key)
-        ? data[row.key] || ''
-        : rowInput({ row, data, stageChange })),
+    fieldContent: getFieldContent(row, data, immutableKeys, stageChange),
+    fieldName: getUserFieldName(row),
   };
 
   return {
     ...rowData,
-    fieldName:
-      typeof rowData.fieldName === 'function'
-        ? (rowData.fieldName as any)({ associated, data, editing: true, stageChange })
-        : _.upperCase(rowData.fieldName),
     fieldContent:
       typeof rowData.fieldContent === 'function'
         ? rowData.fieldContent({ associated, data, editing: true, stageChange })
         : rowData.fieldContent,
+    fieldName:
+      typeof rowData.fieldName === 'function'
+        ? (rowData.fieldName as any)({ associated, data, editing: true, stageChange })
+        : upperCase(rowData.fieldName),
   };
 }
 
@@ -78,6 +108,7 @@ const enhance = compose(injectState);
 class EditingContentTable extends React.Component<any, any> {
   render() {
     const {
+      entityType,
       rows,
       state: {
         thing: { staged, associated, resource },
@@ -87,39 +118,27 @@ class EditingContentTable extends React.Component<any, any> {
     } = this.props;
 
     const immutableKeys = resource.schema.filter(f => f.immutable).map(f => f.key);
+    const normalizedRows = rows
+      .filter(field => !hideImmutable || !immutableKeys.includes(field.key || field))
+      .map(row =>
+        normalizeRow({
+          associated,
+          data: staged,
+          immutableKeys,
+          row,
+          stageChange,
+        }),
+      );
 
     return (
-      <Table basic="very" style={{ fontSize: 18 }}>
-        <Table.Body>
-          {rows
-            .filter(field => !hideImmutable || !immutableKeys.includes(field.key || field))
-            .map(row => {
-              const { key, fieldName, fieldContent } = normalizeRow({
-                row,
-                data: staged,
-                associated,
-                stageChange,
-                immutableKeys,
-              });
-
-              return (
-                <Table.Row key={`${staged.id}-${key}`} style={{ verticalAlign: 'baseline' }}>
-                  <Table.Cell
-                    style={{
-                      fontSize: '0.65em',
-                      border: 'none',
-                      textAlign: 'right',
-                      width: '6em',
-                    }}
-                  >
-                    {fieldName}
-                  </Table.Cell>
-                  <Table.Cell style={{ border: 'none' }}>{fieldContent}</Table.Cell>
-                </Table.Row>
-              );
-            })}
-        </Table.Body>
-      </Table>
+      <ContentView
+        entity={staged}
+        entityType={entityType}
+        fieldNameWidths={FIELD_NAME_WIDTHS}
+        hideImmutable={hideImmutable}
+        resource={resource}
+        rows={normalizedRows}
+      />
     );
   }
 }

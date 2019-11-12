@@ -283,15 +283,15 @@ class Content extends React.Component<any, IContentState> {
         </ControlContainer>
         <div>
           {contentState === ContentState.creating ? (
-            <EditingContentTable rows={rows} hideImmutable />
+            <EditingContentTable entityType={resource.name.singular} rows={rows} hideImmutable />
           ) : !id ? (
             <EmptyContent message={resource.emptyMessage} />
           ) : !item ? (
             <EmptyContent message={'loading'} />
           ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (
-            <EditingContentTable rows={rows} />
+            <EditingContentTable entityType={resource.name.singular} rows={rows} />
           ) : (
-            <ContentTable entity={resource.name.singular} rows={rows} />
+            <ContentTable entityType={resource.name.singular} rows={rows} />
           )}
         </div>
       </div>
