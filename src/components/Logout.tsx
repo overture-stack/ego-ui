@@ -1,8 +1,8 @@
-import React from 'react';
-import { compose } from 'recompose';
 import { injectState } from 'freactal';
-import { withRouter } from 'react-router';
 import { css } from 'glamor';
+import React from 'react';
+import { withRouter } from 'react-router';
+import { compose } from 'recompose';
 
 const styles = {
   container: { cursor: 'pointer' },

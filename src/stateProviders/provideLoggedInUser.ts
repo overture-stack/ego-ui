@@ -1,5 +1,7 @@
 import { provideState } from 'freactal';
-import { setToken } from 'services/ajax';
+import jwtDecode from 'jwt-decode';
+
+import { clearAjaxToken, setAjaxToken } from 'services/ajax';
 
 export default provideState({
   initialState: () => ({
@@ -7,7 +9,28 @@ export default provideState({
     loggedInUserToken: '',
     preferences: {},
   }),
+
   effects: {
+    initialize: (effects, preferences) => state => {
+      let loggedInUserToken = '';
+      let loggedInUser = {};
+
+      const userToken = localStorage.getItem('user-token') || null;
+
+      if (userToken) {
+        const jwtData = jwtDecode(userToken);
+        const user = {
+          ...jwtData.context.user,
+          id: jwtData.sub,
+        };
+
+        setAjaxToken(userToken);
+        loggedInUserToken = userToken;
+        loggedInUser = user;
+      }
+
+      return { ...state, loggedInUser, loggedInUserToken };
+    },
     setUserPreferences: (effects, preference) => state => {
       const preferences = { ...state.preferences, ...preference };
 
@@ -23,12 +46,15 @@ export default provideState({
       const preferences = loggedInUser
         ? JSON.parse(localStorage.getItem(`user-preferences-${loggedInUser.id}`) || '{}')
         : {};
-
+      if (!loggedInUser) {
+        clearAjaxToken();
+      }
       return { ...state, loggedInUser, preferences };
     },
 
+    // currently called only on login
     setToken: (effects, token) => state => {
-      setToken(token);
+      setAjaxToken(token);
       return { ...state, loggedInUserToken: token };
     },
   },

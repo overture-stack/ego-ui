@@ -22,10 +22,9 @@
     "jsx": "react",
   },
   "include": [
-    "src",
-    "stories"
+    "src"
   ],
   "exclude": [
-    "**/*.stories.tsx"
+    "**/*.stories.tsx",
   ]
 }

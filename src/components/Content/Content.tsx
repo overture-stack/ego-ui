@@ -259,12 +259,12 @@ class Content extends React.Component<any, IContentState> {
       <div className={`content ${css(styles.container, stylesProp)}`}>
         <ControlContainer style={styles.controls}>
           {parent ? (
-            <>
+            <React.Fragment>
               <GoToButton />
               <DeleteFromParentButton />
-            </>
+            </React.Fragment>
           ) : ![ContentState.editing, ContentState.creating].includes(contentState) && !isSaving ? (
-            <>
+            <React.Fragment>
               <div>
                 <CreateButton />
                 {id && <EditButton />}
@@ -278,12 +278,12 @@ class Content extends React.Component<any, IContentState> {
                 ) : (
                   <DeleteButton />
                 ))}
-            </>
+            </React.Fragment>
           ) : (
-            <>
+            <React.Fragment>
               <CancelButton />
               <SaveButton />
-            </>
+            </React.Fragment>
           )}
         </ControlContainer>
         <div className={`${css(styles.content)}`}>
