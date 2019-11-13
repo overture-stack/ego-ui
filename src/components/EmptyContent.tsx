@@ -4,12 +4,13 @@ import React from 'react';
 
 const styles = {
   container: {
-    display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
-    fontSize: 20,
     color: GREY,
+    display: 'flex',
+    fontSize: 20,
     fontWeight: 200,
+    justifyContent: 'center',
+    marginTop: '1rem',
   },
 };
 

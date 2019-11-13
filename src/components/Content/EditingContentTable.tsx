@@ -41,16 +41,17 @@ function rowInput({
     case 'dropdown':
       return (
         <Dropdown
-          selection
-          options={(row.options || []).map(text => ({ text, value: text }))}
-          text={data[row.key]}
           onChange={(event, { value }) => stageChange({ [row.key]: value })}
-          style={{ fontSize: 14.1429 }}
+          options={(row.options || []).map(text => ({ text, value: text }))}
+          placeholder={'Select'}
+          selection
+          style={{ minWidth: '9rem', fontSize: '12px' }}
+          text={data[row.key]}
         />
       );
     default:
       return (
-        <Grid.Row>
+        <div style={{ display: 'flex', flex: '0 0 100%' }}>
           {row.key === 'lastName' ? (
             <Input
               className={`firstName ${css({ marginRight: 10 })}`}
@@ -65,8 +66,9 @@ function rowInput({
             onChange={(e, { value }) => stageChange({ [row.key]: value })}
             type="text"
             value={data[row.key] || ''}
+            style={{ flex: 1 }}
           />
-        </Grid.Row>
+        </div>
       );
   }
 }

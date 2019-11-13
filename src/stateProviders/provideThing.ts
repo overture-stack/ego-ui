@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { provideState } from 'freactal';
+import { omit, uniq } from 'lodash';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
@@ -42,7 +42,7 @@ const provideThing = provideState({
                 ...acc,
                 [resource.associatedTypes[i]]: {
                   ...a,
-                  resultSet: a.count > MAX_ASSOCIATED ? [] : a.resultSet,
+                  resultSet: a.count > MAX_ASSOCIATED ? a.resultSet.slice(0, 5) : a.resultSet,
                 },
               }),
               {},
@@ -56,7 +56,7 @@ const provideThing = provideState({
         // TODO: refactor to keep single timeline of changes and reconcile on save.
         const staged = {
           ...thing.staged,
-          ..._.omit(change, thing.resource.associatedTypes),
+          ...omit(change, thing.resource.associatedTypes),
         };
         return {
           ...state,
@@ -86,7 +86,7 @@ const provideThing = provideState({
                       } else {
                         return {
                           ...acc,
-                          [action]: _.uniq([
+                          [action]: uniq([
                             ...(thing.associated[currentType][action] || []),
                             change[currentType][action],
                           ]),

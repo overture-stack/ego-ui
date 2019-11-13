@@ -8,12 +8,21 @@ import { Grid } from 'semantic-ui-react';
 
 import { DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
 
-const styles = {
+export const styles = {
+  contentHeight: {
+    height: 48,
+  },
+  contentRow: {
+    alignItems: 'center !important',
+    padding: '0.5rem 0rem !important',
+  },
   fieldContent: {
     fontSize: 14,
   },
   fieldName: {
+    alignItems: 'center !important',
     color: DARK_GREY,
+    display: 'inline-flex',
     fontSize: 11,
   },
   fieldNamePadding: {
@@ -23,8 +32,8 @@ const styles = {
     borderBottom: `1px solid ${GREY}`,
     marginLeft: '1.5rem',
     marginRight: '1rem',
-    marginTop: '2rem',
-    paddingBottom: '1rem',
+    paddingBottom: '1.5rem',
+    paddingTop: '1rem',
   },
 };
 
@@ -41,23 +50,42 @@ const ContentView = ({
   const panelSections = groupBy(rows, 'panelSection');
 
   return (
-    <div>
+    <div style={{ marginTop: '0.5rem' }}>
       <div className={`contentPanel id ${css(styles.section)}`}>
         <Grid>
           {panelSections['id'].map(({ fieldContent, fieldName, key }) => {
             return (
-              <Grid.Row key={`${entity.id}-${key}`}>
+              <Grid.Row
+                className={`${css(styles.contentRow, styles.contentHeight)}`}
+                key={`${entity.id}-${key}`}
+              >
                 <Grid.Column width={fieldNameWidths[entityType]}>
-                  <span
-                    className={`contentFieldName ${css(styles.fieldName, styles.fieldNamePadding)}`}
+                  <Grid.Row
+                    className={`${css(styles.contentRow, styles.contentHeight, {
+                      padding: '0 !important',
+                    })}`}
                   >
-                    {fieldName}
-                  </span>
+                    <span
+                      className={`contentFieldName ${css(
+                        styles.fieldName,
+                        styles.fieldNamePadding,
+                      )}`}
+                    >
+                      {fieldName}
+                    </span>
+                  </Grid.Row>
                 </Grid.Column>
-                <Grid.Column width={12}>
-                  <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
-                    {fieldContent}
-                  </span>
+                <Grid.Column width={11}>
+                  <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
+                    <span
+                      className={`contentFieldContent ${css(styles.fieldContent, {
+                        display: 'flex',
+                        flex: '0 0 100%',
+                      })}`}
+                    >
+                      {fieldContent}
+                    </span>
+                  </Grid.Row>
                 </Grid.Column>
               </Grid.Row>
             );
@@ -70,16 +98,16 @@ const ContentView = ({
           <Grid columns="equal">
             {entityType === 'user' ? (
               <React.Fragment>
-                <Grid.Row>
+                <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
                   {panelSections['meta'].slice(0, 2).map(({ fieldContent, fieldName, key }) => {
                     return (
                       <Grid.Column key={`${entity.id}-${key}`}>
-                        <Grid.Row>
+                        <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
                           <span
                             className={`contentFieldName ${css(
                               styles.fieldName,
                               styles.fieldNamePadding,
-                              { display: 'inline-block', width: 80 },
+                              { width: 80 },
                             )}`}
                           >
                             {fieldName}
@@ -104,16 +132,16 @@ const ContentView = ({
                   })}
                 </Grid.Row>
 
-                <Grid.Row>
+                <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
                   {panelSections['meta'].slice(2, 4).map(({ fieldContent, fieldName, key }) => {
                     return (
                       <Grid.Column key={`${entity.id}-${key}`}>
-                        <Grid.Row>
+                        <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
                           <span
                             className={`contentFieldName ${css(
                               styles.fieldName,
                               styles.fieldNamePadding,
-                              { display: 'inline-block', width: 80 },
+                              { width: 80 },
                             )}`}
                           >
                             {fieldName}
@@ -130,7 +158,10 @@ const ContentView = ({
             ) : (
               panelSections['meta'].map(({ fieldContent, fieldName, key }) => {
                 return (
-                  <Grid.Row key={`${entity.id}-${key}`}>
+                  <Grid.Row
+                    className={`${css(styles.contentRow, styles.contentHeight)}`}
+                    key={`${entity.id}-${key}`}
+                  >
                     <Grid.Column width={fieldNameWidths[entityType]}>
                       <span
                         className={`contentFieldName ${css(
@@ -141,7 +172,7 @@ const ContentView = ({
                         {fieldName}
                       </span>
                     </Grid.Column>
-                    <Grid.Column width={12}>
+                    <Grid.Column width={11}>
                       <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
                         {fieldContent}
                       </span>
@@ -158,13 +189,8 @@ const ContentView = ({
         <Grid>
           {panelSections['associatedTypes'].map(({ fieldContent, fieldName, key }) => {
             return (
-              <Grid.Row key={`${entity.id}-${key}`}>
+              <Grid.Row className={`${css(styles.contentRow)}`} key={`${entity.id}-${key}`}>
                 <Grid.Column verticalAlign={'top'}>
-                  <span
-                    className={`contentFieldName ${css(styles.fieldName, styles.fieldNamePadding)}`}
-                  >
-                    {fieldName}
-                  </span>
                   <div className={`contentFieldContent ${css(styles.fieldContent)}`}>
                     {fieldContent}
                   </div>
