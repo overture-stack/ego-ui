@@ -6,7 +6,7 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Grid } from 'semantic-ui-react';
 
-import ContentView from './ContentView';
+import ContentPanelView from './ContentPanelView';
 
 const DATE_KEYS = ['createdAt', 'lastLogin'];
 const FIELD_NAME_WIDTHS = {
@@ -60,7 +60,7 @@ function normalizeRow(
 
 const enhance = compose(injectState);
 
-const ContentTable = ({
+const ContentPanel = ({
   entityType,
   rows,
   state: {
@@ -70,7 +70,7 @@ const ContentTable = ({
   const panelSections = groupBy(rows, 'panelSection');
   const normalizedRows = rows.map(row => normalizeRow(row, item, associated));
   return (
-    <ContentView
+    <ContentPanelView
       entity={item}
       entityType={entityType}
       fieldNameWidths={FIELD_NAME_WIDTHS}
@@ -80,4 +80,4 @@ const ContentTable = ({
   );
 };
 
-export default enhance(ContentTable);
+export default enhance(ContentPanel);

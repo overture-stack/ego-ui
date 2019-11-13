@@ -8,8 +8,8 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Dropdown, Grid, Input } from 'semantic-ui-react';
 
-import { getUserFieldName } from './ContentTable';
-import ContentView from './ContentView';
+import { getUserFieldName } from './ContentPanel';
+import ContentPanelView from './ContentPanelView';
 
 const FIELD_NAME_WIDTHS = {
   application: 5,
@@ -43,7 +43,6 @@ function rowInput({
         <Dropdown
           onChange={(event, { value }) => stageChange({ [row.key]: value })}
           options={(row.options || []).map(text => ({ text, value: text }))}
-          placeholder={'Select'}
           selection
           style={{ minWidth: '9rem', fontSize: '12px' }}
           text={data[row.key]}
@@ -107,7 +106,7 @@ function normalizeRow({
 
 const enhance = compose(injectState);
 
-class EditingContentTable extends React.Component<any, any> {
+class EditingContentPanel extends React.Component<any, any> {
   render() {
     const {
       entityType,
@@ -133,7 +132,7 @@ class EditingContentTable extends React.Component<any, any> {
       );
 
     return (
-      <ContentView
+      <ContentPanelView
         entity={staged}
         entityType={entityType}
         fieldNameWidths={FIELD_NAME_WIDTHS}
@@ -145,4 +144,4 @@ class EditingContentTable extends React.Component<any, any> {
   }
 }
 
-export default enhance(EditingContentTable);
+export default enhance(EditingContentPanel);

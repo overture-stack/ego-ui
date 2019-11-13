@@ -1,5 +1,5 @@
 import { css } from 'glamor';
-import _ from 'lodash';
+import { merge, noop } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withProps, withState } from 'recompose';
 
@@ -66,7 +66,7 @@ const enhance = compose(
     columnWidth: 200,
     rowHeight: 60,
     getKey: item => item.id.toString(),
-    onSelect: _.noop,
+    onSelect: noop,
   }),
   withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('currentSort', 'setCurrentSort', props => ({
@@ -74,7 +74,7 @@ const enhance = compose(
     order: props.resource.initialSortOrder,
   })),
   withProps(({ columnWidth, resource, styles: stylesProp }) => ({
-    styles: _.merge(getStyles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
+    styles: merge(getStyles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
   })),
 );
 

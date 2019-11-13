@@ -8,8 +8,8 @@ import { injectState } from 'freactal';
 import { withRouter } from 'react-router';
 import { compose } from 'recompose';
 import { provideThing } from 'stateProviders';
-import ContentTable from './ContentTable';
-import EditingContentTable from './EditingContentTable';
+import ContentPanel from './ContentPanel';
+import EditingContentPanel from './EditingContentPanel';
 
 const styles = {
   container: {
@@ -283,15 +283,15 @@ class Content extends React.Component<any, IContentState> {
         </ControlContainer>
         <div>
           {contentState === ContentState.creating ? (
-            <EditingContentTable entityType={resource.name.singular} rows={rows} hideImmutable />
+            <EditingContentPanel entityType={resource.name.singular} rows={rows} hideImmutable />
           ) : !id ? (
             <EmptyContent message={resource.emptyMessage} />
           ) : !item ? (
             <EmptyContent message={'loading'} />
           ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (
-            <EditingContentTable entityType={resource.name.singular} rows={rows} />
+            <EditingContentPanel entityType={resource.name.singular} rows={rows} />
           ) : (
-            <ContentTable entityType={resource.name.singular} rows={rows} />
+            <ContentPanel entityType={resource.name.singular} rows={rows} />
           )}
         </div>
       </div>

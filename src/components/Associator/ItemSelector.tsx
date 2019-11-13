@@ -1,6 +1,6 @@
 import Downshift from 'downshift';
 import { css } from 'glamor';
-import _ from 'lodash';
+import { get } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
 import { Button, Icon, Input, Menu } from 'semantic-ui-react';
@@ -22,8 +22,8 @@ const matchFor = (query: string | null, accessor) => item =>
 
 const enhance = compose(
   defaultProps({
-    getName: item => _.get(item, 'name'),
-    getKey: item => _.get(item, 'id'),
+    getName: item => get(item, 'name'),
+    getKey: item => get(item, 'id'),
     onSelect: item => global.log('selected', item),
     disabledItems: [],
   }),

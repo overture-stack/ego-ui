@@ -5,7 +5,7 @@ import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
 import { Grid, Icon, Label } from 'semantic-ui-react';
 
 import { DARK_BLUE, GREY } from 'common/colors';
-import { styles as contentStyles } from 'components/Content/ContentView';
+import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
 
 interface TProps {

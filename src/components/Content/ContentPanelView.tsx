@@ -62,7 +62,7 @@ const ContentView = ({
                 <Grid.Column width={fieldNameWidths[entityType]}>
                   <Grid.Row
                     className={`${css(styles.contentRow, styles.contentHeight, {
-                      padding: '0 !important',
+                      padding: '0 !important', // override semantic-ui
                     })}`}
                   >
                     <span
