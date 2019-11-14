@@ -8,17 +8,9 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Dropdown, Grid, Input } from 'semantic-ui-react';
 
+import { DATE_KEYS } from 'common/injectGlobals';
 import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
-
-const FIELD_NAME_WIDTHS = {
-  application: 5,
-  group: 3,
-  policy: 3,
-  user: 4,
-};
-
-const DATE_KEYS = ['createdAt', 'lastLogin'];
 
 const getFieldContent = (row, data, immutableKeys, stageChange) =>
   row.fieldContent || // fieldContent is for associatedTypes
@@ -135,7 +127,6 @@ class EditingContentPanel extends React.Component<any, any> {
       <ContentPanelView
         entity={staged}
         entityType={entityType}
-        fieldNameWidths={FIELD_NAME_WIDTHS}
         hideImmutable={hideImmutable}
         resource={resource}
         rows={normalizedRows}

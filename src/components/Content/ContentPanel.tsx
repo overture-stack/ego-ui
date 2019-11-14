@@ -6,15 +6,8 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Grid } from 'semantic-ui-react';
 
+import { DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
-
-const DATE_KEYS = ['createdAt', 'lastLogin'];
-const FIELD_NAME_WIDTHS = {
-  application: 5,
-  group: 3,
-  policy: 3,
-  user: 4,
-};
 
 export const getFieldContent = (row, data) => {
   return DATE_KEYS.indexOf(row.key) >= 0
@@ -73,7 +66,6 @@ const ContentPanel = ({
     <ContentPanelView
       entity={item}
       entityType={entityType}
-      fieldNameWidths={FIELD_NAME_WIDTHS}
       resource={resource}
       rows={normalizedRows}
     />

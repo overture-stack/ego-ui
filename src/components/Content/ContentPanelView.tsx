@@ -8,6 +8,13 @@ import { Grid } from 'semantic-ui-react';
 
 import { DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
 
+const FIELD_NAME_WIDTHS = {
+  application: 5,
+  group: 3,
+  policy: 3,
+  user: 4,
+};
+
 export const styles = {
   contentHeight: {
     height: 48,
@@ -40,7 +47,7 @@ export const styles = {
 const ContentView = ({
   entity,
   entityType,
-  fieldNameWidths,
+  fieldNameWidths = FIELD_NAME_WIDTHS,
   hideImmutable = true,
   resource,
   rows,
