@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import ajax from 'services/ajax';
-import { useDummyData } from 'common/injectGlobals';
-import queryString from 'querystring';
+import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Group } from 'common/typedefs/Group';
+import _ from 'lodash';
+import queryString from 'querystring';
+import ajax from 'services/ajax';
 
 import dummyGroups from './dummyData/groups';
 
@@ -22,7 +22,7 @@ export const getGroups = ({
     ? `/applications/${applicationId}`
     : '';
 
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyGroups.length,
         resultSet: dummyGroups.slice(offset, offset + limit),

@@ -10,11 +10,13 @@ import { DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
 
 export const getFieldContent = (row, data) => {
-  return DATE_KEYS.indexOf(row.key) >= 0
-    ? format(data[row.key], 'YYYY-MM-DD hh:mm A')
-    : row.key === 'lastName'
-    ? `${data.firstName} ${data.lastName}`
-    : data[row.key];
+  if (DATE_KEYS.indexOf(row.key) >= 0) {
+    return format(data[row.key], 'YYYY-MM-DD hh:mm A');
+  }
+  if (row.key === 'lastName') {
+    return `${data.firstName} ${data.lastName}`;
+  }
+  return data[row.key];
 };
 
 export const getUserFieldName = row => {

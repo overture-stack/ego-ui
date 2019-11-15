@@ -1,11 +1,11 @@
+import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import _ from 'lodash';
 import ajax from 'services/ajax';
-import { useDummyData } from 'common/injectGlobals';
 import dummyUsers from './dummyData/users';
 
 const BLOCKED_KEYS = ['groups', 'applications'];
 function add({ user, key, value }: any) {
-  if (useDummyData) {
+  if (USE_DUMMY_DATA) {
     const foundUser = _.find(dummyUsers, u => u.id === user.id);
     if (foundUser) {
       foundUser[key] = _.uniq([...foundUser[key], value]);
@@ -17,7 +17,7 @@ function add({ user, key, value }: any) {
 }
 
 function remove({ user, key, value }: any) {
-  if (useDummyData) {
+  if (USE_DUMMY_DATA) {
     const foundUser = _.find(dummyUsers, u => u.id === user.id);
     if (foundUser) {
       foundUser[key] = foundUser[key].filter(id => id !== value);

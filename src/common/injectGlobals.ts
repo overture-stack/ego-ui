@@ -9,6 +9,6 @@ global.log = debug('app');
 
 export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING', 'REJECTED'];
 export const DATE_KEYS = ['createdAt', 'lastLogin'];
-export const apiRoot = process.env.REACT_APP_API;
-export const egoClientId = process.env.REACT_APP_EGO_CLIENT_ID;
-export const useDummyData = process.env.REACT_APP_DUMMY;
+export const API_ROOT = process.env.REACT_APP_API;
+export const EGO_CLIENT_ID = process.env.REACT_APP_EGO_CLIENT_ID;
+export const USE_DUMMY_DATA = process.env.REACT_APP_DUMMY;

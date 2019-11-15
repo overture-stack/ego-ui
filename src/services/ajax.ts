@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { apiRoot } from 'common/injectGlobals';
+import { API_ROOT } from 'common/injectGlobals';
 
-const ajax = axios.create({ baseURL: apiRoot });
+const ajax = axios.create({ baseURL: API_ROOT });
 
 export const setAjaxToken = t => {
   localStorage.setItem('user-token', t);

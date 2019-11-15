@@ -149,12 +149,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     schema: [
       { key: 'id', fieldName: 'ID', panelSection: 'id', sortable: true, immutable: true },
       {
-        key: 'name',
         fieldName: 'Name',
-        panelSection: 'id',
-        sortable: true,
         initialSort: true,
+        key: 'name',
+        panelSection: 'id',
         required: true,
+        sortable: true,
       },
       {
         fieldName: 'Status',

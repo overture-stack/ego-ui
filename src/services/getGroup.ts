@@ -1,18 +1,18 @@
-import ajax from 'services/ajax';
+import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import _ from 'lodash';
-import { useDummyData } from 'common/injectGlobals';
+import ajax from 'services/ajax';
 import dummyApplications from './dummyData/applications';
-import dummyUsers from './dummyData/users';
 import dummyGroups from './dummyData/groups';
+import dummyUsers from './dummyData/users';
 
 export const getGroup = id => {
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve(dummyGroups.find(group => id === group.id))
     : ajax.get(`/groups/${id}`).then(r => r.data);
 };
 
 export const getGroupUsers = id => {
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve(
         dummyUsers.filter((user: any) => (user.group || []).find(group => group.id === id)),
       )
@@ -20,7 +20,7 @@ export const getGroupUsers = id => {
 };
 
 export const getGroupApplications = id => {
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve(
         (_.find(dummyGroups, group => id === group.id, {}).applications || []).map(appId =>
           dummyApplications.find(application => appId === application.id),
