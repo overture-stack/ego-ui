@@ -1,10 +1,10 @@
-import colors from 'common/colors';
+import { GREY, LIGHT_GREY } from 'common/colors';
 
 const styles = ({ columnWidth, rowHeight }) => ({
   container: {
     minWidth: columnWidth,
-    background: colors.lightGrey,
-    borderRight: `1px solid ${colors.grey}`,
+    background: LIGHT_GREY,
+    borderRight: `1px solid ${GREY}`,
     overflowY: 'auto',
     display: 'flex',
     flexGrow: 1,

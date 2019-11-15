@@ -1,32 +1,27 @@
-import React from 'react';
 import { css } from 'glamor';
+import React from 'react';
 
-import EmptyContent from 'components/EmptyContent';
-import ContentTable from './ContentTable';
-import EditingContentTable from './EditingContentTable';
-import { compose } from 'recompose';
-import { provideThing } from 'stateProviders';
-import { injectState } from 'freactal';
 import ControlContainer from 'components/ControlsContainer';
-import { withRouter } from 'react-router';
+import EmptyContent from 'components/EmptyContent';
 import { RippleButton } from 'components/Ripple';
+import { injectState } from 'freactal';
+import { withRouter } from 'react-router';
+import { compose } from 'recompose';
+import { provideEntity } from 'stateProviders';
+import ContentPanel from './ContentPanel';
+import EditingContentPanel from './EditingContentPanel';
 
 const styles = {
   container: {
-    minWidth: 500,
     boxShadow: '-2px 0 12px 0 rgba(0,0,0,0.1)',
+    minWidth: 500,
     position: 'relative',
   },
   controls: { paddingRight: 24, paddingLeft: 24, justifyContent: 'space-between' },
-  content: {
-    paddingLeft: 60,
-    paddingRight: 60,
-    paddingTop: 30,
-  },
 };
 
 const enhance = compose(
-  provideThing,
+  provideEntity,
   injectState,
   withRouter,
 );
@@ -100,7 +95,7 @@ class Content extends React.Component<any, IContentState> {
       id,
       effects: { saveChanges, deleteItem, stageChange, refreshList },
       state: {
-        thing: { item, valid },
+        entity: { item, valid },
       },
       resource,
       history,
@@ -216,7 +211,7 @@ class Content extends React.Component<any, IContentState> {
             const newState = await saveChanges();
             await refreshList();
             this.setState({ contentState: ContentState.displaying });
-            history.replace(`/${resource.name.plural}/${newState.thing.item.id}`);
+            history.replace(`/${resource.name.plural}/${newState.entity.item.id}`);
           }}
           size="tiny"
         >
@@ -286,17 +281,17 @@ class Content extends React.Component<any, IContentState> {
             </React.Fragment>
           )}
         </ControlContainer>
-        <div className={`${css(styles.content)}`}>
+        <div>
           {contentState === ContentState.creating ? (
-            <EditingContentTable rows={rows} hideImmutable />
+            <EditingContentPanel entityType={resource.name.singular} rows={rows} hideImmutable />
           ) : !id ? (
             <EmptyContent message={resource.emptyMessage} />
           ) : !item ? (
             <EmptyContent message={'loading'} />
           ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (
-            <EditingContentTable rows={rows} />
+            <EditingContentPanel entityType={resource.name.singular} rows={rows} />
           ) : (
-            <ContentTable rows={rows} />
+            <ContentPanel entityType={resource.name.singular} rows={rows} />
           )}
         </div>
       </div>

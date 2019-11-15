@@ -1,9 +1,9 @@
-import colors from 'common/colors';
+import { TEAL } from 'common/colors';
 
 const styles = {
   container: {
     position: 'relative',
-    backgroundColor: colors.teal,
+    backgroundColor: TEAL,
     color: '#fff',
     width: 240,
     flexShrink: 0,

@@ -1,17 +1,17 @@
+import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import ajax from 'services/ajax';
-import { useDummyData } from 'common/injectGlobals';
 import dummyApplications from './dummyData/applications';
-import dummyUsers from './dummyData/users';
 import dummyGroups from './dummyData/groups';
+import dummyUsers from './dummyData/users';
 
 export const getApp = id => {
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve(dummyApplications.find(app => id === app.id))
     : ajax.get(`/applications/${id}`).then(r => r.data);
 };
 
 export const getAppUsers = id => {
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve(
         dummyUsers.filter((user: any) => (user.applications || []).find(app => app.id === id)),
       )
@@ -19,7 +19,7 @@ export const getAppUsers = id => {
 };
 
 export const getAppGroups = id => {
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve(
         dummyGroups.filter((group: any) => (group.applications || []).find(app => app.id === id)),
       )

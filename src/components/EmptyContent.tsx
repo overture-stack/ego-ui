@@ -1,15 +1,16 @@
-import React from 'react';
+import { GREY } from 'common/colors';
 import { css } from 'glamor';
-import colors from 'common/colors';
+import React from 'react';
 
 const styles = {
   container: {
-    display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
+    color: GREY,
+    display: 'flex',
     fontSize: 20,
-    color: colors.mediumGrey,
     fontWeight: 200,
+    justifyContent: 'center',
+    marginTop: '1rem',
   },
 };
 

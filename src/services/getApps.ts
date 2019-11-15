@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import ajax from 'services/ajax';
-import { useDummyData } from 'common/injectGlobals';
-import queryString from 'querystring';
+import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Application } from 'common/typedefs/Application';
+import _ from 'lodash';
+import queryString from 'querystring';
+import ajax from 'services/ajax';
 
 import dummyApplications from './dummyData/applications';
 
@@ -18,7 +18,7 @@ export const getApps = ({
 }): Promise<{ count: number; resultSet: Application[] }> => {
   const baseUrl = userId ? `/users/${userId}` : groupId ? `/groups/${groupId}` : '';
 
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyApplications.length,
         resultSet: dummyApplications.slice(offset, offset + limit),

@@ -1,12 +1,12 @@
-import _ from 'lodash';
 import { provideState } from 'freactal';
+import { omit, uniq } from 'lodash';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const MAX_ASSOCIATED = 5;
-const provideThing = provideState({
+const provideEntity = provideState({
   initialState: () => ({
-    thing: { item: null, staged: {}, associated: {}, valid: false, resource: null },
+    entity: { item: null, staged: {}, associated: {}, valid: false, resource: null },
   }),
 
   effects: {
@@ -30,8 +30,8 @@ const provideThing = provideState({
         const staged = item || {};
         return {
           ...s,
-          thing: {
-            ...s.thing,
+          entity: {
+            ...s.entity,
             resource,
             item,
             id: isCreate ? null : id,
@@ -42,7 +42,7 @@ const provideThing = provideState({
                 ...acc,
                 [resource.associatedTypes[i]]: {
                   ...a,
-                  resultSet: a.count > MAX_ASSOCIATED ? [] : a.resultSet,
+                  resultSet: a.count > MAX_ASSOCIATED ? a.resultSet.slice(0, 5) : a.resultSet,
                 },
               }),
               {},
@@ -52,42 +52,42 @@ const provideThing = provideState({
       };
     },
     stageChange: async (effects, change) => {
-      return ({ thing, ...state }) => {
+      return ({ entity, ...state }) => {
         // TODO: refactor to keep single timeline of changes and reconcile on save.
         const staged = {
-          ...thing.staged,
-          ..._.omit(change, thing.resource.associatedTypes),
+          ...entity.staged,
+          ...omit(change, entity.resource.associatedTypes),
         };
         return {
           ...state,
-          thing: {
-            ...thing,
+          entity: {
+            ...entity,
             staged,
-            valid: thing.resource.schema.filter(f => f.required).every(f => staged[f.key]),
-            associated: Object.keys(thing.associated).reduce((acc, currentType) => {
+            valid: entity.resource.schema.filter(f => f.required).every(f => staged[f.key]),
+            associated: Object.keys(entity.associated).reduce((acc, currentType) => {
               if (change[currentType]) {
                 return {
                   ...acc,
                   [currentType]: {
-                    ...thing.associated[currentType],
+                    ...entity.associated[currentType],
                     ...Object.keys(change[currentType]).reduce((actions, action) => {
                       const otherAction = action === 'add' ? 'remove' : 'add';
                       if (
-                        (thing.associated[currentType][otherAction] || []).includes(
+                        (entity.associated[currentType][otherAction] || []).includes(
                           change[currentType][action],
                         )
                       ) {
                         return {
                           ...actions,
-                          [otherAction]: (thing.associated[currentType][otherAction] || []).filter(
+                          [otherAction]: (entity.associated[currentType][otherAction] || []).filter(
                             ({ id }) => id !== change[currentType][action].id,
                           ),
                         };
                       } else {
                         return {
                           ...acc,
-                          [action]: _.uniq([
-                            ...(thing.associated[currentType][action] || []),
+                          [action]: uniq([
+                            ...(entity.associated[currentType][action] || []),
                             change[currentType][action],
                           ]),
                         };
@@ -96,7 +96,7 @@ const provideThing = provideState({
                   },
                 };
               } else {
-                return { ...acc, [currentType]: thing.associated[currentType] };
+                return { ...acc, [currentType]: entity.associated[currentType] };
               }
             }, {}),
           },
@@ -105,14 +105,14 @@ const provideThing = provideState({
     },
     undoChanges: async effects => {
       const {
-        thing: { id, resource },
+        entity: { id, resource },
       } = await effects.getState();
       await effects.setItem(id, resource);
       return state => ({ ...state });
     },
     saveChanges: async effects => {
       const {
-        thing: { resource, staged, associated, ...rest },
+        entity: { resource, staged, associated, ...rest },
       } = await effects.getState();
 
       let id = rest.id;
@@ -152,7 +152,7 @@ const provideThing = provideState({
     },
     deleteItem: async effects => {
       const {
-        thing: { item, resource },
+        entity: { item, resource },
       } = await effects.getState();
       await resource.deleteItem({ item });
       return state => ({ ...state });
@@ -160,4 +160,4 @@ const provideThing = provideState({
   },
 });
 
-export default provideThing;
+export default provideEntity;

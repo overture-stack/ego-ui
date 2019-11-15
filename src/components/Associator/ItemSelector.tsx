@@ -1,14 +1,16 @@
-import _ from 'lodash';
-import React from 'react';
-import { compose, withProps, defaultProps, withState, withHandlers } from 'recompose';
-import { css } from 'glamor';
 import Downshift from 'downshift';
-import { Input, Icon, Button, Menu } from 'semantic-ui-react';
+import { css } from 'glamor';
+import { get } from 'lodash';
+import React from 'react';
+import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
+import { Button, Icon, Input, Menu } from 'semantic-ui-react';
 
 const styles = {
   container: {},
   optionsWrapper: {
     position: 'absolute',
+    right: '13px',
+    top: '16px',
   },
 };
 
@@ -20,8 +22,8 @@ const matchFor = (query: string | null, accessor) => item =>
 
 const enhance = compose(
   defaultProps({
-    getName: item => _.get(item, 'name'),
-    getKey: item => _.get(item, 'id'),
+    getName: item => get(item, 'name'),
+    getKey: item => get(item, 'id'),
     onSelect: item => global.log('selected', item),
     disabledItems: [],
   }),
@@ -72,41 +74,40 @@ const render = ({
     >
       {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
         <div className={`ItemSelector ${css(styles.container)}`}>
-          {!isEntryMode && (
+          {isEntryMode ? (
+            <div>
+              <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
+              <Menu
+                className={`OptionList ${css(styles.optionsWrapper)}`}
+                size="small"
+                style={{ zIndex: 1 }}
+                vertical
+              >
+                {items.filter(matchFor(inputValue, getName)).map((item, i) => {
+                  const isDisabled = disabledItems.map(getKey).includes(getKey(item));
+                  return (
+                    <Menu.Item
+                      key={getKey(item)}
+                      {...getItemProps({
+                        disabled: isDisabled,
+                        item,
+                      })}
+                      active={highlightedIndex === i}
+                      disabled={isDisabled}
+                    >
+                      {getName(item)}
+                    </Menu.Item>
+                  );
+                })}
+                {!items.length && <Menu.Item>No Results</Menu.Item>}
+              </Menu>
+            </div>
+          ) : (
             <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
               <Icon name="add" />
               Add
             </Button>
           )}
-          {isEntryMode && (
-            <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-          )}
-          {isEntryMode ? (
-            <Menu
-              className={`OptionList ${css(styles.optionsWrapper)}`}
-              vertical
-              size="small"
-              style={{ zIndex: 1 }}
-            >
-              {items.filter(matchFor(inputValue, getName)).map((item, i) => {
-                const isDisabled = disabledItems.map(getKey).includes(getKey(item));
-                return (
-                  <Menu.Item
-                    key={getKey(item)}
-                    {...getItemProps({
-                      item,
-                      disabled: isDisabled,
-                    })}
-                    active={highlightedIndex === i}
-                    disabled={isDisabled}
-                  >
-                    {getName(item)}
-                  </Menu.Item>
-                );
-              })}
-              {!items.length && <Menu.Item>No Results</Menu.Item>}
-            </Menu>
-          ) : null}
         </div>
       )}
     </Downshift>

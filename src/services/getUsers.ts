@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import ajax from 'services/ajax';
-import { useDummyData } from 'common/injectGlobals';
-import queryString from 'querystring';
+import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { User } from 'common/typedefs/User';
+import _ from 'lodash';
+import queryString from 'querystring';
+import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
 
 export const getUsers = ({
@@ -20,7 +20,7 @@ export const getUsers = ({
     : applicationId
     ? `/applications/${applicationId}`
     : '';
-  return useDummyData
+  return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyUsers.length,
         resultSet: dummyUsers.slice(offset, offset + limit),

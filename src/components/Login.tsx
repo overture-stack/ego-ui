@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { css } from 'glamor';
-import { compose } from 'recompose';
+import { API_ROOT, EGO_CLIENT_ID } from 'common/injectGlobals';
 import { injectState } from 'freactal';
+import { css } from 'glamor';
 import jwtDecode from 'jwt-decode';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { compose } from 'recompose';
 import ajax from 'services/ajax';
-import { apiRoot, egoClientId } from 'common/injectGlobals';
 
-import colors from 'common/colors';
+import { TEAL } from 'common/colors';
 
 import _ from 'lodash';
 
 const styles = {
   container: {
-    backgroundColor: colors.teal,
+    backgroundColor: TEAL,
     color: '#fff',
     display: 'flex',
     flexDirection: 'column',
@@ -58,10 +58,10 @@ const enhance = compose(injectState);
  * }
  *  */
 const endpoints = {
-  google: `${apiRoot}/oauth/login/google?client_id=${egoClientId}`,
-  facebook: `${apiRoot}/oauth/login/facebook?client_id=${egoClientId}`,
-  github: `${apiRoot}/oauth/login/github?client_id=${egoClientId}`,
-  linkedin: `${apiRoot}/oauth/login/linkedin?client_id=${egoClientId}`,
+  google: `${API_ROOT}/oauth/login/google?client_id=${EGO_CLIENT_ID}`,
+  facebook: `${API_ROOT}/oauth/login/facebook?client_id=${EGO_CLIENT_ID}`,
+  github: `${API_ROOT}/oauth/login/github?client_id=${EGO_CLIENT_ID}`,
+  linkedin: `${API_ROOT}/oauth/login/linkedin?client_id=${EGO_CLIENT_ID}`,
 };
 
 class Component extends React.Component<any, any> {
@@ -71,7 +71,7 @@ class Component extends React.Component<any, any> {
   };
   componentDidMount() {
     ajax
-      .post(`/oauth/ego-token?client_id=${egoClientId}`, null, {
+      .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, {
         withCredentials: true,
       })
       .then(resp => {

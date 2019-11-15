@@ -1,13 +1,14 @@
 import React from 'react';
 
-import ListPane from 'components/ListPane';
-import Content from 'components/Content';
+import { LIGHT_BLUE } from 'common/colors';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Associator from 'components/Associator/Associator';
-import { compose } from 'recompose';
+import Content from 'components/Content';
+import ListPane from 'components/ListPane';
+import { get } from 'lodash';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import _ from 'lodash';
+import { compose } from 'recompose';
 import { provideList } from 'stateProviders';
 
 const enhance = compose(
@@ -43,25 +44,26 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                 return (
                   <React.Fragment>
                     <Associator
-                      initialItems={associated[associatedType].resultSet}
                       editing={editing}
                       fetchItems={RESOURCE_MAP[associatedType].getList}
-                      fetchExitingAssociations={params =>
+                      fetchExistingAssociations={params =>
                         RESOURCE_MAP[associatedType].getList({
                           ...params,
                           [`${resource.name.singular}Id`]: id,
                         })
                       }
                       getName={RESOURCE_MAP[associatedType].getName}
+                      initialItems={associated[associatedType].resultSet}
                       onAdd={item => stageChange({ [associatedType]: { add: item } })}
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
+                      type={associatedType}
                     />
                     {!parent &&
                       associated[associatedType].count >
-                        _.get(associated[associatedType], 'resultSet.length', 0) && (
+                        get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
-                          style={{ fontSize: 14 }}
+                          style={{ color: LIGHT_BLUE, fontSize: 12 }}
                         >
                           View {associated[associatedType].count} {associatedType}
                         </NavLink>
@@ -69,6 +71,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                   </React.Fragment>
                 );
               },
+              panelSection: 'associatedTypes',
             };
           }),
         ]}

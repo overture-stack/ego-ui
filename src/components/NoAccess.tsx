@@ -1,11 +1,11 @@
-import React from 'react';
-import { css } from 'glamor';
-import colors from 'common/colors';
+import { TEAL } from 'common/colors';
 import Logout from 'components/Logout';
+import { css } from 'glamor';
+import React from 'react';
 
 const styles = {
   container: {
-    backgroundColor: colors.teal,
+    backgroundColor: TEAL,
     color: '#fff',
     display: 'flex',
     flexDirection: 'column',

@@ -1,201 +1,241 @@
 import React from 'react';
 import {
-  getGroups,
-  getUsers,
-  getApps,
-  getApp,
-  getUser,
-  getGroup,
-  updateUser,
-  addGroupToUser,
-  addApplicationToUser,
-  removeApplicationFromUser,
-  removeGroupFromUser,
   addApplicationToGroup,
-  removeApplicationFromGroup,
-  updateApplication,
-  updateGroup,
+  addApplicationToUser,
+  addGroupToUser,
+  createApplication,
   createGroup,
   createUser,
-  createApplication,
-  deleteUser,
-  deleteGroup,
   deleteApplication,
+  deleteGroup,
+  deleteUser,
+  getApp,
+  getApps,
+  getGroup,
+  getGroups,
+  getUser,
+  getUsers,
+  removeApplicationFromGroup,
+  removeApplicationFromUser,
+  removeGroupFromUser,
+  updateApplication,
+  updateGroup,
+  updateUser,
 } from 'services';
 
 import { STATUSES } from 'common/injectGlobals';
 
-import { GroupListItem, UserListItem, ApplicationListItem } from 'components/ListItem';
+import { ApplicationListItem, GroupListItem, UserListItem } from 'components/ListItem';
 
-import { Icon } from 'semantic-ui-react';
 import { IResource, TResourceType } from 'common/typedefs/Resource';
+import { Icon } from 'semantic-ui-react';
 
+// ignore tslint sort, resources listed in deliberate order
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   users: {
-    Icon: ({ style }) => <Icon name="user" style={style} />,
-    getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
-    emptyMessage: 'Please select a user',
-    schema: [
-      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
-      { key: 'firstName', fieldName: 'First Name', sortable: true, required: true },
-      {
-        key: 'lastName',
-        fieldName: 'Last Name',
-        sortable: true,
-        initialSort: true,
-        required: true,
-      },
-      { key: 'email', fieldName: 'Email', sortable: true, required: true },
-      {
-        key: 'type',
-        fieldName: 'User Type',
-        sortable: true,
-        required: true,
-        fieldType: 'dropdown',
-        options: ['ADMIN', 'USER'],
-      },
-      {
-        key: 'status',
-        fieldName: 'Status',
-        fieldType: 'dropdown',
-        options: STATUSES,
-      },
-      { key: 'createdAt', fieldName: 'Date Created', sortable: true, immutable: true },
-      { key: 'lastLogin', fieldName: 'Last Login', sortable: true, immutable: true },
-      {
-        key: 'preferredLanguage',
-        fieldName: 'Preferred Language',
-        fieldType: 'dropdown',
-        options: ['ENGLISH', 'FRENCH', 'SPANISH'],
-      },
-    ],
-    noDelete: true,
-    name: { singular: 'user', plural: 'users' },
-    ListItem: UserListItem,
-    getList: getUsers,
-    getItem: getUser,
-    updateItem: updateUser,
+    add: {
+      applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
+      groups: ({ group, item }) => addGroupToUser({ user: item, group }),
+    },
+    associatedTypes: ['groups', 'applications'],
     createItem: createUser,
     deleteItem: deleteUser,
-    rowHeight: 50,
-    initialSortOrder: 'ASC',
-    associatedTypes: ['groups', 'applications'],
-    add: {
-      groups: ({ group, item }) => addGroupToUser({ user: item, group }),
-      applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
+    emptyMessage: 'Please select a user',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
     },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getItem: getUser,
+    getList: getUsers,
+    getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
+    Icon: ({ style }) => <Icon name="user" style={style} />,
+    initialSortOrder: 'ASC',
+    ListItem: UserListItem,
+    name: { singular: 'user', plural: 'users' },
+    noDelete: true,
     remove: {
-      groups: ({ group, item }) => removeGroupFromUser({ user: item, group }),
       applications: ({ application, item }) =>
         removeApplicationFromUser({ user: item, application }),
+      groups: ({ group, item }) => removeGroupFromUser({ user: item, group }),
     },
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
-    },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
-    },
-  },
-  groups: {
-    Icon: ({ style }) => <Icon name="group" style={style} />,
-    emptyMessage: 'Please select a group',
+    rowHeight: 50,
     schema: [
-      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
-      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
-      { key: 'description', fieldName: 'Description', sortable: true },
+      { fieldName: 'ID', immutable: true, key: 'id', panelSection: 'id', sortable: true },
       {
-        key: 'status',
-        fieldName: 'Status',
+        fieldName: 'First Name',
+        key: 'firstName',
+        panelSection: null,
+        required: true,
         sortable: true,
+      },
+      {
+        fieldName: 'Last Name',
+        initialSort: true,
+        key: 'lastName',
+        panelSection: 'id',
+        required: true,
+        sortable: true,
+      },
+      { fieldName: 'Email', key: 'email', panelSection: 'id', required: true, sortable: true },
+      {
+        fieldName: 'User Type',
         fieldType: 'dropdown',
+        key: 'type',
+        options: ['ADMIN', 'USER'],
+        panelSection: 'meta',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Language',
+        fieldType: 'dropdown',
+        key: 'preferredLanguage',
+        options: ['ENGLISH', 'FRENCH', 'SPANISH'],
+        panelSection: null,
+      },
+      {
+        fieldName: 'Status',
+        fieldType: 'dropdown',
+        key: 'status',
         options: STATUSES,
+        panelSection: 'meta',
+      },
+      {
+        fieldName: 'Created',
+        immutable: true,
+        key: 'createdAt',
+        panelSection: 'meta',
+        sortable: true,
+      },
+      {
+        fieldName: 'Last Login',
+        immutable: true,
+        key: 'lastLogin',
+        panelSection: 'meta',
+        sortable: true,
       },
     ],
-    name: { singular: 'group', plural: 'groups' },
-    ListItem: GroupListItem,
-    getList: getGroups,
-    updateItem: updateGroup,
+    updateItem: updateUser,
+  },
+  groups: {
+    add: {
+      applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
+      users: ({ user, item }) => addGroupToUser({ group: item, user }),
+    },
+    associatedTypes: ['users', 'applications'],
     createItem: createGroup,
     deleteItem: deleteGroup,
-    getItem: getGroup,
-    rowHeight: 44,
-    initialSortOrder: 'ASC',
-    associatedTypes: ['users', 'applications'],
-    add: {
-      users: ({ user, item }) => addGroupToUser({ group: item, user }),
-      applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
-    },
-    remove: {
-      users: ({ user, item }) => removeGroupFromUser({ group: item, user }),
-      applications: ({ application, item }) =>
-        removeApplicationFromGroup({ group: item, application }),
-    },
+    emptyMessage: 'Please select a group',
     get initialSortField() {
       return this.schema.find(field => field.initialSort);
     },
     get sortableFields() {
       return this.schema.filter(field => field.sortable);
     },
+    getItem: getGroup,
+    getList: getGroups,
+    Icon: ({ style }) => <Icon name="group" style={style} />,
+    initialSortOrder: 'ASC',
+    ListItem: GroupListItem,
+    name: { singular: 'group', plural: 'groups' },
+    remove: {
+      applications: ({ application, item }) =>
+        removeApplicationFromGroup({ group: item, application }),
+      users: ({ user, item }) => removeGroupFromUser({ group: item, user }),
+    },
+    rowHeight: 44,
+    schema: [
+      { key: 'id', fieldName: 'ID', panelSection: 'id', sortable: true, immutable: true },
+      {
+        fieldName: 'Name',
+        initialSort: true,
+        key: 'name',
+        panelSection: 'id',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Status',
+        fieldType: 'dropdown',
+        key: 'status',
+        options: STATUSES,
+        panelSection: 'meta',
+        sortable: true,
+      },
+      { key: 'description', fieldName: 'Description', panelSection: 'meta', sortable: true },
+    ],
+    updateItem: updateGroup,
   },
   applications: {
+    add: {
+      groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
+      users: ({ user, item }) => addApplicationToUser({ application: item, user }),
+    },
+    associatedTypes: ['groups', 'users'],
+    createItem: createApplication,
+    deleteItem: deleteApplication,
+    emptyMessage: 'Please select an application',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getItem: getApp,
+    getList: getApps,
     Icon: ({ style }) => (
       <i
         className="icon"
         style={{
           background: `url("${require('assets/icons/layers-icon.svg')}") no-repeat`,
-          marginTop: '0.2em',
           height: '1.2em',
+          marginTop: '0.2em',
           ...style,
         }}
       />
     ),
-    emptyMessage: 'Please select an application',
-    schema: [
-      { key: 'id', fieldName: 'ID', sortable: true, immutable: true },
-      { key: 'name', fieldName: 'Name', sortable: true, initialSort: true, required: true },
-      { key: 'description', fieldName: 'Description', sortable: true },
-      {
-        key: 'status',
-        fieldName: 'Status',
-        sortable: true,
-        fieldType: 'dropdown',
-        options: STATUSES,
-      },
-      {
-        key: 'type',
-        fieldName: 'Application Type',
-        sortable: true,
-        fieldType: 'dropdown',
-        options: ['ADMIN', 'CLIENT'],
-      },
-      { key: 'clientId', fieldName: 'Client ID', required: true },
-      { key: 'clientSecret', fieldName: 'Client Secret', required: true },
-      { key: 'redirectUri', fieldName: 'Redirect Uri', required: true },
-    ],
-    name: { singular: 'application', plural: 'applications' },
-    ListItem: ApplicationListItem,
-    getList: getApps,
-    updateItem: updateApplication,
-    createItem: createApplication,
-    deleteItem: deleteApplication,
-    getItem: getApp,
-    rowHeight: 44,
     initialSortOrder: 'ASC',
-    associatedTypes: ['groups', 'users'],
-    add: {
-      users: ({ user, item }) => addApplicationToUser({ application: item, user }),
-      groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
-    },
+    ListItem: ApplicationListItem,
+    name: { singular: 'application', plural: 'applications' },
     remove: {
-      users: ({ user, item }) => removeApplicationFromUser({ application: item, user }),
       groups: ({ group, item }) => removeApplicationFromGroup({ application: item, group }),
+      users: ({ user, item }) => removeApplicationFromUser({ application: item, user }),
     },
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
-    },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
-    },
+    rowHeight: 44,
+    schema: [
+      { key: 'id', fieldName: 'ID', panelSection: 'id', sortable: true, immutable: true },
+      {
+        fieldName: 'Name',
+        initialSort: true,
+        key: 'name',
+        panelSection: 'id',
+        required: true,
+        sortable: true,
+      },
+      { key: 'description', fieldName: 'Description', panelSection: null, sortable: true },
+      {
+        fieldName: 'Status',
+        fieldType: 'dropdown',
+        key: 'status',
+        options: STATUSES,
+        panelSection: 'meta',
+        sortable: true,
+      },
+      {
+        fieldName: 'Application Type',
+        fieldType: 'dropdown',
+        key: 'type',
+        options: ['ADMIN', 'CLIENT'],
+        panelSection: 'meta',
+        sortable: true,
+      },
+      { key: 'clientId', fieldName: 'Client ID', panelSection: 'meta', required: true },
+      { key: 'clientSecret', fieldName: 'Client Secret', panelSection: 'meta', required: true },
+      { key: 'redirectUri', fieldName: 'Redirect Uri', panelSection: 'meta', required: true },
+    ],
+    updateItem: updateApplication,
   },
 };
 
