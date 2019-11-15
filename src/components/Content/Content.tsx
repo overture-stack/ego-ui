@@ -7,7 +7,7 @@ import { RippleButton } from 'components/Ripple';
 import { injectState } from 'freactal';
 import { withRouter } from 'react-router';
 import { compose } from 'recompose';
-import { provideThing } from 'stateProviders';
+import { provideEntity } from 'stateProviders';
 import ContentPanel from './ContentPanel';
 import EditingContentPanel from './EditingContentPanel';
 
@@ -21,7 +21,7 @@ const styles = {
 };
 
 const enhance = compose(
-  provideThing,
+  provideEntity,
   injectState,
   withRouter,
 );
@@ -95,7 +95,7 @@ class Content extends React.Component<any, IContentState> {
       id,
       effects: { saveChanges, deleteItem, stageChange, refreshList },
       state: {
-        thing: { item, valid },
+        entity: { item, valid },
       },
       resource,
       history,
@@ -211,7 +211,7 @@ class Content extends React.Component<any, IContentState> {
             const newState = await saveChanges();
             await refreshList();
             this.setState({ contentState: ContentState.displaying });
-            history.replace(`/${resource.name.plural}/${newState.thing.item.id}`);
+            history.replace(`/${resource.name.plural}/${newState.entity.item.id}`);
           }}
           size="tiny"
         >

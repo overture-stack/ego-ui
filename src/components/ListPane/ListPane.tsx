@@ -4,7 +4,7 @@ import React from 'react';
 import { compose, defaultProps, withProps, withState } from 'recompose';
 
 import { TEAL } from 'common/colors';
-import { TThing } from 'common/typedefs';
+import { TEntity } from 'common/typedefs';
 import { IResource, TSortDirection } from 'common/typedefs/Resource';
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
@@ -47,7 +47,7 @@ interface IListProps {
     };
     list: {
       limit: number;
-      resultSet: TThing[];
+      resultSet: TEntity[];
       count: number;
       params: any;
     };

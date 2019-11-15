@@ -59,7 +59,7 @@ const ContentPanel = ({
   entityType,
   rows,
   state: {
-    thing: { item, associated, resource },
+    entity: { item, associated, resource },
   },
 }) => {
   const panelSections = groupBy(rows, 'panelSection');

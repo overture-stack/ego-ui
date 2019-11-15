@@ -104,7 +104,7 @@ class EditingContentPanel extends React.Component<any, any> {
       entityType,
       rows,
       state: {
-        thing: { staged, associated, resource },
+        entity: { staged, associated, resource },
       },
       effects: { stageChange },
       hideImmutable,
