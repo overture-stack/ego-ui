@@ -1,16 +1,16 @@
-import React from 'react';
 import { css } from 'glamor';
-import { NavLink } from 'react-router-dom';
 import _ from 'lodash';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import Ripple from 'components/Ripple';
+import UnstyledButton from 'components/UnstyledButton';
+import { injectState } from 'freactal';
+import { compose } from 'recompose';
+import { Icon } from 'semantic-ui-react';
 import CurrentUserNavItem from './CurrentUserNavItem';
 import styles from './Nav.styles';
-import { compose } from 'recompose';
-import { injectState } from 'freactal';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import { Icon } from 'semantic-ui-react';
-import UnstyledButton from 'components/UnstyledButton';
-import Ripple from 'components/Ripple';
 
 const resetList = {
   listStyleType: 'none',
@@ -43,7 +43,6 @@ class Nav extends React.Component<any, any> {
   }
   render() {
     const { collapsed } = this.state;
-
     return (
       <div className={`Nav ${collapsed ? 'collapsed' : ''} ${css(styles.container)}`}>
         <div style={{ height: 190 }}>
@@ -53,7 +52,7 @@ class Nav extends React.Component<any, any> {
           </div>
         </div>
         <ul className={`LinkList ${css(resetList, styles.linkList)}`}>
-          {Object.keys(RESOURCE_MAP).map(key => {
+          {Object.keys(_.pickBy(RESOURCE_MAP, r => r.isParent)).map(key => {
             const resource = RESOURCE_MAP[key];
 
             return (

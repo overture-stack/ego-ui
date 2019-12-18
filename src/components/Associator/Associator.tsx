@@ -8,6 +8,9 @@ import { DARK_BLUE, GREY } from 'common/colors';
 import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
 
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import { IResource } from 'common/typedefs/Resource';
+
 interface TProps {
   addItem: Function;
   allAssociatedItems: any[];
@@ -21,6 +24,7 @@ interface TProps {
   setAllAssociatedItems: Function;
   fetchInitial: Function;
   type: string;
+  resource: IResource;
 }
 
 const styles = {
@@ -54,20 +58,17 @@ async function fetchAllAssociatedItems({
 
 const enhance = compose(
   defaultProps({
-    getName: item => get(item, 'name'),
     getKey: item => get(item, 'id'),
+    getName: item => get(item, 'name'),
     onAdd: noop,
     onRemove: noop,
   }),
   withStateHandlers(
     ({ initialItems }) => ({
-      itemsInList: initialItems || [],
       allAssociatedItems: [],
+      itemsInList: initialItems || [],
     }),
     {
-      setItemsInList: () => items => ({
-        itemsInList: items,
-      }),
       addItem: ({ itemsInList }, { onAdd }) => item => {
         onAdd(item);
 
@@ -83,6 +84,9 @@ const enhance = compose(
         };
       },
       setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
+      setItemsInList: () => items => ({
+        itemsInList: items,
+      }),
     },
   ),
   lifecycle({
@@ -112,6 +116,7 @@ const render = ({
   editing,
   type,
 }: TProps) => {
+  const AssociatorComponent = RESOURCE_MAP[type].AssociatorComponent || null;
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <div
@@ -140,13 +145,20 @@ const render = ({
           />
         )}
       </div>
+      {/* differentiate between table view and label view */}
+      {/* put different components in associator folder */}
+      {/* use a componentType to differentiate */}
       {itemsInList.length > 0 ? (
-        itemsInList.map(item => (
-          <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-            {getName(item)}
-            {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
-          </Label>
-        ))
+        AssociatorComponent ? (
+          <AssociatorComponent editing={editing} items={itemsInList} />
+        ) : (
+          itemsInList.map(item => (
+            <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
+              {getName(item)}
+              {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
+            </Label>
+          ))
+        )
       ) : (
         <div style={{ color: GREY, fontStyle: 'italic' }}>No data found</div>
       )}

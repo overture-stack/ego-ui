@@ -3,6 +3,7 @@ import {
   addApplicationToGroup,
   addApplicationToUser,
   addGroupToUser,
+  addPermissionToUser,
   createApplication,
   createGroup,
   createUser,
@@ -14,10 +15,12 @@ import {
   getGroup,
   getGroups,
   getUser,
+  getUserPermissions,
   getUsers,
   removeApplicationFromGroup,
   removeApplicationFromUser,
   removeGroupFromUser,
+  removePermissionFromUser,
   updateApplication,
   updateGroup,
   updateUser,
@@ -25,7 +28,13 @@ import {
 
 import { STATUSES } from 'common/injectGlobals';
 
-import { ApplicationListItem, GroupListItem, UserListItem } from 'components/ListItem';
+import PermissionsTable from 'components/Associator/PermissionsTable';
+import {
+  ApplicationListItem,
+  GroupListItem,
+  PermissionListItem,
+  UserListItem,
+} from 'components/ListItem';
 
 import { IResource, TResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
@@ -36,8 +45,10 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     add: {
       applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
+      permissions: ({ permission, item }) => addPermissionToUser({ user: item, permission }),
     },
-    associatedTypes: ['groups', 'applications'],
+    AssociatorComponent: null,
+    associatedTypes: ['groups', 'applications', 'permissions'],
     createItem: createUser,
     deleteItem: deleteUser,
     emptyMessage: 'Please select a user',
@@ -52,6 +63,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
     Icon: ({ style }) => <Icon name="user" style={style} />,
     initialSortOrder: 'ASC',
+    isParent: true,
     ListItem: UserListItem,
     name: { singular: 'user', plural: 'users' },
     noDelete: true,
@@ -59,6 +71,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       applications: ({ application, item }) =>
         removeApplicationFromUser({ user: item, application }),
       groups: ({ group, item }) => removeGroupFromUser({ user: item, group }),
+      permissions: ({ permission, item }) => removePermissionFromUser({ user: item, permission }),
     },
     rowHeight: 50,
     schema: [
@@ -124,6 +137,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
     },
+    AssociatorComponent: null,
     associatedTypes: ['users', 'applications'],
     createItem: createGroup,
     deleteItem: deleteGroup,
@@ -138,6 +152,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     getList: getGroups,
     Icon: ({ style }) => <Icon name="group" style={style} />,
     initialSortOrder: 'ASC',
+    isParent: true,
     ListItem: GroupListItem,
     name: { singular: 'group', plural: 'groups' },
     remove: {
@@ -173,6 +188,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
       users: ({ user, item }) => addApplicationToUser({ application: item, user }),
     },
+    AssociatorComponent: null,
     associatedTypes: ['groups', 'users'],
     createItem: createApplication,
     deleteItem: deleteApplication,
@@ -197,6 +213,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       />
     ),
     initialSortOrder: 'ASC',
+    isParent: true,
     ListItem: ApplicationListItem,
     name: { singular: 'application', plural: 'applications' },
     remove: {
@@ -236,6 +253,54 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'redirectUri', fieldName: 'Redirect Uri', panelSection: 'meta', required: true },
     ],
     updateItem: updateApplication,
+  },
+  permissions: {
+    add: () => null,
+    associatedTypes: [],
+    AssociatorComponent: PermissionsTable,
+    createItem: () => null,
+    deleteItem: () => null,
+    emptyMessage: '',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getItem: () => null,
+    getList: getUserPermissions,
+    Icon: () => null,
+    initialSortOrder: 'ASC',
+    isParent: false,
+    ListItem: PermissionListItem,
+    name: { singular: 'permission', plural: 'permissions' },
+    remove: () => null,
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: 'Policy Name',
+        initialSort: true,
+        key: 'policyName',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Access Level',
+        fieldType: 'radio',
+        key: 'accessLevel',
+        options: ['READ', 'WRITE', 'DENY'],
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Inheritance',
+        fieldType: 'button',
+        key: 'inheritance',
+        required: true,
+        sortable: true,
+      },
+    ],
+    updateItem: () => null,
   },
 };
 

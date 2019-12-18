@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LIGHT_BLUE } from 'common/colors';
+import { MEDIUM_BLUE } from 'common/colors';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Associator from 'components/Associator/Associator';
 import Content from 'components/Content';
@@ -63,7 +63,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                         get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
-                          style={{ color: LIGHT_BLUE, fontSize: 12 }}
+                          style={{ color: MEDIUM_BLUE, fontSize: 12 }}
                         >
                           View {associated[associatedType].count} {associatedType}
                         </NavLink>

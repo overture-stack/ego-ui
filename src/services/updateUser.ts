@@ -51,3 +51,11 @@ export const removeApplicationFromUser = ({ user, application }) => {
 export const deleteUser = ({ item }) => {
   return ajax.delete(`/users/${item.id}`).then(r => r.data);
 };
+
+// If it is a user permission, the remove the permission from the user.
+// If it is a group based permission, then remove the user from that group.
+export const addPermissionToUser = ({ user, permission }) =>
+  add({ user, key: 'permissions', value: permission.id });
+
+export const removePermissionFromUser = ({ user, permission }) =>
+  remove({ user, key: 'permissions', value: permission.id });
