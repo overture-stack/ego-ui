@@ -14,18 +14,18 @@ const styles = {
   },
 };
 
-const matchFor = (query: string | null, accessor) => item =>
+export const matchFor = (query: string | null, accessor) => item =>
   !query ||
   accessor(item)
     .toLowerCase()
     .includes(query.toLowerCase());
 
-const enhance = compose(
+export const enhance = compose(
   defaultProps({
-    getName: item => get(item, 'name'),
-    getKey: item => get(item, 'id'),
-    onSelect: item => global.log('selected', item),
     disabledItems: [],
+    getKey: item => get(item, 'id'),
+    getName: item => get(item, 'name'),
+    onSelect: item => global.log('selected', item),
   }),
   withState('isEntryMode', 'setIsEntryMode', false),
   withState('items', 'setItems', []),
@@ -53,6 +53,46 @@ const enhance = compose(
   }),
 );
 
+export const ItemSelectorInputMenu = ({
+  disabledItems,
+  items,
+  handleSelect,
+  getName,
+  getKey,
+  getInputProps,
+  inputValue,
+  getItemProps,
+  highlightedIndex,
+}) => (
+  <div>
+    <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
+    <Menu
+      className={`OptionList ${css(styles.optionsWrapper)}`}
+      size="small"
+      style={{ zIndex: 1 }}
+      vertical
+    >
+      {items.filter(matchFor(inputValue, getName)).map((item, i) => {
+        const isDisabled = disabledItems.map(getKey).includes(getKey(item));
+        return (
+          <Menu.Item
+            key={getKey(item)}
+            {...getItemProps({
+              disabled: isDisabled,
+              item,
+            })}
+            active={highlightedIndex === i}
+            disabled={isDisabled}
+          >
+            {getName(item)}
+          </Menu.Item>
+        );
+      })}
+      {!items.length && <Menu.Item>No Results</Menu.Item>}
+    </Menu>
+  </div>
+);
+
 const render = ({
   disabledItems,
   requestItems,
@@ -63,6 +103,7 @@ const render = ({
   isEntryMode,
   setIsEntryMode,
   handleStateChange,
+  type,
 }) => {
   return (
     <Downshift

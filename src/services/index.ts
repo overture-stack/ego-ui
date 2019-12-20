@@ -10,3 +10,4 @@ export * from './getApps';
 export * from './getApp';
 export * from './updateApplication';
 export * from './createApplication';
+export * from './getPolicies';

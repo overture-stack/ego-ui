@@ -22,6 +22,8 @@ export type TResourceType = 'groups' | 'applications' | 'users' | 'permissions';
 
 export type TSortDirection = 'DESC' | 'ASC';
 
+type TAddItem = 'menu' | 'input';
+
 export interface IResource {
   Icon: any;
   getName?: (params: User) => string;
@@ -31,6 +33,7 @@ export interface IResource {
   name: { singular: string; plural: TResourceType };
   ListItem: any;
   getList: Function;
+  getListAll: Function;
   getItem: Function;
   updateItem: Function;
   createItem: Function;
@@ -38,6 +41,7 @@ export interface IResource {
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];
+  addItem: TAddItem;
   add: any;
   remove: any;
   // add: { [key in TResourceType]?: (params: any) => Promise<any> };

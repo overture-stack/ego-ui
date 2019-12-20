@@ -2,14 +2,14 @@ import { css } from 'glamor';
 import { capitalize, get, noop, without } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
-import { Grid, Icon, Label } from 'semantic-ui-react';
+import { Button, Grid, Icon, Label } from 'semantic-ui-react';
 
 import { DARK_BLUE, GREY } from 'common/colors';
 import { styles as contentStyles } from 'components/Content/ContentPanelView';
-import ItemSelector from './ItemSelector';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { IResource } from 'common/typedefs/Resource';
+import ItemSelector from './ItemSelector';
 
 interface TProps {
   addItem: Function;
@@ -137,20 +137,26 @@ const render = ({
         >
           {capitalize(type)}
         </span>
-        {editing && (
+        {editing && type !== 'permissions' && (
           <ItemSelector
             fetchItems={args => fetchItems({ ...args, limit: 10 })}
             onSelect={addItem}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
+            type={RESOURCE_MAP[type].addItem}
           />
         )}
       </div>
-      {/* differentiate between table view and label view */}
-      {/* put different components in associator folder */}
-      {/* use a componentType to differentiate */}
       {itemsInList.length > 0 ? (
         AssociatorComponent ? (
-          <AssociatorComponent editing={editing} items={itemsInList} />
+          <AssociatorComponent
+            addItem={addItem}
+            editing={editing}
+            associatedItems={itemsInList}
+            removeItem={removeItem}
+            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 10 })}
+            onSelect={addItem}
+            disabledItems={[...allAssociatedItems, ...itemsInList]}
+          />
         ) : (
           itemsInList.map(item => (
             <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>

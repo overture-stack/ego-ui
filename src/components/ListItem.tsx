@@ -84,7 +84,7 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
 
 export const PermissionListItem = ({ item, sortField, className = '', style, ...props }) => {
   const { id, policy, accessLevel, owner } = item;
-  // TODO: sorting is not working on the nested table
+  // TODO: sorting is not working on the nested table. works on nested users
   const secondaryField = sortField === 'policyName' ? 'accessLevel' : sortField;
   return (
     <Ripple
