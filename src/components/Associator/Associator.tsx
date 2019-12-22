@@ -82,9 +82,12 @@ const enhance = compose(
           itemsInList: itemsInList.concat(item),
         };
       },
-      removeItem: ({ itemsInList }, { onRemove }) => item => {
-        onRemove(item);
-
+      removeItem: ({ itemsInList }, { onRemove, stageChange }) => (item, type) => {
+        if (type === 'permissions' && item.ownerType === 'GROUP') {
+          stageChange({ groups: { remove: item.owner } });
+        } else {
+          onRemove(item);
+        }
         return {
           itemsInList: without(itemsInList, item),
         };
@@ -157,7 +160,7 @@ const render = ({
           <AssociatorComponent
             editing={editing}
             associatedItems={itemsInList}
-            removeItem={removeItem}
+            removeItem={item => removeItem(item, type)}
             fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 10 })}
             onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
