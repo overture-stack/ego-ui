@@ -17,8 +17,8 @@ export const getPolicies = ({
         omitBy(
           {
             limit,
+            name: query,
             offset,
-            query,
             sort: sortField,
             sortOrder,
           },

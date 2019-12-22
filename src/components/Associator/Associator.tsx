@@ -69,9 +69,15 @@ const enhance = compose(
       itemsInList: initialItems || [],
     }),
     {
-      addItem: ({ itemsInList }, { onAdd }) => item => {
+      addItem: ({ itemsInList }, { onAdd }) => (item, type) => {
+        // permissions on add should happen when you click the "+" button? or something like that
+        // it shouldn't be staged until policy and access are completed
         onAdd(item);
-
+        if (type === 'permissions') {
+          return {
+            itemsInList: [item].concat(itemsInList),
+          };
+        }
         return {
           itemsInList: itemsInList.concat(item),
         };
@@ -140,7 +146,7 @@ const render = ({
         {editing && type !== 'permissions' && (
           <ItemSelector
             fetchItems={args => fetchItems({ ...args, limit: 10 })}
-            onSelect={addItem}
+            onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
             type={RESOURCE_MAP[type].addItem}
           />
@@ -149,12 +155,11 @@ const render = ({
       {itemsInList.length > 0 ? (
         AssociatorComponent ? (
           <AssociatorComponent
-            addItem={addItem}
             editing={editing}
             associatedItems={itemsInList}
             removeItem={removeItem}
             fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 10 })}
-            onSelect={addItem}
+            onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
           />
         ) : (

@@ -289,7 +289,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       {
         fieldName: 'Policy Name',
         initialSort: true,
-        key: 'policyName',
+        key: 'policy',
         required: true,
         sortable: true,
       },

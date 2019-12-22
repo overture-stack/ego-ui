@@ -1,12 +1,12 @@
 import { DEFAULT_BLACK, LIGHT_TEAL, MEDIUM_BLUE } from 'common/colors';
 import Downshift from 'downshift';
 import { css } from 'glamor';
-import { capitalize, toLowerCase } from 'lodash';
+import { capitalize, get, toLowerCase } from 'lodash';
 import React from 'react';
-import { compose, withHandlers, withState } from 'recompose';
+import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
 import { Button, Checkbox, Icon, Input, Label, Menu, Table } from 'semantic-ui-react';
 
-import { enhance, ItemSelectorInputMenu, matchFor } from './ItemSelector';
+import { ItemSelectorInputMenu, matchFor } from './ItemSelector';
 
 const ACCESS_LEVELS = ['READ', 'WRITE', 'DENY'];
 
@@ -16,14 +16,14 @@ const styles = {
   },
   optionsWrapper: {
     left: '26px',
-    position: 'absolute',
+    right: '0px',
     top: '54px',
   },
 };
 
 const EditAccessLevel = compose(
   withState('checkedLevel', 'setCheckedLevel', props => props.accessLevel),
-)(({ accessLevel, checkedLevel, permission, setCheckedLevel }) => {
+)(({ accessLevel, checkedLevel, permission, setCheckedLevel, handleSelectAccessLevel }) => {
   return (
     <div>
       {ACCESS_LEVELS.map(level => (
@@ -32,14 +32,77 @@ const EditAccessLevel = compose(
             key={level}
             radio
             label={capitalize(level)}
-            checked={level === checkedLevel}
-            onChange={() => setCheckedLevel(level)}
+            checked={level === permission.accessLevel}
+            onChange={() => handleSelectAccessLevel(level)}
           />
         </span>
       ))}
     </div>
   );
 });
+
+const defaultNewPermission = {
+  accessLevel: null,
+  owner: {},
+  ownerType: 'USER',
+  policy: {},
+};
+
+const enhance = compose(
+  defaultProps({
+    disabledItems: [],
+    getKey: item => get(item, 'id'),
+    getName: item => get(item, 'name'),
+    onSelect: item => global.log('selected', item),
+  }),
+  withState('isEntryMode', 'setIsEntryMode', false),
+  withState('items', 'setItems', []),
+  withState('newPermission', 'setNewPermission', defaultNewPermission),
+  withProps(
+    ({
+      onSelect,
+      fetchItems,
+      setItems,
+      disabledItems,
+      getKey,
+      newPermission,
+      setNewPermission,
+      setIsEntryMode,
+    }) => ({
+      handleAddNew: () => {
+        onSelect(newPermission);
+        setNewPermission(defaultNewPermission);
+      },
+      handleSelect: (item, { clearSelection }) => {
+        if (item && !disabledItems.map(getKey).includes(getKey(item))) {
+          setNewPermission({ ...newPermission, ownerType: 'USER', policy: item });
+        }
+        clearSelection();
+        setIsEntryMode(false);
+      },
+      handleSelectAccessLevel: level => {
+        setNewPermission({
+          ...newPermission,
+          accessLevel: level,
+        });
+      },
+      requestItems: async query => {
+        const response = await fetchItems({ query });
+        setItems(response.resultSet);
+      },
+    }),
+  ),
+  withHandlers({
+    handleStateChange: ({ requestItems }) => async (changes, stateAndHelpers) => {
+      if (
+        changes.hasOwnProperty('inputValue') &&
+        changes.type === '__autocomplete_change_input__'
+      ) {
+        requestItems(changes.inputValue);
+      }
+    },
+  }),
+);
 
 export const AddNewPermissionRow = ({
   disabledItems,
@@ -50,63 +113,56 @@ export const AddNewPermissionRow = ({
   handleStateChange,
   setIsEntryMode,
   isEntryMode,
+  handleAddNew,
+  newPermission,
+  setNewPermission,
+  handleSelectAccessLevel,
 }) => (
   <Table.Row>
     {isEntryMode ? (
       <Table.Cell>
-        <Downshift
-          onChange={handleSelect}
-          itemToString={getName}
-          onOuterClick={() => setIsEntryMode(false)}
-          onStateChange={handleStateChange}
-          isOpen={isEntryMode}
-        >
-          {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
-            <div>
-              <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-              {!!inputValue && inputValue.length > 0 && (
-                <Menu
-                  className={`OptionList ${css(styles.optionsWrapper)}`}
-                  size="small"
-                  style={{ zIndex: 1 }}
-                  vertical
-                >
-                  {items.filter(matchFor(inputValue, getName)).map((item, i) => {
-                    const isDisabled = disabledItems.map(getKey).includes(getKey(item));
-                    return (
-                      <Menu.Item
-                        key={getKey(item)}
-                        {...getItemProps({
-                          disabled: isDisabled,
-                          item,
-                        })}
-                        active={highlightedIndex === i}
-                        disabled={isDisabled}
-                      >
-                        {getName(item)}
-                      </Menu.Item>
-                    );
-                  })}
-                  {items.length === 0 && <Menu.Item>No Results</Menu.Item>}
-                </Menu>
-              )}
-            </div>
-          )}
-        </Downshift>
+        <ItemSelectorInputMenu
+          disabledItems={disabledItems.map(policyItem => ({
+            id: policyItem.policy.id,
+            name: policyItem.policy.name,
+          }))}
+          items={items}
+          handleSelect={handleSelect}
+          getName={getName}
+          getKey={getKey}
+          setIsEntryMode={setIsEntryMode}
+          isEntryMode={isEntryMode}
+          handleStateChange={handleStateChange}
+          customOptionsStyles={styles.optionsWrapper}
+        />
       </Table.Cell>
     ) : (
       <Table.Cell>
-        <Button size="mini" color="blue" onClick={() => setIsEntryMode(true)}>
-          <Icon name="add" />
-          Add a Policy
-        </Button>
+        {!!newPermission.policy.name ? (
+          <span onClick={() => setIsEntryMode(true)}>{newPermission.policy.name}</span>
+        ) : (
+          <Button size="mini" color="blue" onClick={() => setIsEntryMode(true)}>
+            <Icon name="add" />
+            Add a Policy
+          </Button>
+        )}
       </Table.Cell>
     )}
     <Table.Cell collapsing>
-      <EditAccessLevel accessLevel={null} permission={null} />
+      <EditAccessLevel
+        permission={newPermission}
+        handleSelectAccessLevel={handleSelectAccessLevel}
+      />
     </Table.Cell>
     <Table.Cell collapsing>
-      <Button circular color="blue" icon="add" onClick={() => console.log('Add')} size="mini" />
+      <Button
+        circular
+        color="blue"
+        disabled={!newPermission.accessLevel || !newPermission.policy}
+        icon="add"
+        onClick={handleAddNew}
+        size="mini"
+      />
     </Table.Cell>
   </Table.Row>
 );
@@ -124,60 +180,64 @@ const PermissionsTable = ({
   disabledItems,
   getKey,
   items,
-}) => {
-  return (
-    <div style={{ flex: 1 }}>
-      <Table singleLine>
-        <Table.Body>
-          {editing && (
-            <AddNewPermissionRow
-              disabledItems={disabledItems}
-              items={items}
-              handleSelect={handleSelect}
-              getName={getName}
-              getKey={getKey}
-              isEntryMode={isEntryMode}
-              handleStateChange={handleStateChange}
-              setIsEntryMode={setIsEntryMode}
-            />
-          )}
-          {associatedItems.map(item => (
-            <Table.Row key={item.policy.id}>
-              <Table.Cell>
-                <span>{item.policy.name}</span>
-              </Table.Cell>
-              <Table.Cell collapsing>
-                {editing ? (
-                  <EditAccessLevel accessLevel={item.accessLevel} permission={item.id} />
-                ) : (
-                  <Label style={styles.label}>
-                    <span style={{ color: DEFAULT_BLACK, fontWeight: 100 }}>
-                      {item.accessLevel}
-                    </span>
-                  </Label>
-                )}
-              </Table.Cell>
-              <Table.Cell collapsing>
-                {editing ? (
-                  <Button
-                    circular
-                    color="blue"
-                    icon="remove"
-                    onClick={() => removeItem(item)}
-                    size="mini"
-                  />
-                ) : (
-                  <Label style={styles.label}>
-                    <span style={{ color: DEFAULT_BLACK, fontWeight: 100 }}>{item.ownerType}</span>
-                  </Label>
-                )}
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
-    </div>
-  );
-};
+  handleAddNew,
+  handleSelectAccessLevel,
+  newPermission,
+  setNewPermission,
+}) => (
+  <div style={{ flex: 1 }}>
+    <Table singleLine>
+      <Table.Body>
+        {editing && (
+          <AddNewPermissionRow
+            disabledItems={disabledItems}
+            items={items}
+            handleSelect={handleSelect}
+            getName={getName}
+            getKey={getKey}
+            isEntryMode={isEntryMode}
+            handleStateChange={handleStateChange}
+            setIsEntryMode={setIsEntryMode}
+            handleAddNew={handleAddNew}
+            handleSelectAccessLevel={handleSelectAccessLevel}
+            newPermission={newPermission}
+            setNewPermission={setNewPermission}
+          />
+        )}
+        {associatedItems.map(item => (
+          <Table.Row key={item.policy.id}>
+            <Table.Cell>
+              <span>{item.policy.name}</span>
+            </Table.Cell>
+            <Table.Cell collapsing>
+              {editing ? (
+                <EditAccessLevel permission={item} />
+              ) : (
+                <Label style={styles.label}>
+                  <span style={{ color: DEFAULT_BLACK, fontWeight: 100 }}>{item.accessLevel}</span>
+                </Label>
+              )}
+            </Table.Cell>
+            <Table.Cell collapsing>
+              {editing ? (
+                <Button
+                  circular
+                  color="blue"
+                  icon="remove"
+                  onClick={() => removeItem(item)}
+                  size="mini"
+                />
+              ) : (
+                <Label style={styles.label}>
+                  <span style={{ color: DEFAULT_BLACK, fontWeight: 100 }}>{item.ownerType}</span>
+                </Label>
+              )}
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  </div>
+);
 
 export default enhance(PermissionsTable);

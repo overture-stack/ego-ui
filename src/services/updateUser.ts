@@ -3,7 +3,7 @@ import { find, omit, uniq } from 'lodash';
 import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
 
-const BLOCKED_KEYS = ['groups', 'applications'];
+const BLOCKED_KEYS = ['groups', 'applications']; // TODO: need to add permissions here?
 function add({ user, key, value }: any) {
   if (USE_DUMMY_DATA) {
     const foundUser = find(dummyUsers, u => u.id === user.id);
@@ -55,10 +55,13 @@ export const deleteUser = ({ item }) => {
   return ajax.delete(`/users/${item.id}`).then(r => r.data);
 };
 
+// add and remove happens one at a time, with their own post/delete requests
 // If it is a user permission, the remove the permission from the user.
 // If it is a group based permission, then remove the user from that group.
-export const addPermissionToUser = ({ user, permission }) =>
-  add({ user, key: 'permissions', value: permission.id });
+export const addPermissionToUser = ({ user, permission }) => {
+  const newPermission = { policyId: permission.policy.id, mask: permission.accessLevel };
+  return add({ user, key: 'permissions', value: newPermission });
+};
 
 export const removePermissionFromUser = ({ user, permission }) =>
   remove({ user, key: 'permissions', value: permission.id });

@@ -20,7 +20,7 @@ export const matchFor = (query: string | null, accessor) => item =>
     .toLowerCase()
     .includes(query.toLowerCase());
 
-export const enhance = compose(
+const enhance = compose(
   defaultProps({
     disabledItems: [],
     getKey: item => get(item, 'id'),
@@ -59,38 +59,52 @@ export const ItemSelectorInputMenu = ({
   handleSelect,
   getName,
   getKey,
-  getInputProps,
-  inputValue,
-  getItemProps,
-  highlightedIndex,
+  setIsEntryMode,
+  isEntryMode,
+  handleStateChange,
+  customOptionsStyles = {},
 }) => (
-  <div>
-    <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-    <Menu
-      className={`OptionList ${css(styles.optionsWrapper)}`}
-      size="small"
-      style={{ zIndex: 1 }}
-      vertical
-    >
-      {items.filter(matchFor(inputValue, getName)).map((item, i) => {
-        const isDisabled = disabledItems.map(getKey).includes(getKey(item));
-        return (
-          <Menu.Item
-            key={getKey(item)}
-            {...getItemProps({
-              disabled: isDisabled,
-              item,
-            })}
-            active={highlightedIndex === i}
-            disabled={isDisabled}
+  <Downshift
+    onChange={handleSelect}
+    itemToString={getName}
+    onOuterClick={() => setIsEntryMode(false)}
+    onStateChange={handleStateChange}
+    isOpen={isEntryMode}
+  >
+    {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
+      <div>
+        <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
+        {items.length > 0 && (
+          <Menu
+            className={`OptionList ${css({ ...styles.optionsWrapper, ...customOptionsStyles })}`}
+            size="small"
+            style={{ zIndex: 1 }}
+            vertical
           >
-            {getName(item)}
-          </Menu.Item>
-        );
-      })}
-      {!items.length && <Menu.Item>No Results</Menu.Item>}
-    </Menu>
-  </div>
+            {items.filter(matchFor(inputValue, getName)).map((item, i) => {
+              const isDisabled = disabledItems.map(getKey).includes(getKey(item));
+              return (
+                <Menu.Item
+                  key={getKey(item)}
+                  {...getItemProps({
+                    disabled: isDisabled,
+                    item,
+                  })}
+                  active={highlightedIndex === i}
+                  disabled={isDisabled}
+                >
+                  {getName(item)}
+                </Menu.Item>
+              );
+            })}
+            {inputValue && inputValue.length > 0 && !items.length && (
+              <Menu.Item>No Results</Menu.Item>
+            )}
+          </Menu>
+        )}
+      </div>
+    )}
+  </Downshift>
 );
 
 const render = ({
