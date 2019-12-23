@@ -203,7 +203,7 @@ const PermissionsTable = ({
   setNewPermission,
 }) => (
   <div style={{ flex: 1 }}>
-    <Table singleLine>
+    <Table singleLine style={{ borderRadius: '0px' }}>
       <Table.Body>
         {editing && (
           <AddNewPermissionRow

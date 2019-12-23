@@ -10,6 +10,7 @@ import {
   deleteApplication,
   deleteGroup,
   deleteUser,
+  getApiKeys,
   getApp,
   getApps,
   getGroup,
@@ -29,6 +30,7 @@ import {
 
 import { STATUSES } from 'common/injectGlobals';
 
+import ApiKeysTable from 'components/Associator/ApiKeysTable';
 import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
   ApplicationListItem,
@@ -49,7 +51,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       permissions: ({ permission, item }) => addPermissionToUser({ user: item, permission }),
     },
     addItem: 'menu',
-    associatedTypes: ['groups', 'applications', 'permissions'],
+    associatedTypes: ['groups', 'applications', 'permissions', 'apiKeys'],
     AssociatorComponent: null,
     createItem: createUser,
     deleteItem: deleteUser,
@@ -303,6 +305,65 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       {
         fieldName: 'Inheritance',
         key: 'inheritance',
+        required: true,
+        sortable: true,
+      },
+    ],
+    updateItem: () => null,
+  },
+  apiKeys: {
+    add: () => null,
+    addItem: 'menu',
+    associatedTypes: [],
+    AssociatorComponent: ApiKeysTable,
+    createItem: () => null,
+    deleteItem: () => null,
+    emptyMessage: '',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getItem: () => null,
+    getList: getApiKeys,
+    getListAll: getApiKeys,
+    Icon: () => null,
+    initialSortOrder: 'ASC',
+    isParent: false,
+    ListItem: PermissionListItem,
+    name: { singular: 'apiKey', plural: 'apiKeys' },
+    remove: () => null,
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: '',
+        initialSort: true,
+        key: 'id',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Scope',
+        key: 'scope',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Expiry',
+        key: 'expiry',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Issued',
+        key: 'issued',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Status',
+        key: 'status',
         required: true,
         sortable: true,
       },
