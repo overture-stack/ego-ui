@@ -1,7 +1,7 @@
 import { DEFAULT_BLACK, LIGHT_TEAL, MEDIUM_BLUE } from 'common/colors';
 import Downshift from 'downshift';
 import { css } from 'glamor';
-import { capitalize, get, toLowerCase } from 'lodash';
+import { capitalize, get, isEmpty, toLowerCase } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
 import { Button, Checkbox, Icon, Input, Label, Menu, Table } from 'semantic-ui-react';
@@ -69,6 +69,13 @@ const enhance = compose(
       setNewPermission,
       setIsEntryMode,
     }) => ({
+      // could set changes to staging even before both level and policy are set.
+      // Policy *must* be present. but i don't think access should be set to a default
+      // somehow make it clearer that an incomplete new permission will not be saved
+      // disable add row until new permission is complete
+      // but don't need to click "+" to stage changes
+      // highlight incomplete new permission in some way so user knows it is invalid and won't be saved
+      // save button is disabled on create when required fields are not complete
       handleAddNew: () => {
         onSelect(newPermission);
         setNewPermission(defaultNewPermission);
@@ -76,6 +83,8 @@ const enhance = compose(
       handleSelect: (item, { clearSelection }) => {
         if (item && !disabledItems.map(getKey).includes(getKey(item))) {
           setNewPermission({ ...newPermission, ownerType: 'USER', policy: item });
+          // onSelect({ ownerType: 'USER', policy: item });
+          // stageChange({ permissions: { add: { policy: item } } });
         }
         clearSelection();
         setIsEntryMode(false);
@@ -85,6 +94,13 @@ const enhance = compose(
           ...newPermission,
           accessLevel: level,
         });
+        // onChange={(e, { value }) => stageChange({ firstName: value })}
+
+        // stageChange({ permissions: { add: { accessLevel: level } } });
+        // onSelect({
+        //   ...newPermission,
+        //   accessLevel: level,
+        // });
       },
       requestItems: async query => {
         const response = await fetchItems({ query });
@@ -141,10 +157,11 @@ export const AddNewPermissionRow = ({
         {!!newPermission.policy.name ? (
           <span onClick={() => setIsEntryMode(true)}>{newPermission.policy.name}</span>
         ) : (
-          <Button size="mini" color="blue" onClick={() => setIsEntryMode(true)}>
-            <Icon name="add" />
-            Add a Policy
-          </Button>
+          <Input
+            placeholder={'Start typing policy'}
+            onClick={() => setIsEntryMode(true)}
+            size="mini"
+          />
         )}
       </Table.Cell>
     )}
@@ -211,7 +228,10 @@ const PermissionsTable = ({
             </Table.Cell>
             <Table.Cell collapsing>
               {editing ? (
-                <EditAccessLevel permission={item} />
+                <EditAccessLevel
+                  permission={item}
+                  handleSelectAccessLevel={handleSelectAccessLevel}
+                />
               ) : (
                 <Label style={styles.label}>
                   <span style={{ color: DEFAULT_BLACK, fontWeight: 100 }}>{item.accessLevel}</span>
