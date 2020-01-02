@@ -348,7 +348,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         fieldName: 'Scope',
         key: 'scope',
         required: true,
-        sortable: true,
+        sortable: false,
       },
       {
         fieldName: 'Expiry',
