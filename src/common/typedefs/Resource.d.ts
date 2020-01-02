@@ -18,11 +18,9 @@ export interface TField {
 
 export type TSchema = Field[];
 
-export type TResourceType = 'groups' | 'applications' | 'users' | 'permissions' | 'apiKeys';
+export type TResourceType = 'groups' | 'applications' | 'users' | 'permissions' | 'API Keys';
 
 export type TSortDirection = 'DESC' | 'ASC';
-
-type TAddItem = 'menu' | 'input';
 
 export interface IResource {
   Icon: any;
@@ -41,7 +39,7 @@ export interface IResource {
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];
-  addItem: TAddItem;
+  addItem: boolean;
   add: any;
   remove: any;
   // add: { [key in TResourceType]?: (params: any) => Promise<any> };

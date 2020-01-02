@@ -84,8 +84,9 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
 
 export const PermissionListItem = ({ item, sortField, className = '', style, ...props }) => {
   const { id, policy, accessLevel, owner } = item;
+
   // TODO: sorting is not working on the nested table. works on nested users
-  const secondaryField = sortField === 'policyName' ? 'accessLevel' : sortField;
+  const secondaryField = sortField === 'policy' ? 'accessLevel' : sortField;
   return (
     <Ripple
       className={`PermissionListItem ${className}`}
@@ -93,6 +94,22 @@ export const PermissionListItem = ({ item, sortField, className = '', style, ...
       {...props}
     >
       <div className={`primary-field ${css(styles.primaryField)}`}>{policy.name}</div>
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
+    </Ripple>
+  );
+};
+
+export const ApiKeyListItem = ({ item, sortField, className = '', style = {}, ...props }) => {
+  const { id, scope, iss, exp, status } = item;
+
+  const secondaryField = sortField === 'id' ? 'status' : sortField;
+  return (
+    <Ripple
+      className={`ApiKeyListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
+      <div className={`primary-field ${css(styles.primaryField)}`}>{id}</div>
       <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
     </Ripple>
   );

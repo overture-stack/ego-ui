@@ -33,6 +33,7 @@ import { STATUSES } from 'common/injectGlobals';
 import ApiKeysTable from 'components/Associator/ApiKeysTable';
 import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
+  ApiKeyListItem,
   ApplicationListItem,
   GroupListItem,
   PermissionListItem,
@@ -50,8 +51,8 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
       permissions: ({ permission, item }) => addPermissionToUser({ user: item, permission }),
     },
-    addItem: 'menu',
-    associatedTypes: ['groups', 'applications', 'permissions', 'apiKeys'],
+    addItem: true,
+    associatedTypes: ['groups', 'applications', 'permissions', 'API Keys'],
     AssociatorComponent: null,
     createItem: createUser,
     deleteItem: deleteUser,
@@ -142,7 +143,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
     },
-    addItem: 'menu',
+    addItem: true,
     associatedTypes: ['users', 'applications'],
     AssociatorComponent: null,
     createItem: createGroup,
@@ -195,7 +196,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
       users: ({ user, item }) => addApplicationToUser({ application: item, user }),
     },
-    addItem: 'menu',
+    addItem: true,
     associatedTypes: ['groups', 'users'],
     AssociatorComponent: null,
     createItem: createApplication,
@@ -265,7 +266,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   },
   permissions: {
     add: () => null,
-    addItem: 'input',
+    addItem: false,
     associatedTypes: [],
     AssociatorComponent: PermissionsTable,
     createItem: () => null,
@@ -311,9 +312,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     ],
     updateItem: () => null,
   },
-  apiKeys: {
+  'API Keys': {
     add: () => null,
-    addItem: 'menu',
+    addItem: false,
     associatedTypes: [],
     AssociatorComponent: ApiKeysTable,
     createItem: () => null,
@@ -331,13 +332,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
-    ListItem: PermissionListItem,
-    name: { singular: 'apiKey', plural: 'apiKeys' },
+    ListItem: ApiKeyListItem,
+    name: { singular: 'API Key', plural: 'API Keys' },
     remove: () => null,
     rowHeight: 44,
     schema: [
       {
-        fieldName: '',
+        fieldName: 'API Key',
         initialSort: true,
         key: 'id',
         required: true,
@@ -351,13 +352,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       },
       {
         fieldName: 'Expiry',
-        key: 'expiry',
+        key: 'exp',
         required: true,
         sortable: true,
       },
       {
         fieldName: 'Issued',
-        key: 'issued',
+        key: 'iss',
         required: true,
         sortable: true,
       },

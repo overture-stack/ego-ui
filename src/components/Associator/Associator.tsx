@@ -144,14 +144,14 @@ const render = ({
             styles.fieldName,
           )}`}
         >
-          {capitalize(type)}
+          {/* make nicer? */}
+          {type === 'API Keys' ? 'API Keys' : capitalize(type)}
         </span>
-        {editing && type !== 'permissions' && (
+        {editing && RESOURCE_MAP[type].addItem && (
           <ItemSelector
             fetchItems={args => fetchItems({ ...args, limit: 10 })}
             onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
-            type={RESOURCE_MAP[type].addItem}
           />
         )}
       </div>
