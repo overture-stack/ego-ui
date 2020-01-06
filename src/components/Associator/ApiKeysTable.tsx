@@ -2,7 +2,7 @@ import { css } from 'glamor';
 import { upperCase } from 'lodash';
 import React, { CSSProperties } from 'react';
 import { compose } from 'recompose';
-import { Grid, Label } from 'semantic-ui-react';
+import { Button, Grid, Label } from 'semantic-ui-react';
 
 import { DARK_GREY, DEFAULT_BLACK, GREY, LIGHT_RED, LIGHT_TEAL } from 'common/colors';
 
@@ -78,7 +78,7 @@ const styles: IStyles = {
   },
 };
 
-const ApiKeysTable = ({ associatedItems, disabledItems }) => {
+const ApiKeysTable = ({ associatedItems, disabledItems, editing }) => {
   return (
     <div style={{ marginTop: '0.5rem' }}>
       <Grid style={styles.container}>
@@ -98,9 +98,15 @@ const ApiKeysTable = ({ associatedItems, disabledItems }) => {
               </Grid.Column>
               <Grid.Column width={3}>
                 <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
-                  <CustomLabel bgColor={labelColours[item.status]}>
-                    <span>{item.status}</span>
-                  </CustomLabel>
+                  {editing && item.status === 'ACTIVE' ? (
+                    <Button color="red" size="tiny">
+                      REVOKE
+                    </Button>
+                  ) : (
+                    <CustomLabel bgColor={labelColours[item.status]}>
+                      <span>{item.status}</span>
+                    </CustomLabel>
+                  )}
                 </span>
               </Grid.Column>
             </Grid.Row>

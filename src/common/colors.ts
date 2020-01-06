@@ -10,6 +10,7 @@ const MEDIUM_BLUE = '#1f7abf';
 const LIGHT_TEAL = '#e5f7f4';
 const DEFAULT_BLACK = '#262626';
 const LIGHT_RED = '#F1D8DB';
+const RED = '#DB2828';
 
 export {
   BLUE,
@@ -22,6 +23,7 @@ export {
   LIGHT_GREY,
   LIGHT_RED,
   LIGHT_TEAL,
+  RED,
   TEAL,
   WHITE,
 };

@@ -368,6 +368,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         required: true,
         sortable: true,
       },
+      {
+        fieldName: 'Action',
+        key: 'action',
+        required: false,
+        sortable: false,
+      },
     ],
     updateItem: () => null,
   },
