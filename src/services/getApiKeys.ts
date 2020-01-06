@@ -58,9 +58,9 @@ export const getApiKeys = ({
           exp: moment(result.exp).format(DATE_FORMAT),
           id: result.name,
           iss: moment(result.iss).format(DATE_FORMAT),
-          revoked: result.isRevoked,
           status: result.isRevoked ? 'REVOKED' : getApiKeyStatus(result.secondsUntilExpiry),
         })),
       };
-    });
+    })
+    .catch(err => console.debug(err));
 };

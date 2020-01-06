@@ -74,7 +74,7 @@ const ItemsWrapper = ({
   const data = find(resource.schema, { key: 'action' })
     ? resultSet.map(result => ({
         ...result,
-        action: result.revoked ? null : <span style={{ color: RED }}>Remove</span>,
+        action: result.status === 'REVOKED' ? null : <span style={{ color: RED }}>Remove</span>,
       }))
     : resultSet;
 
