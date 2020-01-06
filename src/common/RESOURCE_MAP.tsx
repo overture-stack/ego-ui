@@ -29,7 +29,7 @@ import {
 
 import { STATUSES } from 'common/injectGlobals';
 
-import PermissionsTable from 'components/Associator/PermissionsTable';
+import UserPermissionsTable from 'components/Associator/UserPermissionsTable';
 import {
   ApplicationListItem,
   GroupListItem,
@@ -265,7 +265,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     add: () => null,
     addItem: 'input',
     associatedTypes: [],
-    AssociatorComponent: PermissionsTable,
+    AssociatorComponent: UserPermissionsTable,
     createItem: () => null,
     deleteItem: () => null,
     emptyMessage: '',
@@ -283,6 +283,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     isParent: false,
     ListItem: PermissionListItem,
     name: { singular: 'permission', plural: 'permissions' },
+    parseTableData: data =>
+      data.map(d => ({
+        accessLevel: d.accessLevel,
+        id: d.id,
+        inheritance: d.ownerType,
+        policy: d.policy.name,
+      })),
     remove: () => null,
     rowHeight: 44,
     schema: [

@@ -1,5 +1,7 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import { find } from 'lodash';
+import { find, isNil, omitBy } from 'lodash';
+import queryString from 'querystring';
+
 import ajax from 'services/ajax';
 
 import dummyApplications from './dummyData/applications';
@@ -32,9 +34,29 @@ export const getUserApplications = id => {
     : ajax.get(`/users/${id}/applications`).then(r => r.data);
 };
 
-export const getUserAndUserGroupPermissions = ({ userId }) => {
+export const getUserAndUserGroupPermissions = ({
+  userId,
+  offset = 0,
+  limit = 20,
+  query = null,
+  sortField = null,
+  sortOrder = null,
+}) => {
   return ajax
-    .get(`/users/${userId}/groups/permissions`)
-    .then(r => ({ resultSet: r.data }))
+    .get(
+      `/users/${userId}/groups/permissions?${queryString.stringify(
+        omitBy(
+          {
+            limit,
+            offset,
+            query,
+            sort: sortField,
+            sortOrder,
+          },
+          isNil,
+        ),
+      )}`,
+    )
+    .then(r => r.data)
     .catch(err => err);
 };

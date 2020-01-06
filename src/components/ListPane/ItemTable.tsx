@@ -1,10 +1,10 @@
-import React from 'react';
-import _ from 'lodash';
-import { css } from 'glamor';
-import { compose, withPropsOnChange, defaultProps } from 'recompose';
-import withSize from 'react-sizeme';
 import { injectState } from 'freactal';
+import { css } from 'glamor';
+import { debounce } from 'lodash';
+import React from 'react';
+import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
+import { compose, defaultProps, withPropsOnChange } from 'recompose';
 
 import 'react-table/react-table.css';
 
@@ -21,7 +21,7 @@ const enhance = compose(
     (props, nextProps) =>
       (props.size.width !== nextProps.size.width || props.size.height !== nextProps.size.height) &&
       nextProps.size.width !== 0,
-    _.debounce(({ size, rowHeight, effects: { updateList } }) => {
+    debounce(({ size, rowHeight, effects: { updateList } }) => {
       const heightBuffer = 30;
       const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight) - 1, 1);
       const limit = rows;
@@ -68,28 +68,26 @@ const ItemsWrapper = ({
     };
   });
 
+  const data = resource.parseTableData ? resource.parseTableData(resultSet) : resultSet;
+
   return (
     <div className={`ItemTable ${css(styles.container, props.styles)}`}>
       <ReactTable
         className={`-striped -highlight ${css(styles.table)}`}
         columns={columns}
         pageSize={limit}
-        data={resultSet}
+        data={data}
         showPagination={false}
         sorted={[{ id: currentSort.field.key, desc: currentSort.order === 'DESC' }]}
         onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
-        getTdProps={(state, rowInfo, column, instance) =>
-          Object.assign(
-            {
-              onClick: () => onSelect(rowInfo.original),
+        getTdProps={(state, rowInfo, column, instance) => ({
+          onClick: () => onSelect(rowInfo.original),
+          ...(column.id === 'id' && {
+            style: {
+              textAlign: 'right',
             },
-            column.id === 'id' && {
-              style: {
-                textAlign: 'right',
-              },
-            },
-          )
-        }
+          }),
+        })}
         getTheadThProps={(state, rowInfo, column, instance) =>
           column.id === 'id'
             ? {

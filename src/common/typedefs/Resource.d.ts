@@ -44,6 +44,7 @@ export interface IResource {
   addItem: TAddItem;
   add: any;
   remove: any;
+  parseTableData?: Function;
   // add: { [key in TResourceType]?: (params: any) => Promise<any> };
   // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   initialSortField: string;
