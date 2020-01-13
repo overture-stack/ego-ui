@@ -71,20 +71,13 @@ const ItemsWrapper = ({
     };
   });
 
-  const data = find(resource.schema, { key: 'action' })
-    ? resultSet.map(result => ({
-        ...result,
-        action: result.status === 'REVOKED' ? null : <span style={{ color: RED }}>Remove</span>,
-      }))
-    : resultSet;
-
   return (
     <div className={`ItemTable ${css(styles.container, props.styles)}`}>
       <ReactTable
         className={`-striped -highlight ${css(styles.table)}`}
         columns={columns}
         pageSize={limit}
-        data={data}
+        data={resource.mapTableData(resultSet)}
         showPagination={false}
         sorted={[{ id: currentSort.field.key, desc: currentSort.order === 'DESC' }]}
         onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}

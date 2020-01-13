@@ -1,4 +1,6 @@
+import moment from 'moment';
 import React from 'react';
+
 import {
   addApplicationToGroup,
   addApplicationToUser,
@@ -29,7 +31,9 @@ import {
 } from 'services';
 
 import { STATUSES } from 'common/injectGlobals';
+import { DATE_FORMAT, getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
+import ActionButton from 'components/Associator/ActionButton';
 import ApiKeysTable from 'components/Associator/ApiKeysTable';
 import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
@@ -64,6 +68,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return this.schema.filter(field => field.sortable);
     },
     getItem: getUser,
+    getKey: item => item.id.toString(),
     getList: getUsers,
     getListAll: getUsers,
     getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
@@ -71,6 +76,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: UserListItem,
+    mapTableData: results => results,
     name: { singular: 'user', plural: 'users' },
     noDelete: true,
     remove: {
@@ -156,12 +162,14 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return this.schema.filter(field => field.sortable);
     },
     getItem: getGroup,
+    getKey: item => item.id.toString(),
     getList: getGroups,
     getListAll: getGroups,
     Icon: ({ style }) => <Icon name="group" style={style} />,
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: GroupListItem,
+    mapTableData: results => results,
     name: { singular: 'group', plural: 'groups' },
     remove: {
       applications: ({ application, item }) =>
@@ -209,6 +217,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return this.schema.filter(field => field.sortable);
     },
     getItem: getApp,
+    getKey: item => item.id.toString(),
     getList: getApps,
     getListAll: getApps,
     Icon: ({ style }) => (
@@ -225,6 +234,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: ApplicationListItem,
+    mapTableData: results => results,
     name: { singular: 'application', plural: 'applications' },
     remove: {
       groups: ({ group, item }) => removeApplicationFromGroup({ application: item, group }),
@@ -279,12 +289,14 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return this.schema.filter(field => field.sortable);
     },
     getItem: () => null,
+    getKey: item => item.id.toString(),
     getList: getUserAndUserGroupPermissions,
     getListAll: getPolicies,
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
     ListItem: PermissionListItem,
+    mapTableData: results => results,
     name: { singular: 'permission', plural: 'permissions' },
     remove: () => null,
     rowHeight: 44,
@@ -327,12 +339,21 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return this.schema.filter(field => field.sortable);
     },
     getItem: () => null,
+    getKey: item => item.name,
     getList: getApiKeys,
     getListAll: getApiKeys,
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
     ListItem: ApiKeyListItem,
+    mapTableData: results =>
+      results.map(result => ({
+        ...result,
+        action: result.isRevoked ? null : <ActionButton>Revoke</ActionButton>,
+        expiryDate: moment(result.expiryDate).format(DATE_FORMAT),
+        isRevoked: getApiKeyStatus(result),
+        issueDate: moment(result.issueDate).format(DATE_FORMAT),
+      })),
     name: { singular: 'API Key', plural: 'API Keys' },
     remove: () => null,
     rowHeight: 44,
@@ -340,7 +361,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       {
         fieldName: 'API Key',
         initialSort: true,
-        key: 'id',
+        key: 'name',
         required: true,
         sortable: true,
       },
@@ -352,19 +373,19 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       },
       {
         fieldName: 'Expiry',
-        key: 'exp',
+        key: 'expiryDate',
         required: true,
         sortable: true,
       },
       {
         fieldName: 'Issued',
-        key: 'iss',
+        key: 'issueDate',
         required: true,
         sortable: true,
       },
       {
         fieldName: 'Status',
-        key: 'status',
+        key: 'isRevoked',
         required: true,
         sortable: true,
       },

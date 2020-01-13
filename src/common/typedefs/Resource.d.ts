@@ -42,6 +42,8 @@ export interface IResource {
   addItem: boolean;
   add: any;
   remove: any;
+  getKey: Function;
+  mapTableData: Function;
   // add: { [key in TResourceType]?: (params: any) => Promise<any> };
   // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   initialSortField: string;
