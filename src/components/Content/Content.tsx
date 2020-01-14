@@ -16,6 +16,7 @@ const styles = {
     boxShadow: '-2px 0 12px 0 rgba(0,0,0,0.1)',
     minWidth: 510,
     position: 'relative',
+    width: 510,
   },
   controls: { paddingRight: 24, paddingLeft: 24, justifyContent: 'space-between' },
 };

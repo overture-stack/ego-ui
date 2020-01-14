@@ -25,13 +25,14 @@ import {
   removeApplicationFromUser,
   removeGroupFromUser,
   removePermissionFromUser,
+  revokeApiKey,
   updateApplication,
   updateGroup,
   updateUser,
 } from 'services';
 
-import { STATUSES } from 'common/injectGlobals';
-import { DATE_FORMAT, getApiKeyStatus } from 'components/Associator/apiKeysUtils';
+import { DATE_FORMAT, STATUSES } from 'common/injectGlobals';
+import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
 import ActionButton from 'components/Associator/ActionButton';
 import ApiKeysTable from 'components/Associator/ApiKeysTable';
@@ -330,7 +331,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     associatedTypes: [],
     AssociatorComponent: ApiKeysTable,
     createItem: () => null,
-    deleteItem: () => null,
+    deleteItem: item => revokeApiKey(item),
     emptyMessage: '',
     get initialSortField() {
       return this.schema.find(field => field.initialSort);
@@ -346,14 +347,15 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     initialSortOrder: 'ASC',
     isParent: false,
     ListItem: ApiKeyListItem,
-    mapTableData: results =>
-      results.map(result => ({
+    mapTableData(results) {
+      return results.map(result => ({
         ...result,
-        action: result.isRevoked ? null : <ActionButton>Revoke</ActionButton>,
+        action: this.deleteItem,
         expiryDate: moment(result.expiryDate).format(DATE_FORMAT),
         isRevoked: getApiKeyStatus(result),
         issueDate: moment(result.issueDate).format(DATE_FORMAT),
-      })),
+      }));
+    },
     name: { singular: 'API Key', plural: 'API Keys' },
     remove: () => null,
     rowHeight: 44,

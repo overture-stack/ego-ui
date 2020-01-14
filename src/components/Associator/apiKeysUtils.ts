@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const DATE_FORMAT = 'YYYY-MM-DD hh:mm A';
+import { DATE_FORMAT } from 'common/injectGlobals';
 
 export const isExpired = expiry => {
   const exp = moment(expiry).unix();

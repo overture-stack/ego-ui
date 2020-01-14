@@ -4,17 +4,17 @@ import { debounce, find } from 'lodash';
 import React from 'react';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
-import { compose, defaultProps, withPropsOnChange } from 'recompose';
+import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompose';
 import { Button } from 'semantic-ui-react';
+
+import ActionButton from 'components/Associator/ActionButton';
 
 import 'react-table/react-table.css';
 
-import { RED } from 'common/colors';
-
 const enhance = compose(
   withSize({
-    refreshRate: 100,
     monitorHeight: true,
+    refreshRate: 100,
   }),
   defaultProps({
     rowHeight: 33,
@@ -31,17 +31,23 @@ const enhance = compose(
       updateList({ limit, rows });
     }, 200),
   ),
+  withHandlers({
+    handleAction: ({ resource, effects: { updateList }, size, rowHeight }) => async item => {
+      await item.action(item);
+      updateList({ item });
+    },
+  }),
 );
 
 const styles = {
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    flexGrow: 1,
     '& .ReactTable': {
       width: '100%',
     },
+    display: 'flex',
+    flexDirection: 'row',
+    flexGrow: 1,
+    flexWrap: 'wrap',
   },
   table: {
     '& .rt-tr-group': {
@@ -59,17 +65,26 @@ const ItemsWrapper = ({
   limit,
   currentSort,
   onSortChange,
+  handleAction,
   ...props
 }) => {
   const columns = resource.schema.map(schema => {
     return {
       ...(schema.key === 'id' ? { width: 80 } : {}),
-      Header: schema.fieldName,
       accessor: schema.key,
+      Header: schema.fieldName,
       sortable: schema.sortable || false,
       sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
     };
   });
+
+  const data = resource.mapTableData(resultSet).map(d => ({
+    ...d,
+    action:
+      d.isRevoked === 'REVOKED' ? null : (
+        <ActionButton onClick={() => handleAction(d)}>Revoke</ActionButton>
+      ),
+  }));
 
   return (
     <div className={`ItemTable ${css(styles.container, props.styles)}`}>
@@ -77,12 +92,12 @@ const ItemsWrapper = ({
         className={`-striped -highlight ${css(styles.table)}`}
         columns={columns}
         pageSize={limit}
-        data={resource.mapTableData(resultSet)}
+        data={data}
         showPagination={false}
         sorted={[{ id: currentSort.field.key, desc: currentSort.order === 'DESC' }]}
         onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
         getTdProps={(state, rowInfo, column, instance) => ({
-          onClick: () => onSelect(rowInfo.original),
+          onClick: () => rowInfo && onSelect(rowInfo.original),
           ...(column.id === 'id' && {
             style: {
               textAlign: 'right',

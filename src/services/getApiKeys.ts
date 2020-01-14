@@ -34,3 +34,10 @@ export const getApiKeys = ({
     .then(r => r.data)
     .catch(err => console.debug(err));
 };
+
+export const revokeApiKey = (item): Promise<string> => {
+  return ajax
+    .delete(`/o/api_key?apiKey=${item.name}`)
+    .then(r => r)
+    .catch(err => err);
+};

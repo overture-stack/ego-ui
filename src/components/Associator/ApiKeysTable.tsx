@@ -6,7 +6,8 @@ import { compose } from 'recompose';
 import { Button, Grid, Label } from 'semantic-ui-react';
 
 import { DARK_GREY, DEFAULT_BLACK, GREY, LIGHT_RED, LIGHT_TEAL } from 'common/colors';
-import { DATE_FORMAT, getApiKeyStatus } from './apiKeysUtils';
+import { DATE_FORMAT } from 'common/injectGlobals';
+import { getApiKeyStatus } from './apiKeysUtils';
 
 interface IStyles {
   container: CSSProperties;
