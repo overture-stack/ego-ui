@@ -1,5 +1,5 @@
 import { Application, Group, User } from 'common/typedefs';
-import { TField } from 'common/typedefs/Resource';
+import { IField } from 'common/typedefs/Resource';
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
 import { css } from 'glamor';
@@ -26,7 +26,7 @@ function rowInput({
   stageChange,
 }: {
   data: User | Group | Application;
-  row: TField;
+  row: IField;
   stageChange: (object) => void;
 }) {
   switch (row.fieldType) {
@@ -71,7 +71,7 @@ function normalizeRow({
   stageChange,
   immutableKeys,
 }: {
-  row: TField;
+  row: IField;
   data: object[];
   associated: object[];
   stageChange: () => void;
