@@ -4,7 +4,7 @@ import { User } from 'common/typedefs/User';
 
 export type TFieldType = 'dropdown' | 'text';
 
-export interface TField {
+export interface IField {
   key: string;
   fieldName: string;
   sortable?: boolean;
@@ -16,7 +16,7 @@ export interface TField {
   fieldContent?: any;
 }
 
-export type TSchema = TField[];
+export type ISchema = IField[];
 
 export type TResourceType = 'groups' | 'applications' | 'users' | 'API Keys';
 

@@ -14,7 +14,7 @@ const styles = {
   },
 };
 
-export const matchFor = (query: string | null, accessor) => item =>
+const matchFor = (query: string | null, accessor) => item =>
   !query ||
   accessor(item)
     .toLowerCase()
@@ -22,10 +22,10 @@ export const matchFor = (query: string | null, accessor) => item =>
 
 const enhance = compose(
   defaultProps({
-    disabledItems: [],
-    getKey: item => get(item, 'id'),
     getName: item => get(item, 'name'),
+    getKey: item => get(item, 'id'),
     onSelect: item => global.log('selected', item),
+    disabledItems: [],
   }),
   withState('isEntryMode', 'setIsEntryMode', false),
   withState('items', 'setItems', []),
@@ -53,60 +53,6 @@ const enhance = compose(
   }),
 );
 
-export const ItemSelectorInputMenu = ({
-  disabledItems,
-  items,
-  handleSelect,
-  getName,
-  getKey,
-  setIsEntryMode,
-  isEntryMode,
-  handleStateChange,
-  customOptionsStyles = {},
-}) => (
-  <Downshift
-    onChange={handleSelect}
-    itemToString={getName}
-    onOuterClick={() => setIsEntryMode(false)}
-    onStateChange={handleStateChange}
-    isOpen={isEntryMode}
-  >
-    {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
-      <div>
-        <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-        {items.length > 0 && (
-          <Menu
-            className={`OptionList ${css({ ...styles.optionsWrapper, ...customOptionsStyles })}`}
-            size="small"
-            style={{ zIndex: 1 }}
-            vertical
-          >
-            {items.filter(matchFor(inputValue, getName)).map((item, i) => {
-              const isDisabled = disabledItems.map(getKey).includes(getKey(item));
-              return (
-                <Menu.Item
-                  key={getKey(item)}
-                  {...getItemProps({
-                    disabled: isDisabled,
-                    item,
-                  })}
-                  active={highlightedIndex === i}
-                  disabled={isDisabled}
-                >
-                  {getName(item)}
-                </Menu.Item>
-              );
-            })}
-            {inputValue && inputValue.length > 0 && !items.length && (
-              <Menu.Item>No Results</Menu.Item>
-            )}
-          </Menu>
-        )}
-      </div>
-    )}
-  </Downshift>
-);
-
 const render = ({
   disabledItems,
   requestItems,
@@ -117,7 +63,6 @@ const render = ({
   isEntryMode,
   setIsEntryMode,
   handleStateChange,
-  type,
 }) => {
   return (
     <Downshift
