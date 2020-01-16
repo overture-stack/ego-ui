@@ -57,6 +57,6 @@ export const getUserAndUserGroupPermissions = ({
         ),
       )}`,
     )
-    .then(r => r.data)
+    .then(r => ({ resultSet: r.data, count: r.data.length }))
     .catch(err => err);
 };
