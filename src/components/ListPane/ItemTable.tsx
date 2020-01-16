@@ -1,6 +1,6 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { debounce, find } from 'lodash';
+import { debounce, find, isEmpty } from 'lodash';
 import React from 'react';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
@@ -32,7 +32,10 @@ const enhance = compose(
     }, 200),
   ),
   withHandlers({
-    handleAction: ({ resource, effects: { updateList }, size, rowHeight }) => async item => {
+    handleAction: ({
+      resource,
+      effects: { updateList, saveChanges, stageChange },
+    }) => async item => {
       await item.action(item);
       updateList({ item });
     },
@@ -50,6 +53,10 @@ const styles = {
     flexWrap: 'wrap',
   },
   table: {
+    '& .rt-tbody .rt-tr': {
+      alignItems: 'center',
+      height: 40,
+    },
     '& .rt-tr-group': {
       cursor: 'pointer',
     },
@@ -66,6 +73,7 @@ const ItemsWrapper = ({
   currentSort,
   onSortChange,
   handleAction,
+  parent,
   ...props
 }) => {
   const columns = resource.schema.map(schema => {
@@ -78,13 +86,18 @@ const ItemsWrapper = ({
     };
   });
 
-  const data = resource.mapTableData(resultSet).map(d => ({
-    ...d,
-    action:
-      d.isRevoked === 'REVOKED' ? null : (
-        <ActionButton onClick={() => handleAction(d)}>Revoke</ActionButton>
-      ),
-  }));
+  // do not add action column on parent table
+  const data = isEmpty(parent)
+    ? resultSet
+    : resource.mapTableData(resultSet).map(d => {
+        return {
+          ...d,
+          action:
+            d.isRevoked === 'REVOKED' ? null : (
+              <ActionButton onClick={() => handleAction(d)}>{d.actionText}</ActionButton>
+            ),
+        };
+      });
 
   return (
     <div className={`ItemTable ${css(styles.container, props.styles)}`}>

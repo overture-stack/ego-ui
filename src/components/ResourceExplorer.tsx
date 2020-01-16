@@ -61,6 +61,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
                       type={associatedType}
                       stageChange={stageChange}
+                      parentId={id}
                     />
                     {!parent &&
                       associated[associatedType].count >

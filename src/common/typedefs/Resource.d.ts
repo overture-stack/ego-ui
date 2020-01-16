@@ -16,7 +16,7 @@ export interface TField {
   fieldContent?: any;
 }
 
-export type TSchema = Field[];
+export type TSchema = TField[];
 
 export type TResourceType = 'groups' | 'applications' | 'users' | 'permissions' | 'API Keys';
 

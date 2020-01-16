@@ -34,7 +34,6 @@ import {
 import { DATE_FORMAT, STATUSES } from 'common/injectGlobals';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
-import ActionButton from 'components/Associator/ActionButton';
 import ApiKeysTable from 'components/Associator/ApiKeysTable';
 import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
@@ -351,6 +350,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return results.map(result => ({
         ...result,
         action: this.deleteItem,
+        actionText: 'REVOKE',
         expiryDate: moment(result.expiryDate).format(DATE_FORMAT),
         isRevoked: getApiKeyStatus(result),
         issueDate: moment(result.issueDate).format(DATE_FORMAT),

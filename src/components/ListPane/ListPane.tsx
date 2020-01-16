@@ -247,6 +247,7 @@ class List extends React.Component<IListProps, any> {
           />
         ) : (
           <ItemTable
+            parent={parent}
             resource={resource}
             getKey={getKey}
             currentSort={currentSort}

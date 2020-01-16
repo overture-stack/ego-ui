@@ -1,15 +1,12 @@
 import React from 'react';
-
-import { RED } from 'common/colors';
+import { Button } from 'semantic-ui-react';
 
 const styles = {
-  color: RED,
   fontWeight: 500,
-  textDecoration: 'underline',
 };
 
 export default ({ children, onClick }) => (
-  <span onClick={onClick} style={styles}>
-    {children}
-  </span>
+  <Button basic color="red" onClick={onClick} size="mini">
+    <span style={styles}>{children}</span>
+  </Button>
 );

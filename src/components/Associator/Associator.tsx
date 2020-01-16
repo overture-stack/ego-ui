@@ -25,6 +25,7 @@ interface TProps {
   fetchInitial: Function;
   type: string;
   resource: IResource;
+  parentId: string;
 }
 
 const styles = {
@@ -124,6 +125,7 @@ const render = ({
   fetchItems,
   editing,
   type,
+  parentId,
 }: TProps) => {
   const AssociatorComponent = RESOURCE_MAP[type].AssociatorComponent || null;
   return (
@@ -144,7 +146,6 @@ const render = ({
             styles.fieldName,
           )}`}
         >
-          {/* make nicer? */}
           {type === 'API Keys' ? 'API Keys' : capitalize(type)}
         </span>
         {editing && RESOURCE_MAP[type].addItem && (
@@ -161,9 +162,11 @@ const render = ({
             editing={editing}
             associatedItems={itemsInList}
             removeItem={item => removeItem(item, type)}
-            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 10 })}
+            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
             onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
+            onRemove={RESOURCE_MAP[type].deleteItem}
+            parentId={parentId}
           />
         ) : (
           itemsInList.map(item => (
