@@ -133,7 +133,7 @@ export interface IResource {
   associatedTypes: Types[];
   addItem: TAddItem;
   add?: IAddToUser | IAddToGroup | IAddToApplication | any;
-  remove: any;
+  remove?: any;
   parseTableData?: Function; // ignore typing here, will be updated with changes from apiKeys ui pr
   initialSortField: string;
   sortableFields: Schema;

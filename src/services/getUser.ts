@@ -1,5 +1,5 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import { find, isNil, omitBy } from 'lodash';
+import { find, isNil, omitBy, orderBy } from 'lodash';
 import queryString from 'querystring';
 
 import ajax from 'services/ajax';
@@ -59,6 +59,16 @@ export const getUserAndUserGroupPermissions = ({
         ),
       )}`,
     )
-    .then(r => ({ resultSet: r.data, count: r.data.length, offset, limit }))
+    .then(r => {
+      // for client side pagination
+      const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
+      const order = sortOrder || 'desc';
+      return {
+        count: r.data.length,
+        limit,
+        offset,
+        resultSet: orderBy(r.data.slice(offset, offset + limit), [sortBy], [order.toLowerCase()]),
+      };
+    })
     .catch(err => err);
 };

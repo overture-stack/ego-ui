@@ -283,10 +283,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       data.map(d => ({
         accessLevel: d.accessLevel,
         id: d.id,
-        inheritance: d.ownerType,
+        ownerType: d.ownerType,
         policy: d.policy.name,
       })),
-    remove: () => null,
     rowHeight: 44,
     schema: [
       {
@@ -305,7 +304,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       },
       {
         fieldName: 'Inheritance',
-        key: 'inheritance',
+        key: 'ownerType',
         required: true,
         sortable: true,
       },
