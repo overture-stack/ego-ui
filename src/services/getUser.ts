@@ -31,10 +31,3 @@ export const getUserApplications = id => {
       )
     : ajax.get(`/users/${id}/applications`).then(r => r.data);
 };
-
-export const getUserAndUserGroupPermissions = ({ userId }) => {
-  return ajax
-    .get(`/users/${userId}/groups/permissions`)
-    .then(r => ({ resultSet: r.data }))
-    .catch(err => err);
-};

@@ -284,8 +284,12 @@ class Content extends React.Component<any, IContentState> {
         </ControlContainer>
         <div
           className={`content contentPanel ${css({
-            height: 400, // TODO: for dev only, need to fix
-            overflowY: 'auto',
+            bottom: 0,
+            left: 0,
+            overflow: 'auto',
+            position: 'absolute',
+            right: 0,
+            top: 70,
           })}`}
         >
           {contentState === ContentState.creating ? (

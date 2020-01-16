@@ -42,11 +42,7 @@ const provideEntity = provideState({
                 ...acc,
                 [resource.associatedTypes[i]]: {
                   ...a,
-                  resultSet: a
-                    ? a.count > MAX_ASSOCIATED
-                      ? a.resultSet.slice(0, 5)
-                      : a.resultSet
-                    : [],
+                  resultSet: a.count > MAX_ASSOCIATED ? a.resultSet.slice(0, 5) : a.resultSet,
                 },
               }),
               {},

@@ -18,7 +18,7 @@ export interface TField {
 
 export type TSchema = TField[];
 
-export type TResourceType = 'groups' | 'applications' | 'users' | 'permissions' | 'API Keys';
+export type TResourceType = 'groups' | 'applications' | 'users' | 'API Keys';
 
 export type TSortDirection = 'DESC' | 'ASC';
 

@@ -5,7 +5,6 @@ import {
   addApplicationToGroup,
   addApplicationToUser,
   addGroupToUser,
-  addPermissionToUser,
   createApplication,
   createGroup,
   createUser,
@@ -17,14 +16,11 @@ import {
   getApps,
   getGroup,
   getGroups,
-  getPolicies,
   getUser,
-  getUserAndUserGroupPermissions,
   getUsers,
   removeApplicationFromGroup,
   removeApplicationFromUser,
   removeGroupFromUser,
-  removePermissionFromUser,
   revokeApiKey,
   updateApplication,
   updateGroup,
@@ -35,12 +31,10 @@ import { DATE_FORMAT, STATUSES } from 'common/injectGlobals';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
 import ApiKeysTable from 'components/Associator/ApiKeysTable';
-import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
   ApiKeyListItem,
   ApplicationListItem,
   GroupListItem,
-  PermissionListItem,
   UserListItem,
 } from 'components/ListItem';
 
@@ -53,10 +47,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     add: {
       applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
-      permissions: ({ permission, item }) => addPermissionToUser({ user: item, permission }),
     },
     addItem: true,
-    associatedTypes: ['groups', 'applications', 'permissions', 'API Keys'],
+    associatedTypes: ['groups', 'applications', 'API Keys'],
     AssociatorComponent: null,
     createItem: createUser,
     deleteItem: deleteUser,
@@ -83,7 +76,6 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       applications: ({ application, item }) =>
         removeApplicationFromUser({ user: item, application }),
       groups: ({ group, item }) => removeGroupFromUser({ user: item, group }),
-      permissions: ({ permission, item }) => removePermissionFromUser({ user: item, permission }),
     },
     rowHeight: 50,
     schema: [
@@ -273,56 +265,6 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'redirectUri', fieldName: 'Redirect Uri', panelSection: 'meta', required: true },
     ],
     updateItem: updateApplication,
-  },
-  permissions: {
-    add: () => null,
-    addItem: false,
-    associatedTypes: [],
-    AssociatorComponent: PermissionsTable,
-    createItem: () => null,
-    deleteItem: () => null,
-    emptyMessage: '',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
-    },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
-    },
-    getItem: () => null,
-    getKey: item => item.id.toString(),
-    getList: getUserAndUserGroupPermissions,
-    getListAll: getPolicies,
-    Icon: () => null,
-    initialSortOrder: 'ASC',
-    isParent: false,
-    ListItem: PermissionListItem,
-    mapTableData: results => results,
-    name: { singular: 'permission', plural: 'permissions' },
-    remove: () => null,
-    rowHeight: 44,
-    schema: [
-      {
-        fieldName: 'Policy Name',
-        initialSort: true,
-        key: 'policy',
-        required: true,
-        sortable: true,
-      },
-      {
-        fieldName: 'Access Level',
-        key: 'accessLevel',
-        options: ['READ', 'WRITE', 'DENY'],
-        required: true,
-        sortable: true,
-      },
-      {
-        fieldName: 'Inheritance',
-        key: 'inheritance',
-        required: true,
-        sortable: true,
-      },
-    ],
-    updateItem: () => null,
   },
   'API Keys': {
     add: () => null,
