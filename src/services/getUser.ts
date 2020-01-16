@@ -63,11 +63,20 @@ export const getUserAndUserGroupPermissions = ({
       // for client side pagination
       const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
       const order = sortOrder || 'desc';
+      const queryBy = new RegExp(query ? `(${query})` : '', 'i');
+
       return {
         count: r.data.length,
         limit,
         offset,
-        resultSet: orderBy(r.data.slice(offset, offset + limit), [sortBy], [order.toLowerCase()]),
+        resultSet: orderBy(
+          r.data.slice(offset, offset + limit),
+          [sortBy],
+          [order.toLowerCase()],
+        ).filter(
+          ({ accessLevel, ownerType, policy: { name } }) =>
+            queryBy.test(accessLevel) || queryBy.test(ownerType) || queryBy.test(name),
+        ),
       };
     })
     .catch(err => err);

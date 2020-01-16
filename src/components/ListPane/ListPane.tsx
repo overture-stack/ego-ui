@@ -1,5 +1,5 @@
 import { css } from 'glamor';
-import { merge, noop } from 'lodash';
+import { debounce, merge, noop } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withProps, withState } from 'recompose';
 
@@ -132,7 +132,8 @@ class List extends React.Component<IListProps, any> {
       prevProps.currentSort.order !== this.props.currentSort.order ||
       prevProps.query !== this.props.query
     ) {
-      this.updateData({ offset: 0 });
+      const debouncedUpdate = debounce(() => this.updateData({ offset: 0 }), 100);
+      debouncedUpdate();
     }
   }
 
@@ -188,8 +189,8 @@ class List extends React.Component<IListProps, any> {
             <Button.Group className={`${css(paneControls.sortOrderWrapper)}`} vertical>
               <Button
                 style={{
-                  paddingBottom: 0,
                   backgroundColor: 'transparent',
+                  paddingBottom: 0,
                   ...(currentSort.order === 'ASC' && { color: TEAL }),
                 }}
                 onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}

@@ -85,9 +85,7 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
 export const PermissionListItem = ({ item, sortField, className = '', style, ...props }) => {
   const { id, policy, accessLevel, owner } = item;
 
-  // TODO: sorting will not work until pagination is implemented
-  // const secondaryField = sortField === 'policy' ? 'accessLevel' : sortField;
-  const secondaryField = 'accessLevel';
+  const secondaryField = sortField === 'policy' ? 'accessLevel' : sortField;
 
   return (
     <Ripple
