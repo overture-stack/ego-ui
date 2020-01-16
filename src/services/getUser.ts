@@ -4,6 +4,8 @@ import queryString from 'querystring';
 
 import ajax from 'services/ajax';
 
+import { Permission } from 'common/typedefs/Permission';
+
 import dummyApplications from './dummyData/applications';
 import dummyGroups from './dummyData/groups';
 import dummyUsers from './dummyData/users';
@@ -35,13 +37,13 @@ export const getUserApplications = id => {
 };
 
 export const getUserAndUserGroupPermissions = ({
-  userId,
+  userId = null,
   offset = 0,
   limit = 20,
   query = null,
   sortField = null,
   sortOrder = null,
-}) => {
+}): Promise<{ count: number; resultSet: Permission[]; offset: number; limit: number }> => {
   return ajax
     .get(
       `/users/${userId}/groups/permissions?${queryString.stringify(
@@ -57,6 +59,6 @@ export const getUserAndUserGroupPermissions = ({
         ),
       )}`,
     )
-    .then(r => ({ resultSet: r.data, count: r.data.length }))
+    .then(r => ({ resultSet: r.data, count: r.data.length, offset, limit }))
     .catch(err => err);
 };

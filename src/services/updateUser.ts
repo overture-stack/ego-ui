@@ -3,7 +3,8 @@ import { find, omit, uniq } from 'lodash';
 import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
 
-const BLOCKED_KEYS = ['groups', 'applications']; // TODO: need to add permissions here?
+const BLOCKED_KEYS = ['groups', 'applications'];
+
 function add({ user, key, value }: any) {
   if (USE_DUMMY_DATA) {
     const foundUser = find(dummyUsers, u => u.id === user.id);
@@ -32,13 +33,10 @@ export const updateUser = ({ item }) => {
   return ajax.put(`/users/${item.id}`, omit(item, BLOCKED_KEYS)).then(r => r.data);
 };
 
-// use to add an inherited permission -> you're adding by searching policies, will adding a permission
-// always create a direct user - permission relationship?
 export const addGroupToUser = ({ user, group }) => {
   return add({ user, key: 'groups', value: group.id });
 };
 
-// use to remove an inherited permission
 export const removeGroupFromUser = ({ user, group }) => {
   return remove({ user, key: 'groups', value: group.id });
 };
@@ -55,9 +53,6 @@ export const deleteUser = ({ item }) => {
   return ajax.delete(`/users/${item.id}`).then(r => r.data);
 };
 
-// add and remove happens one at a time, with their own post/delete requests
-// If it is a user permission, the remove the permission from the user.
-// If it is a group based permission, then remove the user from that group.
 export const addPermissionToUser = ({ user, permission }) => {
   const newPermission = { policyId: permission.policy.id, mask: permission.accessLevel };
   return add({ user, key: 'permissions', value: newPermission });

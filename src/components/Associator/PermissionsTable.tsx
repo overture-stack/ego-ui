@@ -69,13 +69,6 @@ const enhance = compose(
       setNewPermission,
       setIsEntryMode,
     }) => ({
-      // could set changes to staging even before both level and policy are set.
-      // Policy *must* be present. but i don't think access should be set to a default
-      // somehow make it clearer that an incomplete new permission will not be saved
-      // disable add row until new permission is complete
-      // but don't need to click "+" to stage changes
-      // highlight incomplete new permission in some way so user knows it is invalid and won't be saved
-      // save button is disabled on create when required fields are not complete
       handleAddNew: () => {
         onSelect(newPermission);
         setNewPermission(defaultNewPermission);

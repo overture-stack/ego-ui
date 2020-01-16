@@ -262,12 +262,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     updateItem: updateApplication,
   },
   permissions: {
-    add: () => null,
     addItem: 'input',
     associatedTypes: [],
     AssociatorComponent: UserPermissionsTable,
-    createItem: () => null,
-    deleteItem: () => null,
     emptyMessage: '',
     get initialSortField() {
       return this.schema.find(field => field.initialSort);
@@ -275,7 +272,6 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     get sortableFields() {
       return this.schema.filter(field => field.sortable);
     },
-    getItem: () => null,
     getList: getUserAndUserGroupPermissions,
     getListAll: getPolicies,
     Icon: () => null,
@@ -314,7 +310,6 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         sortable: true,
       },
     ],
-    updateItem: () => null,
   },
 };
 
