@@ -31,6 +31,9 @@ export default provideState({
 
       return { ...state, loggedInUser, loggedInUserToken };
     },
+    // TODO: user preferences for collapsed are getting reset to undefined whenever the page is reloaded
+    // same for table vs grid displayMode
+    // maybe set in initialize to prevent this
     setUserPreferences: (effects, preference) => state => {
       const preferences = { ...state.preferences, ...preference };
 

@@ -1,10 +1,10 @@
-import React from 'react';
-import _ from 'lodash';
-import { css } from 'glamor';
-import { compose, withPropsOnChange, defaultProps } from 'recompose';
-import withSize from 'react-sizeme';
 import { injectState } from 'freactal';
+import { css } from 'glamor';
+import _ from 'lodash';
+import React from 'react';
+import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
+import { compose, defaultProps, withPropsOnChange } from 'recompose';
 
 import 'react-table/react-table.css';
 
@@ -60,9 +60,9 @@ const ItemsWrapper = ({
 }) => {
   const columns = resource.schema.map(schema => {
     return {
-      ...(schema.key === 'id' ? { width: 80 } : {}),
-      Header: schema.fieldName,
+      ...(schema.key === 'id' ? { width: 200 } : {}),
       accessor: schema.key,
+      Header: schema.fieldName,
       sortable: schema.sortable || false,
       sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
     };
@@ -78,18 +78,14 @@ const ItemsWrapper = ({
         showPagination={false}
         sorted={[{ id: currentSort.field.key, desc: currentSort.order === 'DESC' }]}
         onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
-        getTdProps={(state, rowInfo, column, instance) =>
-          Object.assign(
-            {
-              onClick: () => onSelect(rowInfo.original),
+        getTdProps={(state, rowInfo, column, instance) => ({
+          onClick: () => onSelect(rowInfo.original),
+          ...(column.id === 'id' && {
+            style: {
+              textAlign: 'right',
             },
-            column.id === 'id' && {
-              style: {
-                textAlign: 'right',
-              },
-            },
-          )
-        }
+          }),
+        })}
         getTheadThProps={(state, rowInfo, column, instance) =>
           column.id === 'id'
             ? {

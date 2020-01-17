@@ -13,12 +13,15 @@ export const getUsers = ({
   sortOrder = null,
   groupId = null,
   applicationId = null,
+  policyId = null,
   status = null,
 }): Promise<{ count: number; resultSet: User[] }> => {
   const baseUrl = groupId
     ? `/groups/${groupId}`
     : applicationId
     ? `/applications/${applicationId}`
+    : policyId
+    ? `/policies/${policyId}`
     : '';
   return USE_DUMMY_DATA
     ? Promise.resolve({
@@ -41,5 +44,16 @@ export const getUsers = ({
             ),
           )}`,
         )
-        .then(r => r.data);
+        .then(r => {
+          if (policyId) {
+            return {
+              resultSet: r.data,
+              count: r.data.length,
+              limit,
+              offset,
+            };
+          }
+          return r.data;
+        })
+        .catch(err => err);
 };

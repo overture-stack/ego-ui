@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import _ from 'lodash';
-import { css } from 'glamor';
-import { compose } from 'recompose';
-import withSize from 'react-sizeme';
 import { injectState } from 'freactal';
+import { css } from 'glamor';
+import _ from 'lodash';
+import React, { useEffect } from 'react';
+import withSize from 'react-sizeme';
+import { compose } from 'recompose';
 import { Button } from 'semantic-ui-react';
 
 const enhance = compose(

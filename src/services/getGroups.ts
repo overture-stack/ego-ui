@@ -1,6 +1,6 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Group } from 'common/typedefs/Group';
-import _ from 'lodash';
+import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 import ajax from 'services/ajax';
 
@@ -15,11 +15,14 @@ export const getGroups = ({
   sortField,
   sortOrder,
   status,
+  policyId,
 }): Promise<{ count: number; resultSet: Group[] }> => {
   const baseUrl = userId
     ? `/users/${userId}`
     : applicationId
     ? `/applications/${applicationId}`
+    : policyId
+    ? `/policies/${policyId}`
     : '';
 
   return USE_DUMMY_DATA
@@ -30,7 +33,7 @@ export const getGroups = ({
     : ajax
         .get(
           `${baseUrl}/groups?${queryString.stringify(
-            _.omitBy(
+            omitBy(
               {
                 limit,
                 offset,
@@ -39,9 +42,20 @@ export const getGroups = ({
                 sortOrder,
                 status: status === 'All' ? null : status,
               },
-              _.isNil,
+              isNil,
             ),
           )}`,
         )
-        .then(r => r.data);
+        .then(r => {
+          if (policyId) {
+            return {
+              resultSet: r.data,
+              count: r.data.length,
+              limit,
+              offset,
+            };
+          }
+          return r.data;
+        })
+        .catch(err => err);
 };

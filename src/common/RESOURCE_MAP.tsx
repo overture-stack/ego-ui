@@ -5,6 +5,7 @@ import {
   addGroupToUser,
   createApplication,
   createGroup,
+  createPolicy,
   createUser,
   deleteApplication,
   deleteGroup,
@@ -13,6 +14,8 @@ import {
   getApps,
   getGroup,
   getGroups,
+  getPolicies,
+  getPolicy,
   getUser,
   getUsers,
   removeApplicationFromGroup,
@@ -25,7 +28,12 @@ import {
 
 import { STATUSES } from 'common/injectGlobals';
 
-import { ApplicationListItem, GroupListItem, UserListItem } from 'components/ListItem';
+import {
+  ApplicationListItem,
+  GroupListItem,
+  PolicyListItem,
+  UserListItem,
+} from 'components/ListItem';
 
 import { IResource, TResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
@@ -236,6 +244,57 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'redirectUri', fieldName: 'Redirect Uri', panelSection: 'meta', required: true },
     ],
     updateItem: updateApplication,
+  },
+  policies: {
+    add: {
+      groups: () => null,
+      users: () => null,
+    },
+    associatedTypes: ['groups', 'users'],
+    createItem: createPolicy,
+    deleteItem: () => null,
+    emptyMessage: 'Please select a policy',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getItem: getPolicy,
+    getList: getPolicies,
+    Icon: ({ style }) => (
+      <i
+        className="icon"
+        style={{
+          background: `url("${require('assets/icons/group-3.svg')}") no-repeat`,
+          height: '1.2em',
+          marginTop: '0.3em',
+          ...style,
+        }}
+      />
+    ),
+    initialSortOrder: 'ASC',
+    ListItem: PolicyListItem,
+    name: { singular: 'policy', plural: 'policies' },
+    remove: {
+      groups: () => null,
+      users: () => null,
+    },
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: 'ID',
+        immutable: true,
+        initialSort: true,
+        key: 'id',
+        panelSection: 'id',
+        sortable: true,
+      },
+      { fieldName: 'Name', key: 'name', panelSection: 'id', required: true, sortable: true },
+      { fieldName: '# Groups', key: 'groups' },
+      { fieldName: '# Users', key: 'users' },
+    ],
+    updateItem: () => null,
   },
 };
 
