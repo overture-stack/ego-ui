@@ -1,12 +1,15 @@
 import { css } from 'glamor';
-import { capitalize, get, noop, without } from 'lodash';
+import { capitalize, get, noop, uniqBy, without } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
 import { Grid, Icon, Label } from 'semantic-ui-react';
 
 import { DARK_BLUE, GREY } from 'common/colors';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
+
+import { IResource } from 'common/typedefs/Resource';
 
 interface TProps {
   addItem: Function;
@@ -21,6 +24,7 @@ interface TProps {
   setAllAssociatedItems: Function;
   fetchInitial: Function;
   type: string;
+  resource: IResource;
 }
 
 const styles = {
@@ -72,7 +76,9 @@ const enhance = compose(
         onAdd(item);
 
         return {
-          itemsInList: itemsInList.concat(item),
+          // does it matter if all entities add new items to head of list?
+          itemsInList: [item, ...itemsInList],
+          // itemsInList: itemsInList.concat(item),
         };
       },
       removeItem: ({ itemsInList }, { onRemove }) => item => {
@@ -110,8 +116,10 @@ const render = ({
   getKey,
   fetchItems,
   editing,
+  resource,
   type,
 }: TProps) => {
+  const AssociatorComponent = resource.AssociatorComponent || null;
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <div
@@ -141,12 +149,25 @@ const render = ({
         )}
       </div>
       {itemsInList.length > 0 ? (
-        itemsInList.map(item => (
-          <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-            {getName(item)}
-            {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
-          </Label>
-        ))
+        AssociatorComponent ? (
+          <AssociatorComponent
+            editing={editing}
+            associatedItems={itemsInList}
+            removeItem={item => removeItem(item, type)}
+            fetchItems={args => fetchItems({ ...args, limit: 10 })}
+            // fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 10 })}
+            onSelect={item => addItem(item, type)}
+            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item.id)}
+            type={type}
+          />
+        ) : (
+          itemsInList.map(item => (
+            <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
+              {getName(item)}
+              {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
+            </Label>
+          ))
+        )
       ) : (
         <div style={{ color: GREY, fontStyle: 'italic' }}>No data found</div>
       )}

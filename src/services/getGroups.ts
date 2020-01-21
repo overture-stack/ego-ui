@@ -47,6 +47,7 @@ export const getGroups = ({
           )}`,
         )
         .then(r => {
+          // TODO: /policies/{id}/groups does not return paginated response
           if (policyId) {
             return {
               resultSet: r.data,

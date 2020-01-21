@@ -2,13 +2,16 @@ import React from 'react';
 import {
   addApplicationToGroup,
   addApplicationToUser,
+  addGroupPermissionToPolicy,
   addGroupToUser,
+  addUserPermissionToPolicy,
   createApplication,
   createGroup,
   createPolicy,
   createUser,
   deleteApplication,
   deleteGroup,
+  deletePolicy,
   deleteUser,
   getApp,
   getApps,
@@ -23,11 +26,13 @@ import {
   removeGroupFromUser,
   updateApplication,
   updateGroup,
+  updatePolicy,
   updateUser,
 } from 'services';
 
 import { STATUSES } from 'common/injectGlobals';
 
+import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
   ApplicationListItem,
   GroupListItem,
@@ -247,12 +252,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   },
   policies: {
     add: {
-      groups: () => null,
-      users: () => null,
+      groups: ({ group, item }) => addGroupPermissionToPolicy({ policy: item, group }),
+      users: ({ user, item }) => addUserPermissionToPolicy({ policy: item, user }),
     },
     associatedTypes: ['groups', 'users'],
+    AssociatorComponent: PermissionsTable,
     createItem: createPolicy,
-    deleteItem: () => null,
+    deleteItem: deletePolicy,
     emptyMessage: 'Please select a policy',
     get initialSortField() {
       return this.schema.find(field => field.initialSort);
@@ -294,7 +300,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { fieldName: '# Groups', key: 'groups' },
       { fieldName: '# Users', key: 'users' },
     ],
-    updateItem: () => null,
+    updateItem: updatePolicy,
   },
 };
 
