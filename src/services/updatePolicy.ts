@@ -33,10 +33,16 @@ export const addGroupPermissionToPolicy = ({ policy, group }) => {
     .catch(err => console.debug(err));
 };
 
-// function add({ user, key, value }: any) {
-//   return ajax.post(`/users/${user.id}/${key}`, [value]).then(r => r.data);
-// }
+export const removeGroupPermissionFromPolicy = ({ policy, group }) => {
+  return ajax
+    .delete(`/policies/${policy.id}/permission/group/${group.id}`)
+    .then(r => r.data)
+    .catch(err => console.debug(err));
+};
 
-// export const addApplicationToUser = ({ user, application }) => {
-//   return add({ user, key: 'applications', value: application.id });
-// };
+export const removeUserPermissionFromPolicy = ({ policy, user }) => {
+  return ajax
+    .delete(`/policies/${policy.id}/permission/user/${user.id}`)
+    .then(r => r.data)
+    .catch(err => console.debug(err));
+};

@@ -155,9 +155,8 @@ const render = ({
             associatedItems={itemsInList}
             removeItem={item => removeItem(item, type)}
             fetchItems={args => fetchItems({ ...args, limit: 10 })}
-            // fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 10 })}
             onSelect={item => addItem(item, type)}
-            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item.id)}
+            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
             type={type}
           />
         ) : (

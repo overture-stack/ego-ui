@@ -24,6 +24,8 @@ import {
   removeApplicationFromGroup,
   removeApplicationFromUser,
   removeGroupFromUser,
+  removeGroupPermissionFromPolicy,
+  removeUserPermissionFromPolicy,
   updateApplication,
   updateGroup,
   updatePolicy,
@@ -74,6 +76,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => removeGroupFromUser({ user: item, group }),
     },
     rowHeight: 50,
+    // TODO: need a specific schema for policies/users
     schema: [
       { fieldName: 'ID', immutable: true, key: 'id', panelSection: 'id', sortable: true },
       {
@@ -159,6 +162,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => removeGroupFromUser({ group: item, user }),
     },
     rowHeight: 44,
+    // TODO: need a specific schema for policies/groups
     schema: [
       { key: 'id', fieldName: 'ID', panelSection: 'id', sortable: true, immutable: true },
       {
@@ -283,8 +287,8 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     ListItem: PolicyListItem,
     name: { singular: 'policy', plural: 'policies' },
     remove: {
-      groups: () => null,
-      users: () => null,
+      groups: ({ group, item }) => removeGroupPermissionFromPolicy({ policy: item, group }),
+      users: ({ user, item }) => removeUserPermissionFromPolicy({ policy: item, user }),
     },
     rowHeight: 44,
     schema: [
