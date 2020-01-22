@@ -12,7 +12,6 @@ const LIGHT_RED = '#F1D8DB';
 const RED = '#DB2828';
 
 export {
-  BLUE,
   DARK_BLUE,
   DARK_GREY,
   DEFAULT_BLACK,
