@@ -4,7 +4,7 @@ import queryString from 'querystring';
 
 import ajax from 'services/ajax';
 
-import { Permission } from 'common/typedefs/Permission';
+import { UserPermission } from 'common/typedefs/UserPermission';
 
 import dummyApplications from './dummyData/applications';
 import dummyGroups from './dummyData/groups';
@@ -43,7 +43,7 @@ export const getUserAndUserGroupPermissions = ({
   query = null,
   sortField = null,
   sortOrder = null,
-}): Promise<{ count: number; resultSet: Permission[]; offset: number; limit: number }> => {
+}): Promise<{ count: number; resultSet: UserPermission[]; offset: number; limit: number }> => {
   return ajax
     .get(
       `/users/${userId}/groups/permissions?${queryString.stringify(

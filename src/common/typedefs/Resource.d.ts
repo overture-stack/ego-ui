@@ -1,9 +1,9 @@
 import { ApiKey } from 'common/typedefs/ApiKey';
 import { Application } from 'common/typedefs/Application';
 import { Group } from 'common/typedefs/Group';
-import { TMaskLevel } from 'common/typedefs/Permission';
 import { Policy } from 'common/typedefs/Policy';
 import { User } from 'common/typedefs/User';
+import { TMaskLevel, UserPermission } from 'common/typedefs/UserPermission';
 
 export type TFieldType = 'dropdown' | 'text';
 
@@ -41,7 +41,7 @@ interface IListResponse {
   limit: number;
   offset: number;
   count: number;
-  resultSet: User[] | Group[] | Application[] | Policy[] | Permission[] | ApiKey[];
+  resultSet: User[] | Group[] | Application[] | Policy[] | UserPermission[] | ApiKey[];
 }
 
 type TGetItem = (id: string) => Promise<User | Group | Application>;
@@ -96,7 +96,7 @@ interface IAddToUser {
     item: User,
   ) => (user: { item: User }, application: any) => Promise<User>;
   // groups: (group: Group, item: User) => Promise<any>;
-  // permissions: (permission: Permission, item: User) => Promise<any>;
+  // permissions: (permission: UserPermission, item: User) => Promise<any>;
 }
 
 interface IAddToGroup {
