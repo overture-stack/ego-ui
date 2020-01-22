@@ -10,8 +10,8 @@ import 'react-table/react-table.css';
 
 const enhance = compose(
   withSize({
-    refreshRate: 100,
     monitorHeight: true,
+    refreshRate: 100,
   }),
   defaultProps({
     rowHeight: 33,
@@ -56,9 +56,13 @@ const ItemsWrapper = ({
   limit,
   currentSort,
   onSortChange,
+  parent,
   ...props
 }) => {
-  const columns = resource.schema.map(schema => {
+  const columns = (parent && parent.resource.name.singular === 'policy'
+    ? resource.childSchema
+    : resource.schema
+  ).map(schema => {
     return {
       ...(schema.key === 'id' ? { width: 200 } : {}),
       accessor: schema.key,

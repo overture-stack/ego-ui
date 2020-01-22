@@ -43,7 +43,8 @@ export interface IResource {
   remove: any;
   // add: { [key in TResourceType]?: (params: any) => Promise<any> };
   // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
-  initialSortField: string;
+  initialSortField: (any) => string;
   sortableFields: Schema;
   AssociatorComponent?: JSX.Element<{ associatedItems: any[] }> | null;
+  childSchema?: Schema;
 }

@@ -1,5 +1,5 @@
 import { provideState } from 'freactal';
-import { findIndex, omit, uniq } from 'lodash';
+import _, { findIndex, omit, uniq } from 'lodash';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
@@ -58,7 +58,8 @@ const provideEntity = provideState({
           ...entity.staged,
           ...omit(change, entity.resource.associatedTypes),
         };
-        return {
+
+        const stagedEntity = {
           ...state,
           entity: {
             ...entity,
@@ -121,6 +122,20 @@ const provideEntity = provideState({
                 return { ...acc, [currentType]: entity.associated[currentType] };
               }
             }, {}),
+          },
+        };
+        // console.log(stagedEntity.entity.associated.groups);
+        return {
+          ...stagedEntity,
+          entity: {
+            ...stagedEntity.entity,
+            valid:
+              stagedEntity.entity.valid &&
+              // TODO: refactor
+              (entity.resource.name.singular === 'policy'
+                ? (stagedEntity.entity.associated.groups.add || []).every(a => a.mask) &&
+                  (stagedEntity.entity.associated.users.add || []).every(a => a.mask)
+                : true),
           },
         };
       };

@@ -53,14 +53,19 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
     },
     associatedTypes: ['groups', 'applications'],
+    childSchema: [
+      { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'mask', fieldName: 'Access Level', sortable: true },
+    ],
     createItem: createUser,
     deleteItem: deleteUser,
     emptyMessage: 'Please select a user',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getUser,
     getList: getUsers,
@@ -141,14 +146,25 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
     },
     associatedTypes: ['users', 'applications'],
+    childSchema: [
+      { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'mask', fieldName: 'Access Level', sortable: true },
+    ],
     createItem: createGroup,
     deleteItem: deleteGroup,
     emptyMessage: 'Please select a group',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    // get initialSortField() {
+    //   return this.schema.find(field => field.initialSort);
+    // },
+    // get sortableFields() {
+    //   return this.schema.filter(field => field.sortable);
+    // },
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getGroup,
     getList: getGroups,
@@ -191,14 +207,21 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => addApplicationToUser({ application: item, user }),
     },
     associatedTypes: ['groups', 'users'],
+    childSchema: [],
     createItem: createApplication,
     deleteItem: deleteApplication,
     emptyMessage: 'Please select an application',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    // get initialSortField() {
+    //   return this.schema.find(field => field.initialSort);
+    // },
+    // get sortableFields() {
+    //   return this.schema.filter(field => field.sortable);
+    // },
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getApp,
     getList: getApps,
@@ -261,14 +284,25 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     },
     associatedTypes: ['groups', 'users'],
     AssociatorComponent: PermissionsTable,
+    childSchema: [
+      { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'mask', fieldName: 'Access Level', sortable: true },
+    ],
     createItem: createPolicy,
     deleteItem: deletePolicy,
     emptyMessage: 'Please select a policy',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    // get initialSortField() {
+    //   return this.schema.find(field => field.initialSort);
+    // },
+    // get sortableFields() {
+    //   return this.schema.filter(field => field.sortable);
+    // },
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getPolicy,
     getList: getPolicies,
