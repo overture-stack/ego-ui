@@ -1,5 +1,5 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import _ from 'lodash';
+import { find } from 'lodash';
 import ajax from 'services/ajax';
 
 import dummyApplications from './dummyData/applications';
@@ -15,7 +15,7 @@ export const getUser = id => {
 export const getUserGroups = id => {
   return USE_DUMMY_DATA
     ? Promise.resolve(
-        (_.find(dummyUsers, user => id === user.id, {}).groups || []).map(groupId =>
+        (find(dummyUsers, user => id === user.id, {}).groups || []).map(groupId =>
           dummyGroups.find(group => groupId === group.id),
         ),
       )
@@ -25,7 +25,7 @@ export const getUserGroups = id => {
 export const getUserApplications = id => {
   return USE_DUMMY_DATA
     ? Promise.resolve(
-        (_.find(dummyUsers, user => id === user.id, {}).applications || []).map(appId =>
+        (find(dummyUsers, user => id === user.id, {}).applications || []).map(appId =>
           dummyApplications.find(application => appId === application.id),
         ),
       )

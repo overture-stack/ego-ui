@@ -1,10 +1,10 @@
-import { User } from 'common/typedefs/User';
-import { Group } from 'common/typedefs/Group';
 import { Application } from 'common/typedefs/Application';
+import { Group } from 'common/typedefs/Group';
+import { User } from 'common/typedefs/User';
 
 export type TFieldType = 'dropdown' | 'text';
 
-export type TField = {
+export interface IField {
   key: string;
   fieldName: string;
   sortable?: boolean;
@@ -14,11 +14,11 @@ export type TField = {
   required?: boolean;
   immutable?: boolean;
   fieldContent?: any;
-};
+}
 
-export type TSchema = Field[];
+export type ISchema = IField[];
 
-export type TResourceType = 'groups' | 'applications' | 'users';
+export type TResourceType = 'groups' | 'applications' | 'users' | 'API Keys';
 
 export type TSortDirection = 'DESC' | 'ASC';
 
@@ -31,6 +31,7 @@ export interface IResource {
   name: { singular: string; plural: TResourceType };
   ListItem: any;
   getList: Function;
+  getListAll: Function;
   getItem: Function;
   updateItem: Function;
   createItem: Function;
@@ -38,8 +39,16 @@ export interface IResource {
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];
-  add: { [key in TResourceType]?: (params: any) => Promise<any> };
-  remove: { [key in TResourceType]?: (params: any) => Promise<any> };
+  addItem: boolean;
+  add: any;
+  remove: any;
+  getKey: Function;
+  mapTableData: Function;
+  // add: { [key in TResourceType]?: (params: any) => Promise<any> };
+  // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   initialSortField: string;
   sortableFields: Schema;
+  isParent: boolean;
+  AssociatorComponent?: any;
+  // AssociatorComponent: (props: any) => JSX.Element;
 }

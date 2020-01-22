@@ -1,14 +1,14 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import _ from 'lodash';
+import { find, omit, uniq } from 'lodash';
 import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
 
 const BLOCKED_KEYS = ['groups', 'applications'];
 function add({ user, key, value }: any) {
   if (USE_DUMMY_DATA) {
-    const foundUser = _.find(dummyUsers, u => u.id === user.id);
+    const foundUser = find(dummyUsers, u => u.id === user.id);
     if (foundUser) {
-      foundUser[key] = _.uniq([...foundUser[key], value]);
+      foundUser[key] = uniq([...foundUser[key], value]);
     }
     return Promise.resolve();
   } else {
@@ -18,7 +18,7 @@ function add({ user, key, value }: any) {
 
 function remove({ user, key, value }: any) {
   if (USE_DUMMY_DATA) {
-    const foundUser = _.find(dummyUsers, u => u.id === user.id);
+    const foundUser = find(dummyUsers, u => u.id === user.id);
     if (foundUser) {
       foundUser[key] = foundUser[key].filter(id => id !== value);
     }
@@ -29,7 +29,7 @@ function remove({ user, key, value }: any) {
 }
 
 export const updateUser = ({ item }) => {
-  return ajax.put(`/users/${item.id}`, _.omit(item, BLOCKED_KEYS)).then(r => r.data);
+  return ajax.put(`/users/${item.id}`, omit(item, BLOCKED_KEYS)).then(r => r.data);
 };
 
 export const addGroupToUser = ({ user, group }) => {

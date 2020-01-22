@@ -1,5 +1,5 @@
 import { Application, Group, User } from 'common/typedefs';
-import { TField } from 'common/typedefs/Resource';
+import { IField } from 'common/typedefs/Resource';
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
 import { css } from 'glamor';
@@ -8,7 +8,7 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Dropdown, Grid, Input } from 'semantic-ui-react';
 
-import { DATE_KEYS } from 'common/injectGlobals';
+import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
 
@@ -16,7 +16,7 @@ const getFieldContent = (row, data, immutableKeys, stageChange) =>
   row.fieldContent || // fieldContent is for associatedTypes
   (immutableKeys.includes(row.key)
     ? DATE_KEYS.indexOf(row.key) >= 0
-      ? format(data[row.key], 'YYYY-MM-DD hh:mm A')
+      ? format(data[row.key], DATE_FORMAT)
       : data[row.key] || ''
     : rowInput({ row, data, stageChange })); // for all mutable fields
 
@@ -26,7 +26,7 @@ function rowInput({
   stageChange,
 }: {
   data: User | Group | Application;
-  row: TField;
+  row: IField;
   stageChange: (object) => void;
 }) {
   switch (row.fieldType) {
@@ -71,7 +71,7 @@ function normalizeRow({
   stageChange,
   immutableKeys,
 }: {
-  row: TField;
+  row: IField;
   data: object[];
   associated: object[];
   stageChange: () => void;

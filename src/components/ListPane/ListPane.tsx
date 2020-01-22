@@ -62,12 +62,7 @@ interface IListState {}
 
 const enhance = compose(
   injectState,
-  defaultProps({
-    columnWidth: 200,
-    rowHeight: 60,
-    getKey: item => item.id.toString(),
-    onSelect: noop,
-  }),
+  defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
   withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('currentSort', 'setCurrentSort', props => ({
     field: props.resource.initialSortField,
@@ -230,7 +225,7 @@ class List extends React.Component<IListProps, any> {
         {displayMode === DisplayMode.Grid ? (
           <ItemGrid
             Component={resource.ListItem}
-            getKey={getKey}
+            getKey={resource.getKey}
             sortField={currentSort.field}
             selectedItemId={selectedItemId}
             onSelect={onSelect}
@@ -252,6 +247,7 @@ class List extends React.Component<IListProps, any> {
           />
         ) : (
           <ItemTable
+            parent={parent}
             resource={resource}
             getKey={getKey}
             currentSort={currentSort}
