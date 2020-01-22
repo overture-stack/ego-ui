@@ -1,6 +1,10 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import { find } from 'lodash';
+import { find, isNil, omitBy, orderBy } from 'lodash';
+import queryString from 'querystring';
+
 import ajax from 'services/ajax';
+
+import { UserPermission } from 'common/typedefs/UserPermission';
 
 import dummyApplications from './dummyData/applications';
 import dummyGroups from './dummyData/groups';
@@ -30,4 +34,50 @@ export const getUserApplications = id => {
         ),
       )
     : ajax.get(`/users/${id}/applications`).then(r => r.data);
+};
+
+export const getUserAndUserGroupPermissions = ({
+  userId = null,
+  offset = 0,
+  limit = 20,
+  query = null,
+  sortField = null,
+  sortOrder = null,
+}): Promise<{ count: number; resultSet: UserPermission[]; offset: number; limit: number }> => {
+  return ajax
+    .get(
+      `/users/${userId}/groups/permissions?${queryString.stringify(
+        omitBy(
+          {
+            limit,
+            offset,
+            query,
+            sort: sortField,
+            sortOrder,
+          },
+          isNil,
+        ),
+      )}`,
+    )
+    .then(r => {
+      // for client side pagination
+      const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
+      const order = sortOrder || 'desc';
+      const queryBy = new RegExp(query ? `(${query})` : '', 'i');
+
+      return {
+        count: r.data.length,
+        limit,
+        offset,
+        resultSet: orderBy(
+          r.data.slice(offset, offset + limit),
+          [sortBy],
+          [order.toLowerCase()],
+        ).filter(
+          ({ accessLevel, ownerType, policy: { name } }) =>
+            queryBy.test(accessLevel) || queryBy.test(ownerType) || queryBy.test(name),
+        ),
+      };
+    })
+    .catch(err => err);
 };

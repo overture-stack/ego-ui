@@ -1,6 +1,6 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { User } from 'common/typedefs/User';
-import _ from 'lodash';
+import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
@@ -14,7 +14,7 @@ export const getUsers = ({
   groupId = null,
   applicationId = null,
   status = null,
-}): Promise<{ count: number; resultSet: User[] }> => {
+}): Promise<{ count: number; resultSet: User[]; offset: number; limit: number }> => {
   const baseUrl = groupId
     ? `/groups/${groupId}`
     : applicationId
@@ -28,7 +28,7 @@ export const getUsers = ({
     : ajax
         .get(
           `${baseUrl}/users?${queryString.stringify(
-            _.omitBy(
+            omitBy(
               {
                 limit,
                 offset,
@@ -37,7 +37,7 @@ export const getUsers = ({
                 sortOrder,
                 status: status === 'All' ? null : status,
               },
-              _.isNil,
+              isNil,
             ),
           )}`,
         )

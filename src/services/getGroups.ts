@@ -9,13 +9,13 @@ import dummyGroups from './dummyData/groups';
 export const getGroups = ({
   offset = 0,
   limit = 20,
-  query,
-  userId,
-  applicationId,
-  sortField,
-  sortOrder,
-  status,
-}): Promise<{ count: number; resultSet: Group[] }> => {
+  query = null,
+  userId = null,
+  applicationId = null,
+  sortField = null,
+  sortOrder = null,
+  status = null,
+}): Promise<{ count: number; resultSet: Group[]; offset: number; limit: number }> => {
   const baseUrl = userId
     ? `/users/${userId}`
     : applicationId

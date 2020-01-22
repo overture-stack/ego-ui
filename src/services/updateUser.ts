@@ -4,6 +4,7 @@ import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
 
 const BLOCKED_KEYS = ['groups', 'applications'];
+
 function add({ user, key, value }: any) {
   if (USE_DUMMY_DATA) {
     const foundUser = find(dummyUsers, u => u.id === user.id);

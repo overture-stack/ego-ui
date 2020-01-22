@@ -16,7 +16,9 @@ import {
   getApps,
   getGroup,
   getGroups,
+  getPolicies,
   getUser,
+  getUserAndUserGroupPermissions,
   getUsers,
   removeApplicationFromGroup,
   removeApplicationFromUser,
@@ -31,10 +33,13 @@ import { DATE_FORMAT, STATUSES } from 'common/injectGlobals';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
 import ApiKeysTable from 'components/Associator/ApiKeysTable';
+import UserPermissionsTable from 'components/Associator/UserPermissionsTable';
+
 import {
   ApiKeyListItem,
   ApplicationListItem,
   GroupListItem,
+  PermissionListItem,
   UserListItem,
 } from 'components/ListItem';
 
@@ -49,7 +54,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
     },
     addItem: true,
-    associatedTypes: ['groups', 'applications', 'API Keys'],
+    associatedTypes: ['groups', 'applications', 'permissions', 'API Keys'],
     AssociatorComponent: null,
     createItem: createUser,
     deleteItem: deleteUser,
@@ -267,11 +272,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     updateItem: updateApplication,
   },
   'API Keys': {
-    add: () => null,
     addItem: false,
     associatedTypes: [],
     AssociatorComponent: ApiKeysTable,
-    createItem: () => null,
     deleteItem: item => revokeApiKey(item),
     emptyMessage: '',
     get initialSortField() {
@@ -280,7 +283,6 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     get sortableFields() {
       return this.schema.filter(field => field.sortable);
     },
-    getItem: () => null,
     getKey: item => item.name,
     getList: getApiKeys,
     getListAll: getApiKeys,
@@ -299,7 +301,6 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       }));
     },
     name: { singular: 'API Key', plural: 'API Keys' },
-    remove: () => null,
     rowHeight: 44,
     schema: [
       {
@@ -340,7 +341,57 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         sortable: false,
       },
     ],
-    updateItem: () => null,
+  },
+  permissions: {
+    addItem: false,
+    associatedTypes: [],
+    AssociatorComponent: UserPermissionsTable,
+    emptyMessage: '',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getKey: item => item.id.toString(),
+    getList: getUserAndUserGroupPermissions,
+    getListAll: getPolicies,
+    Icon: () => null,
+    initialSortOrder: 'ASC',
+    isParent: false,
+    ListItem: PermissionListItem,
+    name: { singular: 'permission', plural: 'permissions' },
+    mapTableData(results) {
+      return results.map(result => ({
+        accessLevel: result.accessLevel,
+        id: result.id,
+        ownerType: result.ownerType,
+        policy: result.policy.name,
+      }));
+    },
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: 'Policy Name',
+        initialSort: true,
+        key: 'policy',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Access Level',
+        key: 'accessLevel',
+        options: ['READ', 'WRITE', 'DENY'],
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Inheritance',
+        key: 'ownerType',
+        required: true,
+        sortable: true,
+      },
+    ],
   },
 };
 

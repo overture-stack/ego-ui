@@ -7,13 +7,15 @@ import { ApiKey } from 'common/typedefs/ApiKey';
 export const getApiKeys = ({
   offset = 0,
   limit = 20,
-  query,
-  userId,
-  sortField,
-  sortOrder,
+  query = null,
+  userId = null,
+  sortField = null,
+  sortOrder = null,
 }): Promise<{
   count: number;
   resultSet: [ApiKey];
+  offset: number;
+  limit: number;
 }> => {
   return ajax
     .get(
