@@ -1,12 +1,13 @@
+import { ApiKey } from 'common/typedefs/ApiKey';
 import { Application } from 'common/typedefs/Application';
 import { Group } from 'common/typedefs/Group';
-import { TAccessLevel } from 'common/typedefs/Permission';
+import { TMaskLevel } from 'common/typedefs/Permission';
 import { Policy } from 'common/typedefs/Policy';
 import { User } from 'common/typedefs/User';
 
 export type TFieldType = 'dropdown' | 'text';
 
-export interface TField {
+export interface IField {
   key: string;
   fieldName: string;
   sortable?: boolean;
@@ -18,13 +19,11 @@ export interface TField {
   fieldContent?: any;
 }
 
-export type TSchema = Field[];
+export type ISchema = IField[];
 
-export type TResourceType = 'groups' | 'applications' | 'users' | 'permissions';
+export type TResourceType = 'groups' | 'applications' | 'users' | 'API Keys' | 'permissions';
 
 export type TSortDirection = 'DESC' | 'ASC';
-
-type TAddItem = 'menu' | 'input';
 
 interface IListParams {
   offset?: number = null;
@@ -42,7 +41,7 @@ interface IListResponse {
   limit: number;
   offset: number;
   count: number;
-  resultSet: User[] | Group[] | Application[] | Policy[] | Permission[];
+  resultSet: User[] | Group[] | Application[] | Policy[] | Permission[] | ApiKey[];
 }
 
 type TGetItem = (id: string) => Promise<User | Group | Application>;
@@ -82,7 +81,7 @@ interface TAddEntity {
 }
 
 interface ICreatePermission {
-  accessLevel: TAccessLevel;
+  accessLevel: TMaskLevel;
   owner: User;
   policy: {
     name: string;
@@ -127,14 +126,17 @@ export interface IResource {
   createItem?: (
     item: ICreateUser | ICreateGroup | ICreateApplication,
   ) => Promise<User | Group | Application>;
-  deleteItem?: (item: ICreateUser | ICreateGroup | ICreateApplication) => Promise<null>;
+  deleteItem?: (item: ICreateUser | ICreateGroup | ICreateApplication) => Promise<null | string>;
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];
-  addItem: TAddItem;
+  addItem: boolean;
   add?: IAddToUser | IAddToGroup | IAddToApplication | any;
   remove?: any;
-  parseTableData?: Function; // ignore typing here, will be updated with changes from apiKeys ui pr
+  getKey: Function;
+  mapTableData: Function;
+  // add: { [key in TResourceType]?: (params: any) => Promise<any> };
+  // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   initialSortField: string;
   sortableFields: Schema;
   isParent: boolean;

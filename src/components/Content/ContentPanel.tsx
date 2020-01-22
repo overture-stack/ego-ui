@@ -6,12 +6,12 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Grid } from 'semantic-ui-react';
 
-import { DATE_KEYS } from 'common/injectGlobals';
+import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
 
 export const getFieldContent = (row, data) => {
   if (DATE_KEYS.indexOf(row.key) >= 0) {
-    return format(data[row.key], 'YYYY-MM-DD hh:mm A');
+    return format(data[row.key], DATE_FORMAT);
   }
   if (row.key === 'lastName') {
     return `${data.firstName} ${data.lastName}`;

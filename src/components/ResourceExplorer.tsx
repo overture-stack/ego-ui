@@ -5,7 +5,7 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Associator from 'components/Associator/Associator';
 import Content from 'components/Content';
 import ListPane from 'components/ListPane';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -24,11 +24,14 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
         parent={parent}
         selectedItemId={id}
         onSelect={item => {
-          history.replace(
-            `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
-              resource.name.plural
-            }${item.id.toString() === id ? '' : `/${item.id}`}`,
-          );
+          // prevent select action on child tables
+          if (isEmpty(parent)) {
+            history.replace(
+              `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
+                resource.name.plural
+              }${item.id.toString() === id ? '' : `/${item.id}`}`,
+            );
+          }
         }}
       />
       <Content
@@ -58,6 +61,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
                       type={associatedType}
                       stageChange={stageChange}
+                      parentId={id}
                     />
                     {!parent &&
                       associated[associatedType].count >

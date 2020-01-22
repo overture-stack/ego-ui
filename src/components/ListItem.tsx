@@ -5,6 +5,8 @@ import { css } from 'glamor';
 import React from 'react';
 import Truncate from 'react-truncate';
 
+import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
+
 const styles = {
   container: {
     display: 'flex',
@@ -78,6 +80,22 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
     >
       <UserDisplayName firstName={firstName} lastName={lastName} type={type} />
       <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
+    </Ripple>
+  );
+};
+
+export const ApiKeyListItem = ({ item, sortField, className = '', style = {}, ...props }) => {
+  const secondaryField = sortField === 'name' ? 'isRevoked' : sortField;
+  return (
+    <Ripple
+      className={`ApiKeyListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
+      <div className={`primary-field ${css(styles.primaryField)}`}>{item.name}</div>
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>
+        {secondaryField === 'isRevoked' ? getApiKeyStatus(item) : item[secondaryField]}
+      </div>
     </Ripple>
   );
 };

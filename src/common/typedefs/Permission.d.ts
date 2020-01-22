@@ -1,10 +1,10 @@
 import { User } from 'common/typedefs/User';
 
-type TAccessLevel = 'READ' | 'WRITE' | 'DENY';
+export type TMaskLevel = 'READ' | 'WRITE' | 'DENY';
 
 export interface Permission {
   id: string;
-  accessLevel: TAccessLevel;
+  accessLevel: TMaskLevel;
   owner: User;
   policy: {
     name: string;

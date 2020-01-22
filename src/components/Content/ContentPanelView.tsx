@@ -1,4 +1,4 @@
-import { TField } from 'common/typedefs/Resource';
+import { IField } from 'common/typedefs/Resource';
 import { injectState } from 'freactal';
 import { css } from 'glamor';
 import { groupBy, upperCase } from 'lodash';

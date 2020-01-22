@@ -25,6 +25,7 @@ interface TProps {
   fetchInitial: Function;
   type: string;
   resource: IResource;
+  parentId: string;
 }
 
 const styles = {
@@ -69,25 +70,15 @@ const enhance = compose(
       itemsInList: initialItems || [],
     }),
     {
-      addItem: ({ itemsInList }, { onAdd }) => (item, type) => {
-        // permissions on add should happen when you click the "+" button? or something like that
-        // it shouldn't be staged until policy and access are completed
+      addItem: ({ itemsInList }, { onAdd }) => item => {
         onAdd(item);
-        if (type === 'permissions') {
-          return {
-            itemsInList: [item].concat(itemsInList),
-          };
-        }
+
         return {
           itemsInList: itemsInList.concat(item),
         };
       },
-      removeItem: ({ itemsInList }, { onRemove, stageChange }) => (item, type) => {
-        if (type === 'permissions' && item.ownerType === 'GROUP') {
-          stageChange({ groups: { remove: item.owner } });
-        } else {
-          onRemove(item);
-        }
+      removeItem: ({ itemsInList }, { onRemove }) => item => {
+        onRemove(item);
         return {
           itemsInList: without(itemsInList, item),
         };
@@ -124,6 +115,7 @@ const render = ({
   fetchItems,
   editing,
   type,
+  parentId,
 }: TProps) => {
   const AssociatorComponent = RESOURCE_MAP[type].AssociatorComponent || null;
   return (
@@ -144,14 +136,13 @@ const render = ({
             styles.fieldName,
           )}`}
         >
-          {capitalize(type)}
+          {type === 'API Keys' ? 'API Keys' : capitalize(type)}
         </span>
-        {editing && type !== 'permissions' && (
+        {editing && RESOURCE_MAP[type].addItem && (
           <ItemSelector
             fetchItems={args => fetchItems({ ...args, limit: 10 })}
             onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
-            type={RESOURCE_MAP[type].addItem}
           />
         )}
       </div>
@@ -161,9 +152,11 @@ const render = ({
             editing={editing}
             associatedItems={itemsInList}
             removeItem={item => removeItem(item, type)}
-            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 10 })}
+            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
             onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
+            onRemove={RESOURCE_MAP[type].deleteItem}
+            parentId={parentId}
           />
         ) : (
           itemsInList.map(item => (

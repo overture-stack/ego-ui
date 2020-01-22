@@ -52,11 +52,3 @@ export const removeApplicationFromUser = ({ user, application }) => {
 export const deleteUser = ({ item }) => {
   return ajax.delete(`/users/${item.id}`).then(r => r.data);
 };
-
-export const addPermissionToUser = ({ user, permission }) => {
-  const newPermission = { policyId: permission.policy.id, mask: permission.accessLevel };
-  return add({ user, key: 'permissions', value: newPermission });
-};
-
-export const removePermissionFromUser = ({ user, permission }) =>
-  remove({ user, key: 'permissions', value: permission.id });
