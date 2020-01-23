@@ -14,8 +14,9 @@ import EditingContentPanel from './EditingContentPanel';
 const styles = {
   container: {
     boxShadow: '-2px 0 12px 0 rgba(0,0,0,0.1)',
-    minWidth: 500,
+    minWidth: 510,
     position: 'relative',
+    width: 510,
   },
   controls: { paddingRight: 24, paddingLeft: 24, justifyContent: 'space-between' },
 };
@@ -281,7 +282,16 @@ class Content extends React.Component<any, IContentState> {
             </React.Fragment>
           )}
         </ControlContainer>
-        <div>
+        <div
+          className={`content contentPanel ${css({
+            bottom: 0,
+            left: 0,
+            overflow: 'auto',
+            position: 'absolute',
+            right: 0,
+            top: 70,
+          })}`}
+        >
           {contentState === ContentState.creating ? (
             <EditingContentPanel entityType={resource.name.singular} rows={rows} hideImmutable />
           ) : !id ? (

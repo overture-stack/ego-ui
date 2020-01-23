@@ -9,13 +9,13 @@ import dummyApplications from './dummyData/applications';
 export const getApps = ({
   offset = 0,
   limit = 20,
-  query,
-  userId,
-  groupId,
-  sortField,
-  sortOrder,
-  status,
-}): Promise<{ count: number; resultSet: Application[] }> => {
+  query = null,
+  userId = null,
+  groupId = null,
+  sortField = null,
+  sortOrder = null,
+  status = null,
+}): Promise<{ count: number; resultSet: Application[]; offset: number; limit: number }> => {
   const baseUrl = userId ? `/users/${userId}` : groupId ? `/groups/${groupId}` : '';
 
   return USE_DUMMY_DATA

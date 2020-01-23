@@ -1,5 +1,5 @@
 import { css } from 'glamor';
-import { merge, noop } from 'lodash';
+import { debounce, merge, noop } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withProps, withState } from 'recompose';
 
@@ -62,12 +62,7 @@ interface IListState {}
 
 const enhance = compose(
   injectState,
-  defaultProps({
-    columnWidth: 200,
-    rowHeight: 60,
-    getKey: item => item.id.toString(),
-    onSelect: noop,
-  }),
+  defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
   withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('currentSort', 'setCurrentSort', props => ({
     field: props.resource.initialSortField(
@@ -134,7 +129,8 @@ class List extends React.Component<IListProps, any> {
       prevProps.currentSort.order !== this.props.currentSort.order ||
       prevProps.query !== this.props.query
     ) {
-      this.updateData({ offset: 0 });
+      const debouncedUpdate = debounce(() => this.updateData({ offset: 0 }), 100);
+      debouncedUpdate();
     }
   }
 
@@ -192,8 +188,8 @@ class List extends React.Component<IListProps, any> {
             <Button.Group className={`${css(paneControls.sortOrderWrapper)}`} vertical>
               <Button
                 style={{
-                  paddingBottom: 0,
                   backgroundColor: 'transparent',
+                  paddingBottom: 0,
                   ...(currentSort.order === 'ASC' && { color: TEAL }),
                 }}
                 onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
@@ -234,7 +230,7 @@ class List extends React.Component<IListProps, any> {
         {displayMode === DisplayMode.Grid ? (
           <ItemGrid
             Component={resource.ListItem}
-            getKey={getKey}
+            getKey={resource.getKey}
             sortField={currentSort.field}
             selectedItemId={selectedItemId}
             onSelect={onSelect}

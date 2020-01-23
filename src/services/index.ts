@@ -14,3 +14,5 @@ export * from './getPolicy';
 export * from './getPolicies';
 export * from './createPolicy';
 export * from './updatePolicy';
+export * from './getApiKeys';
+

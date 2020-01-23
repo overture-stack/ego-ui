@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { provideState } from 'freactal';
+import { isEqual } from 'lodash';
 
 export default provideState({
   initialState: () => ({
@@ -59,7 +59,7 @@ export default provideState({
       const {
         list: { params: newParams },
       } = await effects.updateListParams(params);
-      if (!_.isEqual(lastParams, newParams)) {
+      if (!isEqual(lastParams, newParams)) {
         await effects.refreshList();
       }
       return state => ({ ...state });

@@ -2,11 +2,14 @@ import { css } from 'glamor';
 import { capitalize, get, noop, uniqBy, without } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
-import { Grid, Icon, Label } from 'semantic-ui-react';
+import { Button, Grid, Icon, Label } from 'semantic-ui-react';
 
 import { DARK_BLUE, GREY } from 'common/colors';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { styles as contentStyles } from 'components/Content/ContentPanelView';
+
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import { IResource } from 'common/typedefs/Resource';
 import ItemSelector from './ItemSelector';
 
 import { IResource } from 'common/typedefs/Resource';
@@ -25,6 +28,7 @@ interface TProps {
   fetchInitial: Function;
   type: string;
   resource: IResource;
+  parentId: string;
 }
 
 const styles = {
@@ -58,20 +62,17 @@ async function fetchAllAssociatedItems({
 
 const enhance = compose(
   defaultProps({
-    getName: item => get(item, 'name'),
     getKey: item => get(item, 'id'),
+    getName: item => get(item, 'name'),
     onAdd: noop,
     onRemove: noop,
   }),
   withStateHandlers(
     ({ initialItems }) => ({
-      itemsInList: initialItems || [],
       allAssociatedItems: [],
+      itemsInList: initialItems || [],
     }),
     {
-      setItemsInList: () => items => ({
-        itemsInList: items,
-      }),
       addItem: ({ itemsInList }, { onAdd }) => item => {
         onAdd(item);
 
@@ -83,12 +84,14 @@ const enhance = compose(
       },
       removeItem: ({ itemsInList }, { onRemove }) => item => {
         onRemove(item);
-
         return {
           itemsInList: without(itemsInList, item),
         };
       },
       setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
+      setItemsInList: () => items => ({
+        itemsInList: items,
+      }),
     },
   ),
   lifecycle({
@@ -118,8 +121,9 @@ const render = ({
   editing,
   resource,
   type,
+  parentId,
 }: TProps) => {
-  const AssociatorComponent = resource.AssociatorComponent || null;
+  const AssociatorComponent = RESOURCE_MAP[type].AssociatorComponent || null;
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <div
@@ -138,12 +142,12 @@ const render = ({
             styles.fieldName,
           )}`}
         >
-          {capitalize(type)}
+          {type === 'API Keys' ? 'API Keys' : capitalize(type)}
         </span>
-        {editing && (
+        {editing && RESOURCE_MAP[type].addItem && (
           <ItemSelector
             fetchItems={args => fetchItems({ ...args, limit: 10 })}
-            onSelect={addItem}
+            onSelect={item => addItem(item, type)}
             disabledItems={[...allAssociatedItems, ...itemsInList]}
           />
         )}
@@ -154,10 +158,12 @@ const render = ({
             editing={editing}
             associatedItems={itemsInList}
             removeItem={item => removeItem(item, type)}
-            fetchItems={args => fetchItems({ ...args, limit: 10 })}
             onSelect={item => addItem(item, type)}
             disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
             type={type}
+            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
+            onRemove={RESOURCE_MAP[type].deleteItem}
+            parentId={parentId}
           />
         ) : (
           itemsInList.map(item => (

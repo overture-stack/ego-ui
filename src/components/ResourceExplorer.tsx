@@ -5,7 +5,7 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Associator from 'components/Associator/Associator';
 import Content from 'components/Content';
 import ListPane from 'components/ListPane';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
@@ -24,11 +24,14 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
         parent={parent}
         selectedItemId={id}
         onSelect={item => {
-          history.replace(
-            `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
-              resource.name.plural
-            }${item.id.toString() === id ? '' : `/${item.id}`}`,
-          );
+          // prevent select action on child tables
+          if (isEmpty(parent)) {
+            history.replace(
+              `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
+                resource.name.plural
+              }${item.id.toString() === id ? '' : `/${item.id}`}`,
+            );
+          }
         }}
       />
       <Content
@@ -58,13 +61,20 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
                       type={associatedType}
                       resource={resource}
+                      stageChange={stageChange}
+                      parentId={id}
                     />
                     {!parent &&
                       associated[associatedType].count >
                         get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
-                          style={{ color: MEDIUM_BLUE, fontSize: 12 }}
+                          style={{
+                            color: MEDIUM_BLUE,
+                            fontSize: 12,
+                            display: 'inline-block',
+                            paddingTop: 10,
+                          }}
                         >
                           View {associated[associatedType].count} {associatedType}
                         </NavLink>

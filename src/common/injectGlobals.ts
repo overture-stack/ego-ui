@@ -13,4 +13,5 @@ export const USE_DUMMY_DATA = process.env.REACT_APP_DUMMY;
 
 export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING', 'REJECTED'];
 export const DATE_KEYS = ['createdAt', 'lastLogin'];
-export const MASK_LEVELS = ['READ', 'WRITE', 'DENY'];
+export const DATE_FORMAT = 'YYYY-MM-DD hh:mm A';
+export const MASK_LEVELS = ['DENY', 'READ', 'WRITE'];

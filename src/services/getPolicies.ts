@@ -9,6 +9,7 @@ export const getPolicies = ({
   query = null,
   sortField = null,
   sortOrder = null,
+  status = null,
 }): Promise<{ count: number; resultSet: Policy[]; offset: number; limit: number }> => {
   return ajax
     .get(

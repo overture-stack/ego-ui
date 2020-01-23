@@ -6,6 +6,7 @@ import Truncate from 'react-truncate';
 import { TEAL } from 'common/colors';
 import Ripple from 'components/Ripple';
 import UserDisplayName, { ChildUserDisplayName } from 'components/UserDisplayName';
+import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
 const styles = {
   container: {
@@ -104,6 +105,39 @@ export const PolicyListItem = ({ item, sortField, className = '', style, ...prop
       <div className={`secondary-field ${css(styles.secondaryField)}`}>
         <Truncate lines={1}>{item[secondaryField]}</Truncate>
       </div>
+    </Ripple>
+  );
+};
+
+export const ApiKeyListItem = ({ item, sortField, className = '', style = {}, ...props }) => {
+  const secondaryField = sortField === 'name' ? 'isRevoked' : sortField;
+  return (
+    <Ripple
+      className={`ApiKeyListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
+      <div className={`primary-field ${css(styles.primaryField)}`}>{item.name}</div>
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>
+        {secondaryField === 'isRevoked' ? getApiKeyStatus(item) : item[secondaryField]}
+      </div>
+    </Ripple>
+  );
+};
+
+export const PermissionListItem = ({ item, sortField, className = '', style, ...props }) => {
+  const { id, policy, accessLevel, owner } = item;
+
+  const secondaryField = sortField === 'policy' ? 'accessLevel' : sortField;
+
+  return (
+    <Ripple
+      className={`PermissionListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
+      <div className={`primary-field ${css(styles.primaryField)}`}>{policy.name}</div>
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
     </Ripple>
   );
 };

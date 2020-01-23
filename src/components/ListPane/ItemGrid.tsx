@@ -1,6 +1,6 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import _ from 'lodash';
+import { range } from 'lodash';
 import React, { useEffect } from 'react';
 import withSize from 'react-sizeme';
 import { compose } from 'recompose';
@@ -45,7 +45,6 @@ function ItemsWrapper({
   }, [size.width, size.height]);
 
   const fillersRequired = Math.max(limit - resultSet.length, 0);
-
   return (
     <div className={`items-wrapper`}>
       {resultSet.map(item => (
@@ -87,7 +86,7 @@ function ItemsWrapper({
           )}
         </div>
       ))}
-      {_.range(fillersRequired).map(i => (
+      {range(fillersRequired).map(i => (
         <div key={i + offset} className={`filler ${css(styles.filler)}`} />
       ))}
     </div>

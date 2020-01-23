@@ -1,4 +1,6 @@
+import moment from 'moment';
 import React from 'react';
+
 import {
   addApplicationToGroup,
   addApplicationToUser,
@@ -13,6 +15,7 @@ import {
   deleteGroup,
   deletePolicy,
   deleteUser,
+  getApiKeys,
   getApp,
   getApps,
   getGroup,
@@ -20,25 +23,33 @@ import {
   getPolicies,
   getPolicy,
   getUser,
+  getUserAndUserGroupPermissions,
   getUsers,
   removeApplicationFromGroup,
   removeApplicationFromUser,
   removeGroupFromUser,
   removeGroupPermissionFromPolicy,
   removeUserPermissionFromPolicy,
+  revokeApiKey,
   updateApplication,
   updateGroup,
   updatePolicy,
   updateUser,
 } from 'services';
 
-import { STATUSES } from 'common/injectGlobals';
+import { DATE_FORMAT, STATUSES } from 'common/injectGlobals';
+import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
+
+import ApiKeysTable from 'components/Associator/ApiKeysTable';
+import UserPermissionsTable from 'components/Associator/UserPermissionsTable';
 
 import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
+  PolicyListItem,
+  ApiKeyListItem,
   ApplicationListItem,
   GroupListItem,
-  PolicyListItem,
+  PermissionListItem,
   UserListItem,
 } from 'components/ListItem';
 
@@ -52,7 +63,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
     },
-    associatedTypes: ['groups', 'applications'],
+    addItem: true,
+    associatedTypes: ['groups', 'applications', 'permissions', 'API Keys'],
+    AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
       { key: 'name', fieldName: 'Name', sortable: true },
@@ -68,11 +81,15 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getUser,
+    getKey: item => item.id.toString(),
     getList: getUsers,
+    getListAll: getUsers,
     getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
     Icon: ({ style }) => <Icon name="user" style={style} />,
     initialSortOrder: 'ASC',
+    isParent: true,
     ListItem: UserListItem,
+    mapTableData: results => results,
     name: { singular: 'user', plural: 'users' },
     noDelete: true,
     remove: {
@@ -145,7 +162,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
     },
+    addItem: true,
     associatedTypes: ['users', 'applications'],
+    AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
       { key: 'name', fieldName: 'Name', sortable: true },
@@ -167,10 +186,14 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getGroup,
+    getKey: item => item.id.toString(),
     getList: getGroups,
+    getListAll: getGroups,
     Icon: ({ style }) => <Icon name="group" style={style} />,
     initialSortOrder: 'ASC',
+    isParent: true,
     ListItem: GroupListItem,
+    mapTableData: results => results,
     name: { singular: 'group', plural: 'groups' },
     remove: {
       applications: ({ application, item }) =>
@@ -206,7 +229,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
       users: ({ user, item }) => addApplicationToUser({ application: item, user }),
     },
+    addItem: true,
     associatedTypes: ['groups', 'users'],
+    AssociatorComponent: null,
     childSchema: [],
     createItem: createApplication,
     deleteItem: deleteApplication,
@@ -224,7 +249,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getApp,
+    getKey: item => item.id.toString(),
     getList: getApps,
+    getListAll: getApps,
     Icon: ({ style }) => (
       <i
         className="icon"
@@ -237,7 +264,9 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       />
     ),
     initialSortOrder: 'ASC',
+    isParent: true,
     ListItem: ApplicationListItem,
+    mapTableData: results => results,
     name: { singular: 'application', plural: 'applications' },
     remove: {
       groups: ({ group, item }) => removeApplicationFromGroup({ application: item, group }),
@@ -276,6 +305,128 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'redirectUri', fieldName: 'Redirect Uri', panelSection: 'meta', required: true },
     ],
     updateItem: updateApplication,
+  },
+'API Keys': {
+    addItem: false,
+    associatedTypes: [],
+    AssociatorComponent: ApiKeysTable,
+    deleteItem: item => revokeApiKey(item),
+    emptyMessage: '',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getKey: item => item.name,
+    getList: getApiKeys,
+    getListAll: getApiKeys,
+    Icon: () => null,
+    initialSortOrder: 'ASC',
+    isParent: false,
+    ListItem: ApiKeyListItem,
+    mapTableData(results) {
+      return results.map(result => ({
+        ...result,
+        action: this.deleteItem,
+        actionText: 'REVOKE',
+        expiryDate: moment(result.expiryDate).format(DATE_FORMAT),
+        isRevoked: getApiKeyStatus(result),
+        issueDate: moment(result.issueDate).format(DATE_FORMAT),
+      }));
+    },
+    name: { singular: 'API Key', plural: 'API Keys' },
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: 'API Key',
+        initialSort: true,
+        key: 'name',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Scope',
+        key: 'scope',
+        required: true,
+        sortable: false,
+      },
+      {
+        fieldName: 'Expiry',
+        key: 'expiryDate',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Issued',
+        key: 'issueDate',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Status',
+        key: 'isRevoked',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Action',
+        key: 'action',
+        required: false,
+        sortable: false,
+      },
+    ],
+  },
+  permissions: {
+    addItem: false,
+    associatedTypes: [],
+    AssociatorComponent: UserPermissionsTable,
+    emptyMessage: '',
+    get initialSortField() {
+      return this.schema.find(field => field.initialSort);
+    },
+    get sortableFields() {
+      return this.schema.filter(field => field.sortable);
+    },
+    getKey: item => item.id.toString(),
+    getList: getUserAndUserGroupPermissions,
+    getListAll: getPolicies,
+    Icon: () => null,
+    initialSortOrder: 'ASC',
+    isParent: false,
+    ListItem: PermissionListItem,
+    name: { singular: 'permission', plural: 'permissions' },
+    mapTableData(results) {
+      return results.map(result => ({
+        accessLevel: result.accessLevel,
+        id: result.id,
+        ownerType: result.ownerType,
+        policy: result.policy.name,
+      }));
+    },
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: 'Policy Name',
+        initialSort: true,
+        key: 'policy',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Access Level',
+        key: 'accessLevel',
+        options: ['READ', 'WRITE', 'DENY'],
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Inheritance',
+        key: 'ownerType',
+        required: true,
+        sortable: true,
+      },
+    ],
   },
   policies: {
     add: {

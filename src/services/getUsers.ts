@@ -15,7 +15,7 @@ export const getUsers = ({
   applicationId = null,
   policyId = null,
   status = null,
-}): Promise<{ count: number; resultSet: User[] }> => {
+}): Promise<{ count: number; resultSet: User[]; offset: number; limit: number }> => {
   const baseUrl = groupId
     ? `/groups/${groupId}`
     : applicationId
