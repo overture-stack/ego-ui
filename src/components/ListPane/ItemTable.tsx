@@ -81,7 +81,6 @@ const ItemsWrapper = ({
     : resource.schema
   ).map(schema => {
     return {
-      ...(schema.key === 'id' ? { width: 80 } : {}),
       accessor: schema.key,
       Header: schema.fieldName,
       sortable: schema.sortable || false,
@@ -114,25 +113,12 @@ const ItemsWrapper = ({
         onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
         getTdProps={(state, rowInfo, column, instance) => ({
           onClick: () => rowInfo && onSelect(rowInfo.original),
-          ...(column.id === 'id' && {
-            style: {
-              textAlign: 'right',
-            },
-          }),
         })}
-        getTheadThProps={(state, rowInfo, column, instance) =>
-          column.id === 'id'
-            ? {
-                style: {
-                  textAlign: 'right',
-                },
-              }
-            : {
-                style: {
-                  textAlign: 'left',
-                },
-              }
-        }
+        getTheadThProps={(state, rowInfo, column, instance) => ({
+          style: {
+            textAlign: 'left',
+          },
+        })}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import { provideState } from 'freactal';
-import _, { findIndex, omit, uniq } from 'lodash';
+import { findIndex, omit, uniq } from 'lodash';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
@@ -124,14 +124,13 @@ const provideEntity = provideState({
             }, {}),
           },
         };
-        // console.log(stagedEntity.entity.associated.groups);
+        // to disable Save when adding new permissions on policies tab
         return {
           ...stagedEntity,
           entity: {
             ...stagedEntity.entity,
             valid:
               stagedEntity.entity.valid &&
-              // TODO: refactor
               (entity.resource.name.singular === 'policy'
                 ? (stagedEntity.entity.associated.groups.add || []).every(a => a.mask) &&
                   (stagedEntity.entity.associated.users.add || []).every(a => a.mask)

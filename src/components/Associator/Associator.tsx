@@ -1,5 +1,5 @@
 import { css } from 'glamor';
-import { capitalize, get, noop, uniqBy, without } from 'lodash';
+import { capitalize, get, isUndefined, noop, uniqBy, without } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
 import { Button, Grid, Icon, Label } from 'semantic-ui-react';
@@ -8,18 +8,14 @@ import { DARK_BLUE, GREY } from 'common/colors';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { styles as contentStyles } from 'components/Content/ContentPanelView';
 
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { IResource } from 'common/typedefs/Resource';
 import ItemSelector from './ItemSelector';
-
-import { IResource } from 'common/typedefs/Resource';
 
 interface TProps {
   addItem: Function;
   allAssociatedItems: any[];
   itemsInList: any[];
   removeItem: Function;
-  getName: Function;
   getKey: Function;
   fetchItems: Function;
   editing: Boolean;
@@ -53,8 +49,8 @@ async function fetchAllAssociatedItems({
 
   do {
     const data = await fetchExistingAssociations({ limit: 1000 });
-    items = [...items, ...data.resultSet];
-    count = data.count;
+    items = [...items, ...(data ? data.resultSet : [])];
+    count = data ? data.count : 0;
   } while (items.length < count);
 
   setAllAssociatedItems(items);
@@ -63,7 +59,6 @@ async function fetchAllAssociatedItems({
 const enhance = compose(
   defaultProps({
     getKey: item => get(item, 'id'),
-    getName: item => get(item, 'name'),
     onAdd: noop,
     onRemove: noop,
   }),
@@ -77,9 +72,7 @@ const enhance = compose(
         onAdd(item);
 
         return {
-          // does it matter if all entities add new items to head of list?
-          itemsInList: [item, ...itemsInList],
-          // itemsInList: itemsInList.concat(item),
+          itemsInList: [item].concat(itemsInList),
         };
       },
       removeItem: ({ itemsInList }, { onRemove }) => item => {
@@ -115,7 +108,6 @@ const render = ({
   allAssociatedItems,
   itemsInList,
   removeItem,
-  getName,
   getKey,
   fetchItems,
   editing,
@@ -123,7 +115,11 @@ const render = ({
   type,
   parentId,
 }: TProps) => {
-  const AssociatorComponent = RESOURCE_MAP[type].AssociatorComponent || null;
+  // TODO: nicer way to get this component?
+  const AssociatorComponent =
+    type === 'permissions' || type === 'API Keys'
+      ? RESOURCE_MAP[type].AssociatorComponent
+      : resource.AssociatorComponent;
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <div
@@ -148,7 +144,7 @@ const render = ({
           <ItemSelector
             fetchItems={args => fetchItems({ ...args, limit: 10 })}
             onSelect={item => addItem(item, type)}
-            disabledItems={[...allAssociatedItems, ...itemsInList]}
+            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
           />
         )}
       </div>
@@ -168,7 +164,9 @@ const render = ({
         ) : (
           itemsInList.map(item => (
             <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-              {getName(item)}
+              {type === 'users' && !item.firstName
+                ? get(item, 'name')
+                : RESOURCE_MAP[type].getName(item)}
               {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
             </Label>
           ))

@@ -1,12 +1,12 @@
-import React from 'react';
-import { compose, withProps } from 'recompose';
-import { Route } from 'react-router';
 import { css } from 'glamor';
-import withSize from 'react-sizeme';
 import path from 'ramda/src/path';
+import React from 'react';
+import { Route } from 'react-router';
+import withSize from 'react-sizeme';
+import { compose, withProps } from 'recompose';
 
-import ResourceExplorer from 'components/ResourceExplorer';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import ResourceExplorer from 'components/ResourceExplorer';
 
 const styles = {
   container: {

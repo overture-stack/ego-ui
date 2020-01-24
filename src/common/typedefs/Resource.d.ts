@@ -21,7 +21,13 @@ export interface IField {
 
 export type ISchema = IField[];
 
-export type TResourceType = 'groups' | 'applications' | 'users' | 'API Keys' | 'permissions' | 'policies';
+export type TResourceType =
+  | 'groups'
+  | 'applications'
+  | 'users'
+  | 'API Keys'
+  | 'permissions'
+  | 'policies';
 
 export type TSortDirection = 'DESC' | 'ASC';
 
@@ -111,7 +117,7 @@ interface IAddToApplication {
 
 export interface IResource {
   Icon: any;
-  getName?: (params: User) => string;
+  getName: (params: User | Policy | Group | Application | Permission | ApiKey) => string;
   emptyMessage: string;
   schema: Schema;
   noDelete?: true;

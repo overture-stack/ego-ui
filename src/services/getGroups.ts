@@ -1,6 +1,6 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Group } from 'common/typedefs/Group';
-import { isNil, omitBy } from 'lodash';
+import { isNil, omitBy, orderBy } from 'lodash';
 import queryString from 'querystring';
 import ajax from 'services/ajax';
 
@@ -37,8 +37,12 @@ export const getGroups = ({
               {
                 limit,
                 offset,
+                // TODO: using client side or server side pagination for policy/assoc?
+                // query: policyId ? null : query,
+                // sort: policyId ? null : sortField,
                 query,
-                sort: sortField,
+                // seems like backend sort for accessLevel is based on hierarchy of levels, not alphabetically?
+                sort: sortField === 'mask' ? 'accessLevel' : sortField,
                 sortOrder,
                 status: status === 'All' ? null : status,
               },
@@ -47,15 +51,25 @@ export const getGroups = ({
           )}`,
         )
         .then(r => {
-          // TODO: /policies/{id}/groups does not return paginated response
-          if (policyId) {
-            return {
-              resultSet: r.data,
-              count: r.data.length,
-              limit,
-              offset,
-            };
-          }
+          // TODO: use if cannot implement proper sort/search/pagination on backend for policies
+          // if (policyId) {
+          //   const sortBy = sortField;
+          //   const order = sortOrder || 'desc';
+          //   const queryBy = new RegExp(query ? `(${query})` : '', 'i');
+          //   return {
+          //     count: r.data.count,
+          //     limit,
+          //     offset,
+          //     resultSet: orderBy(
+          //       r.data.resultSet.slice(offset, offset + limit),
+          //       [sortBy],
+          //       [order.toLowerCase()],
+          //     ).filter(
+          //       ({ mask, id, name }) =>
+          //         queryBy.test(name) || queryBy.test(mask) || queryBy.test(id),
+          //     ),
+          //   };
+          // }
           return r.data;
         })
         .catch(err => err);
