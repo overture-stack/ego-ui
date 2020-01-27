@@ -17,26 +17,39 @@ const enhance = compose(
     refreshRate: 100,
   }),
   defaultProps({
-    rowHeight: 33,
+    rowHeight: 38,
   }),
   injectState,
   withPropsOnChange(
     (props, nextProps) =>
+      // TODO: height change is not being detected
       (props.size.width !== nextProps.size.width || props.size.height !== nextProps.size.height) &&
       nextProps.size.width !== 0,
     debounce(({ size, rowHeight, effects: { updateList } }) => {
       const heightBuffer = 30;
       const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight) - 1, 1);
       const limit = rows;
+
       updateList({ limit, rows });
     }, 200),
   ),
   withHandlers({
     handleAction: ({
+      parent,
       resource,
       effects: { updateList, saveChanges, stageChange },
     }) => async item => {
-      await item.action(item);
+      // going to need to differentiate between different entities' "remove" action
+      // apiKeys is just item.action(item)
+      // users and groups have different remove actions depending on the parent
+      if (resource.name.singular === 'API Key') {
+        await item.action(item);
+      } else {
+        await parent.resource[item.action][resource.name.plural]({
+          item: { id: parent.id },
+          [resource.name.singular]: item,
+        });
+      }
       updateList({ item });
     },
   }),
@@ -88,7 +101,6 @@ const ItemsWrapper = ({
     };
   });
 
-  // do not add action column on parent table
   const data = isEmpty(parent)
     ? resultSet
     : resource.mapTableData(resultSet).map(d => {
@@ -105,7 +117,7 @@ const ItemsWrapper = ({
     <div className={`ItemTable ${css(styles.container, props.styles)}`}>
       <ReactTable
         className={`-striped -highlight ${css(styles.table)}`}
-        columns={columns}
+        columns={isEmpty(parent) ? columns.filter(c => c.accessor !== 'action') : columns}
         pageSize={limit}
         data={data}
         showPagination={false}
