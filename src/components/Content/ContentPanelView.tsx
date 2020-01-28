@@ -161,6 +161,28 @@ const ContentView = ({
                     );
                   })}
                 </Grid.Row>
+                <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
+                  {panelSections['meta'].slice(4, 5).map(({ fieldContent, fieldName, key }) => {
+                    return (
+                      <Grid.Column key={`${entity.id}-${key}`}>
+                        <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
+                          <span
+                            className={`contentFieldName ${css(
+                              styles.fieldName,
+                              styles.fieldNamePadding,
+                              { width: 80 },
+                            )}`}
+                          >
+                            {fieldName}
+                          </span>
+                          <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                            {fieldContent}
+                          </span>
+                        </Grid.Row>
+                      </Grid.Column>
+                    );
+                  })}
+                </Grid.Row>
               </React.Fragment>
             ) : (
               panelSections['meta'].map(({ fieldContent, fieldName, key }) => {

@@ -89,17 +89,20 @@ const ItemsWrapper = ({
   parent,
   ...props
 }) => {
+  const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
   const columns = (parent && parent.resource.name.singular === 'policy'
     ? resource.childSchema
     : resource.schema
-  ).map(schema => {
-    return {
-      accessor: schema.key,
-      Header: schema.fieldName,
-      sortable: schema.sortable || false,
-      sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
-    };
-  });
+  )
+    .filter(c => !c.hideOnTable)
+    .map(schema => {
+      return {
+        accessor: schema.key,
+        Header: schema.fieldName,
+        sortable: schema.sortable || false,
+        sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
+      };
+    });
 
   const data = isEmpty(parent)
     ? resultSet
