@@ -18,6 +18,12 @@ export const getApps = ({
 }): Promise<{ count: number; resultSet: Application[]; offset: number; limit: number }> => {
   const baseUrl = userId ? `/users/${userId}` : groupId ? `/groups/${groupId}` : '';
 
+  // prevent 400 error on /create
+  const activeId = userId || groupId;
+  if (activeId === 'create') {
+    Promise.resolve(activeId);
+  }
+
   return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyApplications.length,

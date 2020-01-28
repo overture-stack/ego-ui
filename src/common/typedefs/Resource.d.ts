@@ -50,7 +50,7 @@ interface IListResponse {
   resultSet: User[] | Group[] | Application[] | Policy[] | UserPermission[] | ApiKey[];
 }
 
-type TGetItem = (id: string) => Promise<User | Group | Application>;
+type TGetItem = (id: string) => Promise<User | Group | Application | string>;
 
 interface ICreateGroup {
   item: { name: string; status: string; description?: string };
