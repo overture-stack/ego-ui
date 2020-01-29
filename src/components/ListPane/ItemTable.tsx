@@ -7,6 +7,7 @@ import ReactTable from 'react-table';
 import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompose';
 import { Button } from 'semantic-ui-react';
 
+import { messenger } from 'common/injectGlobals';
 import ActionButton from 'components/Associator/ActionButton';
 
 import 'react-table/react-table.css';
@@ -50,6 +51,7 @@ const enhance = compose(
           [resource.name.singular]: item,
         });
       }
+      messenger.publish('list updated!');
       updateList({ item });
     },
   }),

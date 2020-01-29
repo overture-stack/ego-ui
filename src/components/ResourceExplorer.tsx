@@ -54,7 +54,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                         if (id === 'create') {
                           return () => null;
                         }
-                        RESOURCE_MAP[associatedType].getList({
+                        return RESOURCE_MAP[associatedType].getList({
                           ...params,
                           [`${resource.name.singular}Id`]: id,
                         });

@@ -1,14 +1,15 @@
+import { injectState } from 'freactal';
 import { css } from 'glamor';
 import { capitalize, get, isUndefined, noop, uniqBy, without } from 'lodash';
 import React from 'react';
-import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
+import { compose, defaultProps, lifecycle, withHandlers, withStateHandlers } from 'recompose';
 import { Button, Grid, Icon, Label } from 'semantic-ui-react';
 
 import { DARK_BLUE, GREY } from 'common/colors';
+import { messenger } from 'common/injectGlobals';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import { styles as contentStyles } from 'components/Content/ContentPanelView';
-
 import { IResource } from 'common/typedefs/Resource';
+import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
 
 interface TProps {
@@ -54,9 +55,11 @@ async function fetchAllAssociatedItems({
   } while (items.length < count);
 
   setAllAssociatedItems(items);
+  return items.slice(0, 5);
 }
 
 const enhance = compose(
+  injectState,
   defaultProps({
     getKey: item => get(item, 'id'),
     onAdd: noop,
@@ -103,91 +106,103 @@ const enhance = compose(
   }),
 );
 
-const render = ({
-  addItem,
-  allAssociatedItems,
-  itemsInList,
-  removeItem,
-  getKey,
-  fetchItems,
-  editing,
-  resource,
-  type,
-  parentId,
-}: TProps) => {
-  // TODO: nicer way to get this component?
-  const AssociatorComponent =
-    type === 'permissions' || type === 'API Keys'
-      ? RESOURCE_MAP[type].AssociatorComponent
-      : resource.AssociatorComponent;
-  return (
-    <div className={`Associator ${css(styles.container)}`}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingBottom: '0.5rem',
-          width: '100%',
-        }}
-      >
-        <span
-          className={`${css(
-            contentStyles.fieldName,
-            contentStyles.fieldNamePadding,
-            styles.fieldName,
-          )}`}
+class Associator extends React.Component<TProps, any> {
+  async onMessage(props) {
+    await props.effects.setItem(props.parentId, props.resource);
+    const data = await fetchAllAssociatedItems(props);
+    await props.setItemsInList(data);
+  }
+
+  componentDidMount() {
+    messenger.subscribe(() => this.onMessage(this.props));
+  }
+
+  componentWillUnmount() {
+    messenger.unsubscribe(this.onMessage);
+  }
+
+  render() {
+    const {
+      addItem,
+      allAssociatedItems,
+      itemsInList,
+      removeItem,
+      getKey,
+      fetchItems,
+      editing,
+      resource,
+      type,
+      parentId,
+    }: any = this.props;
+
+    const AssociatorComponent =
+      type === 'permissions' || type === 'API Keys'
+        ? RESOURCE_MAP[type].AssociatorComponent
+        : resource.AssociatorComponent;
+
+    return (
+      <div className={`Associator ${css(styles.container)}`}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingBottom: '0.5rem',
+            width: '100%',
+          }}
         >
-          {type === 'API Keys' ? 'API Keys' : capitalize(type)}
-        </span>
-        {editing && RESOURCE_MAP[type].addItem && (
-          <ItemSelector
-            fetchItems={args => fetchItems({ ...args, limit: 10 })}
-            onSelect={item => addItem(item, type)}
-            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
-          />
+          <span
+            className={`${css(
+              contentStyles.fieldName,
+              contentStyles.fieldNamePadding,
+              styles.fieldName,
+            )}`}
+          >
+            {type === 'API Keys' ? 'API Keys' : capitalize(type)}
+          </span>
+          {editing && RESOURCE_MAP[type].addItem && (
+            <ItemSelector
+              fetchItems={args => fetchItems({ ...args, limit: 10 })}
+              onSelect={item => addItem(item, type)}
+              disabledItems={uniqBy(
+                [...allAssociatedItems, ...itemsInList],
+                item => item && item.id,
+              )}
+            />
+          )}
+        </div>
+        {itemsInList && itemsInList.length > 0 ? (
+          AssociatorComponent ? (
+            <AssociatorComponent
+              editing={editing}
+              associatedItems={itemsInList}
+              removeItem={item => removeItem(item, type)}
+              onSelect={item => addItem(item, type)}
+              disabledItems={uniqBy(
+                [...allAssociatedItems, ...itemsInList],
+                item => item && item.id,
+              )}
+              type={type}
+              fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
+              onRemove={RESOURCE_MAP[type].deleteItem}
+              parentId={parentId}
+            />
+          ) : (
+            itemsInList.map(item => (
+              <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
+                {type === 'users' && !item.firstName
+                  ? get(item, 'name')
+                  : RESOURCE_MAP[type].getName(item)}
+                {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
+              </Label>
+            ))
+          )
+        ) : (
+          <div style={{ color: GREY, fontStyle: 'italic' }}>No data found</div>
         )}
       </div>
-      {itemsInList.length > 0 ? (
-        AssociatorComponent ? (
-          <AssociatorComponent
-            editing={editing}
-            associatedItems={itemsInList}
-            removeItem={item => removeItem(item, type)}
-            onSelect={item => addItem(item, type)}
-            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
-            type={type}
-            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
-            onRemove={RESOURCE_MAP[type].deleteItem}
-            parentId={parentId}
-          />
-        ) : (
-          itemsInList.map(item => (
-            <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-              {type === 'users' && !item.firstName
-                ? get(item, 'name')
-                : RESOURCE_MAP[type].getName(item)}
-              {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
-            </Label>
-          ))
-        )
-      ) : (
-        <div style={{ color: GREY, fontStyle: 'italic' }}>No data found</div>
-      )}
-    </div>
-  );
-};
-
-const Component: any = enhance(render);
-
-export class AssociatorFetchInitial extends React.Component<TProps, any> {
-  state = { items: null };
-  async componentDidMount() {
-    const items = this.props.fetchInitial ? (await this.props.fetchInitial()).resultSet : [];
-    this.setState({ items });
-  }
-  render() {
-    return this.state.items ? <Component {...this.props} initialItems={this.state.items} /> : null;
+    );
   }
 }
-export default Component;
+
+export default enhance(Associator);
