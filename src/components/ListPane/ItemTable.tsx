@@ -1,12 +1,13 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { debounce, find, isEmpty } from 'lodash';
+import { debounce, find, get, isEmpty } from 'lodash';
 import React from 'react';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
 import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompose';
 import { Button } from 'semantic-ui-react';
 
+import { DARK_GREY, GREY, LIGHT_TEAL, TEAL, VERY_LIGHT_TEAL } from 'common/colors';
 import ActionButton from 'components/Associator/ActionButton';
 
 import 'react-table/react-table.css';
@@ -74,6 +75,7 @@ const ItemsWrapper = ({
   onSortChange,
   handleAction,
   parent,
+  selectedItemId,
   ...props
 }) => {
   const columns = resource.schema.map(schema => {
@@ -116,6 +118,8 @@ const ItemsWrapper = ({
               textAlign: 'right',
             },
           }),
+          ...(column.id === 'type' &&
+            get(rowInfo, 'original.type') === 'ADMIN' && { style: { color: TEAL } }),
         })}
         getTheadThProps={(state, rowInfo, column, instance) =>
           column.id === 'id'
@@ -130,6 +134,16 @@ const ItemsWrapper = ({
                 },
               }
         }
+        getTrGroupProps={(state, rowInfo, column, instance) => {
+          return {
+            ...(get(rowInfo, 'original.status') === 'DISABLED' && {
+              style: { color: DARK_GREY },
+            }),
+            ...(get(rowInfo, 'original.id') === selectedItemId && {
+              style: { backgroundColor: VERY_LIGHT_TEAL },
+            }),
+          };
+        }}
       />
     </div>
   );

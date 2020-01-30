@@ -10,6 +10,7 @@ const LIGHT_TEAL = '#e5f7f4';
 const DEFAULT_BLACK = '#262626';
 const LIGHT_RED = '#F1D8DB';
 const RED = '#DB2828';
+const VERY_LIGHT_TEAL = `rgb(36, 220, 190, 0.05)`;
 
 export {
   DARK_BLUE,
@@ -23,5 +24,6 @@ export {
   LIGHT_TEAL,
   RED,
   TEAL,
+  VERY_LIGHT_TEAL,
   WHITE,
 };
