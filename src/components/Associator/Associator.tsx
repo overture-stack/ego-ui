@@ -134,11 +134,17 @@ class Associator extends React.Component<TProps, any> {
       type,
       parentId,
     }: any = this.props;
-
     const AssociatorComponent =
-      type === 'permissions' || type === 'API Keys'
+      type === 'permissions'
+        ? RESOURCE_MAP[type].AssociatorComponent[resource.name.plural]
+        : type === 'API Keys'
         ? RESOURCE_MAP[type].AssociatorComponent
         : resource.AssociatorComponent;
+
+    const includeAddButton =
+      type === 'permissions'
+        ? RESOURCE_MAP[type].addItem[resource.name.plural]
+        : RESOURCE_MAP[type].addItem;
 
     return (
       <div className={`Associator ${css(styles.container)}`}>
@@ -160,7 +166,7 @@ class Associator extends React.Component<TProps, any> {
           >
             {type === 'API Keys' ? 'API Keys' : capitalize(type)}
           </span>
-          {editing && RESOURCE_MAP[type].addItem && (
+          {editing && includeAddButton && (
             <ItemSelector
               fetchItems={args => fetchItems({ ...args, limit: 10 })}
               onSelect={item => addItem(item, type)}

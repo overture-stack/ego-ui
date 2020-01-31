@@ -74,6 +74,7 @@ const enhance = compose(
           });
         }
         const selectedItem = find(associated[type].add, assoc => assoc.id === permission.id);
+
         await stageChange({
           [type]: { add: { ...selectedItem, mask } },
         });

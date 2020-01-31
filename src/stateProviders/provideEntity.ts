@@ -4,6 +4,12 @@ import { findIndex, omit, uniq } from 'lodash';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const MAX_ASSOCIATED = 5;
+
+export const getListFunc = (associatedType, parent) =>
+  associatedType === 'permissions'
+    ? RESOURCE_MAP[associatedType].getList[parent.name.plural]
+    : RESOURCE_MAP[associatedType].getList;
+
 const provideEntity = provideState({
   initialState: () => ({
     entity: { item: null, staged: {}, associated: {}, valid: false, resource: null },
@@ -13,16 +19,17 @@ const provideEntity = provideState({
     getState: () => state => ({ ...state }),
     setItem: async (effects, id, resource) => {
       const isCreate = id === 'create';
+
       const [item, ...associated] =
         id && !isCreate
           ? await Promise.all([
               resource.getItem(id),
-              ...resource.associatedTypes.map(associatedType =>
-                RESOURCE_MAP[associatedType].getList({
+              ...resource.associatedTypes.map(associatedType => {
+                return getListFunc(associatedType, resource)({
                   [`${resource.name.singular}Id`]: id,
                   limit: MAX_ASSOCIATED,
-                }),
-              ),
+                });
+              }),
             ])
           : [null, ...resource.associatedTypes.map(() => ({}))];
 
@@ -58,7 +65,7 @@ const provideEntity = provideState({
           ...entity.staged,
           ...omit(change, entity.resource.associatedTypes),
         };
-
+        console.log('start: ', entity.associated);
         const stagedEntity = {
           ...state,
           entity: {
@@ -66,6 +73,7 @@ const provideEntity = provideState({
             staged,
             valid: entity.resource.schema.filter(f => f.required).every(f => staged[f.key]),
             associated: Object.keys(entity.associated).reduce((acc, currentType) => {
+              // console.log('ACC: ', acc);
               if (change[currentType]) {
                 return {
                   ...acc,
@@ -107,8 +115,20 @@ const provideEntity = provideState({
                           ),
                         };
                       } else {
-                        return {
+                        // const wat = uniq;
+                        // if (currentType === 'permissions') {
+                        // debugger;
+                        // }
+                        const foo = {
                           ...acc,
+                          [action]: uniq([
+                            ...(entity.associated[currentType][action] || []),
+                            change[currentType][action],
+                          ]),
+                        };
+                        // console.log('FOO: ', foo);
+                        // return foo;
+                        return {
                           [action]: uniq([
                             ...(entity.associated[currentType][action] || []),
                             change[currentType][action],
@@ -124,7 +144,15 @@ const provideEntity = provideState({
             }, {}),
           },
         };
+        console.log('staged entity: ', stagedEntity);
         // to disable Save when adding new permissions on policies tab
+        // if (
+        //   stagedEntity.entity.associated &&
+        //   stagedEntity.entity.associated.permissions.add.length > 0
+        // ) {
+        //   debugger;
+        // }
+        // console.log('STAGED: ', stagedEntity.entity.associated);
         return {
           ...stagedEntity,
           entity: {
@@ -134,6 +162,8 @@ const provideEntity = provideState({
               (entity.resource.name.singular === 'policy'
                 ? (stagedEntity.entity.associated.groups.add || []).every(a => a.mask) &&
                   (stagedEntity.entity.associated.users.add || []).every(a => a.mask)
+                : entity.resource.name.singular === 'groups'
+                ? (stagedEntity.entity.associated.permissions.add || []).every(a => a.mask)
                 : true),
           },
         };

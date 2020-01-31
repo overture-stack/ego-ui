@@ -38,6 +38,7 @@ function rowInput({
           selection
           style={{ minWidth: '9rem', fontSize: '12px' }}
           text={data[row.key]}
+          placeholder={`Select ${(row.fieldName || '').toLowerCase()}`}
         />
       );
     default:

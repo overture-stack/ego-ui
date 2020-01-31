@@ -83,23 +83,24 @@ const render = ({
                 style={{ zIndex: 1 }}
                 vertical
               >
-                {items.filter(matchFor(inputValue, getName)).map((item, i) => {
-                  const isDisabled = disabledItems.map(getKey).includes(getKey(item));
-                  return (
-                    <Menu.Item
-                      key={getKey(item)}
-                      {...getItemProps({
-                        disabled: isDisabled,
-                        item,
-                      })}
-                      active={highlightedIndex === i}
-                      disabled={isDisabled}
-                    >
-                      {getName(item)}
-                    </Menu.Item>
-                  );
-                })}
-                {!items.length && <Menu.Item>No Results</Menu.Item>}
+                {items &&
+                  items.filter(matchFor(inputValue, getName)).map((item, i) => {
+                    const isDisabled = disabledItems.map(getKey).includes(getKey(item));
+                    return (
+                      <Menu.Item
+                        key={getKey(item)}
+                        {...getItemProps({
+                          disabled: isDisabled,
+                          item,
+                        })}
+                        active={highlightedIndex === i}
+                        disabled={isDisabled}
+                      >
+                        {getName(item)}
+                      </Menu.Item>
+                    );
+                  })}
+                {items && !items.length && <Menu.Item>No Results</Menu.Item>}
               </Menu>
             </div>
           ) : (

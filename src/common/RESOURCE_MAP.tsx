@@ -20,6 +20,7 @@ import {
   getApp,
   getApps,
   getGroup,
+  getGroupPermissions,
   getGroups,
   getPolicies,
   getPolicy,
@@ -187,10 +188,15 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   groups: {
     add: {
       applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
+      permissions: ({ permission, item }) =>
+        addGroupPermissionToPolicy({
+          group: { ...item, mask: permission.mask },
+          policy: permission,
+        }),
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
     },
     addItem: true,
-    associatedTypes: ['users', 'applications'],
+    associatedTypes: ['users', 'applications', 'permissions'],
     AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
@@ -227,6 +233,8 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     remove: {
       applications: ({ application, item }) =>
         removeApplicationFromGroup({ group: item, application }),
+      permissions: ({ permission, item }) =>
+        removeGroupPermissionFromPolicy({ group: item, policy: permission }),
       users: ({ user, item }) => removeGroupFromUser({ group: item, user }),
     },
     rowHeight: 44,
@@ -441,9 +449,15 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     ],
   },
   permissions: {
-    addItem: false,
+    addItem: {
+      groups: true,
+      users: false,
+    },
     associatedTypes: [],
-    AssociatorComponent: UserPermissionsTable,
+    AssociatorComponent: {
+      groups: PermissionsTable,
+      users: UserPermissionsTable,
+    },
     childSchema: [],
     emptyMessage: '',
     initialSortField(isChildOfPolicy: boolean) {
@@ -453,7 +467,10 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getKey: item => item.id.toString(),
-    getList: getUserAndUserGroupPermissions,
+    getList: {
+      groups: getGroupPermissions,
+      users: getUserAndUserGroupPermissions,
+    },
     getListAll: getPolicies,
     getName: item => get(item, 'name'),
     Icon: () => null,

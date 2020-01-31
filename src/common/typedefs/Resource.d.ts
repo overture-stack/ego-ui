@@ -108,11 +108,17 @@ interface IAddToUser {
 interface IAddToGroup {
   applications: (application: Application, item: ICreateApplication) => Promise<any>;
   users: (user: User, item: ICreateUser) => Promise<any>;
+  permissions: (permission: Permission, item: ICreateGroup) => Promise<any>;
 }
 
 interface IAddToApplication {
   groups: (group: Group, item: ICreateGroup) => Promise<any>;
   users: (user: User, item: ICreateUser) => Promise<any>;
+}
+
+interface IPermissionsGetList {
+  groups: (params: IListParams) => Promise<IListResponse>;
+  users: (params: IListParams) => Promise<IListResponse>;
 }
 
 export interface IResource {
@@ -123,7 +129,8 @@ export interface IResource {
   noDelete?: true;
   name: { singular: string; plural: TResourceType };
   ListItem: JSX.Element<any>;
-  getList: (params: IListParams) => Promise<IListResponse>;
+  // getList: (params: IListParams) => Promise<IListResponse> | IPermissionsGetList;
+  getList: any;
   getListAll: (params: IListParams) => Promise<IListResponse>;
   getItem?: TGetItem;
   updateItem?: (
@@ -138,7 +145,7 @@ export interface IResource {
   associatedTypes: Types[];
   initialSortField: (any) => string;
   childSchema?: Schema;
-  addItem: boolean;
+  addItem: boolean | { groups: boolean; users: boolean };
   add?: IAddToUser | IAddToGroup | IAddToApplication | any;
   remove?: any;
   getKey: Function;
@@ -147,5 +154,6 @@ export interface IResource {
   // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   sortableFields: Schema;
   isParent: boolean;
-  AssociatorComponent?: JSX.Element<{ associatedItems: any[] }> | null;
+  AssociatorComponent: any;
+  // AssociatorComponent?: JSX.Element<{ associatedItems: any[] }> | null;
 }
