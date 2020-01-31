@@ -1,5 +1,5 @@
 import { provideState } from 'freactal';
-import { omit, uniq } from 'lodash';
+import { findIndex, omit, uniq } from 'lodash';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
@@ -58,7 +58,8 @@ const provideEntity = provideState({
           ...entity.staged,
           ...omit(change, entity.resource.associatedTypes),
         };
-        return {
+
+        const stagedEntity = {
           ...state,
           entity: {
             ...entity,
@@ -72,7 +73,23 @@ const provideEntity = provideState({
                     ...entity.associated[currentType],
                     ...Object.keys(change[currentType]).reduce((actions, action) => {
                       const otherAction = action === 'add' ? 'remove' : 'add';
-                      if (
+                      const indexToChange = findIndex(
+                        entity.associated[currentType][action],
+                        e => e.id && e.id === change[currentType][action].id,
+                      );
+                      if (indexToChange > -1) {
+                        return {
+                          ...acc,
+                          [action]: [
+                            ...entity.associated[currentType][action].slice(0, indexToChange),
+                            change[currentType][action],
+                            ...entity.associated[currentType][action].slice(
+                              indexToChange + 1,
+                              Infinity,
+                            ),
+                          ],
+                        };
+                      } else if (
                         (entity.associated[currentType][otherAction] || []).includes(
                           change[currentType][action],
                         )
@@ -99,6 +116,19 @@ const provideEntity = provideState({
                 return { ...acc, [currentType]: entity.associated[currentType] };
               }
             }, {}),
+          },
+        };
+        // to disable Save when adding new permissions on policies tab
+        return {
+          ...stagedEntity,
+          entity: {
+            ...stagedEntity.entity,
+            valid:
+              stagedEntity.entity.valid &&
+              (entity.resource.name.singular === 'policy'
+                ? (stagedEntity.entity.associated.groups.add || []).every(a => a.mask) &&
+                  (stagedEntity.entity.associated.users.add || []).every(a => a.mask)
+                : true),
           },
         };
       };

@@ -1,10 +1,11 @@
-import { TEAL } from 'common/colors';
-import Ripple from 'components/Ripple';
-import UserDisplayName from 'components/UserDisplayName';
 import { css } from 'glamor';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import Truncate from 'react-truncate';
 
+import { TEAL } from 'common/colors';
+import Ripple from 'components/Ripple';
+import UserDisplayName, { ChildUserDisplayName } from 'components/UserDisplayName';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
 const styles = {
@@ -16,6 +17,7 @@ const styles = {
   },
   primaryField: {
     fontSize: 18,
+    fontWeight: 200,
     lineHeight: 'normal',
     maxWidth: '100%',
     whiteSpace: 'nowrap',
@@ -69,8 +71,9 @@ export const ApplicationListItem = ({ item, sortField, className = '', style, ..
   );
 };
 
-export const UserListItem = ({ item, sortField, className = '', style, ...props }) => {
-  const { firstName, lastName, type } = item;
+export const UserListItem = ({ item, sortField, className = '', style, parent, ...props }) => {
+  const { firstName, lastName, name, type } = item;
+
   const secondaryField = sortField === 'lastName' ? 'email' : sortField;
   return (
     <Ripple
@@ -78,8 +81,30 @@ export const UserListItem = ({ item, sortField, className = '', style, ...props 
       style={{ ...styles.container, ...style }}
       {...props}
     >
-      <UserDisplayName firstName={firstName} lastName={lastName} type={type} />
+      {isEmpty(parent) ? (
+        <UserDisplayName firstName={firstName} lastName={lastName} type={type} />
+      ) : (
+        <ChildUserDisplayName name={name} type={type} />
+      )}
       <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
+    </Ripple>
+  );
+};
+
+export const PolicyListItem = ({ item, sortField, className = '', style, ...props }) => {
+  const { id, name } = item;
+  const secondaryField = sortField === 'name' ? 'id' : sortField;
+
+  return (
+    <Ripple
+      className={`PolicyListItem ${className}`}
+      style={{ ...styles.container, ...style }}
+      {...props}
+    >
+      <div className={`primary-field ${css(styles.primaryField)}`}>{name}</div>
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>
+        <Truncate lines={1}>{item[secondaryField]}</Truncate>
+      </div>
     </Ripple>
   );
 };

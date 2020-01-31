@@ -65,7 +65,9 @@ const enhance = compose(
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
   withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('currentSort', 'setCurrentSort', props => ({
-    field: props.resource.initialSortField,
+    field: props.resource.initialSortField(
+      props.parent && props.parent.resource.name.singular === 'policy',
+    ),
     order: props.resource.initialSortOrder,
   })),
   withProps(({ columnWidth, resource, styles: stylesProp }) => ({
@@ -156,7 +158,7 @@ class List extends React.Component<IListProps, any> {
 
     const displayMode: any =
       typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Grid;
-
+    const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
     return (
       <div className={`List ${css(styles.container)}`}>
         <ControlContainer>
@@ -169,7 +171,7 @@ class List extends React.Component<IListProps, any> {
               selection
               style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
               selectOnNavigation={false}
-              options={resource.sortableFields.map(field => ({
+              options={resource.sortableFields(isChildOfPolicy).map(field => ({
                 text: field.fieldName,
                 value: field.key,
               }))}
@@ -177,7 +179,9 @@ class List extends React.Component<IListProps, any> {
               onChange={(event, { value }) =>
                 setCurrentSort({
                   ...currentSort,
-                  field: resource.sortableFields.find(field => field.key === value),
+                  field: resource
+                    .sortableFields(isChildOfPolicy)
+                    .find(field => field.key === value),
                 })
               }
             />
@@ -245,6 +249,7 @@ class List extends React.Component<IListProps, any> {
                 refreshList();
               })
             }
+            parent={parent}
           />
         ) : (
           <ItemTable
@@ -259,7 +264,9 @@ class List extends React.Component<IListProps, any> {
               setCurrentSort({
                 ...currentSort,
                 order: newSortOrder,
-                field: resource.sortableFields.find(field => field.key === newSortField),
+                field: resource
+                  .sortableFields(isChildOfPolicy)
+                  .find(field => field.key === newSortField),
               });
             }}
             onRemove={

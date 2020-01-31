@@ -2,6 +2,8 @@ import { TEAL } from 'common/colors';
 import { css } from 'glamor';
 import React from 'react';
 
+import Truncate from 'react-truncate';
+
 const styles = {
   container: {
     width: '160px',
@@ -45,6 +47,15 @@ const FormatName = ({ firstName = '', lastName = '' }) => (
     <span className={`punctuation`}>.</span>
   </span>
 );
+
+export const ChildUserDisplayName = ({ name, type }) => {
+  return (
+    <div className={`DisplayName ${css(styles.container)}`}>
+      <Truncate className={`formatted-name, ${css(styles.formattedName)}`}>{name}</Truncate>
+      {type === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
+    </div>
+  );
+};
 
 export default ({ firstName, lastName, type, style }: any) => (
   <div className={`DisplayName ${css(styles.container, style)}`}>

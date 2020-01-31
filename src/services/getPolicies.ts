@@ -26,5 +26,6 @@ export const getPolicies = ({
         ),
       )}`,
     )
-    .then(r => r.data);
+    .then(r => r.data)
+    .catch(err => err);
 };
