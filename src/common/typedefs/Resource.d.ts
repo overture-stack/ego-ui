@@ -21,7 +21,13 @@ export interface IField {
 
 export type ISchema = IField[];
 
-export type TResourceType = 'groups' | 'applications' | 'users' | 'API Keys' | 'permissions';
+export type TResourceType =
+  | 'groups'
+  | 'applications'
+  | 'users'
+  | 'API Keys'
+  | 'permissions'
+  | 'policies';
 
 export type TSortDirection = 'DESC' | 'ASC';
 
@@ -111,7 +117,7 @@ interface IAddToApplication {
 
 export interface IResource {
   Icon: any;
-  getName?: (params: User) => string;
+  getName: (params: User | Policy | Group | Application | Permission | ApiKey) => string;
   emptyMessage: string;
   schema: Schema;
   noDelete?: true;
@@ -130,6 +136,8 @@ export interface IResource {
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];
+  initialSortField: (any) => string;
+  childSchema?: Schema;
   addItem: boolean;
   add?: IAddToUser | IAddToGroup | IAddToApplication | any;
   remove?: any;
@@ -137,7 +145,6 @@ export interface IResource {
   mapTableData: Function;
   // add: { [key in TResourceType]?: (params: any) => Promise<any> };
   // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
-  initialSortField: string;
   sortableFields: Schema;
   isParent: boolean;
   AssociatorComponent?: JSX.Element<{ associatedItems: any[] }> | null;

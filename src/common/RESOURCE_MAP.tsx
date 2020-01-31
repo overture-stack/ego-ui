@@ -1,15 +1,20 @@
+import { get } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 
 import {
   addApplicationToGroup,
   addApplicationToUser,
+  addGroupPermissionToPolicy,
   addGroupToUser,
+  addUserPermissionToPolicy,
   createApplication,
   createGroup,
+  createPolicy,
   createUser,
   deleteApplication,
   deleteGroup,
+  deletePolicy,
   deleteUser,
   getApiKeys,
   getApp,
@@ -17,15 +22,19 @@ import {
   getGroup,
   getGroups,
   getPolicies,
+  getPolicy,
   getUser,
   getUserAndUserGroupPermissions,
   getUsers,
   removeApplicationFromGroup,
   removeApplicationFromUser,
   removeGroupFromUser,
+  removeGroupPermissionFromPolicy,
+  removeUserPermissionFromPolicy,
   revokeApiKey,
   updateApplication,
   updateGroup,
+  updatePolicy,
   updateUser,
 } from 'services';
 
@@ -35,11 +44,13 @@ import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 import ApiKeysTable from 'components/Associator/ApiKeysTable';
 import UserPermissionsTable from 'components/Associator/UserPermissionsTable';
 
+import PermissionsTable from 'components/Associator/PermissionsTable';
 import {
   ApiKeyListItem,
   ApplicationListItem,
   GroupListItem,
   PermissionListItem,
+  PolicyListItem,
   UserListItem,
 } from 'components/ListItem';
 
@@ -56,14 +67,20 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     addItem: true,
     associatedTypes: ['groups', 'applications', 'permissions', 'API Keys'],
     AssociatorComponent: null,
+    childSchema: [
+      { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'mask', fieldName: 'Access Level', sortable: true },
+      { key: 'action', fieldName: 'Action', sortable: false },
+    ],
     createItem: createUser,
     deleteItem: deleteUser,
     emptyMessage: 'Please select a user',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getUser,
     getKey: item => item.id.toString(),
@@ -74,7 +91,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: UserListItem,
-    mapTableData: results => results,
+    mapTableData(results) {
+      return results.map(result => ({
+        ...result,
+        action: 'remove',
+        actionText: 'REMOVE',
+      }));
+    },
     name: { singular: 'user', plural: 'users' },
     noDelete: true,
     remove: {
@@ -83,6 +106,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => removeGroupFromUser({ user: item, group }),
     },
     rowHeight: 50,
+    // TODO: need a specific schema for policies/users
     schema: [
       { fieldName: 'ID', immutable: true, key: 'id', panelSection: 'id', sortable: true },
       {
@@ -149,24 +173,37 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     addItem: true,
     associatedTypes: ['users', 'applications'],
     AssociatorComponent: null,
+    childSchema: [
+      { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'mask', fieldName: 'Access Level', sortable: true },
+      { fieldName: 'Action', key: 'action', sortable: false },
+    ],
     createItem: createGroup,
     deleteItem: deleteGroup,
     emptyMessage: 'Please select a group',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getGroup,
     getKey: item => item.id.toString(),
     getList: getGroups,
     getListAll: getGroups,
+    getName: item => get(item, 'name'),
     Icon: ({ style }) => <Icon name="group" style={style} />,
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: GroupListItem,
-    mapTableData: results => results,
+    mapTableData(results) {
+      return results.map(result => ({
+        ...result,
+        action: 'remove',
+        actionText: 'REMOVE',
+      }));
+    },
     name: { singular: 'group', plural: 'groups' },
     remove: {
       applications: ({ application, item }) =>
@@ -204,19 +241,21 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     addItem: true,
     associatedTypes: ['groups', 'users'],
     AssociatorComponent: null,
+    childSchema: [],
     createItem: createApplication,
     deleteItem: deleteApplication,
     emptyMessage: 'Please select an application',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getItem: getApp,
     getKey: item => item.id.toString(),
     getList: getApps,
     getListAll: getApps,
+    getName: item => get(item, 'name'),
     Icon: ({ style }) => (
       <i
         className="icon"
@@ -275,17 +314,19 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     addItem: false,
     associatedTypes: [],
     AssociatorComponent: ApiKeysTable,
+    childSchema: [],
     deleteItem: item => revokeApiKey(item),
     emptyMessage: '',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getKey: item => item.name,
     getList: getApiKeys,
     getListAll: getApiKeys,
+    getName: item => get(item, 'name'),
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
@@ -346,16 +387,18 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     addItem: false,
     associatedTypes: [],
     AssociatorComponent: UserPermissionsTable,
+    childSchema: [],
     emptyMessage: '',
-    get initialSortField() {
-      return this.schema.find(field => field.initialSort);
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
     },
-    get sortableFields() {
-      return this.schema.filter(field => field.sortable);
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getKey: item => item.id.toString(),
     getList: getUserAndUserGroupPermissions,
     getListAll: getPolicies,
+    getName: item => get(item, 'name'),
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
@@ -392,6 +435,68 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         sortable: true,
       },
     ],
+  },
+  policies: {
+    add: {
+      groups: ({ group, item }) => addGroupPermissionToPolicy({ policy: item, group }),
+      users: ({ user, item }) => addUserPermissionToPolicy({ policy: item, user }),
+    },
+    addItem: false,
+    associatedTypes: ['groups', 'users'],
+    AssociatorComponent: PermissionsTable,
+    childSchema: [
+      { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'mask', fieldName: 'Access Level', sortable: true },
+      { fieldName: 'Action', key: 'action', sortable: false },
+    ],
+    createItem: createPolicy,
+    deleteItem: deletePolicy,
+    emptyMessage: 'Please select a policy',
+    getKey: item => item.id.toString(),
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
+    },
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
+    },
+    getItem: getPolicy,
+    getList: getPolicies,
+    getListAll: getPolicies,
+    getName: item => get(item, 'name'),
+    Icon: ({ style }) => (
+      <i
+        className="icon"
+        style={{
+          background: `url("${require('assets/icons/group-3.svg')}") no-repeat`,
+          height: '1.2em',
+          marginTop: '0.3em',
+          ...style,
+        }}
+      />
+    ),
+    initialSortOrder: 'ASC',
+    isParent: true,
+    ListItem: PolicyListItem,
+    mapTableData: results => results,
+    name: { singular: 'policy', plural: 'policies' },
+    remove: {
+      groups: ({ group, item }) => removeGroupPermissionFromPolicy({ policy: item, group }),
+      users: ({ user, item }) => removeUserPermissionFromPolicy({ policy: item, user }),
+    },
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: 'ID',
+        immutable: true,
+        initialSort: true,
+        key: 'id',
+        panelSection: 'id',
+        sortable: true,
+      },
+      { fieldName: 'Name', key: 'name', panelSection: 'id', required: true, sortable: true },
+    ],
+    updateItem: updatePolicy,
   },
 };
 

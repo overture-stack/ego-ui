@@ -10,5 +10,9 @@ export * from './getApps';
 export * from './getApp';
 export * from './updateApplication';
 export * from './createApplication';
-export * from './getApiKeys';
+export * from './getPolicy';
 export * from './getPolicies';
+export * from './createPolicy';
+export * from './updatePolicy';
+export * from './getApiKeys';
+

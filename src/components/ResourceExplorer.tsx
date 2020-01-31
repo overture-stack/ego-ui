@@ -60,6 +60,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       onAdd={item => stageChange({ [associatedType]: { add: item } })}
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
                       type={associatedType}
+                      resource={resource}
                       stageChange={stageChange}
                       parentId={id}
                     />
@@ -67,11 +68,13 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       associated[associatedType].count >
                         get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
+                          // TODO: this link can be incorrect if scroll is positioned directly ovet sidenav
+                          // clicking link will take you to one of the entities in sidenav
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
                           style={{
                             color: MEDIUM_BLUE,
-                            fontSize: 12,
                             display: 'inline-block',
+                            fontSize: 12,
                             paddingTop: 10,
                           }}
                         >

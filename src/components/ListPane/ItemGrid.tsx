@@ -32,6 +32,7 @@ function ItemsWrapper({
   columnWidth,
   rowHeight,
   effects: { updateList },
+  parent,
 }: any) {
   useEffect(() => {
     if (size.width === 0) {
@@ -63,6 +64,7 @@ function ItemsWrapper({
             }}
             onClick={() => onSelect(item)}
             selected={selectedItemId && getKey(item) === selectedItemId}
+            parent={parent}
           />
           {onRemove && (
             <Button

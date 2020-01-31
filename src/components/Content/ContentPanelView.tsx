@@ -100,7 +100,7 @@ const ContentView = ({
         </Grid>
       </div>
 
-      {panelSections['meta'].length > 0 && (
+      {panelSections['meta'] && panelSections['meta'].length > 0 && (
         <div className={`contentPanel meta ${css(styles.section)}`}>
           <Grid columns="equal">
             {entityType === 'user' ? (
