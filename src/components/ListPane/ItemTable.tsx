@@ -123,9 +123,11 @@ const ItemsWrapper = ({
             ...(get(rowInfo, 'original.status') === 'DISABLED' && {
               style: { color: DARK_GREY },
             }),
-            ...(get(rowInfo, 'original.id') === selectedItemId && {
-              style: { backgroundColor: VERY_LIGHT_TEAL },
-            }),
+            ...(isEmpty(parent) &&
+              rowInfo &&
+              get(rowInfo, 'original.id') === selectedItemId && {
+                style: { backgroundColor: VERY_LIGHT_TEAL },
+              }),
           };
         }}
         getTheadThProps={(state, rowInfo, column, instance) => ({
