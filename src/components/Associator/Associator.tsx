@@ -1,7 +1,7 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
 import { capitalize, get, isUndefined, noop, uniqBy, without } from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { compose, defaultProps, lifecycle, withHandlers, withStateHandlers } from 'recompose';
 import { Button, Grid, Icon, Label } from 'semantic-ui-react';
 
@@ -106,103 +106,95 @@ const enhance = compose(
   }),
 );
 
-class Associator extends React.Component<TProps, any> {
-  async onMessage(props) {
-    await props.effects.setItem(props.parentId, props.resource);
-    const data = await fetchAllAssociatedItems(props);
-    await props.setItemsInList(data);
-  }
+const Associator = ({
+  addItem,
+  allAssociatedItems,
+  itemsInList,
+  removeItem,
+  getKey,
+  fetchItems,
+  editing,
+  resource,
+  type,
+  parentId,
+  setItemsInList,
+  effects,
+  ...props
+}: any) => {
+  useEffect((): any => {
+    const onMessage = async (e: any) => {
+      if (e.type === 'PANEL_LIST_UPDATE') {
+        await effects.setItem(parentId, resource);
+        const data = await fetchAllAssociatedItems(props);
+        await setItemsInList(data);
+      }
+    };
 
-  componentDidMount() {
-    messenger.subscribe(() => this.onMessage(this.props));
-  }
+    messenger.subscribe(onMessage);
+    return () => messenger.unsubscribe(onMessage);
+  }, []);
 
-  componentWillUnmount() {
-    messenger.unsubscribe(this.onMessage);
-  }
+  const AssociatorComponent =
+    type === 'permissions' || type === 'API Keys'
+      ? RESOURCE_MAP[type].AssociatorComponent
+      : resource.AssociatorComponent;
 
-  render() {
-    const {
-      addItem,
-      allAssociatedItems,
-      itemsInList,
-      removeItem,
-      getKey,
-      fetchItems,
-      editing,
-      resource,
-      type,
-      parentId,
-    }: any = this.props;
-
-    const AssociatorComponent =
-      type === 'permissions' || type === 'API Keys'
-        ? RESOURCE_MAP[type].AssociatorComponent
-        : resource.AssociatorComponent;
-
-    return (
-      <div className={`Associator ${css(styles.container)}`}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingBottom: '0.5rem',
-            width: '100%',
-          }}
+  return (
+    <div className={`Associator ${css(styles.container)}`}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingBottom: '0.5rem',
+          width: '100%',
+        }}
+      >
+        <span
+          className={`${css(
+            contentStyles.fieldName,
+            contentStyles.fieldNamePadding,
+            styles.fieldName,
+          )}`}
         >
-          <span
-            className={`${css(
-              contentStyles.fieldName,
-              contentStyles.fieldNamePadding,
-              styles.fieldName,
-            )}`}
-          >
-            {type === 'API Keys' ? 'API Keys' : capitalize(type)}
-          </span>
-          {editing && RESOURCE_MAP[type].addItem && (
-            <ItemSelector
-              fetchItems={args => fetchItems({ ...args, limit: 10 })}
-              onSelect={item => addItem(item, type)}
-              disabledItems={uniqBy(
-                [...allAssociatedItems, ...itemsInList],
-                item => item && item.id,
-              )}
-            />
-          )}
-        </div>
-        {itemsInList && itemsInList.length > 0 ? (
-          AssociatorComponent ? (
-            <AssociatorComponent
-              editing={editing}
-              associatedItems={itemsInList}
-              removeItem={item => removeItem(item, type)}
-              onSelect={item => addItem(item, type)}
-              disabledItems={uniqBy(
-                [...allAssociatedItems, ...itemsInList],
-                item => item && item.id,
-              )}
-              type={type}
-              fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
-              onRemove={RESOURCE_MAP[type].deleteItem}
-              parentId={parentId}
-            />
-          ) : (
-            itemsInList.map(item => (
-              <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-                {type === 'users' && !item.firstName
-                  ? get(item, 'name')
-                  : RESOURCE_MAP[type].getName(item)}
-                {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
-              </Label>
-            ))
-          )
-        ) : (
-          <div style={{ color: GREY, fontStyle: 'italic' }}>No data found</div>
+          {type === 'API Keys' ? 'API Keys' : capitalize(type)}
+        </span>
+        {editing && RESOURCE_MAP[type].addItem && (
+          <ItemSelector
+            fetchItems={args => fetchItems({ ...args, limit: 10 })}
+            onSelect={item => addItem(item, type)}
+            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
+          />
         )}
       </div>
-    );
-  }
-}
+      {itemsInList && itemsInList.length > 0 ? (
+        AssociatorComponent ? (
+          <AssociatorComponent
+            editing={editing}
+            associatedItems={itemsInList}
+            removeItem={item => removeItem(item, type)}
+            onSelect={item => addItem(item, type)}
+            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
+            type={type}
+            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
+            onRemove={RESOURCE_MAP[type].deleteItem}
+            parentId={parentId}
+          />
+        ) : (
+          itemsInList.map(item => (
+            <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
+              {type === 'users' && !item.firstName
+                ? get(item, 'name')
+                : RESOURCE_MAP[type].getName(item)}
+              {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
+            </Label>
+          ))
+        )
+      ) : (
+        <div style={{ color: GREY, fontStyle: 'italic' }}>No data found</div>
+      )}
+    </div>
+  );
+};
 
 export default enhance(Associator);

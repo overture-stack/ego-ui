@@ -51,7 +51,16 @@ const enhance = compose(
           [resource.name.singular]: item,
         });
       }
-      messenger.publish('list updated!');
+
+      messenger.publish({
+        payload: {
+          item,
+          parentType: parent.resource.name.singular,
+          resourceType: resource.name.singular,
+        },
+        type: 'PANEL_LIST_UPDATE',
+      });
+
       updateList({ item });
     },
   }),
