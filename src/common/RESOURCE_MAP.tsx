@@ -72,7 +72,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
       { key: 'name', fieldName: 'Name', sortable: true },
       { key: 'mask', fieldName: 'Access Level', sortable: true },
-      { fieldName: 'Action', key: 'action', sortable: false },
+      { key: 'action', fieldName: 'Action', sortable: false },
     ],
     createItem: createUser,
     deleteItem: deleteUser,

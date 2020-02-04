@@ -23,7 +23,7 @@ interface IStyles {
 const labelColours = {
   ACTIVE: LIGHT_TEAL,
   EXPIRED: GREY,
-  REVOKED: LIGHT_RED,
+  REVOKED: GREY,
 };
 
 const titleStyle = css({
