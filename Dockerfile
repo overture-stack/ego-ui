@@ -14,10 +14,13 @@ FROM nginx:alpine
 COPY nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY --from=0 /usr/src/app/build /usr/share/nginx/html
 
-RUN adduser -S -u 9999 nginxuser \ 
-    && chown  nginxuser /etc/nginx/conf.d/default.conf \ 
-    && chown -R nginxuser /var/cache \ 
-    && chown -R nginxuser /run  
+ENV NGINX_USER=nginxuser
+ENV NGINX_USER_ID=9999
+
+RUN adduser -S -u $NGINX_USER_ID $NGINX_USER \ 
+    && chown -R $NGINX_USER /etc/nginx/conf.d \ 
+    && chown -R $NGINX_USER /var/cache \ 
+    && chown -R $NGINX_USER /run  
 
 # default client_id is set to ego
 ENV REACT_APP_EGO_CLIENT_ID=ego
