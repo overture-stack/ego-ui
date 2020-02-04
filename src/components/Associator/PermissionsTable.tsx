@@ -88,8 +88,6 @@ const PermissionsTable = ({
   items,
   handleAddNew,
   handleSelectMask,
-  newPermission,
-  setNewPermission,
   type,
   state: {
     entity: { associated },

@@ -481,9 +481,11 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     mapTableData(results) {
       return results.map(result => ({
         accessLevel: result.accessLevel,
-        id: result.id,
+        id: result.policy.id,
         ownerType: result.ownerType,
         policy: result.policy.name,
+        action: 'remove',
+        actionText: 'REMOVE',
       }));
     },
     rowHeight: 44,
@@ -507,6 +509,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         key: 'ownerType',
         required: true,
         sortable: true,
+      },
+      {
+        fieldName: 'Action',
+        key: 'action',
+        required: false,
+        sortable: false,
       },
     ],
   },

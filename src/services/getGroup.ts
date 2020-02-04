@@ -56,17 +56,6 @@ export const getGroupPermissions = ({
         ),
       )}`,
     )
-    .then(r => {
-      // TODO: do you want to/can you move this mapping to RESOURCE_MAP?
-      return {
-        ...r.data,
-        resultSet: r.data.resultSet.map(result => ({
-          id: result.policy.id,
-          name: result.policy.name,
-          mask: result.accessLevel,
-        })),
-      };
-      // return r.data;
-    })
+    .then(r => r.data)
     .catch(err => err);
 };

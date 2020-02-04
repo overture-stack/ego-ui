@@ -107,7 +107,7 @@ class List extends React.Component<IListProps, any> {
       effects: { updateList, setListResource },
     } = this.props;
 
-    await setListResource(resource);
+    await setListResource(resource, parent);
 
     updateList({
       offset,
@@ -157,7 +157,7 @@ class List extends React.Component<IListProps, any> {
     } = this.props;
 
     const displayMode: any =
-      typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Grid;
+      typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Table;
     const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
     return (
       <div className={`List ${css(styles.container)}`}>

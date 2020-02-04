@@ -58,6 +58,12 @@ async function fetchAllAssociatedItems({
   return items.slice(0, 5);
 }
 
+const getParsedItem = item => ({
+  id: item.policy.id,
+  mask: item.accessLevel,
+  name: item.policy.name,
+});
+
 const enhance = compose(
   injectState,
   defaultProps({
@@ -66,10 +72,13 @@ const enhance = compose(
     onRemove: noop,
   }),
   withStateHandlers(
-    ({ initialItems }) => ({
-      allAssociatedItems: [],
-      itemsInList: initialItems || [],
-    }),
+    ({ initialItems, resource, type }) => {
+      const parsedItems =
+        resource.name.singular === 'group' && type === 'permissions'
+          ? initialItems.map(item => getParsedItem(item))
+          : initialItems;
+      return { allAssociatedItems: [], itemsInList: parsedItems || [] };
+    },
     {
       addItem: ({ itemsInList }, { onAdd }) => item => {
         onAdd(item);
@@ -85,8 +94,11 @@ const enhance = compose(
         };
       },
       setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
-      setItemsInList: () => items => ({
-        itemsInList: items,
+      setItemsInList: ({ itemsInList }, { resource, type }) => items => ({
+        itemsInList:
+          resource.name.singular === 'group' && type === 'permissions'
+            ? items.map(i => getParsedItem(i))
+            : items,
       }),
     },
   ),
@@ -192,6 +204,7 @@ class Associator extends React.Component<TProps, any> {
               fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
               onRemove={RESOURCE_MAP[type].deleteItem}
               parentId={parentId}
+              resource={resource}
             />
           ) : (
             itemsInList.map(item => (

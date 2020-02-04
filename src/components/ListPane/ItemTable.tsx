@@ -1,6 +1,6 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { debounce, find, isEmpty } from 'lodash';
+import { debounce, find, isEmpty, reject } from 'lodash';
 import React from 'react';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
@@ -40,9 +40,6 @@ const enhance = compose(
       resource,
       effects: { updateList, saveChanges, stageChange },
     }) => async item => {
-      // going to need to differentiate between different entities' "remove" action
-      // apiKeys is just item.action(item)
-      // users and groups have different remove actions depending on the parent
       if (resource.name.singular === 'API Key') {
         await item.action(item);
       } else {
@@ -78,6 +75,35 @@ const styles = {
   },
 };
 
+const getColumns = (currentSort, resource, parent) => {
+  const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
+  let schema = isChildOfPolicy ? resource.childSchema : resource.schema;
+
+  if (parent && parent.resource.name.plural === 'groups') {
+    schema = reject(schema, c => c.key === 'ownerType');
+  }
+
+  if (
+    isEmpty(parent) ||
+    (parent && parent.resource.name.singular === 'user' && resource.name.singular === 'permission')
+  ) {
+    schema = reject(schema, c => c.key === 'action');
+  }
+
+  const columns = schema
+    .filter(c => !c.hideOnTable)
+    .map(schema => {
+      return {
+        accessor: schema.key,
+        Header: schema.fieldName,
+        sortable: schema.sortable || false,
+        sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
+      };
+    });
+
+  return columns;
+};
+
 const ItemsWrapper = ({
   resource,
   onSelect,
@@ -91,21 +117,6 @@ const ItemsWrapper = ({
   parent,
   ...props
 }) => {
-  const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
-  const columns = (parent && parent.resource.name.singular === 'policy'
-    ? resource.childSchema
-    : resource.schema
-  )
-    .filter(c => !c.hideOnTable)
-    .map(schema => {
-      return {
-        accessor: schema.key,
-        Header: schema.fieldName,
-        sortable: schema.sortable || false,
-        sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
-      };
-    });
-
   const data = isEmpty(parent)
     ? resultSet
     : resource.mapTableData(resultSet).map(d => {
@@ -122,7 +133,7 @@ const ItemsWrapper = ({
     <div className={`ItemTable ${css(styles.container, props.styles)}`}>
       <ReactTable
         className={`-striped -highlight ${css(styles.table)}`}
-        columns={isEmpty(parent) ? columns.filter(c => c.accessor !== 'action') : columns}
+        columns={getColumns(currentSort, resource, parent)}
         pageSize={limit}
         data={data}
         showPagination={false}
