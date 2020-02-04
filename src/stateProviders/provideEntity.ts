@@ -73,17 +73,11 @@ const provideEntity = provideState({
                     ...entity.associated[currentType],
                     ...Object.keys(change[currentType]).reduce((actions, action) => {
                       const otherAction = action === 'add' ? 'remove' : 'add';
-
-                      if (
-                        findIndex(
-                          entity.associated[currentType][action],
-                          e => e.id && e.id === change[currentType][action].id,
-                        ) > -1
-                      ) {
-                        const indexToChange = findIndex(
-                          entity.associated[currentType][action],
-                          e => e.id && e.id === change[currentType][action].id,
-                        );
+                      const indexToChange = findIndex(
+                        entity.associated[currentType][action],
+                        e => e.id && e.id === change[currentType][action].id,
+                      );
+                      if (indexToChange > -1) {
                         return {
                           ...acc,
                           [action]: [

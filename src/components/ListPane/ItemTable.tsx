@@ -1,6 +1,6 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { debounce, find, isEmpty } from 'lodash';
+import { debounce, find, get, isEmpty } from 'lodash';
 import React from 'react';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
@@ -8,6 +8,8 @@ import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompos
 import { Button } from 'semantic-ui-react';
 
 import { messenger } from 'common/injectGlobals';
+import { DARK_GREY, GREY, LIGHT_TEAL, TEAL, VERY_LIGHT_TEAL } from 'common/colors';
+
 import ActionButton from 'components/Associator/ActionButton';
 
 import 'react-table/react-table.css';
@@ -98,6 +100,7 @@ const ItemsWrapper = ({
   onSortChange,
   handleAction,
   parent,
+  selectedItemId,
   ...props
 }) => {
   const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
@@ -139,7 +142,21 @@ const ItemsWrapper = ({
         onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
         getTdProps={(state, rowInfo, column, instance) => ({
           onClick: () => rowInfo && onSelect(rowInfo.original),
+          ...(column.id === 'type' &&
+            get(rowInfo, 'original.type') === 'ADMIN' && { style: { color: TEAL } }),
         })}
+        getTrGroupProps={(state, rowInfo, column, instance) => {
+          return {
+            ...(get(rowInfo, 'original.status') === 'DISABLED' && {
+              style: { color: DARK_GREY },
+            }),
+            ...(isEmpty(parent) &&
+              rowInfo &&
+              get(rowInfo, 'original.id') === selectedItemId && {
+                style: { backgroundColor: VERY_LIGHT_TEAL },
+              }),
+          };
+        }}
         getTheadThProps={(state, rowInfo, column, instance) => ({
           style: {
             textAlign: 'left',
