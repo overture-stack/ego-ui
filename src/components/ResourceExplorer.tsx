@@ -69,7 +69,6 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       getName={RESOURCE_MAP[associatedType].getName}
                       initialItems={associated[associatedType].resultSet}
                       onAdd={item => {
-                        console.log('ON ADD: ', item);
                         stageChange({ [associatedType]: { add: item } });
                       }}
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}

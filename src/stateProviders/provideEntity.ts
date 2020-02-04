@@ -65,7 +65,7 @@ const provideEntity = provideState({
           ...entity.staged,
           ...omit(change, entity.resource.associatedTypes),
         };
-        console.log('start: ', entity.associated);
+
         const stagedEntity = {
           ...state,
           entity: {
@@ -73,7 +73,6 @@ const provideEntity = provideState({
             staged,
             valid: entity.resource.schema.filter(f => f.required).every(f => staged[f.key]),
             associated: Object.keys(entity.associated).reduce((acc, currentType) => {
-              // console.log('ACC: ', acc);
               if (change[currentType]) {
                 return {
                   ...acc,
@@ -93,7 +92,6 @@ const provideEntity = provideState({
                           e => e.id && e.id === change[currentType][action].id,
                         );
                         return {
-                          ...acc,
                           [action]: [
                             ...entity.associated[currentType][action].slice(0, indexToChange),
                             change[currentType][action],
@@ -115,19 +113,6 @@ const provideEntity = provideState({
                           ),
                         };
                       } else {
-                        // const wat = uniq;
-                        // if (currentType === 'permissions') {
-                        // debugger;
-                        // }
-                        const foo = {
-                          ...acc,
-                          [action]: uniq([
-                            ...(entity.associated[currentType][action] || []),
-                            change[currentType][action],
-                          ]),
-                        };
-                        // console.log('FOO: ', foo);
-                        // return foo;
                         return {
                           [action]: uniq([
                             ...(entity.associated[currentType][action] || []),
@@ -144,15 +129,7 @@ const provideEntity = provideState({
             }, {}),
           },
         };
-        console.log('staged entity: ', stagedEntity);
-        // to disable Save when adding new permissions on policies tab
-        // if (
-        //   stagedEntity.entity.associated &&
-        //   stagedEntity.entity.associated.permissions.add.length > 0
-        // ) {
-        //   debugger;
-        // }
-        // console.log('STAGED: ', stagedEntity.entity.associated);
+        // to disable Save when adding new permissions on policies/groups tab
         return {
           ...stagedEntity,
           entity: {
@@ -162,7 +139,7 @@ const provideEntity = provideState({
               (entity.resource.name.singular === 'policy'
                 ? (stagedEntity.entity.associated.groups.add || []).every(a => a.mask) &&
                   (stagedEntity.entity.associated.users.add || []).every(a => a.mask)
-                : entity.resource.name.singular === 'groups'
+                : entity.resource.name.plural === 'groups'
                 ? (stagedEntity.entity.associated.permissions.add || []).every(a => a.mask)
                 : true),
           },
