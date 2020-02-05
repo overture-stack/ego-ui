@@ -1,14 +1,15 @@
+import { injectState } from 'freactal';
 import { css } from 'glamor';
 import { capitalize, get, isUndefined, noop, uniqBy, without } from 'lodash';
-import React from 'react';
-import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
+import React, { useEffect } from 'react';
+import { compose, defaultProps, lifecycle, withHandlers, withStateHandlers } from 'recompose';
 import { Button, Grid, Icon, Label } from 'semantic-ui-react';
 
 import { DARK_BLUE, GREY } from 'common/colors';
+import { messenger } from 'common/injectGlobals';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import { styles as contentStyles } from 'components/Content/ContentPanelView';
-
 import { IResource } from 'common/typedefs/Resource';
+import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
 
 interface TProps {
@@ -54,9 +55,11 @@ async function fetchAllAssociatedItems({
   } while (items.length < count);
 
   setAllAssociatedItems(items);
+  return items.slice(0, 5);
 }
 
 const enhance = compose(
+  injectState,
   defaultProps({
     getKey: item => get(item, 'id'),
     onAdd: noop,
@@ -103,7 +106,7 @@ const enhance = compose(
   }),
 );
 
-const render = ({
+const Associator = ({
   addItem,
   allAssociatedItems,
   itemsInList,
@@ -114,12 +117,28 @@ const render = ({
   resource,
   type,
   parentId,
-}: TProps) => {
-  // TODO: nicer way to get this component?
+  setItemsInList,
+  effects,
+  ...props
+}: any) => {
+  useEffect((): any => {
+    const onMessage = async (e: any) => {
+      if (e.type === 'PANEL_LIST_UPDATE') {
+        await effects.setItem(parentId, resource);
+        const data = await fetchAllAssociatedItems(props);
+        await setItemsInList(data);
+      }
+    };
+
+    messenger.subscribe(onMessage);
+    return () => messenger.unsubscribe(onMessage);
+  }, []);
+
   const AssociatorComponent =
     type === 'permissions' || type === 'API Keys'
       ? RESOURCE_MAP[type].AssociatorComponent
       : resource.AssociatorComponent;
+
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <div
@@ -148,7 +167,7 @@ const render = ({
           />
         )}
       </div>
-      {itemsInList.length > 0 ? (
+      {itemsInList && itemsInList.length > 0 ? (
         AssociatorComponent ? (
           <AssociatorComponent
             editing={editing}
@@ -178,16 +197,4 @@ const render = ({
   );
 };
 
-const Component: any = enhance(render);
-
-export class AssociatorFetchInitial extends React.Component<TProps, any> {
-  state = { items: null };
-  async componentDidMount() {
-    const items = this.props.fetchInitial ? (await this.props.fetchInitial()).resultSet : [];
-    this.setState({ items });
-  }
-  render() {
-    return this.state.items ? <Component {...this.props} initialItems={this.state.items} /> : null;
-  }
-}
-export default Component;
+export default enhance(Associator);

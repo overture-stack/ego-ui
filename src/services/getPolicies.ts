@@ -1,6 +1,7 @@
-import { Policy } from 'common/typedefs/Policy';
 import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
+
+import { Policy } from 'common/typedefs/Policy';
 import ajax from 'services/ajax';
 
 export const getPolicies = ({

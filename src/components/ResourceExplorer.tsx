@@ -49,12 +49,16 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                     <Associator
                       editing={editing}
                       fetchItems={RESOURCE_MAP[associatedType].getList}
-                      fetchExistingAssociations={params =>
-                        RESOURCE_MAP[associatedType].getList({
+                      fetchExistingAssociations={params => {
+                        // prevent 400 error on /create
+                        if (id === 'create') {
+                          return () => null;
+                        }
+                        return RESOURCE_MAP[associatedType].getList({
                           ...params,
                           [`${resource.name.singular}Id`]: id,
-                        })
-                      }
+                        });
+                      }}
                       getName={RESOURCE_MAP[associatedType].getName}
                       initialItems={associated[associatedType].resultSet}
                       onAdd={item => stageChange({ [associatedType]: { add: item } })}

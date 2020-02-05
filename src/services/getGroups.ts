@@ -25,6 +25,11 @@ export const getGroups = ({
     ? `/policies/${policyId}`
     : '';
 
+  // prevent 400 error on /create
+  const activeId = userId || applicationId || policyId;
+  if (activeId === 'create') {
+    Promise.resolve(activeId);
+  }
   return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyGroups.length,
