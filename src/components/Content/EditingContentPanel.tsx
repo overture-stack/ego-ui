@@ -13,12 +13,12 @@ import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
 
 const getFieldContent = (row, data, immutableKeys, stageChange) =>
-  row.fieldContent || // fieldContent is for associatedTypes
+  row.fieldContent ||
   (immutableKeys.includes(row.key)
     ? DATE_KEYS.indexOf(row.key) >= 0
       ? format(data[row.key], DATE_FORMAT)
       : data[row.key] || ''
-    : rowInput({ row, data, stageChange })); // for all mutable fields
+    : rowInput({ row, data, stageChange }));
 
 function rowInput({
   data,
@@ -38,7 +38,7 @@ function rowInput({
           selection
           style={{ minWidth: '9rem', fontSize: '12px' }}
           text={data[row.key]}
-          placeholder={`Select ${(row.fieldName || '').toLowerCase()}`}
+          placeholder={data[row.key] ? undefined : `Select ${(row.fieldName || '').toLowerCase()}`}
         />
       );
     default:

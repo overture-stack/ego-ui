@@ -101,8 +101,8 @@ interface IAddToUser {
     application: Application,
     item: User,
   ) => (user: { item: User }, application: any) => Promise<User>;
-  // groups: (group: Group, item: User) => Promise<any>;
-  // permissions: (permission: UserPermission, item: User) => Promise<any>;
+  groups: (group: Group, item: User) => Promise<any>;
+  permissions: (permission: UserPermission, item: User) => Promise<any>;
 }
 
 interface IAddToGroup {
@@ -129,7 +129,7 @@ export interface IResource {
   noDelete?: true;
   name: { singular: string; plural: TResourceType };
   ListItem: JSX.Element<any>;
-  // getList: (params: IListParams) => Promise<IListResponse> | IPermissionsGetList;
+  // getList can now be a hashmap
   getList: any;
   getListAll: (params: IListParams) => Promise<IListResponse>;
   getItem?: TGetItem;
@@ -150,10 +150,8 @@ export interface IResource {
   remove?: any;
   getKey: Function;
   mapTableData: Function;
-  // add: { [key in TResourceType]?: (params: any) => Promise<any> };
   // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   sortableFields: Schema;
   isParent: boolean;
-  AssociatorComponent: any;
-  // AssociatorComponent?: JSX.Element<{ associatedItems: any[] }> | null;
+  AssociatorComponent?: JSX.Element<{ associatedItems: any[] }> | null;
 }

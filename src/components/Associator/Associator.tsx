@@ -151,26 +151,26 @@ const Associator = ({
   }, []);
 
   const AssociatorComponent =
-      type === 'permissions'
-        ? RESOURCE_MAP[type].AssociatorComponent[resource.name.plural]
-        : type === 'API Keys'
-        ? RESOURCE_MAP[type].AssociatorComponent
-        : resource.AssociatorComponent;
+    type === 'permissions'
+      ? RESOURCE_MAP[type].AssociatorComponent[resource.name.plural]
+      : type === 'API Keys'
+      ? RESOURCE_MAP[type].AssociatorComponent
+      : resource.AssociatorComponent;
 
   const includeAddButton =
-      type === 'permissions'
-        ? RESOURCE_MAP[type].addItem[resource.name.plural]
-        : RESOURCE_MAP[type].addItem;
+    type === 'permissions'
+      ? RESOURCE_MAP[type].addItem[resource.name.plural]
+      : RESOURCE_MAP[type].addItem;
 
-    const parsedAssocItems =
-      type === 'permissions' && isGroup(resource)
-        ? allAssociatedItems.map(assoc => ({
-            accessLevel: assoc.accessLevel,
-            id: assoc.policy.id,
-            name: assoc.policy.name,
-          }))
-        : allAssociatedItems;
-  
+  const parsedAssocItems =
+    type === 'permissions' && isGroup(resource)
+      ? allAssociatedItems.map(assoc => ({
+          accessLevel: assoc.accessLevel,
+          id: assoc.policy.id,
+          name: assoc.policy.name,
+        }))
+      : allAssociatedItems;
+
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <div
@@ -192,26 +192,26 @@ const Associator = ({
           {type === 'API Keys' ? 'API Keys' : capitalize(type)}
         </span>
         {editing && includeAddButton && (
-            <ItemSelector
-              fetchItems={args => fetchItems({ ...args, limit: 1000 })}
-              onSelect={item => addItem(item, type)}
-              disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
-            />
-          )}
+          <ItemSelector
+            fetchItems={args => fetchItems({ ...args, limit: 1000 })}
+            onSelect={item => addItem(item, type)}
+            disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
+          />
+        )}
       </div>
       {itemsInList && itemsInList.length > 0 ? (
         AssociatorComponent ? (
           <AssociatorComponent
-              editing={editing}
-              associatedItems={itemsInList}
-              removeItem={item => removeItem(item, type)}
-              onSelect={item => addItem(item, type)}
-              type={type}
-              fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
-              onRemove={RESOURCE_MAP[type].deleteItem}
-              parentId={parentId}
-              resource={resource}
-            />
+            editing={editing}
+            associatedItems={itemsInList}
+            removeItem={item => removeItem(item, type)}
+            onSelect={item => addItem(item, type)}
+            type={type}
+            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
+            onRemove={RESOURCE_MAP[type].deleteItem}
+            parentId={parentId}
+            resource={resource}
+          />
         ) : (
           itemsInList.map(item => (
             <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>

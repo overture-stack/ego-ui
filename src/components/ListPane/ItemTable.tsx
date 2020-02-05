@@ -8,8 +8,8 @@ import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompos
 import { Button } from 'semantic-ui-react';
 
 import { isChildOfPolicy, isGroup, isUserPermission } from 'common/associatedUtils';
-import { messenger } from 'common/injectGlobals';
 import { DARK_GREY, GREY, LIGHT_TEAL, TEAL, VERY_LIGHT_TEAL } from 'common/colors';
+import { messenger } from 'common/injectGlobals';
 
 import ActionButton from 'components/Associator/ActionButton';
 
