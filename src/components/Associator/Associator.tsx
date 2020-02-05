@@ -77,7 +77,7 @@ const enhance = compose(
     ({ initialItems, resource, type }) => {
       const parsedItems =
         isGroup(resource) && type === 'permissions'
-          ? initialItems.map(item => getParsedItem(item))
+          ? (initialItems || []).map(item => getParsedItem(item))
           : initialItems;
       return { allAssociatedItems: [], itemsInList: parsedItems || [] };
     },
@@ -98,7 +98,9 @@ const enhance = compose(
       setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
       setItemsInList: ({ itemsInList }, { resource, type }) => items => ({
         itemsInList:
-          isGroup(resource) && type === 'permissions' ? items.map(i => getParsedItem(i)) : items,
+          isGroup(resource) && type === 'permissions'
+            ? (items || []).map(i => getParsedItem(i))
+            : items,
       }),
     },
   ),
