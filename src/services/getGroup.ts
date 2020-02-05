@@ -1,6 +1,6 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Group } from 'common/typedefs/Group';
-import { find, isNil, omitBy } from 'lodash';
+import { find, isNil, omitBy, orderBy } from 'lodash';
 import queryString from 'querystring';
 
 import ajax from 'services/ajax';
@@ -56,6 +56,25 @@ export const getGroupPermissions = ({
         ),
       )}`,
     )
-    .then(r => r.data)
+    .then(r => {
+      // for client side pagination
+      const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
+      const order = sortOrder || 'desc';
+      const queryBy = new RegExp(query ? `(${query})` : '', 'i');
+
+      return {
+        count: r.data.count,
+        limit,
+        offset,
+        resultSet: orderBy(
+          r.data.resultSet.slice(offset, offset + limit),
+          [sortBy],
+          [order.toLowerCase()],
+        ).filter(
+          ({ accessLevel, ownerType, policy: { name } }) =>
+            queryBy.test(accessLevel) || queryBy.test(ownerType) || queryBy.test(name),
+        ),
+      };
+    })
     .catch(err => err);
 };

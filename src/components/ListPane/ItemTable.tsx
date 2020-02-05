@@ -7,6 +7,7 @@ import ReactTable from 'react-table';
 import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompose';
 import { Button } from 'semantic-ui-react';
 
+import { isChildOfPolicy, isGroup, isUserPermission } from 'common/associatedUtils';
 import { messenger } from 'common/injectGlobals';
 
 import { DARK_GREY, GREY, LIGHT_TEAL, TEAL, VERY_LIGHT_TEAL } from 'common/colors';
@@ -79,17 +80,13 @@ const styles = {
 };
 
 const getColumns = (currentSort, resource, parent) => {
-  const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
-  let schema = isChildOfPolicy ? resource.childSchema : resource.schema;
+  let schema = isChildOfPolicy(get(parent, 'resource')) ? resource.childSchema : resource.schema;
 
-  if (parent && parent.resource.name.plural === 'groups') {
+  if (parent && isGroup(parent.resource)) {
     schema = reject(schema, c => c.key === 'ownerType');
   }
 
-  if (
-    isEmpty(parent) ||
-    (parent && parent.resource.name.singular === 'user' && resource.name.singular === 'permission')
-  ) {
+  if (isEmpty(parent) || isUserPermission(parent.resource, resource)) {
     schema = reject(schema, c => c.key === 'action');
   }
 

@@ -55,27 +55,6 @@ export const getGroups = ({
             ),
           )}`,
         )
-        .then(r => {
-          // TODO: use if cannot implement proper sort/search/pagination on backend for policies
-          // if (policyId) {
-          //   const sortBy = sortField;
-          //   const order = sortOrder || 'desc';
-          //   const queryBy = new RegExp(query ? `(${query})` : '', 'i');
-          //   return {
-          //     count: r.data.count,
-          //     limit,
-          //     offset,
-          //     resultSet: orderBy(
-          //       r.data.resultSet.slice(offset, offset + limit),
-          //       [sortBy],
-          //       [order.toLowerCase()],
-          //     ).filter(
-          //       ({ mask, id, name }) =>
-          //         queryBy.test(name) || queryBy.test(mask) || queryBy.test(id),
-          //     ),
-          //   };
-          // }
-          return r.data;
-        })
+        .then(r => r.data)
         .catch(err => err);
 };

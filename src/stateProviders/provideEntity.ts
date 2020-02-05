@@ -1,6 +1,7 @@
 import { provideState } from 'freactal';
 import { findIndex, isEmpty, omit, uniq } from 'lodash';
 
+import { isGroup, isPolicy } from 'common/associatedUtils';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const MAX_ASSOCIATED = 5;
@@ -130,10 +131,10 @@ const provideEntity = provideState({
             ...stagedEntity.entity,
             valid:
               stagedEntity.entity.valid &&
-              (entity.resource.name.singular === 'policy'
+              (isPolicy(entity.resource)
                 ? (stagedEntity.entity.associated.groups.add || []).every(a => a.mask) &&
                   (stagedEntity.entity.associated.users.add || []).every(a => a.mask)
-                : entity.resource.name.plural === 'groups'
+                : isGroup(entity.resource)
                 ? (stagedEntity.entity.associated.permissions.add || []).every(a => a.mask)
                 : true),
           },

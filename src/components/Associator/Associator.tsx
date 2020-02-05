@@ -12,6 +12,8 @@ import { IResource } from 'common/typedefs/Resource';
 import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
 
+import { isGroup } from 'common/associatedUtils';
+
 interface TProps {
   addItem: Function;
   allAssociatedItems: any[];
@@ -74,7 +76,7 @@ const enhance = compose(
   withStateHandlers(
     ({ initialItems, resource, type }) => {
       const parsedItems =
-        resource.name.singular === 'group' && type === 'permissions'
+        isGroup(resource) && type === 'permissions'
           ? initialItems.map(item => getParsedItem(item))
           : initialItems;
       return { allAssociatedItems: [], itemsInList: parsedItems || [] };
@@ -96,9 +98,7 @@ const enhance = compose(
       setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
       setItemsInList: ({ itemsInList }, { resource, type }) => items => ({
         itemsInList:
-          resource.name.singular === 'group' && type === 'permissions'
-            ? items.map(i => getParsedItem(i))
-            : items,
+          isGroup(resource) && type === 'permissions' ? items.map(i => getParsedItem(i)) : items,
       }),
     },
   ),

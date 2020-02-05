@@ -65,7 +65,11 @@ class Nav extends React.Component<any, any> {
                 >
                   <div className="content">
                     <resource.Icon style={{ opacity: 0.9 }} />
-                    <span className="text">{_.capitalize(`${resource.name.plural}`)}</span>
+                    {collapsed ? (
+                      <div style={{ height: 35 }} />
+                    ) : (
+                      <span className="text">{_.capitalize(`${resource.name.plural}`)}</span>
+                    )}
                   </div>
                 </Ripple>
               </li>

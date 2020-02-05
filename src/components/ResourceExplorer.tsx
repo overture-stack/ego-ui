@@ -81,8 +81,6 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       associated[associatedType].count >
                         get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
-                          // TODO: this link can be incorrect if scroll is positioned directly ovet sidenav
-                          // clicking link will take you to one of the entities in sidenav
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
                           style={{
                             color: MEDIUM_BLUE,

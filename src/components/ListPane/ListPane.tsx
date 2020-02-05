@@ -1,7 +1,8 @@
 import { css } from 'glamor';
-import { debounce, merge, noop } from 'lodash';
+import { debounce, get, merge, noop } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withProps, withState } from 'recompose';
+import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
 
 import { TEAL } from 'common/colors';
 import { TEntity } from 'common/typedefs';
@@ -10,10 +11,11 @@ import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
 import { RippleButton } from 'components/Ripple';
 import { injectState } from 'freactal';
-import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
 import ItemGrid from './ItemGrid';
 import ItemTable from './ItemTable';
 import getStyles from './ListPane.styles';
+
+import { isChildOfPolicy } from 'common/associatedUtils';
 
 enum DisplayMode {
   Table,
@@ -65,9 +67,7 @@ const enhance = compose(
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
   withState('query', 'setQuery', props => props.initialQuery || ''),
   withState('currentSort', 'setCurrentSort', props => ({
-    field: props.resource.initialSortField(
-      props.parent && props.parent.resource.name.singular === 'policy',
-    ),
+    field: props.resource.initialSortField(isChildOfPolicy(get(props.parent, 'resource'))),
     order: props.resource.initialSortOrder,
   })),
   withProps(({ columnWidth, resource, styles: stylesProp }) => ({
@@ -154,16 +154,28 @@ class List extends React.Component<IListProps, any> {
       columnWidth,
       parent,
       resource,
+      query,
     } = this.props;
 
     const displayMode: any =
       typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Table;
-    const isChildOfPolicy = parent && parent.resource.name.singular === 'policy';
+
     return (
       <div className={`List ${css(styles.container)}`}>
         <ControlContainer>
           <div className={`search-container ${css(paneControls.searchContainer)}`}>
-            <Input placeholder="Search..." onChange={(event, { value }) => setQuery(value)} />
+            <Input
+              icon={
+                query.length > 0 ? (
+                  <Icon name={'close'} onClick={e => setQuery('')} link={true} />
+                ) : (
+                  <Icon name={'search'} />
+                )
+              }
+              value={query}
+              placeholder="Search..."
+              onChange={(event, { value }) => setQuery(value)}
+            />
           </div>
           <div className={`sort-container ${css(paneControls.sortContainer)}`}>
             Sort by:
@@ -171,16 +183,18 @@ class List extends React.Component<IListProps, any> {
               selection
               style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
               selectOnNavigation={false}
-              options={resource.sortableFields(isChildOfPolicy).map(field => ({
-                text: field.fieldName,
-                value: field.key,
-              }))}
+              options={resource
+                .sortableFields(isChildOfPolicy(get(parent, 'resource')))
+                .map(field => ({
+                  text: field.fieldName,
+                  value: field.key,
+                }))}
               text={currentSort.field.fieldName}
               onChange={(event, { value }) =>
                 setCurrentSort({
                   ...currentSort,
                   field: resource
-                    .sortableFields(isChildOfPolicy)
+                    .sortableFields(isChildOfPolicy(get(parent, 'resource')))
                     .find(field => field.key === value),
                 })
               }
@@ -265,7 +279,7 @@ class List extends React.Component<IListProps, any> {
                 ...currentSort,
                 order: newSortOrder,
                 field: resource
-                  .sortableFields(isChildOfPolicy)
+                  .sortableFields(isChildOfPolicy(get(parent, 'resource')))
                   .find(field => field.key === newSortField),
               });
             }}
