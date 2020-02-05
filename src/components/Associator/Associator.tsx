@@ -1,6 +1,6 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { capitalize, get, isUndefined, noop, uniqBy, without } from 'lodash';
+import { capitalize, get, noop, uniqBy, without } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, lifecycle, withHandlers, withStateHandlers } from 'recompose';
 import { Button, Grid, Icon, Label } from 'semantic-ui-react';
@@ -57,6 +57,7 @@ async function fetchAllAssociatedItems({
   } while (items.length < count);
 
   setAllAssociatedItems(items);
+  // return items so itemsInList is updated properly on table remove action
   return items.slice(0, 5);
 }
 
@@ -160,6 +161,15 @@ class Associator extends React.Component<TProps, any> {
         ? RESOURCE_MAP[type].addItem[resource.name.plural]
         : RESOURCE_MAP[type].addItem;
 
+    const parsedAssocItems =
+      type === 'permissions' && isGroup(resource)
+        ? allAssociatedItems.map(assoc => ({
+            accessLevel: assoc.accessLevel,
+            id: assoc.policy.id,
+            name: assoc.policy.name,
+          }))
+        : allAssociatedItems;
+
     return (
       <div className={`Associator ${css(styles.container)}`}>
         <div
@@ -182,12 +192,9 @@ class Associator extends React.Component<TProps, any> {
           </span>
           {editing && includeAddButton && (
             <ItemSelector
-              fetchItems={args => fetchItems({ ...args, limit: 10 })}
+              fetchItems={args => fetchItems({ ...args, limit: 1000 })}
               onSelect={item => addItem(item, type)}
-              disabledItems={uniqBy(
-                [...allAssociatedItems, ...itemsInList],
-                item => item && item.id,
-              )}
+              disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
             />
           )}
         </div>
@@ -198,10 +205,6 @@ class Associator extends React.Component<TProps, any> {
               associatedItems={itemsInList}
               removeItem={item => removeItem(item, type)}
               onSelect={item => addItem(item, type)}
-              disabledItems={uniqBy(
-                [...allAssociatedItems, ...itemsInList],
-                item => item && item.id,
-              )}
               type={type}
               fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
               onRemove={RESOURCE_MAP[type].deleteItem}

@@ -71,8 +71,7 @@ export const getGroupPermissions = ({
           [sortBy],
           [order.toLowerCase()],
         ).filter(
-          ({ accessLevel, ownerType, policy: { name } }) =>
-            queryBy.test(accessLevel) || queryBy.test(ownerType) || queryBy.test(name),
+          ({ accessLevel, policy: { name } }) => queryBy.test(accessLevel) || queryBy.test(name),
         ),
       };
     })

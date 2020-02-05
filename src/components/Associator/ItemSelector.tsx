@@ -22,10 +22,10 @@ const matchFor = (query: string | null, accessor) => item =>
 
 const enhance = compose(
   defaultProps({
-    getName: item => get(item, 'name'),
-    getKey: item => get(item, 'id'),
-    onSelect: item => global.log('selected', item),
     disabledItems: [],
+    getKey: item => get(item, 'id'),
+    getName: item => get(item, 'name'),
+    onSelect: item => global.log('selected', item),
   }),
   withState('isEntryMode', 'setIsEntryMode', false),
   withState('items', 'setItems', []),
@@ -80,10 +80,10 @@ const render = ({
               <Menu
                 className={`OptionList ${css(styles.optionsWrapper)}`}
                 size="small"
-                style={{ zIndex: 1 }}
+                style={{ zIndex: 1, overflowY: 'auto', maxHeight: 250 }}
                 vertical
               >
-                {differenceBy(items, disabledItems, 'id')
+                {differenceBy(items, disabledItems, item => item && item.id)
                   .filter(matchFor(inputValue, getName))
                   .map((item, i) => {
                     const isDisabled = disabledItems.map(getKey).includes(getKey(item));

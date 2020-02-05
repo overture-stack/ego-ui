@@ -46,7 +46,6 @@ const EditMask = compose(withState('checkedMask', 'setCheckedMask', props => pro
 const enhance = compose(
   injectState,
   defaultProps({
-    disabledItems: [],
     getKey: item => get(item, 'id'),
     getName: item => get(item, 'name'),
     onSelect: item => global.log('selected', item),
@@ -83,7 +82,6 @@ const PermissionsTable = ({
   handleSelect,
   getName,
   handleStateChange,
-  disabledItems,
   getKey,
   items,
   handleAddNew,

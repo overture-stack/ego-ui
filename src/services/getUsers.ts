@@ -30,6 +30,12 @@ export const getUsers = ({
     Promise.resolve(activeId);
   }
 
+  const policyChildrenSortFields = {
+    id: 'owner',
+    mask: 'accessLevel',
+    name: 'owner',
+  };
+
   return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyUsers.length,
@@ -42,12 +48,8 @@ export const getUsers = ({
               {
                 limit,
                 offset,
-                // TODO: using client side or server side pagination for policy/assoc?
-                // query: policyId ? null : query,
-                // sort: policyId ? null : sortField,
                 query,
-                // seems like backend sort for accessLevel is based on hierarchy of levels, not alphabetically?
-                sort: sortField === 'mask' ? 'accessLevel' : sortField,
+                sort: isNil(policyId) ? sortField : policyChildrenSortFields[String(sortField)],
                 sortOrder,
                 status: status === 'All' ? null : status,
               },
