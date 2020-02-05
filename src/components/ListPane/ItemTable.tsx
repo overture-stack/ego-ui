@@ -9,7 +9,6 @@ import { Button } from 'semantic-ui-react';
 
 import { isChildOfPolicy, isGroup, isUserPermission } from 'common/associatedUtils';
 import { messenger } from 'common/injectGlobals';
-
 import { DARK_GREY, GREY, LIGHT_TEAL, TEAL, VERY_LIGHT_TEAL } from 'common/colors';
 
 import ActionButton from 'components/Associator/ActionButton';
@@ -52,7 +51,16 @@ const enhance = compose(
           [resource.name.singular]: item,
         });
       }
-      messenger.publish('list updated!');
+
+      messenger.publish({
+        payload: {
+          item,
+          parentType: parent.resource.name.singular,
+          resourceType: resource.name.singular,
+        },
+        type: 'PANEL_LIST_UPDATE',
+      });
+
       updateList({ item });
     },
   }),
