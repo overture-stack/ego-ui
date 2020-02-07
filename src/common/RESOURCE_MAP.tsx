@@ -20,6 +20,7 @@ import {
   getApp,
   getApps,
   getGroup,
+  getGroupPermissions,
   getGroups,
   getPolicies,
   getPolicy,
@@ -57,6 +58,21 @@ import {
 import { IResource, TResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
 
+import {
+  API_KEY,
+  API_KEYS,
+  APPLICATION,
+  APPLICATIONS,
+  GROUP,
+  GROUPS,
+  PERMISSION,
+  PERMISSIONS,
+  POLICIES,
+  POLICY,
+  USER,
+  USERS,
+} from 'common/enums';
+
 // ignore tslint sort, resources listed in deliberate order
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   users: {
@@ -65,11 +81,11 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
     },
     addItem: true,
-    associatedTypes: ['groups', 'applications', 'permissions', 'API Keys'],
+    associatedTypes: [GROUPS, APPLICATIONS, PERMISSIONS, API_KEYS],
     AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
-      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'name', fieldName: 'Name', sortable: false }, // TODO: cannot sort on name field, need join to User, related to EGO-452
       { key: 'mask', fieldName: 'Access Level', sortable: true },
       { key: 'action', fieldName: 'Action', sortable: false },
     ],
@@ -98,7 +114,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         actionText: 'REMOVE',
       }));
     },
-    name: { singular: 'user', plural: 'users' },
+    name: { singular: USER, plural: USERS },
     noDelete: true,
     remove: {
       applications: ({ application, item }) =>
@@ -187,14 +203,19 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   groups: {
     add: {
       applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
+      permissions: ({ permission, item }) =>
+        addGroupPermissionToPolicy({
+          group: { ...item, mask: permission.mask },
+          policy: permission,
+        }),
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
     },
     addItem: true,
-    associatedTypes: ['users', 'applications'],
+    associatedTypes: [USERS, APPLICATIONS, PERMISSIONS],
     AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
-      { key: 'name', fieldName: 'Name', sortable: true },
+      { key: 'name', fieldName: 'Name', sortable: false }, // TODO: cannot sort on name field, need join to Group, related to EGO-452
       { key: 'mask', fieldName: 'Access Level', sortable: true },
       { fieldName: 'Action', key: 'action', sortable: false },
     ],
@@ -223,10 +244,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         actionText: 'REMOVE',
       }));
     },
-    name: { singular: 'group', plural: 'groups' },
+    name: { singular: GROUP, plural: GROUPS },
     remove: {
       applications: ({ application, item }) =>
         removeApplicationFromGroup({ group: item, application }),
+      permissions: ({ permission, item }) =>
+        removeGroupPermissionFromPolicy({ group: item, policy: permission }),
       users: ({ user, item }) => removeGroupFromUser({ group: item, user }),
     },
     rowHeight: 44,
@@ -270,7 +293,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => addApplicationToUser({ application: item, user }),
     },
     addItem: true,
-    associatedTypes: ['groups', 'users'],
+    associatedTypes: [GROUPS, USERS],
     AssociatorComponent: null,
     childSchema: [],
     createItem: createApplication,
@@ -302,7 +325,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     isParent: true,
     ListItem: ApplicationListItem,
     mapTableData: results => results,
-    name: { singular: 'application', plural: 'applications' },
+    name: { singular: APPLICATION, plural: APPLICATIONS },
     remove: {
       groups: ({ group, item }) => removeApplicationFromGroup({ application: item, group }),
       users: ({ user, item }) => removeApplicationFromUser({ application: item, user }),
@@ -398,7 +421,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         issueDate: moment(result.issueDate).format(DATE_FORMAT),
       }));
     },
-    name: { singular: 'API Key', plural: 'API Keys' },
+    name: { singular: 'API Key', plural: API_KEYS },
     rowHeight: 44,
     schema: [
       {
@@ -441,9 +464,15 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     ],
   },
   permissions: {
-    addItem: false,
+    addItem: {
+      groups: true,
+      users: false,
+    },
     associatedTypes: [],
-    AssociatorComponent: UserPermissionsTable,
+    AssociatorComponent: {
+      groups: PermissionsTable,
+      users: UserPermissionsTable,
+    },
     childSchema: [],
     emptyMessage: '',
     initialSortField(isChildOfPolicy: boolean) {
@@ -453,20 +482,25 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
     },
     getKey: item => item.id.toString(),
-    getList: getUserAndUserGroupPermissions,
+    getList: {
+      groups: getGroupPermissions,
+      users: getUserAndUserGroupPermissions,
+    },
     getListAll: getPolicies,
     getName: item => get(item, 'name'),
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
     ListItem: PermissionListItem,
-    name: { singular: 'permission', plural: 'permissions' },
+    name: { singular: PERMISSION, plural: PERMISSIONS },
     mapTableData(results) {
       return results.map(result => ({
         accessLevel: result.accessLevel,
-        id: result.id,
+        id: result.policy.id,
         ownerType: result.ownerType,
         policy: result.policy.name,
+        action: 'remove',
+        actionText: 'REMOVE',
       }));
     },
     rowHeight: 44,
@@ -491,6 +525,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         required: true,
         sortable: true,
       },
+      {
+        fieldName: 'Action',
+        key: 'action',
+        required: false,
+        sortable: false,
+      },
     ],
   },
   policies: {
@@ -499,7 +539,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => addUserPermissionToPolicy({ policy: item, user }),
     },
     addItem: false,
-    associatedTypes: ['groups', 'users'],
+    associatedTypes: [GROUPS, USERS],
     AssociatorComponent: PermissionsTable,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
@@ -536,7 +576,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     isParent: true,
     ListItem: PolicyListItem,
     mapTableData: results => results,
-    name: { singular: 'policy', plural: 'policies' },
+    name: { singular: POLICY, plural: POLICIES },
     remove: {
       groups: ({ group, item }) => removeGroupPermissionFromPolicy({ policy: item, group }),
       users: ({ user, item }) => removeUserPermissionFromPolicy({ policy: item, user }),

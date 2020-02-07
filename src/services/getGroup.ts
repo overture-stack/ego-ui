@@ -1,5 +1,8 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import _ from 'lodash';
+import { Group } from 'common/typedefs/Group';
+import { find, isNil, omitBy, orderBy } from 'lodash';
+import queryString from 'querystring';
+
 import ajax from 'services/ajax';
 import dummyApplications from './dummyData/applications';
 import dummyGroups from './dummyData/groups';
@@ -22,9 +25,55 @@ export const getGroupUsers = id => {
 export const getGroupApplications = id => {
   return USE_DUMMY_DATA
     ? Promise.resolve(
-        (_.find(dummyGroups, group => id === group.id, {}).applications || []).map(appId =>
+        (find(dummyGroups, group => id === group.id, {}).applications || []).map(appId =>
           dummyApplications.find(application => appId === application.id),
         ),
       )
     : ajax.get(`/groups/${id}/applications`).then(r => r.data);
+};
+
+export const getGroupPermissions = ({
+  groupId,
+  limit = 20,
+  offset = 0,
+  query = null,
+  sortField = null,
+  sortOrder = null,
+}): Promise<{ count: number; resultSet: Group[]; offset: number; limit: number }> => {
+  return ajax
+    .get(
+      `/groups/${groupId}/permissions?${queryString.stringify(
+        omitBy(
+          {
+            limit,
+            name: query,
+            offset,
+            sort: sortField,
+            sortOrder,
+          },
+          isNil,
+        ),
+      )}`,
+    )
+    .then(r => {
+      // TODO: implement server side sorting and search
+      // for client side pagination
+      const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
+      const order = sortOrder || 'desc';
+      const queryBy = new RegExp(query ? `(${query})` : '', 'i');
+
+      return {
+        count: r.data.count,
+        limit,
+        offset,
+        resultSet: orderBy(
+          r.data.resultSet.slice(offset, offset + limit),
+          [sortBy],
+          [order.toLowerCase()],
+        ).filter(
+          ({ accessLevel, policy: { name } }) => queryBy.test(accessLevel) || queryBy.test(name),
+        ),
+      };
+    })
+    .catch(err => err);
 };

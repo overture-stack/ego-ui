@@ -1,9 +1,17 @@
 import { provideState } from 'freactal';
-import { findIndex, omit, uniq } from 'lodash';
+import { findIndex, isEmpty, omit, uniq } from 'lodash';
 
+import { isGroup, isPolicy } from 'common/associatedUtils';
+import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const MAX_ASSOCIATED = 5;
+
+export const getListFunc = (associatedType, parent) =>
+  associatedType === PERMISSIONS && !isEmpty(parent)
+    ? RESOURCE_MAP[associatedType].getList[parent.name.plural]
+    : RESOURCE_MAP[associatedType].getList;
+
 const provideEntity = provideState({
   initialState: () => ({
     entity: { item: null, staged: {}, associated: {}, valid: false, resource: null },
@@ -13,16 +21,17 @@ const provideEntity = provideState({
     getState: () => state => ({ ...state }),
     setItem: async (effects, id, resource) => {
       const isCreate = id === 'create';
+
       const [item, ...associated] =
         id && !isCreate
           ? await Promise.all([
               resource.getItem(id),
-              ...resource.associatedTypes.map(associatedType =>
-                RESOURCE_MAP[associatedType].getList({
+              ...resource.associatedTypes.map(associatedType => {
+                return getListFunc(associatedType, resource)({
                   [`${resource.name.singular}Id`]: id,
                   limit: MAX_ASSOCIATED,
-                }),
-              ),
+                });
+              }),
             ])
           : [null, ...resource.associatedTypes.map(() => ({}))];
 
@@ -79,7 +88,6 @@ const provideEntity = provideState({
                       );
                       if (indexToChange > -1) {
                         return {
-                          ...acc,
                           [action]: [
                             ...entity.associated[currentType][action].slice(0, indexToChange),
                             change[currentType][action],
@@ -102,7 +110,6 @@ const provideEntity = provideState({
                         };
                       } else {
                         return {
-                          ...acc,
                           [action]: uniq([
                             ...(entity.associated[currentType][action] || []),
                             change[currentType][action],
@@ -118,16 +125,18 @@ const provideEntity = provideState({
             }, {}),
           },
         };
-        // to disable Save when adding new permissions on policies tab
+        // to disable Save when adding new permissions on policies/groups tab
         return {
           ...stagedEntity,
           entity: {
             ...stagedEntity.entity,
             valid:
               stagedEntity.entity.valid &&
-              (entity.resource.name.singular === 'policy'
+              (isPolicy(entity.resource)
                 ? (stagedEntity.entity.associated.groups.add || []).every(a => a.mask) &&
                   (stagedEntity.entity.associated.users.add || []).every(a => a.mask)
+                : isGroup(entity.resource)
+                ? (stagedEntity.entity.associated.permissions.add || []).every(a => a.mask)
                 : true),
           },
         };

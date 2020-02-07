@@ -1,6 +1,8 @@
 import { provideState } from 'freactal';
 import { isEqual } from 'lodash';
 
+import { getListFunc } from './provideEntity';
+
 export default provideState({
   initialState: () => ({
     list: {
@@ -22,19 +24,22 @@ export default provideState({
       list: { ...state.list, params: { ...state.list.params, ...params } },
     }),
 
-    setListResource: (effects, resource) => state => ({
+    setListResource: (effects, resource, parent) => state => ({
       ...state,
-      list: { ...state.list, resource },
+      list: { ...state.list, resource, parent },
     }),
 
     refreshList: async effects => {
       const {
-        list: { params, resource },
+        list: { params, resource, parent },
       } = await effects.getState();
       const match = (params.query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
       const [, before, , statusQuoted, statusUnquoted, after] = match || Array(5);
+      const listFunc = parent
+        ? getListFunc(resource.name.plural, parent.resource)
+        : resource.getList;
 
-      const response = await resource.getList({
+      const response = await listFunc({
         ...params,
         query:
           (match ? `${before || ''}${after || ''}` : params.query || '')

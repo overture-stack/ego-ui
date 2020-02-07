@@ -7,6 +7,7 @@ import { compose } from 'recompose';
 import { Grid } from 'semantic-ui-react';
 
 import { DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
+import { USER } from 'common/enums';
 
 const FIELD_NAME_WIDTHS = {
   application: 5,
@@ -103,7 +104,7 @@ const ContentView = ({
       {panelSections['meta'] && panelSections['meta'].length > 0 && (
         <div className={`contentPanel meta ${css(styles.section)}`}>
           <Grid columns="equal">
-            {entityType === 'user' ? (
+            {entityType === USER ? (
               <React.Fragment>
                 <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
                   {panelSections['meta'].slice(0, 2).map(({ fieldContent, fieldName, key }) => {
@@ -123,7 +124,7 @@ const ContentView = ({
                           <span
                             className={`contentFieldContent ${css(
                               styles.fieldContent,
-                              ...(entityType === 'user' &&
+                              ...(entityType === USER &&
                               key === 'type' &&
                               typeof fieldContent === 'string' &&
                               (fieldContent || '').toLowerCase() === 'admin'

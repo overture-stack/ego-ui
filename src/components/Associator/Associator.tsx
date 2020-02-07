@@ -1,7 +1,8 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { capitalize, get, isUndefined, noop, uniqBy, without } from 'lodash';
+import { capitalize, get, noop, uniqBy, without } from 'lodash';
 import React, { useEffect } from 'react';
+
 import { compose, defaultProps, lifecycle, withHandlers, withStateHandlers } from 'recompose';
 import { Button, Grid, Icon, Label } from 'semantic-ui-react';
 
@@ -11,6 +12,9 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { IResource } from 'common/typedefs/Resource';
 import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
+
+import { isGroup } from 'common/associatedUtils';
+import { API_KEYS, PERMISSIONS, USERS } from 'common/enums';
 
 interface TProps {
   addItem: Function;
@@ -55,8 +59,15 @@ async function fetchAllAssociatedItems({
   } while (items.length < count);
 
   setAllAssociatedItems(items);
+  // return items so itemsInList is updated properly on table remove action
   return items.slice(0, 5);
 }
+
+const getParsedItem = item => ({
+  id: item.policy.id,
+  mask: item.accessLevel,
+  name: item.policy.name,
+});
 
 const enhance = compose(
   injectState,
@@ -66,10 +77,13 @@ const enhance = compose(
     onRemove: noop,
   }),
   withStateHandlers(
-    ({ initialItems }) => ({
-      allAssociatedItems: [],
-      itemsInList: initialItems || [],
-    }),
+    ({ initialItems, resource, type }) => {
+      const parsedItems =
+        isGroup(resource) && type === PERMISSIONS
+          ? (initialItems || []).map(item => getParsedItem(item))
+          : initialItems;
+      return { allAssociatedItems: [], itemsInList: parsedItems || [] };
+    },
     {
       addItem: ({ itemsInList }, { onAdd }) => item => {
         onAdd(item);
@@ -85,8 +99,11 @@ const enhance = compose(
         };
       },
       setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
-      setItemsInList: () => items => ({
-        itemsInList: items,
+      setItemsInList: ({ itemsInList }, { resource, type }) => items => ({
+        itemsInList:
+          isGroup(resource) && type === PERMISSIONS
+            ? (items || []).map(i => getParsedItem(i))
+            : items,
       }),
     },
   ),
@@ -135,9 +152,25 @@ const Associator = ({
   }, []);
 
   const AssociatorComponent =
-    type === 'permissions' || type === 'API Keys'
+    type === PERMISSIONS
+      ? RESOURCE_MAP[type].AssociatorComponent[resource.name.plural]
+      : type === API_KEYS
       ? RESOURCE_MAP[type].AssociatorComponent
       : resource.AssociatorComponent;
+
+  const includeAddButton =
+    type === PERMISSIONS
+      ? RESOURCE_MAP[type].addItem[resource.name.plural]
+      : RESOURCE_MAP[type].addItem;
+
+  const parsedAssocItems =
+    type === PERMISSIONS && isGroup(resource)
+      ? allAssociatedItems.map(assoc => ({
+          accessLevel: assoc.accessLevel,
+          id: assoc.policy.id,
+          name: assoc.policy.name,
+        }))
+      : allAssociatedItems;
 
   return (
     <div className={`Associator ${css(styles.container)}`}>
@@ -157,13 +190,13 @@ const Associator = ({
             styles.fieldName,
           )}`}
         >
-          {type === 'API Keys' ? 'API Keys' : capitalize(type)}
+          {type === API_KEYS ? API_KEYS : capitalize(type)}
         </span>
-        {editing && RESOURCE_MAP[type].addItem && (
+        {editing && includeAddButton && (
           <ItemSelector
-            fetchItems={args => fetchItems({ ...args, limit: 10 })}
+            fetchItems={args => fetchItems({ ...args, limit: 1000 })}
             onSelect={item => addItem(item, type)}
-            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
+            disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
           />
         )}
       </div>
@@ -174,16 +207,16 @@ const Associator = ({
             associatedItems={itemsInList}
             removeItem={item => removeItem(item, type)}
             onSelect={item => addItem(item, type)}
-            disabledItems={uniqBy([...allAssociatedItems, ...itemsInList], item => item && item.id)}
             type={type}
             fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
             onRemove={RESOURCE_MAP[type].deleteItem}
             parentId={parentId}
+            resource={resource}
           />
         ) : (
           itemsInList.map(item => (
             <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-              {type === 'users' && !item.firstName
+              {type === USERS && !item.firstName
                 ? get(item, 'name')
                 : RESOURCE_MAP[type].getName(item)}
               {editing && <Icon name="delete" onClick={() => removeItem(item)} />}

@@ -1,3 +1,4 @@
+import { API_KEYS, APPLICATIONS, GROUPS, PERMISSIONS, POLICIES, USERS } from 'common/enums';
 import { ApiKey } from 'common/typedefs/ApiKey';
 import { Application } from 'common/typedefs/Application';
 import { Group } from 'common/typedefs/Group';
@@ -21,26 +22,31 @@ export interface IField {
 
 export type ISchema = IField[];
 
-export type TResourceType =
-  | 'groups'
-  | 'applications'
-  | 'users'
-  | 'API Keys'
-  | 'permissions'
-  | 'policies';
+export type TResourceType = GROUPS | APPLICATIONS | USERS | API_KEYS | PERMISSIONS | POLICIES;
 
 export type TSortDirection = 'DESC' | 'ASC';
 
-interface IListParams {
+interface IBaseListParams {
   offset?: number = null;
   limit?: number = null;
   query?: any = null;
   sortField?: any = null;
   sortOrder?: any = null;
+}
+
+interface IListParams extends IBaseListParams {
   applicationId?: any = null;
   groupId?: any = null;
   userId?: any = null;
   status?: any = null;
+}
+
+interface IGroupPermissionParams extends IBaseListParams {
+  groupId: string;
+}
+
+interface IUserPermissionParams extends IBaseListParams {
+  userId: string;
 }
 
 interface IListResponse {
@@ -101,19 +107,27 @@ interface IAddToUser {
     application: Application,
     item: User,
   ) => (user: { item: User }, application: any) => Promise<User>;
-  // groups: (group: Group, item: User) => Promise<any>;
-  // permissions: (permission: UserPermission, item: User) => Promise<any>;
+  groups: (group: Group, item: User) => Promise<any>;
+  permissions: (permission: UserPermission, item: User) => Promise<any>;
 }
 
 interface IAddToGroup {
   applications: (application: Application, item: ICreateApplication) => Promise<any>;
   users: (user: User, item: ICreateUser) => Promise<any>;
+  permissions: (permission: Permission, item: ICreateGroup) => Promise<any>;
 }
 
 interface IAddToApplication {
   groups: (group: Group, item: ICreateGroup) => Promise<any>;
   users: (user: User, item: ICreateUser) => Promise<any>;
 }
+
+interface IPermissionsGetList {
+  groups: (params: IGroupPermissionParams) => Promise<IListResponse>;
+  users: (params: IUserPermissionParams) => Promise<IListResponse>;
+}
+
+type TGetList = (params: IListParams) => Promise<IListResponse>;
 
 export interface IResource {
   Icon: any;
@@ -123,9 +137,9 @@ export interface IResource {
   noDelete?: true;
   name: { singular: string; plural: TResourceType };
   ListItem: JSX.Element<any>;
-  getList: (params: IListParams) => Promise<IListResponse>;
+  getList: TGetList | IPermissionsGetList;
   getListAll: (params: IListParams) => Promise<IListResponse>;
-  getItem?: TGetItem;
+  getItem?: TGetItem | undefined;
   updateItem?: (
     item: ICreateUser | ICreateGroup | ICreateApplication,
   ) => Promise<User | Group | Application>;
@@ -138,12 +152,11 @@ export interface IResource {
   associatedTypes: Types[];
   initialSortField: (any) => string;
   childSchema?: Schema;
-  addItem: boolean;
+  addItem: boolean | { groups: boolean; users: boolean };
   add?: IAddToUser | IAddToGroup | IAddToApplication | any;
   remove?: any;
   getKey: Function;
   mapTableData: Function;
-  // add: { [key in TResourceType]?: (params: any) => Promise<any> };
   // remove: { [key in TResourceType]?: (params: any) => Promise<any> };
   sortableFields: Schema;
   isParent: boolean;

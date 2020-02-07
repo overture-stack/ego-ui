@@ -4,9 +4,9 @@ import React from 'react';
 import Truncate from 'react-truncate';
 
 import { TEAL } from 'common/colors';
+import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 import Ripple from 'components/Ripple';
 import UserDisplayName, { ChildUserDisplayName } from 'components/UserDisplayName';
-import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 
 const styles = {
   container: {

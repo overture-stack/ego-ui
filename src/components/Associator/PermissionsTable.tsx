@@ -46,44 +46,22 @@ const EditMask = compose(withState('checkedMask', 'setCheckedMask', props => pro
 const enhance = compose(
   injectState,
   defaultProps({
-    disabledItems: [],
     getKey: item => get(item, 'id'),
     getName: item => get(item, 'name'),
     onSelect: item => global.log('selected', item),
   }),
   withState('items', 'setItems', ({ associatedItems }) => associatedItems),
-  withProps(
-    ({
-      onSelect,
-      fetchItems,
-      setItems,
-      disabledItems,
-      getKey,
-      newPermission,
-      setNewPermission,
-      type,
-      effects: { stageChange },
-      state: {
-        entity: { associated },
-      },
-    }) => ({
-      handleSelectMask: async (permission, mask) => {
-        if (permission.mask) {
-          return stageChange({
-            [type]: { add: { ...permission, mask } },
-          });
-        }
-        const selectedItem = find(associated[type].add, assoc => assoc.id === permission.id);
-        await stageChange({
-          [type]: { add: { ...selectedItem, mask } },
-        });
-      },
-      requestItems: async query => {
-        const response = await fetchItems({ query });
-        setItems(response.resultSet);
-      },
-    }),
-  ),
+  withProps(({ fetchItems, setItems, type, effects: { stageChange } }) => ({
+    handleSelectMask: (permission, mask) => {
+      stageChange({
+        [type]: { add: { ...permission, mask } },
+      });
+    },
+    requestItems: async query => {
+      const response = await fetchItems({ query });
+      setItems(response.resultSet);
+    },
+  })),
   withHandlers({
     handleStateChange: ({ requestItems }) => async (changes, stateAndHelpers) => {
       if (
@@ -104,13 +82,10 @@ const PermissionsTable = ({
   handleSelect,
   getName,
   handleStateChange,
-  disabledItems,
   getKey,
   items,
   handleAddNew,
   handleSelectMask,
-  newPermission,
-  setNewPermission,
   type,
   state: {
     entity: { associated },

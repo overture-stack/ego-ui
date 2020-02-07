@@ -94,7 +94,7 @@ class Content extends React.Component<any, IContentState> {
       rows,
       styles: stylesProp = {},
       id,
-      effects: { saveChanges, deleteItem, stageChange, refreshList },
+      effects: { saveChanges, deleteItem, stageChange, refreshList, undoChanges },
       state: {
         entity: { item, valid },
       },
@@ -187,7 +187,10 @@ class Content extends React.Component<any, IContentState> {
       <RippleButton
         basic
         disabled={isSaving}
-        onClick={() => history.push(`/${resource.name.plural}/${this.lastValidId || ''}`)}
+        onClick={async () => {
+          await undoChanges();
+          history.push(`/${resource.name.plural}/${this.lastValidId || ''}`);
+        }}
         size="tiny"
         style={{ fontWeight: 'bold' }}
       >

@@ -11,6 +11,9 @@ import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
 import { provideList } from 'stateProviders';
 
+import { PERMISSIONS } from 'common/enums';
+import { getListFunc } from 'stateProviders/provideEntity';
+
 const enhance = compose(
   withRouter,
   provideList,
@@ -48,20 +51,27 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                   <React.Fragment>
                     <Associator
                       editing={editing}
-                      fetchItems={RESOURCE_MAP[associatedType].getList}
+                      fetchItems={
+                        RESOURCE_MAP[associatedType][
+                          associatedType === PERMISSIONS ? 'getListAll' : 'getList'
+                        ]
+                      }
                       fetchExistingAssociations={params => {
                         // prevent 400 error on /create
                         if (id === 'create') {
                           return () => null;
                         }
-                        return RESOURCE_MAP[associatedType].getList({
+
+                        return getListFunc(associatedType, resource)({
                           ...params,
                           [`${resource.name.singular}Id`]: id,
                         });
                       }}
                       getName={RESOURCE_MAP[associatedType].getName}
                       initialItems={associated[associatedType].resultSet}
-                      onAdd={item => stageChange({ [associatedType]: { add: item } })}
+                      onAdd={item => {
+                        stageChange({ [associatedType]: { add: item } });
+                      }}
                       onRemove={item => stageChange({ [associatedType]: { remove: item } })}
                       type={associatedType}
                       resource={resource}
@@ -72,8 +82,6 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       associated[associatedType].count >
                         get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
-                          // TODO: this link can be incorrect if scroll is positioned directly ovet sidenav
-                          // clicking link will take you to one of the entities in sidenav
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
                           style={{
                             color: MEDIUM_BLUE,
