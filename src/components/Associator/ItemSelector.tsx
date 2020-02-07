@@ -80,7 +80,7 @@ const render = ({
               <Menu
                 className={`OptionList ${css(styles.optionsWrapper)}`}
                 size="small"
-                style={{ zIndex: 1, overflowY: 'auto', maxHeight: 250 }}
+                style={{ zIndex: 1, overflowY: 'auto', maxHeight: 220 }}
                 vertical
               >
                 {differenceBy(items, disabledItems, item => item && item.id)

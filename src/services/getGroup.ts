@@ -57,6 +57,7 @@ export const getGroupPermissions = ({
       )}`,
     )
     .then(r => {
+      // TODO: implement server side sorting and search
       // for client side pagination
       const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
       const order = sortOrder || 'desc';
