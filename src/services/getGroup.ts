@@ -39,7 +39,6 @@ export const getGroupPermissions = ({
   query = null,
   sortField = null,
   sortOrder = null,
-  status = null,
 }): Promise<{ count: number; resultSet: Group[]; offset: number; limit: number }> => {
   return ajax
     .get(

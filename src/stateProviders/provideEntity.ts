@@ -2,12 +2,13 @@ import { provideState } from 'freactal';
 import { findIndex, isEmpty, omit, uniq } from 'lodash';
 
 import { isGroup, isPolicy } from 'common/associatedUtils';
+import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const MAX_ASSOCIATED = 5;
 
 export const getListFunc = (associatedType, parent) =>
-  associatedType === 'permissions' && !isEmpty(parent)
+  associatedType === PERMISSIONS && !isEmpty(parent)
     ? RESOURCE_MAP[associatedType].getList[parent.name.plural]
     : RESOURCE_MAP[associatedType].getList;
 

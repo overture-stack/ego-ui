@@ -14,6 +14,7 @@ import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
 
 import { isGroup } from 'common/associatedUtils';
+import { API_KEYS, PERMISSIONS, USERS } from 'common/enums';
 
 interface TProps {
   addItem: Function;
@@ -78,7 +79,7 @@ const enhance = compose(
   withStateHandlers(
     ({ initialItems, resource, type }) => {
       const parsedItems =
-        isGroup(resource) && type === 'permissions'
+        isGroup(resource) && type === PERMISSIONS
           ? (initialItems || []).map(item => getParsedItem(item))
           : initialItems;
       return { allAssociatedItems: [], itemsInList: parsedItems || [] };
@@ -100,7 +101,7 @@ const enhance = compose(
       setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
       setItemsInList: ({ itemsInList }, { resource, type }) => items => ({
         itemsInList:
-          isGroup(resource) && type === 'permissions'
+          isGroup(resource) && type === PERMISSIONS
             ? (items || []).map(i => getParsedItem(i))
             : items,
       }),
@@ -151,19 +152,19 @@ const Associator = ({
   }, []);
 
   const AssociatorComponent =
-    type === 'permissions'
+    type === PERMISSIONS
       ? RESOURCE_MAP[type].AssociatorComponent[resource.name.plural]
-      : type === 'API Keys'
+      : type === API_KEYS
       ? RESOURCE_MAP[type].AssociatorComponent
       : resource.AssociatorComponent;
 
   const includeAddButton =
-    type === 'permissions'
+    type === PERMISSIONS
       ? RESOURCE_MAP[type].addItem[resource.name.plural]
       : RESOURCE_MAP[type].addItem;
 
   const parsedAssocItems =
-    type === 'permissions' && isGroup(resource)
+    type === PERMISSIONS && isGroup(resource)
       ? allAssociatedItems.map(assoc => ({
           accessLevel: assoc.accessLevel,
           id: assoc.policy.id,
@@ -189,7 +190,7 @@ const Associator = ({
             styles.fieldName,
           )}`}
         >
-          {type === 'API Keys' ? 'API Keys' : capitalize(type)}
+          {type === API_KEYS ? API_KEYS : capitalize(type)}
         </span>
         {editing && includeAddButton && (
           <ItemSelector
@@ -215,7 +216,7 @@ const Associator = ({
         ) : (
           itemsInList.map(item => (
             <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-              {type === 'users' && !item.firstName
+              {type === USERS && !item.firstName
                 ? get(item, 'name')
                 : RESOURCE_MAP[type].getName(item)}
               {editing && <Icon name="delete" onClick={() => removeItem(item)} />}

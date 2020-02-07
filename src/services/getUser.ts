@@ -37,7 +37,7 @@ export const getUserApplications = id => {
 };
 
 export const getUserAndUserGroupPermissions = ({
-  userId = null,
+  userId,
   offset = 0,
   limit = 20,
   query = null,

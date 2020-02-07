@@ -58,6 +58,21 @@ import {
 import { IResource, TResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
 
+import {
+  API_KEY,
+  API_KEYS,
+  APPLICATION,
+  APPLICATIONS,
+  GROUP,
+  GROUPS,
+  PERMISSION,
+  PERMISSIONS,
+  POLICIES,
+  POLICY,
+  USER,
+  USERS,
+} from 'common/enums';
+
 // ignore tslint sort, resources listed in deliberate order
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
   users: {
@@ -66,7 +81,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       groups: ({ group, item }) => addGroupToUser({ user: item, group }),
     },
     addItem: true,
-    associatedTypes: ['groups', 'applications', 'permissions', 'API Keys'],
+    associatedTypes: [GROUPS, APPLICATIONS, PERMISSIONS, API_KEYS],
     AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
@@ -99,7 +114,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         actionText: 'REMOVE',
       }));
     },
-    name: { singular: 'user', plural: 'users' },
+    name: { singular: USER, plural: USERS },
     noDelete: true,
     remove: {
       applications: ({ application, item }) =>
@@ -196,7 +211,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => addGroupToUser({ group: item, user }),
     },
     addItem: true,
-    associatedTypes: ['users', 'applications', 'permissions'],
+    associatedTypes: [USERS, APPLICATIONS, PERMISSIONS],
     AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
@@ -229,7 +244,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         actionText: 'REMOVE',
       }));
     },
-    name: { singular: 'group', plural: 'groups' },
+    name: { singular: GROUP, plural: GROUPS },
     remove: {
       applications: ({ application, item }) =>
         removeApplicationFromGroup({ group: item, application }),
@@ -278,7 +293,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => addApplicationToUser({ application: item, user }),
     },
     addItem: true,
-    associatedTypes: ['groups', 'users'],
+    associatedTypes: [GROUPS, USERS],
     AssociatorComponent: null,
     childSchema: [],
     createItem: createApplication,
@@ -310,7 +325,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     isParent: true,
     ListItem: ApplicationListItem,
     mapTableData: results => results,
-    name: { singular: 'application', plural: 'applications' },
+    name: { singular: APPLICATION, plural: APPLICATIONS },
     remove: {
       groups: ({ group, item }) => removeApplicationFromGroup({ application: item, group }),
       users: ({ user, item }) => removeApplicationFromUser({ application: item, user }),
@@ -406,7 +421,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         issueDate: moment(result.issueDate).format(DATE_FORMAT),
       }));
     },
-    name: { singular: 'API Key', plural: 'API Keys' },
+    name: { singular: 'API Key', plural: API_KEYS },
     rowHeight: 44,
     schema: [
       {
@@ -477,7 +492,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     initialSortOrder: 'ASC',
     isParent: false,
     ListItem: PermissionListItem,
-    name: { singular: 'permission', plural: 'permissions' },
+    name: { singular: PERMISSION, plural: PERMISSIONS },
     mapTableData(results) {
       return results.map(result => ({
         accessLevel: result.accessLevel,
@@ -524,7 +539,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       users: ({ user, item }) => addUserPermissionToPolicy({ policy: item, user }),
     },
     addItem: false,
-    associatedTypes: ['groups', 'users'],
+    associatedTypes: [GROUPS, USERS],
     AssociatorComponent: PermissionsTable,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
@@ -561,7 +576,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     isParent: true,
     ListItem: PolicyListItem,
     mapTableData: results => results,
-    name: { singular: 'policy', plural: 'policies' },
+    name: { singular: POLICY, plural: POLICIES },
     remove: {
       groups: ({ group, item }) => removeGroupPermissionFromPolicy({ policy: item, group }),
       users: ({ user, item }) => removeUserPermissionFromPolicy({ policy: item, user }),

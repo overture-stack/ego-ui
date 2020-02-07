@@ -11,6 +11,7 @@ import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
 import { provideList } from 'stateProviders';
 
+import { PERMISSIONS } from 'common/enums';
 import { getListFunc } from 'stateProviders/provideEntity';
 
 const enhance = compose(
@@ -52,7 +53,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       editing={editing}
                       fetchItems={
                         RESOURCE_MAP[associatedType][
-                          associatedType === 'permissions' ? 'getListAll' : 'getList'
+                          associatedType === PERMISSIONS ? 'getListAll' : 'getList'
                         ]
                       }
                       fetchExistingAssociations={params => {

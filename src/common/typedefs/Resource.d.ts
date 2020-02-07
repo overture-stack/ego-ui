@@ -1,3 +1,4 @@
+import { API_KEYS, APPLICATIONS, GROUPS, PERMISSIONS, POLICIES, USERS } from 'common/enums';
 import { ApiKey } from 'common/typedefs/ApiKey';
 import { Application } from 'common/typedefs/Application';
 import { Group } from 'common/typedefs/Group';
@@ -21,26 +22,31 @@ export interface IField {
 
 export type ISchema = IField[];
 
-export type TResourceType =
-  | 'groups'
-  | 'applications'
-  | 'users'
-  | 'API Keys'
-  | 'permissions'
-  | 'policies';
+export type TResourceType = GROUPS | APPLICATIONS | USERS | API_KEYS | PERMISSIONS | POLICIES;
 
 export type TSortDirection = 'DESC' | 'ASC';
 
-interface IListParams {
+interface IBaseListParams {
   offset?: number = null;
   limit?: number = null;
   query?: any = null;
   sortField?: any = null;
   sortOrder?: any = null;
+}
+
+interface IListParams extends IBaseListParams {
   applicationId?: any = null;
   groupId?: any = null;
   userId?: any = null;
   status?: any = null;
+}
+
+interface IGroupPermissionParams extends IBaseListParams {
+  groupId: string;
+}
+
+interface IUserPermissionParams extends IBaseListParams {
+  userId: string;
 }
 
 interface IListResponse {
@@ -117,9 +123,11 @@ interface IAddToApplication {
 }
 
 interface IPermissionsGetList {
-  groups: (params: IListParams) => Promise<IListResponse>;
-  users: (params: IListParams) => Promise<IListResponse>;
+  groups: (params: IGroupPermissionParams) => Promise<IListResponse>;
+  users: (params: IUserPermissionParams) => Promise<IListResponse>;
 }
+
+type TGetList = (params: IListParams) => Promise<IListResponse>;
 
 export interface IResource {
   Icon: any;
@@ -129,10 +137,9 @@ export interface IResource {
   noDelete?: true;
   name: { singular: string; plural: TResourceType };
   ListItem: JSX.Element<any>;
-  // getList can now be a hashmap
-  getList: any;
+  getList: TGetList | IPermissionsGetList;
   getListAll: (params: IListParams) => Promise<IListResponse>;
-  getItem?: TGetItem;
+  getItem?: TGetItem | undefined;
   updateItem?: (
     item: ICreateUser | ICreateGroup | ICreateApplication,
   ) => Promise<User | Group | Application>;
