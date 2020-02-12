@@ -33,7 +33,7 @@ export const getUsers = ({
   const policyChildrenSortFields = {
     id: 'owner',
     mask: 'accessLevel',
-    name: 'owner',
+    name: 'owner.name',
   };
 
   return USE_DUMMY_DATA

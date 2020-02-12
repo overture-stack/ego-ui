@@ -85,7 +85,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
-      { key: 'name', fieldName: 'Name', sortable: false }, // TODO: cannot sort on name field, need join to User, related to EGO-452
+      { key: 'name', fieldName: 'Name', sortable: true },
       { key: 'mask', fieldName: 'Access Level', sortable: true },
       { key: 'action', fieldName: 'Action', sortable: false },
     ],
@@ -215,7 +215,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     AssociatorComponent: null,
     childSchema: [
       { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
-      { key: 'name', fieldName: 'Name', sortable: false }, // TODO: cannot sort on name field, need join to Group, related to EGO-452
+      { key: 'name', fieldName: 'Name', sortable: true },
       { key: 'mask', fieldName: 'Access Level', sortable: true },
       { fieldName: 'Action', key: 'action', sortable: false },
     ],

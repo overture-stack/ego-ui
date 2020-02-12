@@ -32,9 +32,9 @@ export const getGroups = ({
   }
 
   const policyChildrenSortFields = {
-    mask: 'accessLevel',
-    name: 'owner',
     id: 'owner',
+    mask: 'accessLevel',
+    name: 'owner.name',
   };
 
   return USE_DUMMY_DATA
@@ -50,7 +50,6 @@ export const getGroups = ({
                 limit,
                 offset,
                 query,
-                // seems like backend sort for accessLevel is based on hierarchy of levels, not alphabetically?
                 sort: isNil(policyId) ? sortField : policyChildrenSortFields[String(sortField)],
                 sortOrder,
                 status: status === 'All' ? null : status,
