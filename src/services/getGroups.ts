@@ -31,12 +31,6 @@ export const getGroups = ({
     Promise.resolve(activeId);
   }
 
-  const policyChildrenSortFields = {
-    id: 'owner',
-    mask: 'accessLevel',
-    name: 'owner.name',
-  };
-
   return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyGroups.length,
@@ -50,7 +44,7 @@ export const getGroups = ({
                 limit,
                 offset,
                 query,
-                sort: isNil(policyId) ? sortField : policyChildrenSortFields[String(sortField)],
+                sort: sortField,
                 sortOrder,
                 status: status === 'All' ? null : status,
               },
