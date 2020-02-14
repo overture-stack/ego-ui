@@ -25,7 +25,7 @@ ENV EGO_UI_UID=9999
 ENV EGO_UI_GID=9999
 
 RUN addgroup -S -g $EGO_UI_GID $EGO_UI_USER \
-    && adduser -S -u $EGO_UI_UID -G $EGO_UI_GID $EGO_UI_USER \
+    && adduser -S -u $EGO_UI_UID -G $EGO_UI_USER $EGO_UI_USER \
     && chown -R $EGO_UI_UID:$EGO_UI_GID /etc/nginx/conf.d \
     && chown -R $EGO_UI_UID:$EGO_UI_GID /var/cache \
     && chown -R $EGO_UI_UID:$EGO_UI_GID /run
