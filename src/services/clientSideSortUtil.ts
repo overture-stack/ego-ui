@@ -8,7 +8,7 @@ const compareAccessLevels = (a, b) => {
 
 export const clientSideSort = (data, sortField, order, sortBy) => {
   if (sortField === 'accessLevel') {
-    let sorted = data.sort(compareAccessLevels);
+    let sorted = data.slice().sort(compareAccessLevels);
     if (order.toLowerCase() === 'desc') {
       return sorted.reverse();
     }
