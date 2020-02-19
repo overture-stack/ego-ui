@@ -31,12 +31,6 @@ export const getGroups = ({
     Promise.resolve(activeId);
   }
 
-  const policyChildrenSortFields = {
-    mask: 'accessLevel',
-    name: 'owner',
-    id: 'owner',
-  };
-
   return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyGroups.length,
@@ -50,8 +44,7 @@ export const getGroups = ({
                 limit,
                 offset,
                 query,
-                // seems like backend sort for accessLevel is based on hierarchy of levels, not alphabetically?
-                sort: isNil(policyId) ? sortField : policyChildrenSortFields[String(sortField)],
+                sort: sortField,
                 sortOrder,
                 status: status === 'All' ? null : status,
               },

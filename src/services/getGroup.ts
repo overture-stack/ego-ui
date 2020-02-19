@@ -1,9 +1,11 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Group } from 'common/typedefs/Group';
-import { find, isNil, omitBy, orderBy } from 'lodash';
+import { find, isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 
 import ajax from 'services/ajax';
+import { clientSideSort } from './clientSideSortUtil';
+
 import dummyApplications from './dummyData/applications';
 import dummyGroups from './dummyData/groups';
 import dummyUsers from './dummyData/users';
@@ -66,10 +68,11 @@ export const getGroupPermissions = ({
         count: r.data.count,
         limit,
         offset,
-        resultSet: orderBy(
+        resultSet: clientSideSort(
           r.data.resultSet.slice(offset, offset + limit),
-          [sortBy],
-          [order.toLowerCase()],
+          sortField,
+          order,
+          sortBy,
         ).filter(
           ({ accessLevel, policy: { name } }) => queryBy.test(accessLevel) || queryBy.test(name),
         ),

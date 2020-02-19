@@ -1,10 +1,11 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import { find, isNil, omitBy, orderBy } from 'lodash';
+import { find, isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 
 import ajax from 'services/ajax';
 
 import { UserPermission } from 'common/typedefs/UserPermission';
+import { clientSideSort } from './clientSideSortUtil';
 
 import dummyApplications from './dummyData/applications';
 import dummyGroups from './dummyData/groups';
@@ -60,7 +61,7 @@ export const getUserAndUserGroupPermissions = ({
       )}`,
     )
     .then(r => {
-      // for client side pagination
+      // for client side pagination, search and sorting
       const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
       const order = sortOrder || 'desc';
       const queryBy = new RegExp(query ? `(${query})` : '', 'i');
@@ -69,10 +70,11 @@ export const getUserAndUserGroupPermissions = ({
         count: r.data.length,
         limit,
         offset,
-        resultSet: orderBy(
+        resultSet: clientSideSort(
           r.data.slice(offset, offset + limit),
-          [sortBy],
-          [order.toLowerCase()],
+          sortField,
+          order,
+          sortBy,
         ).filter(
           ({ accessLevel, ownerType, policy: { name } }) =>
             queryBy.test(accessLevel) || queryBy.test(ownerType) || queryBy.test(name),
