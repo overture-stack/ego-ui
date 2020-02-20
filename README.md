@@ -1,4 +1,4 @@
-# Ego Authorization Service User Interface
+<h1 align="center"> EGO Authorization Service UI </h1><br>
 
 <p align="center">
 UI for managing EGO Authentication and Authorization services
