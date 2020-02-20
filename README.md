@@ -1,13 +1,19 @@
 # Ego Authorization Service User Interface
 
-UI for Authentication and Authorization services
+<p align="center">
+UI for managing EGO Authentication and Authorization services
+</p>
+
+<p align="center">
+  <a href="http://www.overture.bio/products/ego" target="_blank"><img alt="Release Candidate" title="Release Candidate" src=https://www.overture.bio/img/progress-horizontal-RC.svg width="320" /></a>
+</p>
 
 ## Setup
 
 ### Requirements
 
-* [Node 8+](https://nodejs.org/en/download/current/)
-* [yarnpkg](https://yarnpkg.com/en/docs/install)
+- [Node 8+](https://nodejs.org/en/download/current/)
+- [yarnpkg](https://yarnpkg.com/en/docs/install)
 
 ### Develop
 
