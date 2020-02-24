@@ -17,7 +17,17 @@ export default ({ associatedItems }) => (
         {associatedItems.map(item => (
           <Table.Row key={item.policy.id}>
             <Table.Cell>
-              <span>{item.policy.name}</span>
+              <span
+                style={{
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  width: 280,
+                  display: 'inline-block',
+                  overflow: 'hidden',
+                }}
+              >
+                {item.policy.name}
+              </span>
             </Table.Cell>
             <Table.Cell collapsing>
               <Label style={styles.label}>
