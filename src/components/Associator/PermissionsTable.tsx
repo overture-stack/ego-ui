@@ -1,6 +1,6 @@
 import { DEFAULT_BLACK, LIGHT_TEAL } from 'common/colors';
 import { injectState } from 'freactal';
-import { capitalize, get, truncate } from 'lodash';
+import { capitalize, get } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
 import { Button, Checkbox, Label, Table } from 'semantic-ui-react';
@@ -97,7 +97,17 @@ const PermissionsTable = ({
             return (
               <Table.Row key={item.id}>
                 <Table.Cell>
-                  <span>{truncate(item.name, { length: 28 })}</span>
+                  <span
+                    style={{
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      width: 170,
+                      display: 'inline-block',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {item.name}
+                  </span>
                 </Table.Cell>
                 <Table.Cell collapsing>
                   {editing ? (
