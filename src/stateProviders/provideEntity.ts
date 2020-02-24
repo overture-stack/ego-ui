@@ -82,31 +82,37 @@ const provideEntity = provideState({
                     ...entity.associated[currentType],
                     ...Object.keys(change[currentType]).reduce((actions, action) => {
                       const otherAction = action === 'add' ? 'remove' : 'add';
-                      const indexToChange = findIndex(
+                      const currentActionIndex = findIndex(
                         entity.associated[currentType][action],
                         e => e.id && e.id === change[currentType][action].id,
                       );
-                      if (indexToChange > -1) {
-                        return {
-                          [action]: [
-                            ...entity.associated[currentType][action].slice(0, indexToChange),
-                            change[currentType][action],
-                            ...entity.associated[currentType][action].slice(
-                              indexToChange + 1,
-                              Infinity,
-                            ),
-                          ],
-                        };
-                      } else if (
+                      const otherActionIndex = findIndex(
+                        entity.associated[currentType][otherAction],
+                        e => e.id && e.id === change[currentType][action].id,
+                      );
+
+                      if (
                         (entity.associated[currentType][otherAction] || []).includes(
                           change[currentType][action],
-                        )
+                        ) ||
+                        otherActionIndex > -1
                       ) {
                         return {
                           ...actions,
                           [otherAction]: (entity.associated[currentType][otherAction] || []).filter(
                             ({ id }) => id !== change[currentType][action].id,
                           ),
+                        };
+                      } else if (currentActionIndex > -1) {
+                        return {
+                          [action]: [
+                            ...entity.associated[currentType][action].slice(0, currentActionIndex),
+                            change[currentType][action],
+                            ...entity.associated[currentType][action].slice(
+                              currentActionIndex + 1,
+                              Infinity,
+                            ),
+                          ],
                         };
                       } else {
                         return {

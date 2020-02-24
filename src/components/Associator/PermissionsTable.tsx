@@ -96,6 +96,7 @@ const PermissionsTable = ({
       <Table singleLine>
         <Table.Body>
           {associatedItems.map(item => {
+            // TODO: currently, incoming saved items have a different structure (permission) than newly added items(User/Group). Can these be matched up?
             return (
               <Table.Row key={item.id}>
                 <Table.Cell>
