@@ -1,11 +1,9 @@
-import { DEFAULT_BLACK, LIGHT_TEAL, MEDIUM_BLUE } from 'common/colors';
-import Downshift from 'downshift';
+import { DEFAULT_BLACK, LIGHT_TEAL } from 'common/colors';
 import { injectState } from 'freactal';
-import { css } from 'glamor';
-import { capitalize, find, findIndex, get, isEmpty, toLowerCase, uniqBy } from 'lodash';
+import { capitalize, get } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
-import { Button, Checkbox, Icon, Input, Label, Menu, Table } from 'semantic-ui-react';
+import { Button, Checkbox, Label, Table } from 'semantic-ui-react';
 
 import { MASK_LEVELS } from 'common/injectGlobals';
 
@@ -96,10 +94,21 @@ const PermissionsTable = ({
       <Table singleLine>
         <Table.Body>
           {associatedItems.map(item => {
+            // TODO: currently, incoming saved items have a different structure (permission) than newly added items(User/Group). Can these be matched up?
             return (
               <Table.Row key={item.id}>
                 <Table.Cell>
-                  <span>{item.name}</span>
+                  <span
+                    style={{
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      width: 170,
+                      display: 'inline-block',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {item.name}
+                  </span>
                 </Table.Cell>
                 <Table.Cell collapsing>
                   {editing ? (
