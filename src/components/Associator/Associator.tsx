@@ -54,7 +54,7 @@ async function fetchAllAssociatedItems({
 
   do {
     const data = await fetchExistingAssociations({ limit: 1000 });
-    items = [...items, ...(data ? data.resultSet : [])];
+    items = [...items, ...(get(data, 'resultSet') || [])];
     count = data ? data.count : 0;
   } while (items.length < count);
 
