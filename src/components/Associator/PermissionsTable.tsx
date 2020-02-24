@@ -102,7 +102,7 @@ const PermissionsTable = ({
                     style={{
                       whiteSpace: 'nowrap',
                       textOverflow: 'ellipsis',
-                      width: 170,
+                      width: editing ? 165 : 370,
                       display: 'inline-block',
                       overflow: 'hidden',
                     }}
