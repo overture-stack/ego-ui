@@ -276,6 +276,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         options: STATUSES,
         panelSection: 'meta',
         sortable: true,
+        required: true,
       },
       {
         fieldName: 'Description',
