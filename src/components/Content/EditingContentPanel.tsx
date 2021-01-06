@@ -12,13 +12,20 @@ import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
 
-const getFieldContent = (row, data, immutableKeys, stageChange) =>
-  row.fieldContent ||
-  (immutableKeys.includes(row.key)
-    ? DATE_KEYS.indexOf(row.key) >= 0
-      ? format(data[row.key], DATE_FORMAT)
-      : data[row.key] || ''
-    : rowInput({ row, data, stageChange }));
+const getFieldContent = (row, data, immutableKeys, stageChange) => {
+  if (row.key === 'lastName') {
+    return `${data.firstName} ${data.lastName}`;
+  } else {
+    return (
+      row.fieldContent ||
+      (immutableKeys.includes(row.key)
+        ? DATE_KEYS.indexOf(row.key) >= 0
+          ? format(data[row.key], DATE_FORMAT)
+          : data[row.key] || ''
+        : rowInput({ row, data, stageChange }))
+    );
+  }
+};
 
 function rowInput({
   data,
@@ -44,15 +51,6 @@ function rowInput({
     default:
       return (
         <div style={{ display: 'flex', flex: '0 0 100%' }}>
-          {row.key === 'lastName' ? (
-            <Input
-              className={`firstName ${css({ marginRight: 10 })}`}
-              size="mini"
-              onChange={(e, { value }) => stageChange({ firstName: value })}
-              type="text"
-              value={data['firstName'] || ''}
-            />
-          ) : null}
           <Input
             size="mini"
             onChange={(e, { value }) => stageChange({ [row.key]: value })}
