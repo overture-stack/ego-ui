@@ -209,6 +209,13 @@ const Associator = ({
             onSelect={item => addItem(item, type)}
             disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
             getItemName={item => (type === USERS ? getUserDisplayName(item) : get(item, 'name'))}
+            getName={item =>
+              item
+                ? type === USERS
+                  ? `${item.firstName} ${item.lastName}`
+                  : get(item, 'name')
+                : ''
+            }
             type={type}
           />
         )}

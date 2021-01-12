@@ -25,7 +25,6 @@ const enhance = compose(
   defaultProps({
     disabledItems: [],
     getKey: item => get(item, 'id'),
-    getName: item => get(item, 'name'),
     onSelect: item => global.log('selected', item),
   }),
   withState('isEntryMode', 'setIsEntryMode', false),
