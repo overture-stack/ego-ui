@@ -1,4 +1,4 @@
-import { DEFAULT_BLACK, LIGHT_TEAL } from 'common/colors';
+import { DEFAULT_BLACK, HIGH_CONTRAST_TEAL, LIGHT_TEAL, MEDIUM_BLUE } from 'common/colors';
 import { injectState } from 'freactal';
 import { capitalize, get } from 'lodash';
 import React from 'react';
@@ -6,6 +6,8 @@ import { compose, defaultProps, withHandlers, withProps, withState } from 'recom
 import { Button, Checkbox, Label, Table } from 'semantic-ui-react';
 
 import { MASK_LEVELS } from 'common/injectGlobals';
+import { USERS } from 'common/enums';
+import { NavLink } from 'react-router-dom';
 
 const styles = {
   label: {
@@ -76,13 +78,6 @@ const PermissionsTable = ({
   editing,
   associatedItems,
   removeItem,
-  requestItems,
-  handleSelect,
-  getName,
-  handleStateChange,
-  getKey,
-  items,
-  handleAddNew,
   handleSelectMask,
   type,
   state: {
@@ -97,7 +92,7 @@ const PermissionsTable = ({
             // TODO: currently, incoming saved items have a different structure (permission) than newly added items(User/Group). Can these be matched up?
             return (
               <Table.Row key={item.id}>
-                <Table.Cell>
+                <Table.Cell style={{ paddingTop: '0.5rem', paddingBottom: '0.4rem' }}>
                   <span
                     style={{
                       whiteSpace: 'nowrap',
@@ -107,7 +102,22 @@ const PermissionsTable = ({
                       overflow: 'hidden',
                     }}
                   >
-                    {item.name}
+                    <span>{item.name}</span>
+                    {type === USERS && (
+                      <NavLink
+                        to={`/${type}/${item.id}`}
+                        style={{
+                          color: MEDIUM_BLUE,
+                          display: 'block',
+                          fontSize: 11,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {item.id}
+                      </NavLink>
+                    )}
                   </span>
                 </Table.Cell>
                 <Table.Cell collapsing>

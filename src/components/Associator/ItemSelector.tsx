@@ -1,3 +1,4 @@
+import { USERS } from 'common/enums';
 import Downshift from 'downshift';
 import { css } from 'glamor';
 import { differenceBy, get } from 'lodash';
@@ -29,10 +30,17 @@ const enhance = compose(
   }),
   withState('isEntryMode', 'setIsEntryMode', false),
   withState('items', 'setItems', []),
-  withProps(({ onSelect, fetchItems, setItems, disabledItems, getKey }) => ({
+  withProps(({ onSelect, fetchItems, setItems, disabledItems, getKey, type }) => ({
     handleSelect: (item, { clearSelection }) => {
       if (item && !disabledItems.map(getKey).includes(getKey(item))) {
-        onSelect(item);
+        const itemToAdd =
+          type === USERS
+            ? {
+                ...item,
+                name: `${item.firstName} ${item.lastName}`,
+              }
+            : item;
+        onSelect(itemToAdd);
       }
       clearSelection();
     },
@@ -58,12 +66,18 @@ const render = ({
   requestItems,
   items,
   handleSelect,
+  getItemName,
   getName,
   getKey,
   isEntryMode,
   setIsEntryMode,
   handleStateChange,
+  type,
 }) => {
+  const MenuComponent = props => {
+    return type === USERS ? <Menu size="large" {...props} /> : <Menu size="small" {...props} />;
+  };
+
   return (
     <Downshift
       onChange={handleSelect}
@@ -77,9 +91,8 @@ const render = ({
           {isEntryMode ? (
             <div>
               <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-              <Menu
+              <MenuComponent
                 className={`OptionList ${css(styles.optionsWrapper)}`}
-                size="small"
                 style={{ zIndex: 1, overflowY: 'auto', maxHeight: 220 }}
                 vertical
               >
@@ -96,13 +109,14 @@ const render = ({
                         })}
                         active={highlightedIndex === i}
                         disabled={isDisabled}
+                        style={type === USERS ? { padding: '0.8rem' } : {}}
                       >
-                        {getName(item)}
+                        {getItemName(item)}
                       </Menu.Item>
                     );
                   })}
                 {!items.length && <Menu.Item>No Results</Menu.Item>}
-              </Menu>
+              </MenuComponent>
             </div>
           ) : (
             <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
