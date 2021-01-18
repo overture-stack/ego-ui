@@ -1,4 +1,4 @@
-import { DEFAULT_BLACK, HIGH_CONTRAST_TEAL, LIGHT_TEAL, MEDIUM_BLUE } from 'common/colors';
+import { DEFAULT_BLACK, LIGHT_TEAL, MEDIUM_BLUE } from 'common/colors';
 import { injectState } from 'freactal';
 import { capitalize, get } from 'lodash';
 import React from 'react';
