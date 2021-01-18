@@ -68,7 +68,7 @@ spec:
             steps {
                 container('docker') {
                     withCredentials([usernamePassword(credentialsId:'OvertureBioGithub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh 'docker login -u $USERNAME -p $PASSWORD'
+                        sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
                     }
                     sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:edge"
                     sh "docker push ${dockerRepo}:${commit}"
@@ -95,7 +95,7 @@ spec:
                         sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${gitRepo} --tags"
                     }
                     withCredentials([usernamePassword(credentialsId:'OvertureBioGithub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh 'docker login -u $USERNAME -p $PASSWORD'
+                        sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
                     }
                     sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:${version}"
                     sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:latest"
