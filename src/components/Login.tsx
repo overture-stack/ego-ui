@@ -100,7 +100,7 @@ class Component extends React.Component<any, any> {
         }
       })
       .catch(err => {
-        console.warn('err: ', err);
+        console.warn('Error: ', err);
       });
   }
 
