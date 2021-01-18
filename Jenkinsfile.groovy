@@ -55,7 +55,7 @@ spec:
                     sh "yarn install --frozen-lockfile"
                     sh "yarn build"
                 }
-                container('docker')
+                container('docker') {
                     sh "docker build --build-arg=COMMIT=${commit} --network=host -f Dockerfile . -t ${dockerRepo}:${commit} -t ${dockerRepo}:${commit} -t ${dockerHubRepo}:${commit} -t ${dockerHubRepo}:${commit}"
                 }
                 
