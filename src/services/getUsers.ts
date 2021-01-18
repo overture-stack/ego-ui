@@ -46,5 +46,5 @@ export const getUsers = ({
           )}`,
         )
         .then(r => r.data)
-        .catch(err => err);
+        .catch(err => console.log('Error: ', err));
 };
