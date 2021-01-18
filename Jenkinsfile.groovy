@@ -54,7 +54,8 @@ spec:
                 container('node') {
                     sh "yarn install --frozen-lockfile"
                     sh "yarn build"
-                }github.com/overture-stack/ego-ui
+                }
+                container('docker')
                     sh "docker build --build-arg=COMMIT=${commit} --network=host -f Dockerfile . -t ${dockerRepo}:${commit} -t ${dockerRepo}:${commit} -t ${dockerHubRepo}:${commit} -t ${dockerHubRepo}:${commit}"
                 }
                 
