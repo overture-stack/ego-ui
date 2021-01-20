@@ -1,4 +1,3 @@
-import { USERS } from 'common/enums';
 import Downshift from 'downshift';
 import { css } from 'glamor';
 import { differenceBy, get } from 'lodash';
