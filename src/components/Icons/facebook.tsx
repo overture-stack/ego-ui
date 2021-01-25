@@ -3,7 +3,7 @@ import React from 'react';
 import IconProps from './types';
 
 const FacebookLogo = ({ width, height, style }: IconProps) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 11 20">
+  <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 1 20">
     <g fill="none" fillRule="evenodd">
       <g fill="#FFF" fillRule="nonzero">
         <g>
