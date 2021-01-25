@@ -104,7 +104,7 @@ spec:
                 }
                 container('docker') {
                     withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
+                        sh 'docker login -u $USERNAME -p $PASSWORD'
                     }
                     sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:${version}"
                     sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:latest"
