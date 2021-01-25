@@ -75,6 +75,29 @@ const render = ({
 }) => {
   const MenuComponent = props => {
     return type === USERS ? <Menu size="large" {...props} /> : <Menu size="small" {...props} />;
+
+  const availableItems = differenceBy(items, disabledItems, item => item.id);
+
+  const getMenuItems = (inputValue, getItemProps, highlightedIndex) => {
+    if (items.length === 0 || availableItems.length === 0) {
+      return <Menu.Item>No Results</Menu.Item>;
+    }
+    return availableItems.filter(matchFor(inputValue, getName)).map((item, i) => {
+      const isDisabled = disabledItems.map(getKey).includes(getKey(item));
+      return (
+        <Menu.Item
+          key={getKey(item)}
+          {...getItemProps({
+            disabled: isDisabled,
+            item,
+          })}
+          active={highlightedIndex === i}
+          disabled={isDisabled}
+        >
+          {getName(item)}
+        </Menu.Item>
+      );
+    });
   };
 
   return (
@@ -85,46 +108,30 @@ const render = ({
       onStateChange={handleStateChange}
       isOpen={isEntryMode}
     >
-      {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
-        <div className={`ItemSelector ${css(styles.container)}`}>
-          {isEntryMode ? (
-            <div>
-              <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-              <MenuComponent
-                className={`OptionList ${css(styles.optionsWrapper)}`}
-                style={{ zIndex: 1, overflowY: 'auto', maxHeight: 220 }}
-                vertical
-              >
-                {differenceBy(items, disabledItems, item => item && item.id)
-                  .filter(matchFor(inputValue, getName))
-                  .map((item, i) => {
-                    const isDisabled = disabledItems.map(getKey).includes(getKey(item));
-                    return (
-                      <Menu.Item
-                        key={getKey(item)}
-                        {...getItemProps({
-                          disabled: isDisabled,
-                          item,
-                        })}
-                        active={highlightedIndex === i}
-                        disabled={isDisabled}
-                        style={type === USERS ? { padding: '0.8rem' } : {}}
-                      >
-                        {getItemName(item)}
-                      </Menu.Item>
-                    );
-                  })}
-                {!items.length && <Menu.Item>No Results</Menu.Item>}
-              </MenuComponent>
-            </div>
-          ) : (
-            <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
-              <Icon name="add" />
-              Add
-            </Button>
-          )}
-        </div>
-      )}
+      {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => {
+        return (
+          <div className={`ItemSelector ${css(styles.container)}`}>
+            {isEntryMode ? (
+              <div>
+                <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
+                <Menu
+                  className={`OptionList ${css(styles.optionsWrapper)}`}
+                  size="small"
+                  style={{ zIndex: 1, overflowY: 'auto', maxHeight: 220 }}
+                  vertical
+                >
+                  {getMenuItems(inputValue, getItemProps, highlightedIndex)}
+                </Menu>
+              </div>
+            ) : (
+              <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
+                <Icon name="add" />
+                Add
+              </Button>
+            )}
+          </div>
+        );
+      }}
     </Downshift>
   );
 };
