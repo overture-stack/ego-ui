@@ -24,7 +24,7 @@ const styles = {
   logo: {
     marginLeft: 0,
     width: '20%',
-    height: 400,
+    height: '40%',
   },
   title: {
     fontWeight: 400,
