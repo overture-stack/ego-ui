@@ -11,7 +11,6 @@ import {
   createApplication,
   createGroup,
   createPolicy,
-  createUser,
   deleteApplication,
   deleteGroup,
   deletePolicy,
@@ -89,7 +88,6 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       { key: 'mask', fieldName: 'Access Level', sortable: true },
       { key: 'action', fieldName: 'Action', sortable: false },
     ],
-    createItem: createUser,
     deleteItem: deleteUser,
     emptyMessage: 'Please select a user',
     initialSortField(isChildOfPolicy: boolean) {
