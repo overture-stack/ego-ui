@@ -87,11 +87,10 @@ class Component extends React.Component<any, any> {
     effects: PropTypes.object,
     state: PropTypes.object,
   };
+
   componentDidMount() {
     ajax
-      .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, {
-        withCredentials: true,
-      })
+      .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, { withCredentials: true })
       .then(resp => {
         if (resp.status === 200) {
           return resp.data;
@@ -119,6 +118,9 @@ class Component extends React.Component<any, any> {
         } else {
           this.props.history.push('/no-access');
         }
+      })
+      .catch(err => {
+        console.warn('Error: ', err);
       });
   }
 

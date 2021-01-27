@@ -1,3 +1,4 @@
+import { USERS } from 'common/enums';
 import Downshift from 'downshift';
 import { css } from 'glamor';
 import { differenceBy, get } from 'lodash';
@@ -24,15 +25,21 @@ const enhance = compose(
   defaultProps({
     disabledItems: [],
     getKey: item => get(item, 'id'),
-    getName: item => get(item, 'name'),
     onSelect: item => global.log('selected', item),
   }),
   withState('isEntryMode', 'setIsEntryMode', false),
   withState('items', 'setItems', []),
-  withProps(({ onSelect, fetchItems, setItems, disabledItems, getKey }) => ({
+  withProps(({ onSelect, fetchItems, setItems, disabledItems, getKey, type }) => ({
     handleSelect: (item, { clearSelection }) => {
       if (item && !disabledItems.map(getKey).includes(getKey(item))) {
-        onSelect(item);
+        const itemToAdd =
+          type === USERS
+            ? {
+                ...item,
+                name: `${item.firstName} ${item.lastName}`,
+              }
+            : item;
+        onSelect(itemToAdd);
       }
       clearSelection();
     },
@@ -58,12 +65,18 @@ const render = ({
   requestItems,
   items,
   handleSelect,
+  getItemName,
   getName,
   getKey,
   isEntryMode,
   setIsEntryMode,
   handleStateChange,
+  type,
 }) => {
+  const MenuComponent = props => {
+    return type === USERS ? <Menu size="large" {...props} /> : <Menu size="small" {...props} />;
+  };
+
   const availableItems = differenceBy(items, disabledItems, item => item.id);
 
   const getMenuItems = (inputValue, getItemProps, highlightedIndex) => {
@@ -82,7 +95,7 @@ const render = ({
           active={highlightedIndex === i}
           disabled={isDisabled}
         >
-          {getName(item)}
+          {getItemName(item)}
         </Menu.Item>
       );
     });
@@ -96,30 +109,27 @@ const render = ({
       onStateChange={handleStateChange}
       isOpen={isEntryMode}
     >
-      {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => {
-        return (
-          <div className={`ItemSelector ${css(styles.container)}`}>
-            {isEntryMode ? (
-              <div>
-                <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-                <Menu
-                  className={`OptionList ${css(styles.optionsWrapper)}`}
-                  size="small"
-                  style={{ zIndex: 1, overflowY: 'auto', maxHeight: 220 }}
-                  vertical
-                >
-                  {getMenuItems(inputValue, getItemProps, highlightedIndex)}
-                </Menu>
-              </div>
-            ) : (
-              <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
-                <Icon name="add" />
-                Add
-              </Button>
-            )}
-          </div>
-        );
-      }}
+      {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
+        <div className={`ItemSelector ${css(styles.container)}`}>
+          {isEntryMode ? (
+            <div>
+              <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
+              <MenuComponent
+                className={`OptionList ${css(styles.optionsWrapper)}`}
+                style={{ zIndex: 1, overflowY: 'auto', maxHeight: 220 }}
+                vertical
+              >
+                {getMenuItems(inputValue, getItemProps, highlightedIndex)}
+              </MenuComponent>
+            </div>
+          ) : (
+            <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
+              <Icon name="add" />
+              Add
+            </Button>
+          )}
+        </div>
+      )}
     </Downshift>
   );
 };

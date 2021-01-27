@@ -1,6 +1,6 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { User } from 'common/typedefs/User';
-import { isNil, omitBy, orderBy } from 'lodash';
+import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
@@ -24,12 +24,6 @@ export const getUsers = ({
     ? `/policies/${policyId}`
     : '';
 
-  // prevent 400 error on /create
-  const activeId = groupId || applicationId || policyId;
-  if (activeId === 'create') {
-    Promise.resolve(activeId);
-  }
-
   return USE_DUMMY_DATA
     ? Promise.resolve({
         count: dummyUsers.length,
@@ -52,5 +46,5 @@ export const getUsers = ({
           )}`,
         )
         .then(r => r.data)
-        .catch(err => err);
+        .catch(err => console.log('Error: ', err));
 };

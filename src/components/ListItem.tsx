@@ -84,7 +84,7 @@ export const UserListItem = ({ item, sortField, className = '', style, parent, .
       {isEmpty(parent) ? (
         <UserDisplayName firstName={firstName} lastName={lastName} type={type} />
       ) : (
-        <ChildUserDisplayName name={name} type={type} />
+        <ChildUserDisplayName name={`${firstName} ${lastName}`} type={type} />
       )}
       <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
     </Ripple>

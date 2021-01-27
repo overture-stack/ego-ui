@@ -3,10 +3,10 @@ import { css } from 'glamor';
 import { capitalize, get, noop, uniqBy, without } from 'lodash';
 import React, { useEffect } from 'react';
 
-import { compose, defaultProps, lifecycle, withHandlers, withStateHandlers } from 'recompose';
-import { Button, Grid, Icon, Label } from 'semantic-ui-react';
+import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
+import { Icon, Label } from 'semantic-ui-react';
 
-import { DARK_BLUE, GREY } from 'common/colors';
+import { DARK_BLUE, DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
 import { messenger } from 'common/injectGlobals';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { IResource } from 'common/typedefs/Resource';
@@ -172,6 +172,17 @@ const Associator = ({
         }))
       : allAssociatedItems;
 
+  const getUserDisplayName = item => {
+    return (
+      <div>
+        <span>{RESOURCE_MAP[USERS].getName(item)}</span>
+        <div style={{ fontSize: 11, color: DARK_GREY, paddingTop: 5, wordBreak: 'break-all' }}>
+          {item.id}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={`Associator ${css(styles.container)}`}>
       <div
@@ -197,6 +208,15 @@ const Associator = ({
             fetchItems={args => fetchItems({ ...args, limit: 1000 })}
             onSelect={item => addItem(item, type)}
             disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
+            getItemName={item => (type === USERS ? getUserDisplayName(item) : get(item, 'name'))}
+            getName={item =>
+              item
+                ? type === USERS
+                  ? `${item.firstName} ${item.lastName}`
+                  : get(item, 'name')
+                : ''
+            }
+            type={type}
           />
         )}
       </div>
@@ -216,9 +236,7 @@ const Associator = ({
         ) : (
           itemsInList.map(item => (
             <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
-              {type === USERS && !item.firstName
-                ? get(item, 'name')
-                : RESOURCE_MAP[type].getName(item)}
+              {RESOURCE_MAP[type].getName(item)}
               {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
             </Label>
           ))
