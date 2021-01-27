@@ -136,6 +136,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         panelSection: null,
         required: true,
         sortable: true,
+        immutable: true,
       },
       {
         fieldName: 'Last Name',
@@ -144,6 +145,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         panelSection: 'id',
         required: true,
         sortable: true,
+        immutable: true,
       },
       {
         fieldName: 'Email',
@@ -151,6 +153,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         panelSection: 'id',
         required: true,
         sortable: true,
+        immutable: true,
       },
       {
         fieldName: 'User Type',
