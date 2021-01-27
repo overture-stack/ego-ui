@@ -1,6 +1,6 @@
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { User } from 'common/typedefs/User';
-import { isNil, omitBy, orderBy } from 'lodash';
+import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 import ajax from 'services/ajax';
 import dummyUsers from './dummyData/users';
