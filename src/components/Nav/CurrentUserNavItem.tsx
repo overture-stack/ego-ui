@@ -5,7 +5,7 @@ import Gravatar from 'react-gravatar';
 import { NavLink } from 'react-router-dom';
 import { compose, withState } from 'recompose';
 
-import { TEAL } from 'common/colors';
+import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
 import Logout from 'components/Logout';
 import Ripple from 'components/Ripple';
 
@@ -65,11 +65,11 @@ const styles = {
     display: 'block',
     fontSize: 16,
     padding: '0.8em 1em',
-    backgroundColor: '#00a1d8',
-    color: '#fff',
+    backgroundColor: BLUE,
+    color: WHITE,
     '&:hover': {
-      backgroundColor: '#53bfe5',
-      color: '#fff',
+      backgroundColor: LIGHT_BLUE,
+      color: WHITE,
     },
   },
 };
