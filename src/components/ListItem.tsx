@@ -2,11 +2,13 @@ import { css } from 'glamor';
 import { isEmpty } from 'lodash';
 import React from 'react';
 import Truncate from 'react-truncate';
+import format from 'date-fns/format/index.js';
 
 import { TEAL } from 'common/colors';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 import Ripple from 'components/Ripple';
-import UserDisplayName, { ChildUserDisplayName } from 'components/UserDisplayName';
+import { UserDisplayName } from 'components/UserDisplayName';
+import { DATE_FORMAT } from 'common/injectGlobals';
 
 const styles = {
   container: {
@@ -72,27 +74,26 @@ export const ApplicationListItem = ({ item, sortField, className = '', style, ..
 };
 
 export const UserListItem = ({ item, sortField, className = '', style, parent, ...props }) => {
-  const { firstName, lastName, name, type } = item;
-
   const secondaryField = sortField === 'lastName' ? 'email' : sortField;
+  const secondaryValue =
+    secondaryField === 'createdAt' || secondaryField === 'lastLogin'
+      ? format(item[secondaryField], DATE_FORMAT)
+      : item[secondaryField];
+
   return (
     <Ripple
       className={`UserListItem ${className}`}
       style={{ ...styles.container, ...style }}
       {...props}
     >
-      {isEmpty(parent) ? (
-        <UserDisplayName firstName={firstName} lastName={lastName} type={type} />
-      ) : (
-        <ChildUserDisplayName name={`${firstName} ${lastName}`} type={type} />
-      )}
-      <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
+      <UserDisplayName user={item} />
+      <div className={`secondary-field ${css(styles.secondaryField)}`}>{secondaryValue}</div>
     </Ripple>
   );
 };
 
 export const PolicyListItem = ({ item, sortField, className = '', style, ...props }) => {
-  const { id, name } = item;
+  const { name } = item;
   const secondaryField = sortField === 'name' ? 'id' : sortField;
 
   return (

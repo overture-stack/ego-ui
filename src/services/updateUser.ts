@@ -30,7 +30,7 @@ function remove({ user, key, value }: any) {
 }
 
 export const updateUser = ({ item }) => {
-  return ajax.put(`/users/${item.id}`, omit(item, BLOCKED_KEYS)).then(r => r.data);
+  return ajax.patch(`/users/${item.id}`, omit(item, BLOCKED_KEYS)).then(r => r.data);
 };
 
 export const addGroupToUser = ({ user, group }) => {

@@ -119,7 +119,7 @@ const styles = {
   },
   currentUser: {
     paddingLeft: '20%',
-    paddingRight: '20%',
+    paddingRight: '10%',
     paddingTop: 12,
     paddingBottom: 12,
     cursor: 'pointer',

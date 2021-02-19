@@ -58,7 +58,6 @@ import { IResource, TResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
 
 import {
-  API_KEY,
   API_KEYS,
   APPLICATION,
   APPLICATIONS,
@@ -71,6 +70,7 @@ import {
   USER,
   USERS,
 } from 'common/enums';
+import { getUserDisplayName } from './getUserDisplayName';
 
 // ignore tslint sort, resources listed in deliberate order
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
@@ -100,7 +100,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     getKey: item => item.id.toString(),
     getList: getUsers,
     getListAll: getUsers,
-    getName: x => `${x.lastName}, ${x.firstName ? x.firstName[0] : undefined}`, // Null safe property access
+    getName: getUserDisplayName,
     Icon: ({ style }) => <Icon name="user" style={style} />,
     initialSortOrder: 'ASC',
     isParent: true,
@@ -132,18 +132,14 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         fieldName: 'First Name',
         key: 'firstName',
         panelSection: null,
-        required: true,
         sortable: true,
-        immutable: true,
       },
       {
         fieldName: 'Last Name',
         initialSort: true,
         key: 'lastName',
         panelSection: 'id',
-        required: true,
         sortable: true,
-        immutable: true,
       },
       {
         fieldName: 'Email',

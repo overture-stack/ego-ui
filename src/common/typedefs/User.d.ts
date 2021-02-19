@@ -1,8 +1,20 @@
+enum EgoProviderType {
+  GOOGLE = 'GOOGLE',
+  FACEBOOK = 'FACEBOOK',
+  GITHUB = 'GITHUB',
+  LINKEDIN = 'LINKEDIN',
+  ORCID = 'ORCID',
+}
+
+enum UserType {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
+
 export interface User {
   id: string;
-  userName: string;
   email: string;
-  type: string;
+  type: UserType;
   status: string;
   firstName: string;
   lastName: string;
@@ -10,4 +22,6 @@ export interface User {
   createdAt: string;
   preferredLanguage: string;
   groups: string[];
+  providerSubjectId: string;
+  providerType: EgoProviderType;
 }
