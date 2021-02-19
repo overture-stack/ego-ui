@@ -7,20 +7,19 @@ import { compose } from 'recompose';
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
 
-const EmptyField = () => <span style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>
+const EmptyField = () => <span style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
 
 export const getFieldContent = (row, data) => {
   if (DATE_KEYS.indexOf(row.key) >= 0) {
     return format(data[row.key], DATE_FORMAT);
   }
   if (row.key === 'lastName') {
-    if (!data?.firstName.length && !data?.lastName.length) {
-      return <EmptyField />
+    if (!data.firstName.length && !data.lastName.length) {
+      return <EmptyField />;
     }
-    return [data.firstName, data.lastName].join(' ')
+    return [data.firstName, data.lastName].join(' ');
   }
-  return data[row.key] || <EmptyField />
-
+  return data[row.key] || <EmptyField />;
 };
 
 export const getUserFieldName = row => {
@@ -32,7 +31,6 @@ function normalizeRow(
   data: object[],
   associated: any,
 ) {
-
   const rowData = {
     ...row,
     fieldContent: row.fieldContent || getFieldContent(row, data),
