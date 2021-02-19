@@ -10,6 +10,9 @@ import ContentPanelView from './ContentPanelView';
 const EmptyField = () => <span style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
 
 export const getFieldContent = (row, data) => {
+  if (row.fieldContent) {
+    return row.fieldContent;
+  }
   if (DATE_KEYS.indexOf(row.key) >= 0) {
     return format(data[row.key], DATE_FORMAT);
   }
@@ -33,7 +36,7 @@ function normalizeRow(
 ) {
   const rowData = {
     ...row,
-    fieldContent: row.fieldContent || getFieldContent(row, data),
+    fieldContent: getFieldContent(row, data),
     fieldName: getUserFieldName(row),
   };
 
