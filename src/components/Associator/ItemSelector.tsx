@@ -1,4 +1,5 @@
 import { USERS } from 'common/enums';
+import { getUserDisplayName } from 'common/getUserDisplayName';
 import Downshift from 'downshift';
 import { css } from 'glamor';
 import { differenceBy, get } from 'lodash';
@@ -36,7 +37,7 @@ const enhance = compose(
           type === USERS
             ? {
                 ...item,
-                name: `${item.firstName} ${item.lastName}`,
+                name: getUserDisplayName(item),
               }
             : item;
         onSelect(itemToAdd);
@@ -83,17 +84,15 @@ const render = ({
     if (items.length === 0 || availableItems.length === 0) {
       return <Menu.Item>No Results</Menu.Item>;
     }
+
     return availableItems.filter(matchFor(inputValue, getName)).map((item, i) => {
-      const isDisabled = disabledItems.map(getKey).includes(getKey(item));
       return (
         <Menu.Item
           key={getKey(item)}
           {...getItemProps({
-            disabled: isDisabled,
             item,
           })}
           active={highlightedIndex === i}
-          disabled={isDisabled}
         >
           {getItemName(item)}
         </Menu.Item>

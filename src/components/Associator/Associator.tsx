@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
 import { Icon, Label } from 'semantic-ui-react';
 
-import { DARK_BLUE, DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
+import { DARK_BLUE, DARK_GREY, GREY } from 'common/colors';
 import { messenger } from 'common/injectGlobals';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { IResource } from 'common/typedefs/Resource';
@@ -15,6 +15,7 @@ import ItemSelector from './ItemSelector';
 
 import { isGroup } from 'common/associatedUtils';
 import { API_KEYS, PERMISSIONS, USERS } from 'common/enums';
+import { getUserDisplayName } from 'common/getUserDisplayName';
 
 interface TProps {
   addItem: Function;
@@ -172,7 +173,7 @@ const Associator = ({
         }))
       : allAssociatedItems;
 
-  const getUserDisplayName = item => {
+  const getListDisplayNameForUser = item => {
     return (
       <div>
         <span>{RESOURCE_MAP[USERS].getName(item)}</span>
@@ -208,13 +209,11 @@ const Associator = ({
             fetchItems={args => fetchItems({ ...args, limit: 1000 })}
             onSelect={item => addItem(item, type)}
             disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
-            getItemName={item => (type === USERS ? getUserDisplayName(item) : get(item, 'name'))}
+            getItemName={item =>
+              type === USERS ? getListDisplayNameForUser(item) : get(item, 'name')
+            }
             getName={item =>
-              item
-                ? type === USERS
-                  ? `${item.firstName} ${item.lastName}`
-                  : get(item, 'name')
-                : ''
+              item ? (type === USERS ? getUserDisplayName(item) : get(item, 'name')) : ''
             }
             type={type}
           />

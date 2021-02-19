@@ -8,6 +8,7 @@ import { compose, withState } from 'recompose';
 import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
 import Logout from 'components/Logout';
 import Ripple from 'components/Ripple';
+import { getUserDisplayName } from 'common/getUserDisplayName';
 
 const enhance = compose(
   injectState,
@@ -47,6 +48,10 @@ const styles = {
   displayName: {
     marginLeft: 10,
     fontSize: 18,
+    width: '160px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 
   userActions: {
@@ -90,7 +95,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
           />
         </div>
         <div className={`display-name ${css(styles.displayName)}`}>
-          {state.loggedInUser.firstName}
+          {getUserDisplayName(state.loggedInUser)}
         </div>
         {shouldShowMenu && (
           <div className={`user-actions ${css(styles.userActions)}`}>
