@@ -12,13 +12,16 @@ import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
 
-const getFieldContent = (row, data, immutableKeys, stageChange) =>
-  row.fieldContent ||
-  (immutableKeys.includes(row.key)
-    ? DATE_KEYS.indexOf(row.key) >= 0
-      ? format(data[row.key], DATE_FORMAT)
-      : data[row.key] || ''
-    : rowInput({ row, data, stageChange }));
+const getFieldContent = (row, data, immutableKeys, stageChange) => {
+  return (
+    row.fieldContent ||
+    (immutableKeys.includes(row.key)
+      ? DATE_KEYS.indexOf(row.key) >= 0
+        ? format(data[row.key], DATE_FORMAT)
+        : data[row.key] || ''
+      : rowInput({ row, data, stageChange }))
+  );
+};
 
 function rowInput({
   data,

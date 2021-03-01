@@ -5,9 +5,10 @@ import Gravatar from 'react-gravatar';
 import { NavLink } from 'react-router-dom';
 import { compose, withState } from 'recompose';
 
-import { TEAL } from 'common/colors';
+import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
 import Logout from 'components/Logout';
 import Ripple from 'components/Ripple';
+import { getUserDisplayName } from 'common/getUserDisplayName';
 
 const enhance = compose(
   injectState,
@@ -47,6 +48,10 @@ const styles = {
   displayName: {
     marginLeft: 10,
     fontSize: 18,
+    width: '160px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 
   userActions: {
@@ -65,11 +70,11 @@ const styles = {
     display: 'block',
     fontSize: 16,
     padding: '0.8em 1em',
-    backgroundColor: '#00a1d8',
-    color: '#fff',
+    backgroundColor: BLUE,
+    color: WHITE,
     '&:hover': {
-      backgroundColor: '#53bfe5',
-      color: '#fff',
+      backgroundColor: LIGHT_BLUE,
+      color: WHITE,
     },
   },
 };
@@ -90,7 +95,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
           />
         </div>
         <div className={`display-name ${css(styles.displayName)}`}>
-          {state.loggedInUser.firstName}
+          {getUserDisplayName(state.loggedInUser)}
         </div>
         {shouldShowMenu && (
           <div className={`user-actions ${css(styles.userActions)}`}>

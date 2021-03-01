@@ -1,4 +1,5 @@
 import { TEAL } from 'common/colors';
+import { User } from 'common/typedefs/User';
 import { css } from 'glamor';
 import React from 'react';
 
@@ -6,7 +7,6 @@ import Truncate from 'react-truncate';
 
 const styles = {
   container: {
-    width: '160px',
     fontSize: 18,
     lineHeight: 1,
     display: 'flex',
@@ -19,47 +19,35 @@ const styles = {
     color: TEAL,
   },
   formattedName: {
-    '& .name-part': {
-      maxWidth: '7em',
-      overflowX: 'hidden',
-      textOverflow: 'ellipsis',
-      display: 'inline-block',
-      wordBreak: 'break-word',
-      whiteSpace: 'nowrap',
-      lineHeight: 'normal',
-      paddingRight: '0.1em',
-      verticalAlign: 'text-bottom',
-    },
-    '& .punctuation': {
-      display: 'inline-block',
-      marginLeft: '-0.1em',
-    },
+    maxWidth: '180px',
+    overflowX: 'hidden',
+    textOverflow: 'ellipsis',
+    display: 'inline-block',
+    wordBreak: 'break-word',
+    whiteSpace: 'nowrap',
+    lineHeight: 'normal',
+    paddingRight: '0.1em',
+    verticalAlign: 'text-bottom',
   },
 };
 
-const FormatName = ({ firstName = '', lastName = '' }) => (
-  <span className={`formatted-name, ${css(styles.formattedName)}`}>
-    <span className={`last-name name-part`}>{lastName}</span>
-    <span className={`punctuation`}>,</span>{' '}
-    <span className={`first-name name-part`}>
-      {((firstName ? firstName[0] : '') || '').toUpperCase()}
-    </span>
-    <span className={`punctuation`}>.</span>
-  </span>
-);
-
-export const ChildUserDisplayName = ({ name, type }) => {
-  return (
-    <div className={`DisplayName ${css(styles.container)}`}>
-      <Truncate className={`formatted-name, ${css(styles.formattedName)}`}>{name}</Truncate>
-      {type === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
-    </div>
-  );
+const getName = user => {
+  const { lastName, firstName, id } = user;
+  if (lastName) {
+    if (firstName) {
+      return `${lastName}, ${firstName[0].toUpperCase()}.`;
+    }
+    return lastName;
+  } else if (firstName) {
+    return firstName;
+  } else {
+    return id;
+  }
 };
 
-export default ({ firstName, lastName, type, style }: any) => (
+export const UserDisplayName = ({ user, style = {} }: { user: User; style?: any }) => (
   <div className={`DisplayName ${css(styles.container, style)}`}>
-    <FormatName firstName={firstName} lastName={lastName} />
-    {type === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
+    <span className={`${css(styles.formattedName)}`}>{getName(user)}</span>
+    {user.type === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
   </div>
 );

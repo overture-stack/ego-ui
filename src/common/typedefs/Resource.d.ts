@@ -58,11 +58,11 @@ interface IListResponse {
 
 type TGetItem = (id: string) => Promise<User | Group | Application | string>;
 
-interface ICreateGroup {
+interface GroupInterface {
   item: { name: string; status: string; description?: string };
 }
 
-interface ICreateUser {
+interface UserInterface {
   item: {
     userName: string;
     email: string;
@@ -74,7 +74,7 @@ interface ICreateUser {
   };
 }
 
-interface ICreateApplication {
+interface ApplicationInterface {
   item: {
     name: string;
     description: string;
@@ -92,7 +92,7 @@ interface TAddEntity {
   permissions?: any;
 }
 
-interface ICreatePermission {
+interface PermissionInterface {
   accessLevel: TMaskLevel;
   owner: User;
   policy: {
@@ -112,14 +112,14 @@ interface IAddToUser {
 }
 
 interface IAddToGroup {
-  applications: (application: Application, item: ICreateApplication) => Promise<any>;
-  users: (user: User, item: ICreateUser) => Promise<any>;
-  permissions: (permission: Permission, item: ICreateGroup) => Promise<any>;
+  applications: (application: Application, item: ApplicationInterface) => Promise<any>;
+  users: (user: User, item: UserInterface) => Promise<any>;
+  permissions: (permission: Permission, item: GroupInterface) => Promise<any>;
 }
 
 interface IAddToApplication {
-  groups: (group: Group, item: ICreateGroup) => Promise<any>;
-  users: (user: User, item: ICreateUser) => Promise<any>;
+  groups: (group: Group, item: GroupInterface) => Promise<any>;
+  users: (user: User, item: UserInterface) => Promise<any>;
 }
 
 interface IPermissionsGetList {
@@ -141,12 +141,12 @@ export interface IResource {
   getListAll: (params: IListParams) => Promise<IListResponse>;
   getItem?: TGetItem | undefined;
   updateItem?: (
-    item: ICreateUser | ICreateGroup | ICreateApplication,
+    item: UserInterface | GroupInterface | ApplicationInterface,
   ) => Promise<User | Group | Application>;
-  createItem?: (
-    item: ICreateUser | ICreateGroup | ICreateApplication,
-  ) => Promise<User | Group | Application>;
-  deleteItem?: (item: ICreateUser | ICreateGroup | ICreateApplication) => Promise<null | string>;
+  createItem?: (item: GroupInterface | ApplicationInterface) => Promise<Group | Application>;
+  deleteItem?: (
+    item: UserInterface | GroupInterface | ApplicationInterface,
+  ) => Promise<null | string>;
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];

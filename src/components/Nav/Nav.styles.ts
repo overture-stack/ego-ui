@@ -1,10 +1,10 @@
-import { TEAL } from 'common/colors';
+import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
 
 const styles = {
   container: {
     position: 'relative',
     backgroundColor: TEAL,
-    color: '#fff',
+    color: WHITE,
     width: 240,
     flexShrink: 0,
     display: 'flex',
@@ -55,7 +55,7 @@ const styles = {
     fontWeight: 'lighter',
     lineHeight: '35px',
     fontSize: 22,
-    color: '#fff',
+    color: WHITE,
     position: 'relative',
     display: 'flex',
     width: '100%',
@@ -74,7 +74,7 @@ const styles = {
       display: 'block',
       position: 'absolute',
       zIndex: 1,
-      backgroundColor: '#00a1d8',
+      backgroundColor: BLUE,
       content: '""',
       top: 0,
       left: 0,
@@ -87,8 +87,8 @@ const styles = {
       opacity: 0,
     },
     '&:hover': {
-      color: '#fff',
-      backgroundColor: '#53bfe5',
+      color: WHITE,
+      backgroundColor: LIGHT_BLUE,
     },
     '&.active': {
       '& div': {
@@ -112,19 +112,19 @@ const styles = {
   },
   collapse: {
     textAlign: 'right',
-    background: '#00a1d8',
+    background: BLUE,
     color: '#fff',
     fontSize: 22,
     padding: 10,
   },
   currentUser: {
     paddingLeft: '20%',
-    paddingRight: '20%',
+    paddingRight: '10%',
     paddingTop: 12,
     paddingBottom: 12,
     cursor: 'pointer',
     '&:hover': {
-      backgroundColor: '#53bfe5',
+      backgroundColor: LIGHT_BLUE,
     },
     '& .display-name': {
       // transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',

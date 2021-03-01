@@ -265,7 +265,7 @@ class Content extends React.Component<any, IContentState> {
           ) : ![ContentState.editing, ContentState.creating].includes(contentState) && !isSaving ? (
             <React.Fragment>
               <div>
-                <CreateButton />
+                {resource.createItem && <CreateButton />}
                 {id && <EditButton />}
               </div>
               {id &&

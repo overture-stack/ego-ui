@@ -1,22 +1,28 @@
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
-import { css } from 'glamor';
-import { groupBy, upperCase } from 'lodash';
+import { upperCase } from 'lodash';
 import React from 'react';
 import { compose } from 'recompose';
-import { Grid } from 'semantic-ui-react';
 
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
 
+const EmptyField = () => <span style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
+
 export const getFieldContent = (row, data) => {
+  if (row.fieldContent) {
+    return row.fieldContent;
+  }
   if (DATE_KEYS.indexOf(row.key) >= 0) {
     return format(data[row.key], DATE_FORMAT);
   }
   if (row.key === 'lastName') {
-    return `${data.firstName} ${data.lastName}`;
+    if (!data.firstName.length && !data.lastName.length) {
+      return <EmptyField />;
+    }
+    return [data.firstName, data.lastName].join(' ');
   }
-  return data[row.key];
+  return data[row.key] || <EmptyField />;
 };
 
 export const getUserFieldName = row => {
@@ -30,13 +36,7 @@ function normalizeRow(
 ) {
   const rowData = {
     ...row,
-    fieldContent:
-      row.fieldContent ||
-      (data[row.key] ? (
-        getFieldContent(row, data)
-      ) : (
-        <span style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>
-      )),
+    fieldContent: getFieldContent(row, data),
     fieldName: getUserFieldName(row),
   };
 
@@ -62,7 +62,6 @@ const ContentPanel = ({
     entity: { item, associated, resource },
   },
 }) => {
-  const panelSections = groupBy(rows, 'panelSection');
   const normalizedRows = rows.map(row => normalizeRow(row, item, associated));
   return (
     <ContentPanelView
