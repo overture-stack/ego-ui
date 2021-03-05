@@ -28,11 +28,16 @@
     "recompose": "^0.26.0",
     "semantic-ui-css": "2.2.12",
     "semantic-ui-react": "^0.81.1",
+    "serve": "^11.3.2",
     "url-join": "^2.0.2",
     "vanilla-ripplejs": "^1.0.3"
   },
+  "bin": {
+    "serve": "./node_modules/.bin/serve"
+  },
   "scripts": {
     "start": "react-scripts-ts start",
+    "serve": "npm run build && NODE_ENV=production serve -s build",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject",
