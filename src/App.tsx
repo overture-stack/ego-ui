@@ -12,7 +12,7 @@ import ResourceRoute from 'components/ResourceRoute';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Nav from 'components/Nav';
 import NoAccess from 'components/NoAccess';
-import { PUBLIC_URL } from 'common/injectGlobals';
+import { PUBLIC_PATH } from 'common/injectGlobals';
 
 const enhance = compose(provideLoggedInUser);
 
@@ -23,7 +23,7 @@ const ProtectedRoute = injectState(({ component, state, ...rest }) => (
 class App extends React.Component<any, any> {
   render() {
     return (
-      <Router basename={PUBLIC_URL}>
+      <Router basename={PUBLIC_PATH}>
         <div style={{ height: '100%', display: 'flex' }}>
           <Switch>
             <Route path="/" exact component={Login} />

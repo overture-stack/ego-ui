@@ -20,7 +20,10 @@ RUN addgroup -S -g $EGO_UI_GID $EGO_UI_USER \
 # defaults
 ENV REACT_APP_EGO_CLIENT_ID=ego
 ENV REACT_APP_API=http://localhost:8081/
-ENV REACT_APP_PUBLIC_URL="/"
+# public_url for compiling assets
+ENV PUBLIC_URL="/"
+# for the Router component basename
+ENV REACT_APP_PUBLIC_PATH="/"
 
 USER $EGO_UI_UID
 
