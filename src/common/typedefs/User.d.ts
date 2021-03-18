@@ -1,5 +1,6 @@
 enum EgoProviderType {
   GOOGLE = 'GOOGLE',
+  // FACEBOOK = 'FACEBOOK',
   GITHUB = 'GITHUB',
   LINKEDIN = 'LINKEDIN',
   ORCID = 'ORCID',

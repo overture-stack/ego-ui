@@ -8,7 +8,7 @@ import { compose } from 'recompose';
 import ajax from 'services/ajax';
 
 import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
-import { Orcid, Google, GitHub, LinkedIn } from './Icons';
+import { Orcid, Facebook, Google, GitHub, LinkedIn } from './Icons';
 
 const styles = {
   container: {
@@ -52,6 +52,7 @@ const enhance = compose(injectState);
 
 enum LoginProvider {
   Google = 'Google',
+  // Facebook = 'Facebook',
   Github = 'GitHub',
   Linkedin = 'LinkedIn',
   Orcid = 'ORCiD',
@@ -59,6 +60,7 @@ enum LoginProvider {
 
 enum ProviderLoginPaths {
   google = 'google',
+  // facebook = 'facebook',
   github = 'github',
   linkedin = 'linkedin',
   orcid = 'orcid',
@@ -76,6 +78,7 @@ const providers: ProviderType[] = [
   { name: LoginProvider.Google, path: ProviderLoginPaths.google, Icon: Google },
   { name: LoginProvider.Orcid, path: ProviderLoginPaths.orcid, Icon: Orcid },
   { name: LoginProvider.Github, path: ProviderLoginPaths.github, Icon: GitHub },
+  // { name: LoginProvider.Facebook, path: ProviderLoginPaths.facebook, Icon: Facebook },
   { name: LoginProvider.Linkedin, path: ProviderLoginPaths.linkedin, Icon: LinkedIn },
 ];
 
