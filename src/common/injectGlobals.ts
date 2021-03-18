@@ -11,7 +11,7 @@ export const API_ROOT = process.env.REACT_APP_API;
 export const EGO_CLIENT_ID = process.env.REACT_APP_EGO_CLIENT_ID;
 export const USE_DUMMY_DATA = process.env.REACT_APP_DUMMY;
 
-export const PUBLIC_URL = process.env.REACT_APP_PUBLIC_URL;
+export const PUBLIC_PATH = process.env.REACT_APP_PUBLIC_PATH;
 
 export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING', 'REJECTED'];
 export const DATE_KEYS = ['createdAt', 'lastLogin'];
