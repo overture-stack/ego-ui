@@ -13,6 +13,8 @@ export const USE_DUMMY_DATA = process.env.REACT_APP_DUMMY;
 
 export const PUBLIC_PATH = process.env.REACT_APP_PUBLIC_PATH;
 
+export const KEYCLOAK_ENABLED = process.env.REACT_APP_KEYCLOAK_ENABLED === 'true' || false;
+
 export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING', 'REJECTED'];
 export const DATE_KEYS = ['createdAt', 'lastLogin'];
 export const DATE_FORMAT = 'YYYY-MM-DD hh:mm A';
@@ -22,9 +24,9 @@ const createPubsub = () => {
   let listeners = [];
   const subscribe = callback => (listeners = listeners.concat(callback));
   const unsubscribe = callback =>
-    (listeners = listeners.filter(l => {
-      l !== callback;
-    }));
+  (listeners = listeners.filter(l => {
+    l !== callback;
+  }));
   const publish = payload => {
     listeners.forEach((callback: Function) => {
       callback(payload);
