@@ -385,6 +385,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         panelSection: 'meta',
         required: true,
       },
+      {
+        fieldName: 'Error Redirect Uri',
+        key: 'errorRedirectUri',
+        panelSection: 'meta',
+        required: true,
+      },
     ],
     updateItem: updateApplication,
   },
