@@ -127,18 +127,14 @@ spec:
                         sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
                     }
                     sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:${version}"
-                    sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:latest"
                     sh "docker push ${dockerRepo}:${version}"
-                    sh "docker push ${dockerRepo}:latest"
                 }
                 container('docker') {
                     withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh 'docker login -u $USERNAME -p $PASSWORD'
                     }
                     sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:${version}"
-                    sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:latest"
                     sh "docker push ${dockerHubRepo}:${version}"
-                    sh "docker push ${dockerHubRepo}:latest"
                 }
             }
         }
