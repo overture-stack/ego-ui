@@ -9,10 +9,9 @@ import { TEAL } from 'common/colors';
 import Logout from 'components/Logout';
 import Ripple from 'components/Ripple';
 
-const enhance = compose(
-  injectState,
-  withState('shouldShowMenu', 'setShouldShowMenu', false),
-);
+import CopyJwt from './CopyJwt';
+
+const enhance = compose(injectState, withState('shouldShowMenu', 'setShouldShowMenu', false));
 
 const styles = {
   container: {
@@ -94,6 +93,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
         </div>
         {shouldShowMenu && (
           <div className={`user-actions ${css(styles.userActions)}`}>
+            <CopyJwt className={`menu-item ${css(styles.menuItem)}`} />
             <NavLink
               to={`/users/${state.loggedInUser.id}`}
               className={`menu-item ${css(styles.menuItem)}`}
