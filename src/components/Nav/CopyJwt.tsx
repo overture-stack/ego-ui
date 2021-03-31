@@ -35,9 +35,7 @@ const CopyJwt = class extends React.Component<any, any> {
   hasClipboard = !!(navigator as NavigatorExtended).clipboard;
   handleClick = async () => {
     const nav = navigator as NavigatorExtended;
-    console.log('copy click', nav.clipboard);
     nav.clipboard && nav.clipboard.writeText(this.props.state.loggedInUserToken);
-    // await new Promise(resolve => setTimeout(resolve, 1600));
     this.setState({ copied: true });
   };
   render() {
