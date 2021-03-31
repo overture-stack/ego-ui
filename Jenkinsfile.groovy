@@ -113,5 +113,34 @@ spec:
                 }
             }
         }
+        stage('Legacy 3.x.x Release & Tag') {
+            when {
+                branch "ego-3.x.x"
+            }
+            steps {
+                container('docker') {
+                    withCredentials([usernamePassword(credentialsId: 'OvertureBioGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        sh "git tag ${version}"
+                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${gitRepo} --tags"
+                    }
+                    withCredentials([usernamePassword(credentialsId:'OvertureBioGithub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
+                    }
+                    sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:${version}"
+                    sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:latest"
+                    sh "docker push ${dockerRepo}:${version}"
+                    sh "docker push ${dockerRepo}:latest"
+                }
+                container('docker') {
+                    withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh 'docker login -u $USERNAME -p $PASSWORD'
+                    }
+                    sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:${version}"
+                    sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:latest"
+                    sh "docker push ${dockerHubRepo}:${version}"
+                    sh "docker push ${dockerHubRepo}:latest"
+                }
+            }
+        }
     }
 }
