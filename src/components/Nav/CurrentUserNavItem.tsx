@@ -8,12 +8,10 @@ import { compose, withState } from 'recompose';
 import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
 import Logout from 'components/Logout';
 import Ripple from 'components/Ripple';
+import CopyJwt from './CopyJwt';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 
-const enhance = compose(
-  injectState,
-  withState('shouldShowMenu', 'setShouldShowMenu', false),
-);
+const enhance = compose(injectState, withState('shouldShowMenu', 'setShouldShowMenu', false));
 
 const styles = {
   container: {
@@ -85,7 +83,10 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
       <Ripple
         className={`CurrentUserNavItem ${css(styles.container, style)}`}
         ref={ref}
-        onClick={() => setShouldShowMenu(!shouldShowMenu)}
+        onClick={() =>
+          // Timeout gives enough delay to see checkmark on copy JWT but is not too long to be annoying on other options
+          setTimeout(() => setShouldShowMenu(!shouldShowMenu), shouldShowMenu ? 500 : 0)
+        }
       >
         <div className={`avatar-container ${css(styles.avatarContainer)}`}>
           <Gravatar
@@ -99,6 +100,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
         </div>
         {shouldShowMenu && (
           <div className={`user-actions ${css(styles.userActions)}`}>
+            <CopyJwt className={`menu-item ${css(styles.menuItem)}`} />
             <NavLink
               to={`/users/${state.loggedInUser.id}`}
               className={`menu-item ${css(styles.menuItem)}`}
