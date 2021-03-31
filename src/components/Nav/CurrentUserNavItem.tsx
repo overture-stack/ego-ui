@@ -8,12 +8,10 @@ import { compose, withState } from 'recompose';
 import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
 import Logout from 'components/Logout';
 import Ripple from 'components/Ripple';
+import CopyJwt from './CopyJwt';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 
-const enhance = compose(
-  injectState,
-  withState('shouldShowMenu', 'setShouldShowMenu', false),
-);
+const enhance = compose(injectState, withState('shouldShowMenu', 'setShouldShowMenu', false));
 
 const styles = {
   container: {
@@ -99,6 +97,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
         </div>
         {shouldShowMenu && (
           <div className={`user-actions ${css(styles.userActions)}`}>
+            <CopyJwt className={`menu-item ${css(styles.menuItem)}`} />
             <NavLink
               to={`/users/${state.loggedInUser.id}`}
               className={`menu-item ${css(styles.menuItem)}`}
