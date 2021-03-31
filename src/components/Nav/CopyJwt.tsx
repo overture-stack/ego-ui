@@ -3,6 +3,7 @@ import { css } from 'glamor';
 import React from 'react';
 import { withRouter } from 'react-router';
 import { compose } from 'recompose';
+import { Icon } from 'semantic-ui-react';
 
 // This declaration is needed for typescript to compile
 // More recent versions of TS include clipboard on the navigator type
@@ -25,10 +26,19 @@ const styles = {
 const enhance = compose(withRouter, injectState);
 
 const CopyJwt = class extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      copied: false,
+    };
+  }
   hasClipboard = !!(navigator as NavigatorExtended).clipboard;
   handleClick = async () => {
     const nav = navigator as NavigatorExtended;
+    console.log('copy click', nav.clipboard);
     nav.clipboard && nav.clipboard.writeText(this.props.state.loggedInUserToken);
+    // await new Promise(resolve => setTimeout(resolve, 1600));
+    this.setState({ copied: true });
   };
   render() {
     // Only render this component if the current browser has the clipboard available (HTTPS only)
@@ -38,7 +48,7 @@ const CopyJwt = class extends React.Component<any, any> {
           className={`${css(styles.container, this.props.styles)} ${this.props.className}`}
           onClick={this.handleClick}
         >
-          Copy My JWT
+          Copy My JWT {this.state.copied && <Icon name="check" />}
         </div>
       )
     );
