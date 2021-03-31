@@ -83,7 +83,10 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
       <Ripple
         className={`CurrentUserNavItem ${css(styles.container, style)}`}
         ref={ref}
-        onClick={() => setShouldShowMenu(!shouldShowMenu)}
+        onClick={() =>
+          // Timeout gives enough delay to see checkmark on copy JWT but is not too long to be annoying on other options
+          setTimeout(() => setShouldShowMenu(!shouldShowMenu), shouldShowMenu ? 500 : 0)
+        }
       >
         <div className={`avatar-container ${css(styles.avatarContainer)}`}>
           <Gravatar
