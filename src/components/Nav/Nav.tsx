@@ -11,6 +11,8 @@ import { compose } from 'recompose';
 import { Icon } from 'semantic-ui-react';
 import CurrentUserNavItem from './CurrentUserNavItem';
 import styles from './Nav.styles';
+import brandImage from 'assets/brand-image.svg';
+import brandImageSmall from 'assets/brand-image-small.svg';
 
 const resetList = {
   listStyleType: 'none',
@@ -47,12 +49,12 @@ class Nav extends React.Component<any, any> {
       <div className={`Nav ${collapsed ? 'collapsed' : ''} ${css(styles.container)}`}>
         <div style={{ height: 190 }}>
           <div className={`Emblem ${css(styles.emblem)}`}>
-            <img className="small" src={require('assets/brand-image-small.svg')} alt="" />
-            <img className="regular" src={require('assets/brand-image.svg')} alt="" />
+            <img className="small" src={brandImageSmall} alt="" />
+            <img className="regular" src={brandImage} alt="" />
           </div>
         </div>
         <ul className={`LinkList ${css(resetList, styles.linkList)}`}>
-          {Object.keys(_.pickBy(RESOURCE_MAP, r => r.isParent)).map(key => {
+          {Object.keys(_.pickBy(RESOURCE_MAP, (r) => r.isParent)).map((key) => {
             const resource = RESOURCE_MAP[key];
 
             return (

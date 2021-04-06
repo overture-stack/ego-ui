@@ -7,8 +7,9 @@ import React, { ComponentType } from 'react';
 import { compose } from 'recompose';
 import ajax from 'services/ajax';
 
-import { BLUE, DEFAULT_BLACK, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
-import { Orcid, Facebook, Google, GitHub, LinkedIn } from './Icons';
+import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
+import { Orcid, Google, GitHub, LinkedIn } from './Icons';
+import brandImage from 'assets/brand-image.svg';
 
 const styles = {
   container: {
@@ -85,14 +86,16 @@ const providers: ProviderType[] = [
 ];
 
 const KeycloakLogin = () => {
-  return <a
-    key={LoginProvider.Keycloak}
-    href={`${API_ROOT}/oauth/login/${ProviderLoginPaths.keycloak}?client_id=${EGO_CLIENT_ID}`}
-    className={`${css(styles.loginButton)}`}
-  >
-    <span className={`${css({ paddingLeft: 10 })}`}>Login/Register</span>
-  </a>
-}
+  return (
+    <a
+      key={LoginProvider.Keycloak}
+      href={`${API_ROOT}/oauth/login/${ProviderLoginPaths.keycloak}?client_id=${EGO_CLIENT_ID}`}
+      className={`${css(styles.loginButton)}`}
+    >
+      <span className={`${css({ paddingLeft: 10 })}`}>Login/Register</span>
+    </a>
+  );
+};
 
 class Component extends React.Component<any, any> {
   static propTypes = {
@@ -103,14 +106,14 @@ class Component extends React.Component<any, any> {
   componentDidMount() {
     ajax
       .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, { withCredentials: true })
-      .then(resp => {
+      .then((resp) => {
         if (resp.status === 200) {
           return resp.data;
         } else {
           return '';
         }
       })
-      .then(async jwt => {
+      .then(async (jwt) => {
         if (jwt === '') {
           return;
         }
@@ -131,7 +134,7 @@ class Component extends React.Component<any, any> {
           this.props.history.push('/no-access');
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.warn('Error: ', err);
       });
   }
@@ -139,16 +142,14 @@ class Component extends React.Component<any, any> {
   render() {
     return (
       <div className={`Login ${css(styles.container)}`}>
-        <img src={require('assets/brand-image.svg')} alt="" className={`${css(styles.logo)}`} />
+        <img src={brandImage} alt="" className={`${css(styles.logo)}`} />
         <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
-        {
-          KEYCLOAK_ENABLED && <KeycloakLogin />
-        }
-        {
-          KEYCLOAK_ENABLED
-            ? <h3 className={`${css(styles.title)}`}>Or login with one of the following services</h3>
-            : <h3 className={`${css(styles.title)}`}>Login with one of the following</h3>
-        }
+        {KEYCLOAK_ENABLED && <KeycloakLogin />}
+        {KEYCLOAK_ENABLED ? (
+          <h3 className={`${css(styles.title)}`}>Or login with one of the following services</h3>
+        ) : (
+          <h3 className={`${css(styles.title)}`}>Login with one of the following</h3>
+        )}
         <ul
           className={`${css({
             display: 'flex',
@@ -158,21 +159,18 @@ class Component extends React.Component<any, any> {
             padding: 0,
           })}`}
         >
-          {providers
-            .map(({ name, path, Icon }) => {
-              return (
-                <a
-                  key={name}
-                  href={`${API_ROOT}/oauth/login/${path}?client_id=${EGO_CLIENT_ID}`}
-                  className={`${css(styles.loginButton)}`}
-                >
-                  {Icon !== undefined &&
-                    <Icon width={15} height={15} />
-                  }
-                  <span className={`${css({ paddingLeft: 10 })}`}>{name}</span>
-                </a>
-              );
-            })}
+          {providers.map(({ name, path, Icon }) => {
+            return (
+              <a
+                key={name}
+                href={`${API_ROOT}/oauth/login/${path}?client_id=${EGO_CLIENT_ID}`}
+                className={`${css(styles.loginButton)}`}
+              >
+                {Icon !== undefined && <Icon width={15} height={15} />}
+                <span className={`${css({ paddingLeft: 10 })}`}>{name}</span>
+              </a>
+            );
+          })}
         </ul>
       </div>
     );
