@@ -1,9 +1,9 @@
+import { isNil, omitBy } from 'lodash';
+import queryString from 'querystring';
+
 import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Group } from 'common/typedefs/Group';
-import { isNil, isNull, omitBy, orderBy } from 'lodash';
-import queryString from 'querystring';
 import ajax from 'services/ajax';
-
 import dummyGroups from './dummyData/groups';
 
 export const getGroups = ({
@@ -52,6 +52,6 @@ export const getGroups = ({
             ),
           )}`,
         )
-        .then(r => r.data)
-        .catch(err => err);
+        .then((r) => r.data)
+        .catch((err) => err);
 };

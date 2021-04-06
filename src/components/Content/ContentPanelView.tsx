@@ -1,9 +1,6 @@
-import { IField } from 'common/typedefs/Resource';
-import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { groupBy, upperCase } from 'lodash';
+import { groupBy } from 'lodash';
 import React from 'react';
-import { compose } from 'recompose';
 import { Grid } from 'semantic-ui-react';
 
 import { DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
@@ -45,16 +42,7 @@ export const styles = {
   },
 };
 
-const ContentView = ({
-  entity,
-  entityType,
-  fieldNameWidths = FIELD_NAME_WIDTHS,
-  hideImmutable = true,
-  resource,
-  rows,
-  customStyles = {},
-}) => {
-  const immutableKeys = resource.schema.filter(f => f.immutable).map(f => f.key);
+const ContentView = ({ entity, entityType, fieldNameWidths = FIELD_NAME_WIDTHS, rows }) => {
   const panelSections = groupBy(rows, 'panelSection');
 
   return (

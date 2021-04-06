@@ -11,10 +11,12 @@ const paneControls = {
   },
 };
 
-export default ({ children, style, className = '', ...props }: any) => {
+const ControlsContainer = ({ children, style, className = '', ...props }: any) => {
   return (
     <div className={`${className} pane-controls ${css(paneControls.container, style)}`} {...props}>
       {children}
     </div>
   );
 };
+
+export default ControlsContainer;

@@ -1,5 +1,4 @@
 import { css } from 'glamor';
-import { isEmpty } from 'lodash';
 import React from 'react';
 import Truncate from 'react-truncate';
 import format from 'date-fns/format/index.js';
@@ -127,7 +126,7 @@ export const ApiKeyListItem = ({ item, sortField, className = '', style = {}, ..
 };
 
 export const PermissionListItem = ({ item, sortField, className = '', style, ...props }) => {
-  const { id, policy, accessLevel, owner } = item;
+  const { policy } = item;
 
   const secondaryField = sortField === 'policy' ? 'accessLevel' : sortField;
 
