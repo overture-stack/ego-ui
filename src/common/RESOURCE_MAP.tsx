@@ -71,6 +71,8 @@ import {
   USERS,
 } from 'common/enums';
 import { getUserDisplayName } from './getUserDisplayName';
+import ApplicationIcon from 'components/Icons/application';
+import PolicyIcon from 'components/Icons/policy';
 
 // ignore tslint sort, resources listed in deliberate order
 const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
@@ -91,13 +93,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     deleteItem: deleteUser,
     emptyMessage: 'Please select a user',
     initialSortField(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
+      return (isChildOfPolicy ? this.childSchema : this.schema).find((field) => field.initialSort);
     },
     sortableFields(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter((field) => field.sortable);
     },
     getItem: getUser,
-    getKey: item => item.id.toString(),
+    getKey: (item) => item.id.toString(),
     getList: getUsers,
     getListAll: getUsers,
     getName: getUserDisplayName,
@@ -106,7 +108,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     isParent: true,
     ListItem: UserListItem,
     mapTableData(results) {
-      return results.map(result => ({
+      return results.map((result) => ({
         ...result,
         action: 'remove',
         actionText: 'REMOVE',
@@ -220,22 +222,22 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     deleteItem: deleteGroup,
     emptyMessage: 'Please select a group',
     initialSortField(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
+      return (isChildOfPolicy ? this.childSchema : this.schema).find((field) => field.initialSort);
     },
     sortableFields(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter((field) => field.sortable);
     },
     getItem: getGroup,
-    getKey: item => item.id.toString(),
+    getKey: (item) => item.id.toString(),
     getList: getGroups,
     getListAll: getGroups,
-    getName: item => get(item, 'name'),
+    getName: (item) => get(item, 'name'),
     Icon: ({ style }) => <Icon name="group" style={style} />,
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: GroupListItem,
     mapTableData(results) {
-      return results.map(result => ({
+      return results.map((result) => ({
         ...result,
         action: 'remove',
         actionText: 'REMOVE',
@@ -298,31 +300,21 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     deleteItem: deleteApplication,
     emptyMessage: 'Please select an application',
     initialSortField(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
+      return (isChildOfPolicy ? this.childSchema : this.schema).find((field) => field.initialSort);
     },
     sortableFields(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter((field) => field.sortable);
     },
     getItem: getApp,
-    getKey: item => item.id.toString(),
+    getKey: (item) => item.id.toString(),
     getList: getApps,
     getListAll: getApps,
-    getName: item => get(item, 'name'),
-    Icon: ({ style }) => (
-      <i
-        className="icon"
-        style={{
-          background: `url("${require('assets/icons/layers-icon.svg')}") no-repeat`,
-          height: '1.2em',
-          marginTop: '0.2em',
-          ...style,
-        }}
-      />
-    ),
+    getName: (item) => get(item, 'name'),
+    Icon: ({ style }) => <ApplicationIcon style={style} />,
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: ApplicationListItem,
-    mapTableData: results => results,
+    mapTableData: (results) => results,
     name: { singular: APPLICATION, plural: APPLICATIONS },
     remove: {
       groups: ({ group, item }) => removeApplicationFromGroup({ application: item, group }),
@@ -399,24 +391,24 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     associatedTypes: [],
     AssociatorComponent: ApiKeysTable,
     childSchema: [],
-    deleteItem: item => revokeApiKey(item),
+    deleteItem: (item) => revokeApiKey(item),
     emptyMessage: '',
     initialSortField(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
+      return (isChildOfPolicy ? this.childSchema : this.schema).find((field) => field.initialSort);
     },
     sortableFields(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter((field) => field.sortable);
     },
-    getKey: item => item.name,
+    getKey: (item) => item.name,
     getList: getApiKeys,
     getListAll: getApiKeys,
-    getName: item => get(item, 'name'),
+    getName: (item) => get(item, 'name'),
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
     ListItem: ApiKeyListItem,
     mapTableData(results) {
-      return results.map(result => ({
+      return results.map((result) => ({
         ...result,
         action: this.deleteItem,
         actionText: 'REVOKE',
@@ -480,25 +472,25 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     childSchema: [],
     emptyMessage: '',
     initialSortField(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
+      return (isChildOfPolicy ? this.childSchema : this.schema).find((field) => field.initialSort);
     },
     sortableFields(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter((field) => field.sortable);
     },
-    getKey: item => item.id.toString(),
+    getKey: (item) => item.id.toString(),
     getList: {
       groups: getGroupPermissions,
       users: getUserAndUserGroupPermissions,
     },
     getListAll: getPolicies,
-    getName: item => get(item, 'name'),
+    getName: (item) => get(item, 'name'),
     Icon: () => null,
     initialSortOrder: 'ASC',
     isParent: false,
     ListItem: PermissionListItem,
     name: { singular: PERMISSION, plural: PERMISSIONS },
     mapTableData(results) {
-      return results.map(result => ({
+      return results.map((result) => ({
         accessLevel: result.accessLevel,
         id: result.policy.id,
         ownerType: result.ownerType,
@@ -554,32 +546,22 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     createItem: createPolicy,
     deleteItem: deletePolicy,
     emptyMessage: 'Please select a policy',
-    getKey: item => item.id.toString(),
+    getKey: (item) => item.id.toString(),
     initialSortField(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).find(field => field.initialSort);
+      return (isChildOfPolicy ? this.childSchema : this.schema).find((field) => field.initialSort);
     },
     sortableFields(isChildOfPolicy: boolean) {
-      return (isChildOfPolicy ? this.childSchema : this.schema).filter(field => field.sortable);
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter((field) => field.sortable);
     },
     getItem: getPolicy,
     getList: getPolicies,
     getListAll: getPolicies,
-    getName: item => get(item, 'name'),
-    Icon: ({ style }) => (
-      <i
-        className="icon"
-        style={{
-          background: `url("${require('assets/icons/group-3.svg')}") no-repeat`,
-          height: '1.2em',
-          marginTop: '0.3em',
-          ...style,
-        }}
-      />
-    ),
+    getName: (item) => get(item, 'name'),
+    Icon: ({ style }) => <PolicyIcon style={style} />,
     initialSortOrder: 'ASC',
     isParent: true,
     ListItem: PolicyListItem,
-    mapTableData: results => results,
+    mapTableData: (results) => results,
     name: { singular: POLICY, plural: POLICIES },
     remove: {
       groups: ({ group, item }) => removeGroupPermissionFromPolicy({ policy: item, group }),

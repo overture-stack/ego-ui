@@ -1,5 +1,5 @@
 import { css } from 'glamor';
-import _ from 'lodash';
+import { capitalize, pickBy, throttle } from 'lodash';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ const enhance = compose(injectState);
 const MIN_SCREEN_WIDTH = 1400;
 class Nav extends React.Component<any, any> {
   state = { collapsed: false, windowSizeSmall: false };
-  onResize = _.throttle(() => {
+  onResize = throttle(() => {
     const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
     if (windowSizeSmall !== this.state.windowSizeSmall) {
       this.props.effects.setUserPreferences({ collapsed: undefined });
@@ -54,7 +54,7 @@ class Nav extends React.Component<any, any> {
           </div>
         </div>
         <ul className={`LinkList ${css(resetList, styles.linkList)}`}>
-          {Object.keys(_.pickBy(RESOURCE_MAP, (r) => r.isParent)).map((key) => {
+          {Object.keys(pickBy(RESOURCE_MAP, (r) => r.isParent)).map((key) => {
             const resource = RESOURCE_MAP[key];
 
             return (
@@ -70,7 +70,7 @@ class Nav extends React.Component<any, any> {
                     {collapsed ? (
                       <div style={{ height: 35 }} />
                     ) : (
-                      <span className="text">{_.capitalize(`${resource.name.plural}`)}</span>
+                      <span className="text">{capitalize(`${resource.name.plural}`)}</span>
                     )}
                   </div>
                 </Ripple>
