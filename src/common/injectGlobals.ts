@@ -22,12 +22,12 @@ export const MASK_LEVELS = ['DENY', 'READ', 'WRITE'];
 
 const createPubsub = () => {
   let listeners = [];
-  const subscribe = callback => (listeners = listeners.concat(callback));
-  const unsubscribe = callback =>
-  (listeners = listeners.filter(l => {
-    l !== callback;
-  }));
-  const publish = payload => {
+  const subscribe = (callback) => (listeners = listeners.concat(callback));
+  const unsubscribe = (callback) =>
+    (listeners = listeners.filter((l) => {
+      return l !== callback;
+    }));
+  const publish = (payload) => {
     listeners.forEach((callback: Function) => {
       callback(payload);
     });

@@ -43,8 +43,7 @@
     "eject": "react-scripts eject",
     "storybook": "REACT_APP_DUMMY=true start-storybook -p 6006",
     "build-storybook": "REACT_APP_DUMMY=true build-storybook",
-    "build-with-storybook": "npm run build && npm run build-storybook && mv storybook-static build/storybook",
-    "tslint-check": "tslint-config-prettier-check ./tslint.json"
+    "build-with-storybook": "npm run build && npm run build-storybook && mv storybook-static build/storybook"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -53,19 +52,18 @@
     "@storybook/react": "^5.0.0",
     "@types/jest": "^21.1.2",
     "@types/node": "^8.0.33",
-    "@types/react": "^16.0.10",
-    "@types/react-dom": "^16.0.1",
+    "@types/react": "16.8.3",
+    "@types/react-dom": "16.8.3",
     "@types/react-router-dom": "^4.3.1",
     "@types/storybook__react": "^4.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
     "awesome-typescript-loader": "^5.2.1",
+    "eslint-plugin-react": "^7.23.1",
     "lorem-ipsum": "^1.0.4",
     "nodemon": "^1.12.1",
     "prettier": "^1.18.2",
     "react-docgen-typescript-webpack-plugin": "^1.1.0",
-    "tslint": "^5.13.1",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "tslint-react": "^4.1.0",
     "typescript": "^4.2.3"
   },
   "prettier": {
@@ -83,6 +81,12 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
     ]
   }
 }

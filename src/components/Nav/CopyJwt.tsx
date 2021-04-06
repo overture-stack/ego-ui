@@ -5,20 +5,6 @@ import { withRouter } from 'react-router';
 import { compose } from 'recompose';
 import { Icon } from 'semantic-ui-react';
 
-// This declaration is needed for typescript to compile
-// More recent versions of TS include clipboard on the navigator type
-//   but the current version used here does not. When TS is updated we can
-//   Remove these interface declarations
-interface Clipboard {
-  writeText(newClipText: string): Promise<void>;
-  // Add any other methods you need here.
-}
-interface NavigatorClipboard extends Navigator {
-  // Only available in a secure context.
-  readonly clipboard?: Clipboard;
-}
-interface NavigatorExtended extends NavigatorClipboard {}
-
 const styles = {
   container: { cursor: 'pointer' },
 };
@@ -32,9 +18,9 @@ const CopyJwt = class extends React.Component<any, any> {
       copied: false,
     };
   }
-  hasClipboard = !!(navigator as NavigatorExtended).clipboard;
+  hasClipboard = !!navigator.clipboard;
   handleClick = async () => {
-    const nav = navigator as NavigatorExtended;
+    const nav = navigator;
     nav.clipboard && nav.clipboard.writeText(this.props.state.loggedInUserToken);
     this.setState({ copied: true });
   };
