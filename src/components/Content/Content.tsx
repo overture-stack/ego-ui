@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { css } from 'glamor';
 import React from 'react';
 
@@ -18,14 +19,14 @@ const styles = {
     position: 'relative',
     width: 510,
   },
-  controls: { paddingRight: 24, paddingLeft: 24, justifyContent: 'space-between' },
 };
 
-const enhance = compose(
-  provideEntity,
-  injectState,
-  withRouter,
-);
+const StyledControlContainer = styled(ControlContainer)`
+  padding: 0 24px;
+  justify-content: space-between;
+`;
+
+const enhance = compose(provideEntity, injectState, withRouter);
 
 enum ContentState {
   displaying,
@@ -256,7 +257,7 @@ class Content extends React.Component<any, IContentState> {
 
     return (
       <div className={`content ${css(styles.container, stylesProp)}`}>
-        <ControlContainer style={styles.controls}>
+        <StyledControlContainer>
           {parent ? (
             <React.Fragment>
               <GoToButton />
@@ -284,7 +285,7 @@ class Content extends React.Component<any, IContentState> {
               <SaveButton />
             </React.Fragment>
           )}
-        </ControlContainer>
+        </StyledControlContainer>
         <div
           className={`content contentPanel ${css({
             bottom: 0,
