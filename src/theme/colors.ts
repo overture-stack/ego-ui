@@ -14,6 +14,24 @@ const VERY_LIGHT_TEAL = `rgb(36, 220, 190, 0.05)`;
 const BLUE = '#00a1d8';
 const LIGHT_BLUE = '#53bfe5';
 
+export default {
+  white: '#fff',
+  default_black: '#262626',
+  dark_grey: '#666',
+  grey: '#dfdedf',
+  light_grey: '#f3f3f3', // background
+  teal: '#24dcbe',
+  high_contrast_teal: '#268271',
+  light_teal: '#e5f7f4',
+  very_light_teal: `rgb(36, 220, 190, 0.05)`,
+  blue: '#53bfe5',
+  light_blue: '#53bfe5',
+  medium_blue: '#1f7abf',
+  dark_blue: '#003055',
+  red: '#db2828',
+  light_red: '#f1d8db',
+};
+
 export {
   BLUE,
   DARK_BLUE,
