@@ -1,5 +1,9 @@
 import colors from './colors';
 
-export default {
+const theme = {
   colors,
 };
+
+type GlobalTheme = typeof theme;
+
+export default theme as GlobalTheme;
