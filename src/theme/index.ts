@@ -4,6 +4,6 @@ const theme = {
   colors,
 };
 
-type GlobalTheme = typeof theme;
+export type GlobalTheme = typeof theme;
 
 export default theme as GlobalTheme;

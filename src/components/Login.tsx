@@ -1,27 +1,18 @@
+/** @jsxImportSource @emotion/react */
 import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED } from 'common/injectGlobals';
 import { injectState } from 'freactal';
-import { css } from 'glamor';
+import { css } from '@emotion/react';
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import React, { ComponentType } from 'react';
 import { compose } from 'recompose';
-import ajax from 'services/ajax';
+import styled from '@emotion/styled';
 
-import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
+import ajax from 'services/ajax';
 import { Orcid, Google, GitHub, LinkedIn } from './Icons';
 import brandImage from 'assets/brand-image.svg';
 
 const styles = {
-  container: {
-    backgroundColor: TEAL,
-    color: '#fff',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    width: '100%',
-  },
   logo: {
     marginLeft: 0,
     width: '20%',
@@ -30,24 +21,27 @@ const styles = {
   title: {
     fontWeight: 400,
   },
-  loginButton: {
-    borderRadius: '.25rem',
-    color: WHITE,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0.5rem 0.75rem',
-    backgroundColor: BLUE,
-    marginBottom: '1rem',
-    minWidth: '200px',
-    fontSize: '16px',
-    transition: 'all .15s ease-in-out',
-    ':hover': {
-      color: WHITE,
-      backgroundColor: LIGHT_BLUE,
-    },
-  },
 };
+
+const LoginButton = styled('a')`
+  ${({ theme }) => `
+  border-radius: .25rem;
+  color: ${theme.colors.white};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  background-color: ${theme.colors.secondary_dark};
+  margin-bottom: 1rem;
+  min-width: 200px;
+  font-size: 16px;
+  transition: all .15s ease-in-out;
+  :hover {
+    color: ${theme.colors.white};
+    background-color: ${theme.colors.secondary};
+  }
+  `}
+`;
 
 const enhance = compose(injectState);
 
@@ -87,13 +81,12 @@ const providers: ProviderType[] = [
 
 const KeycloakLogin = () => {
   return (
-    <a
+    <LoginButton
       key={LoginProvider.Keycloak}
       href={`${API_ROOT}/oauth/login/${ProviderLoginPaths.keycloak}?client_id=${EGO_CLIENT_ID}`}
-      className={`${css(styles.loginButton)}`}
     >
-      <span className={`${css({ paddingLeft: 10 })}`}>Login/Register</span>
-    </a>
+      <span css={{ paddingLeft: 10 }}>Login/Register</span>
+    </LoginButton>
   );
 };
 
@@ -141,34 +134,60 @@ class Component extends React.Component<any, any> {
 
   render() {
     return (
-      <div className={`Login ${css(styles.container)}`}>
-        <img src={brandImage} alt="" className={`${css(styles.logo)}`} />
-        <h1 className={`${css(styles.title)}`}>Admin Portal</h1>
-        {KEYCLOAK_ENABLED && <KeycloakLogin />}
-        {KEYCLOAK_ENABLED ? (
-          <h3 className={`${css(styles.title)}`}>Or login with one of the following services</h3>
-        ) : (
-          <h3 className={`${css(styles.title)}`}>Login with one of the following</h3>
-        )}
+      <div
+        className="Login"
+        css={(theme) => ({
+          backgroundColor: theme.colors.primary_5,
+          color: theme.colors.white,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          width: '100%',
+        })}
+      >
+        <img src={brandImage} alt="" css={styles.logo} />
+        <h1 css={styles.title}>Admin Portal</h1>
+
         <ul
-          className={`${css({
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 0,
-          })}`}
+          // object style did not work here: typescript complained about property 'flexDirection',
+          // instead was looking for FlexDirection or FlexDirection[]', which did not apply the correctly rendered style
+          css={css`
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            margin-top: 0.5rem;
+          `}
         >
+          {KEYCLOAK_ENABLED && (
+            <div
+              css={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+              }}
+            >
+              <KeycloakLogin />
+            </div>
+          )}
+          <h3 css={styles.title}>
+            {KEYCLOAK_ENABLED
+              ? 'Or login with one of the following services'
+              : 'Login with one of the following'}
+          </h3>
           {providers.map(({ name, path, Icon }) => {
             return (
-              <a
+              <LoginButton
                 key={name}
                 href={`${API_ROOT}/oauth/login/${path}?client_id=${EGO_CLIENT_ID}`}
-                className={`${css(styles.loginButton)}`}
               >
                 {Icon !== undefined && <Icon width={15} height={15} />}
-                <span className={`${css({ paddingLeft: 10 })}`}>{name}</span>
-              </a>
+                <span css={{ paddingLeft: 10 }}>{name}</span>
+              </LoginButton>
             );
           })}
         </ul>
