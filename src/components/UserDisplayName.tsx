@@ -3,8 +3,6 @@ import { User } from 'common/typedefs/User';
 import { css } from 'glamor';
 import React from 'react';
 
-import Truncate from 'react-truncate';
-
 const styles = {
   container: {
     fontSize: 18,
@@ -31,7 +29,7 @@ const styles = {
   },
 };
 
-const getName = user => {
+const getName = (user) => {
   const { lastName, firstName, id } = user;
   if (lastName) {
     if (firstName) {

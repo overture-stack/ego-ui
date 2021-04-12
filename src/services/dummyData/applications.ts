@@ -1,4 +1,4 @@
-export default [
+const applications = [
   {
     clientId: '59e6630638f1a1c69749de71',
     clientSecret: '59e66306c7abc1bc47165589',
@@ -555,3 +555,5 @@ export default [
     status: 'Holloway',
   },
 ];
+
+export default applications;
