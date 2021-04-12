@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { ReactNode } from 'react';
-import { css } from '@emotion/react';
+
+import defaultTheme from 'theme';
 
 const ControlsContainer = ({
   children,
@@ -12,13 +13,13 @@ const ControlsContainer = ({
   return (
     <div
       className={className}
-      css={css`
-        background-color: rgba(144, 144, 144, 0.05);
-        border-bottom: 1px solid #eaeaea;
-        display: flex;
-        min-height: 70px;
-        align-items: center;
-      `}
+      css={(theme: typeof defaultTheme) => ({
+        backgroundColor: theme.colors.grey_2,
+        borderBottom: `1px solid ${theme.colors.grey_3}`,
+        display: 'flex',
+        minHeight: '70px',
+        alignItems: 'center',
+      })}
     >
       {children}
     </div>
