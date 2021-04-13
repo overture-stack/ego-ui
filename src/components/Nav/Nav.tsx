@@ -31,7 +31,8 @@ class Nav extends React.Component<any, any> {
       this.setState({ windowSizeSmall, collapsed: windowSizeSmall });
     }
   }, 100);
-  componentWillMount() {
+
+  componentDidMount() {
     const windowSizeSmall = window.innerWidth < MIN_SCREEN_WIDTH;
     const userSelected = this.props.state.preferences.collapsed;
     this.setState({
@@ -40,9 +41,11 @@ class Nav extends React.Component<any, any> {
     });
     window.addEventListener('resize', this.onResize);
   }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
   }
+
   render() {
     const { collapsed } = this.state;
     return (

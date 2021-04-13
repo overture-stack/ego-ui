@@ -21,11 +21,7 @@ const styles = {
   controls: { paddingRight: 24, paddingLeft: 24, justifyContent: 'space-between' },
 };
 
-const enhance = compose(
-  provideEntity,
-  injectState,
-  withRouter,
-);
+const enhance = compose(provideEntity, injectState, withRouter);
 
 enum ContentState {
   displaying,
@@ -73,15 +69,15 @@ class Content extends React.Component<any, IContentState> {
     this.fetchData(this.props as any);
   }
 
-  componentWillReceiveProps(nextProps: any) {
+  componentDidUpdate(prevProps: any) {
     const {
       id,
       match: {
         params: { subResourceType },
       },
-    } = nextProps;
-    if (id !== this.props.id) {
-      this.fetchData(nextProps);
+    } = this.props;
+    if (id !== prevProps.id) {
+      this.fetchData(this.props as any);
     } else if (subResourceType !== this.props.match.params.subResourceType) {
       this.setState({
         contentState: subResourceType === 'edit' ? ContentState.editing : ContentState.displaying,
