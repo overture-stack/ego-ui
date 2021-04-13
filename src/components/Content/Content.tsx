@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from '@emotion/styled';
 import { css } from 'glamor';
 import React from 'react';
@@ -11,15 +12,6 @@ import { compose } from 'recompose';
 import { provideEntity } from 'stateProviders';
 import ContentPanel from './ContentPanel';
 import EditingContentPanel from './EditingContentPanel';
-
-const styles = {
-  container: {
-    boxShadow: '-2px 0 12px 0 rgba(0,0,0,0.1)',
-    minWidth: 510,
-    position: 'relative',
-    width: 510,
-  },
-};
 
 const StyledControlContainer = styled(ControlContainer)`
   padding: 0 24px;
@@ -93,7 +85,6 @@ class Content extends React.Component<any, IContentState> {
   render() {
     const {
       rows,
-      styles: stylesProp = {},
       id,
       effects: { saveChanges, deleteItem, stageChange, refreshList, undoChanges },
       state: {
@@ -256,7 +247,15 @@ class Content extends React.Component<any, IContentState> {
     );
 
     return (
-      <div className={`content ${css(styles.container, stylesProp)}`}>
+      <div
+        css={(theme) => ({
+          boxShadow: '-2px 0 12px 0 rgba(0,0,0,0.1)',
+          minWidth: theme.dimensions.contentPanel.width,
+          position: 'relative',
+          width: theme.dimensions.contentPanel.width,
+        })}
+        className="content"
+      >
         <StyledControlContainer>
           {parent ? (
             <React.Fragment>
