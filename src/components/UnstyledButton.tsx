@@ -11,8 +11,10 @@ const styles = {
   },
 };
 
-export default ({ children, style, className = '', ...props }: any) => (
+const UnstyledButton = ({ children, style, className = '', ...props }: any) => (
   <button {...props} className={`${className} ${css(styles.button, style)}`}>
     {children}
   </button>
 );
+
+export default UnstyledButton;

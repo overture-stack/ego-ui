@@ -1,11 +1,10 @@
 import { css } from 'glamor';
-import { upperCase } from 'lodash';
 import moment from 'moment';
 import React, { CSSProperties } from 'react';
 import { compose, withHandlers, withPropsOnChange, withState } from 'recompose';
 import { Button, Grid, Label } from 'semantic-ui-react';
 
-import { DARK_GREY, DEFAULT_BLACK, GREY, LIGHT_RED, LIGHT_TEAL } from 'common/colors';
+import { DARK_GREY, DEFAULT_BLACK, GREY, LIGHT_TEAL } from 'common/colors';
 import { DATE_FORMAT } from 'common/injectGlobals';
 import { getApiKeyStatus } from './apiKeysUtils';
 
@@ -25,10 +24,6 @@ const labelColours = {
   EXPIRED: GREY,
   REVOKED: GREY,
 };
-
-const titleStyle = css({
-  backgroundColor: LIGHT_TEAL,
-});
 
 const CustomLabel = ({ bgColor, children }) => (
   <Label style={{ backgroundColor: bgColor, fontWeight: 100, color: DEFAULT_BLACK }}>
@@ -83,7 +78,7 @@ const enhance = compose(
   // setting items in state to show revoking changes immediately
   withState('items', 'setItems', ({ associatedItems }) => associatedItems),
   withHandlers({
-    handleAction: ({ onRemove, fetchItems, setItems, parentId }) => async item => {
+    handleAction: ({ onRemove, fetchItems, setItems, parentId }) => async (item) => {
       await onRemove(item);
       const response = await fetchItems({ userId: parentId, limit: 5 });
       setItems(response.resultSet);
@@ -98,7 +93,7 @@ const ApiKeysTable = ({ disabledItems, editing, handleAction, items }) => {
   return (
     <div style={{ marginTop: '0.5rem' }}>
       <Grid style={styles.container}>
-        {items.map(item => {
+        {items.map((item) => {
           const status = getApiKeyStatus(item);
           return (
             <div className={`contentPanel id ${css(styles.section)}`} key={item.name}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Breadcrumb } from 'semantic-ui-react';
+import { Breadcrumb as SemanticBreadCrumb } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { css } from 'glamor';
 import ItemName from './ItemName';
@@ -29,8 +29,8 @@ const styles = {
   },
 };
 
-export default ({ path }) => (
-  <Breadcrumb style={styles.container}>
+const BreadCrumb = ({ path }) => (
+  <SemanticBreadCrumb style={styles.container}>
     {path
       .split('/')
       .filter(Boolean)
@@ -40,17 +40,19 @@ export default ({ path }) => (
 
         return (
           <React.Fragment key={`${linkPath}-section`}>
-            <Breadcrumb.Section active={isLast} className={`${css(styles.link)}`}>
+            <SemanticBreadCrumb.Section active={isLast} className={`${css(styles.link)}`}>
               <NavLink to={linkPath}>
                 {i % 2 === 1 ? <ItemName type={arr[i - 1]} id={crumb} /> : crumb}
               </NavLink>
-            </Breadcrumb.Section>
+            </SemanticBreadCrumb.Section>
 
             {!isLast && (
-              <Breadcrumb.Divider style={{ color: '#ccc', margin: '0px 0.4em 0 0.5em' }} />
+              <SemanticBreadCrumb.Divider style={{ color: '#ccc', margin: '0px 0.4em 0 0.5em' }} />
             )}
           </React.Fragment>
         );
       })}
-  </Breadcrumb>
+  </SemanticBreadCrumb>
 );
+
+export default BreadCrumb;

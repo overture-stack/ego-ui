@@ -1,14 +1,13 @@
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { debounce, find, get, isEmpty, reject } from 'lodash';
+import { debounce, get, isEmpty, reject } from 'lodash';
 import React from 'react';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
 import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompose';
-import { Button } from 'semantic-ui-react';
 
 import { isChildOfPolicy, isGroup, isUserPermission } from 'common/associatedUtils';
-import { DARK_GREY, GREY, LIGHT_TEAL, TEAL, VERY_LIGHT_TEAL } from 'common/colors';
+import { DARK_GREY, TEAL, VERY_LIGHT_TEAL } from 'common/colors';
 import { messenger } from 'common/injectGlobals';
 
 import ActionButton from 'components/Associator/ActionButton';
@@ -42,7 +41,7 @@ const enhance = compose(
       parent,
       resource,
       effects: { updateList, saveChanges, stageChange },
-    }) => async item => {
+    }) => async (item) => {
       if (resource.name.singular === 'API Key') {
         await item.action(item);
       } else {
@@ -91,16 +90,16 @@ const getColumns = (currentSort, resource, parent) => {
   let schema = isChildOfPolicy(get(parent, 'resource')) ? resource.childSchema : resource.schema;
 
   if (parent && isGroup(parent.resource)) {
-    schema = reject(schema, c => c.key === 'ownerType');
+    schema = reject(schema, (c) => c.key === 'ownerType');
   }
 
   if (isEmpty(parent) || isUserPermission(parent.resource, resource)) {
-    schema = reject(schema, c => c.key === 'action');
+    schema = reject(schema, (c) => c.key === 'action');
   }
 
   const columns = schema
-    .filter(c => !c.hideOnTable)
-    .map(schema => {
+    .filter((c) => !c.hideOnTable)
+    .map((schema) => {
       return {
         accessor: schema.key,
         Header: schema.fieldName,
@@ -128,7 +127,7 @@ const ItemsWrapper = ({
 }) => {
   const data = isEmpty(parent)
     ? resultSet
-    : resource.mapTableData(resultSet).map(d => {
+    : resource.mapTableData(resultSet).map((d) => {
         return {
           ...d,
           action:
@@ -147,7 +146,7 @@ const ItemsWrapper = ({
         data={data}
         showPagination={false}
         sorted={[{ id: currentSort.field.key, desc: currentSort.order === 'DESC' }]}
-        onSortedChange={newSort => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
+        onSortedChange={(newSort) => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
         getTdProps={(state, rowInfo, column, instance) => ({
           onClick: () => rowInfo && onSelect(rowInfo.original),
           ...(column.id === 'type' &&
