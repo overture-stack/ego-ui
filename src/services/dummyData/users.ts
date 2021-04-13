@@ -1,5 +1,5 @@
 /* tslint:disable */
-export default [
+const users = [
   {
     id: '59e7a13d5b24bf69e9a02d1b',
     type: 'ADMIN',
@@ -731,3 +731,4 @@ export default [
     applications: [],
   },
 ];
+export default users;

@@ -3,10 +3,10 @@ import { IField } from 'common/typedefs/Resource';
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
 import { css } from 'glamor';
-import { groupBy, upperCase } from 'lodash';
+import { upperCase } from 'lodash';
 import React from 'react';
 import { compose } from 'recompose';
-import { Dropdown, Grid, Input } from 'semantic-ui-react';
+import { Dropdown, Input } from 'semantic-ui-react';
 
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import { getUserFieldName } from './ContentPanel';
@@ -37,7 +37,7 @@ function rowInput({
       return (
         <Dropdown
           onChange={(event, { value }) => stageChange({ [row.key]: value })}
-          options={(row.options || []).map(text => ({ text, value: text }))}
+          options={(row.options || []).map((text) => ({ text, value: text }))}
           selection
           style={{ minWidth: '9rem', fontSize: '12px' }}
           text={data[row.key]}
@@ -114,10 +114,10 @@ class EditingContentPanel extends React.Component<any, any> {
       hideImmutable,
     } = this.props;
 
-    const immutableKeys = resource.schema.filter(f => f.immutable).map(f => f.key);
+    const immutableKeys = resource.schema.filter((f) => f.immutable).map((f) => f.key);
     const normalizedRows = rows
-      .filter(field => !hideImmutable || !immutableKeys.includes(field.key || field))
-      .map(row =>
+      .filter((field) => !hideImmutable || !immutableKeys.includes(field.key || field))
+      .map((row) =>
         normalizeRow({
           associated,
           data: staged,
@@ -127,15 +127,7 @@ class EditingContentPanel extends React.Component<any, any> {
         }),
       );
 
-    return (
-      <ContentPanelView
-        entity={staged}
-        entityType={entityType}
-        hideImmutable={hideImmutable}
-        resource={resource}
-        rows={normalizedRows}
-      />
-    );
+    return <ContentPanelView entity={staged} entityType={entityType} rows={normalizedRows} />;
   }
 }
 
