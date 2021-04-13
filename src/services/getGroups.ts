@@ -1,10 +1,7 @@
+import { Group } from 'common/typedefs/Group';
 import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
-
-import { USE_DUMMY_DATA } from 'common/injectGlobals';
-import { Group } from 'common/typedefs/Group';
 import ajax from 'services/ajax';
-import dummyGroups from './dummyData/groups';
 
 export const getGroups = ({
   offset = 0,
@@ -31,27 +28,22 @@ export const getGroups = ({
     Promise.resolve(activeId);
   }
 
-  return USE_DUMMY_DATA
-    ? Promise.resolve({
-        count: dummyGroups.length,
-        resultSet: dummyGroups.slice(offset, offset + limit),
-      })
-    : ajax
-        .get(
-          `${baseUrl}/groups?${queryString.stringify(
-            omitBy(
-              {
-                limit,
-                offset,
-                query,
-                sort: sortField,
-                sortOrder,
-                status: status === 'All' ? null : status,
-              },
-              isNil,
-            ),
-          )}`,
-        )
-        .then((r) => r.data)
-        .catch((err) => err);
+  return ajax
+    .get(
+      `${baseUrl}/groups?${queryString.stringify(
+        omitBy(
+          {
+            limit,
+            offset,
+            query,
+            sort: sortField,
+            sortOrder,
+            status: status === 'All' ? null : status,
+          },
+          isNil,
+        ),
+      )}`,
+    )
+    .then((r) => r.data)
+    .catch((err) => err);
 };
