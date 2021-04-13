@@ -4,8 +4,9 @@ import React from 'react';
 import Gravatar from 'react-gravatar';
 import { NavLink } from 'react-router-dom';
 import { compose, withState } from 'recompose';
+import styled from '@emotion/styled';
 
-import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
+import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'theme/colors';
 import Logout from 'components/Logout';
 import Ripple from 'components/Ripple';
 import CopyJwt from './CopyJwt';
@@ -77,6 +78,20 @@ const styles = {
   },
 };
 
+const StyledLogout = styled(Logout)`
+  ${({ theme }) => `
+    display: block;
+    font-size: 16px;
+    padding: 0.8em 1em;
+    background-color: ${theme.colors.secondary_dark};
+    color: ${theme.colors.white};
+    :hover {
+      background-color: ${theme.colors.secondary};
+      color: ${theme.colors.white};
+    },
+  `}
+`;
+
 const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
   return (
     state.loggedInUser && (
@@ -107,7 +122,7 @@ const render = ({ state, style, shouldShowMenu, setShouldShowMenu, ref }) => {
             >
               Profile Page
             </NavLink>
-            <Logout className={`menu-item Logout ${css(styles.menuItem)}`} />
+            <StyledLogout className={'menu-item Logout'} />
           </div>
         )}
       </Ripple>
@@ -126,14 +141,14 @@ const Component = class extends React.Component<any, any> {
     document.removeEventListener('click', this.handleClickOutside, true);
   }
 
-  handleClickOutside = e => {
+  handleClickOutside = (e) => {
     if ((!this.ref || !this.ref.contains(e.target)) && this.props.shouldShowMenu) {
       this.props.setShouldShowMenu(false);
     }
   };
 
   render() {
-    return render({ ...this.props, ref: c => (this.ref = c) } as any);
+    return render({ ...this.props, ref: (c) => (this.ref = c) } as any);
   }
 };
 

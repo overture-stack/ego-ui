@@ -24,7 +24,7 @@ const PrimaryField = styled('div')`
   overflow-x: hidden;
 `;
 
-const SecondaryField = styled('div')<any>`
+const SecondaryField = styled('div')`
   color: ${({ theme }) => theme.colors.grey_5};
   font-weight: 200;
   font-size: 0.9em;
