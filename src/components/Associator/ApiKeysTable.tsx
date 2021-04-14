@@ -8,6 +8,7 @@ import { useTheme } from '@emotion/react';
 
 import { DATE_FORMAT } from 'common/injectGlobals';
 import { getApiKeyStatus } from './apiKeysUtils';
+import { FieldName } from 'components/Content/ContentPanelView';
 
 const CustomLabel = styled(Label)`
   ${({ theme, bgColor }) => `
@@ -49,16 +50,6 @@ const enhance = compose(
 
 const FieldContent = styled('span')`
   font-size: 13px;
-`;
-
-const FieldName = styled('span')`
-  ${({ theme }) => `
-    align-items: center !important;
-    color: ${theme.colors.grey_6};
-    display: inline-flex;
-    font-size: 11px;
-    padding-right: 10px;
-  `}
 `;
 
 const ContentRow = styled(Grid.Row)`
