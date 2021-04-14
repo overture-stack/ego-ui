@@ -1,16 +1,16 @@
-import { css } from 'glamor';
+/** @jsxImportSource @emotion/react */
+import { useTheme } from '@emotion/react';
 import { debounce, get, merge, noop } from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { compose, defaultProps, withProps, withState } from 'recompose';
 import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
+import { injectState } from 'freactal';
 
-import { TEAL } from 'common/colors';
 import { TEntity } from 'common/typedefs';
 import { IResource, TSortDirection } from 'common/typedefs/Resource';
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
 import { RippleButton } from 'components/Ripple';
-import { injectState } from 'freactal';
 import ItemGrid from './ItemGrid';
 import ItemTable from './ItemTable';
 import getStyles from './ListPane.styles';
@@ -65,8 +65,8 @@ interface IListState {}
 const enhance = compose(
   injectState,
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
-  withState('query', 'setQuery', props => props.initialQuery || ''),
-  withState('currentSort', 'setCurrentSort', props => ({
+  withState('query', 'setQuery', (props) => props.initialQuery || ''),
+  withState('currentSort', 'setCurrentSort', (props) => ({
     field: props.resource.initialSortField(isChildOfPolicy(get(props.parent, 'resource'))),
     order: props.resource.initialSortOrder,
   })),
@@ -97,18 +97,30 @@ const paneControls = {
   },
 };
 
-class List extends React.Component<IListProps, any> {
-  updateData = async ({ offset }) => {
-    const {
-      parent,
-      currentSort: { field, order },
-      query,
-      resource,
-      effects: { updateList, setListResource },
-    } = this.props;
-
+const List = ({
+  onSelect,
+  getKey,
+  styles,
+  selectedItemId,
+  currentSort,
+  currentSort: { field, order },
+  setCurrentSort,
+  setQuery,
+  state: {
+    preferences: { listDisplayMode },
+    list: {
+      count = 0,
+      params: { offset, limit },
+    },
+  },
+  effects: { updateList, refreshList, setUserPreferences, setListResource },
+  columnWidth,
+  parent,
+  resource,
+  query,
+}: IListProps) => {
+  const updateData = async ({ offset }) => {
     await setListResource(resource, parent);
-
     updateList({
       offset,
       sortField: field.key,
@@ -118,197 +130,168 @@ class List extends React.Component<IListProps, any> {
     });
   };
 
-  componentDidMount() {
-    this.updateData({ offset: 0 });
-  }
+  useEffect(() => {
+    updateData({ offset: 0 });
+  }, []);
 
-  componentDidUpdate(prevProps: IListProps, prevState: IListState) {
-    if (
-      prevProps.resource !== this.props.resource ||
-      prevProps.currentSort.field.key !== this.props.currentSort.field.key ||
-      prevProps.currentSort.order !== this.props.currentSort.order ||
-      prevProps.query !== this.props.query
-    ) {
-      const debouncedUpdate = debounce(() => this.updateData({ offset: 0 }), 100);
-      debouncedUpdate();
-    }
-  }
+  useEffect(() => {
+    const debouncedUpdate = debounce(() => updateData({ offset: 0 }), 100);
+    debouncedUpdate();
+  }, [resource, query, order, field.key]);
 
-  render() {
-    const {
-      onSelect,
-      getKey,
-      styles,
-      selectedItemId,
-      currentSort,
-      setCurrentSort,
-      setQuery,
-      state: {
-        preferences: { listDisplayMode },
-        list: {
-          count = 0,
-          params: { offset, limit },
-        },
-      },
-      effects: { updateList, refreshList, setUserPreferences },
-      columnWidth,
-      parent,
-      resource,
-      query,
-    } = this.props;
+  const displayMode: any =
+    typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Table;
 
-    const displayMode: any =
-      typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Table;
+  const theme = useTheme();
 
-    return (
-      <div className={`List ${css(styles.container)}`}>
-        <ControlContainer>
-          <div className={`search-container ${css(paneControls.searchContainer)}`}>
-            <Input
-              icon={
-                query.length > 0 ? (
-                  <Icon name={'close'} onClick={e => setQuery('')} link={true} />
-                ) : (
-                  <Icon name={'search'} />
-                )
-              }
-              value={query}
-              placeholder="Search..."
-              onChange={(event, { value }) => setQuery(value)}
-            />
-          </div>
-          <div className={`sort-container ${css(paneControls.sortContainer)}`}>
-            Sort by:
-            <Dropdown
-              selection
-              style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
-              selectOnNavigation={false}
-              options={resource
-                .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-                .map(field => ({
-                  text: field.fieldName,
-                  value: field.key,
-                }))}
-              text={currentSort.field.fieldName}
-              onChange={(event, { value }) =>
-                setCurrentSort({
-                  ...currentSort,
-                  field: resource
-                    .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-                    .find(field => field.key === value),
-                })
-              }
-            />
-            <Button.Group className={`${css(paneControls.sortOrderWrapper)}`} vertical>
-              <Button
-                style={{
-                  backgroundColor: 'transparent',
-                  paddingBottom: 0,
-                  ...(currentSort.order === 'ASC' && { color: TEAL }),
-                }}
-                onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
-                icon="chevron up"
-              />
-              <Button
-                style={{
-                  paddingTop: 0,
-                  backgroundColor: 'transparent',
-                  ...(currentSort.order === 'DESC' && { color: TEAL }),
-                }}
-                onClick={() => setCurrentSort({ ...currentSort, order: 'DESC' })}
-                icon="chevron down"
-              />
-            </Button.Group>
-          </div>
-          <div className={`display-mode-container ${css(paneControls.displayModeContainer)}`}>
-            <RippleButton
-              compact
-              style={displayMode === DisplayMode.Table ? { color: TEAL } : {}}
-              onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
-            >
-              <Button.Content>
-                <Icon name="list" fitted />
-              </Button.Content>
-            </RippleButton>
-            <RippleButton
-              compact
-              style={displayMode === DisplayMode.Grid ? { color: TEAL } : {}}
-              onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
-            >
-              <Button.Content>
-                <Icon name="grid layout" fitted />
-              </Button.Content>
-            </RippleButton>
-          </div>
-        </ControlContainer>
-        {displayMode === DisplayMode.Grid ? (
-          <ItemGrid
-            Component={resource.ListItem}
-            getKey={resource.getKey}
-            sortField={currentSort.field}
-            selectedItemId={selectedItemId}
-            onSelect={onSelect}
-            styles={styles}
-            columnWidth={columnWidth}
-            rowHeight={resource.rowHeight}
-            onRemove={
-              parent &&
-              (async item => {
-                const removeFunction =
-                  parent.resource.remove[resource.name.plural] || (() => Promise.resolve());
-                await removeFunction({
-                  [resource.name.plural]: item,
-                  item: parent,
-                });
-                refreshList();
-              })
+  return (
+    <div css={styles.container}>
+      <ControlContainer>
+        <div css={paneControls.searchContainer}>
+          <Input
+            icon={
+              query.length > 0 ? (
+                <Icon name={'close'} onClick={(e) => setQuery('')} link={true} />
+              ) : (
+                <Icon name={'search'} />
+              )
             }
-            parent={parent}
+            value={query}
+            placeholder="Search..."
+            onChange={(event, { value }) => setQuery(value)}
           />
-        ) : (
-          <ItemTable
-            parent={parent}
-            resource={resource}
-            getKey={getKey}
-            currentSort={currentSort}
-            selectedItemId={selectedItemId}
-            onSelect={onSelect}
-            styles={styles}
-            onSortChange={(newSortField, newSortOrder) => {
+        </div>
+        <div css={paneControls.sortContainer}>
+          Sort by:
+          <Dropdown
+            selection
+            style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
+            selectOnNavigation={false}
+            options={resource
+              .sortableFields(isChildOfPolicy(get(parent, 'resource')))
+              .map((field) => ({
+                text: field.fieldName,
+                value: field.key,
+              }))}
+            text={currentSort.field.fieldName}
+            onChange={(event, { value }) =>
               setCurrentSort({
                 ...currentSort,
-                order: newSortOrder,
                 field: resource
                   .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-                  .find(field => field.key === newSortField),
-              });
-            }}
-            onRemove={
-              parent &&
-              (async item => {
-                const removeFunction =
-                  parent.resource.remove[resource.name.plural] || (() => Promise.resolve());
-                await removeFunction({
-                  [resource.name.plural]: item,
-                  item: parent,
-                });
-                refreshList();
+                  .find((field) => field.key === value),
               })
             }
           />
-        )}
-        {(limit < count || offset > 0) && (
-          <Pagination
-            onChange={page => updateList({ offset: page * limit })}
-            offset={offset}
-            limit={limit}
-            total={count}
-            range={3}
-          />
-        )}
-      </div>
-    );
-  }
-}
+          <Button.Group css={paneControls.sortOrderWrapper} vertical>
+            <Button
+              style={{
+                backgroundColor: 'transparent',
+                paddingBottom: 0,
+                ...(currentSort.order === 'ASC' && { color: theme.colors.primary_5 }),
+              }}
+              onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
+              icon="chevron up"
+            />
+            <Button
+              style={{
+                paddingTop: 0,
+                backgroundColor: 'transparent',
+                ...(currentSort.order === 'DESC' && { color: theme.colors.primary_5 }),
+              }}
+              onClick={() => setCurrentSort({ ...currentSort, order: 'DESC' })}
+              icon="chevron down"
+            />
+          </Button.Group>
+        </div>
+        <div css={paneControls.displayModeContainer}>
+          <RippleButton
+            compact
+            style={displayMode === DisplayMode.Table ? { color: theme.colors.primary_5 } : {}}
+            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
+          >
+            <Button.Content>
+              <Icon name="list" fitted />
+            </Button.Content>
+          </RippleButton>
+          <RippleButton
+            compact
+            style={displayMode === DisplayMode.Grid ? { color: theme.colors.primary_5 } : {}}
+            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
+          >
+            <Button.Content>
+              <Icon name="grid layout" fitted />
+            </Button.Content>
+          </RippleButton>
+        </div>
+      </ControlContainer>
+      {displayMode === DisplayMode.Grid ? (
+        <ItemGrid
+          Component={resource.ListItem}
+          getKey={resource.getKey}
+          sortField={currentSort.field}
+          selectedItemId={selectedItemId}
+          onSelect={onSelect}
+          styles={styles}
+          columnWidth={columnWidth}
+          rowHeight={resource.rowHeight}
+          onRemove={
+            parent &&
+            (async (item) => {
+              const removeFunction =
+                parent.resource.remove[resource.name.plural] || (() => Promise.resolve());
+              await removeFunction({
+                [resource.name.plural]: item,
+                item: parent,
+              });
+              refreshList();
+            })
+          }
+          parent={parent}
+        />
+      ) : (
+        <ItemTable
+          parent={parent}
+          resource={resource}
+          getKey={getKey}
+          currentSort={currentSort}
+          selectedItemId={selectedItemId}
+          onSelect={onSelect}
+          // styles={styles}
+          onSortChange={(newSortField, newSortOrder) => {
+            setCurrentSort({
+              ...currentSort,
+              order: newSortOrder,
+              field: resource
+                .sortableFields(isChildOfPolicy(get(parent, 'resource')))
+                .find((field) => field.key === newSortField),
+            });
+          }}
+          onRemove={
+            parent &&
+            (async (item) => {
+              const removeFunction =
+                parent.resource.remove[resource.name.plural] || (() => Promise.resolve());
+              await removeFunction({
+                [resource.name.plural]: item,
+                item: parent,
+              });
+              refreshList();
+            })
+          }
+        />
+      )}
+      {(limit < count || offset > 0) && (
+        <Pagination
+          onChange={(page) => updateList({ offset: page * limit })}
+          offset={offset}
+          limit={limit}
+          total={count}
+          range={3}
+        />
+      )}
+    </div>
+  );
+};
 
 export default enhance(List);

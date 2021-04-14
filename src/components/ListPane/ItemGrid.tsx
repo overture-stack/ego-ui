@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import { injectState } from 'freactal';
-import { css } from 'glamor';
+import { css } from '@emotion/react';
 import { range } from 'lodash';
 import React, { useEffect } from 'react';
 import withSize from 'react-sizeme';
@@ -14,7 +15,7 @@ const enhance = compose(
   injectState,
 );
 
-function ItemsWrapper({
+const ItemsWrapper = ({
   Component,
   getKey,
   sortField,
@@ -33,7 +34,7 @@ function ItemsWrapper({
   rowHeight,
   effects: { updateList },
   parent,
-}: any) {
+}: any) => {
   useEffect(() => {
     if (size.width === 0) {
       return;
@@ -46,9 +47,35 @@ function ItemsWrapper({
 
   const fillersRequired = Math.max(limit - resultSet.length, 0);
   return (
-    <div className={`items-wrapper`}>
-      {resultSet.map(item => (
-        <div key={getKey(item)} className={`${css(styles.listItemWrapper)}`}>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        flex-grow: 1;
+        justify-content: space-evenly;
+        margin: 10px 10px 0px;
+      `}
+    >
+      {resultSet.map((item) => (
+        <div
+          key={getKey(item)}
+          css={css`
+            width: ${columnWidth}px;
+            height: ${rowHeight}px;
+            flex-grow: 1;
+            position: relative;
+            & .remove {
+              opacity: 0;
+            }
+            &:hover .remove {
+              opacity: 0.4;
+              &:hover {
+                opacity: 1;
+              }
+            }
+          `}
+        >
           <Component
             sortField={sortField.key}
             className={selectedItemId && getKey(item) === selectedItemId ? 'selected' : ''}
@@ -70,27 +97,36 @@ function ItemsWrapper({
             <Button
               icon="close"
               compact
-              className={`remove ${css({
-                cursor: 'pointer',
-                position: 'absolute',
-                top: '0.2em',
-                right: 0,
-                background: 'none !important',
-                '&:hover': {
-                  background: '#e0e1e2 !important',
-                },
-              })}`}
+              css={css`
+                z-index: 100;
+                cursor: pointer;
+                position: absolute;
+                top: 0.2em;
+                right: 0;
+                opacity: 0;
+                &.remove {
+                  background: none;
+                  &:hover {
+                    background: none;
+                    opacity: 0.5;
+                  }
+                  &:not(:hover) {
+                    background: none;
+                  }
+                }
+              `}
+              className="remove"
               circular
               onClick={() => onRemove(item)}
             />
           )}
         </div>
       ))}
-      {range(fillersRequired).map(i => (
-        <div key={i + offset} className={`filler ${css(styles.filler)}`} />
+      {range(fillersRequired).map((i) => (
+        <div key={i + offset} css={styles.filler} className="filler" />
       ))}
     </div>
   );
-}
+};
 
 export default enhance(ItemsWrapper);
