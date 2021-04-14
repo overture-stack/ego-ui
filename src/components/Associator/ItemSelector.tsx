@@ -1,11 +1,13 @@
-import { USERS } from 'common/enums';
-import { getUserDisplayName } from 'common/getUserDisplayName';
-import Downshift from 'downshift';
-import { css } from 'glamor';
-import { differenceBy, get } from 'lodash';
+/** @jsxImportSource @emotion/react */
 import React from 'react';
+import Downshift from 'downshift';
+import { css } from '@emotion/react';
+import { differenceBy, get } from 'lodash';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
 import { Button, Icon, Input, Menu } from 'semantic-ui-react';
+
+import { USERS } from 'common/enums';
+import { getUserDisplayName } from 'common/getUserDisplayName';
 
 const styles = {
   container: {},
@@ -13,10 +15,13 @@ const styles = {
     position: 'absolute',
     right: '13px',
     top: '16px',
+    zIndex: 1,
+    overflowY: 'auto',
+    maxHeight: 220,
   },
 };
 
-const matchFor = (query: string | null, accessor) => item =>
+const matchFor = (query: string | null, accessor) => (item) =>
   !query ||
   accessor(item)
     .toLowerCase()
@@ -25,8 +30,8 @@ const matchFor = (query: string | null, accessor) => item =>
 const enhance = compose(
   defaultProps({
     disabledItems: [],
-    getKey: item => get(item, 'id'),
-    onSelect: item => global.log('selected', item),
+    getKey: (item) => get(item, 'id'),
+    onSelect: (item) => global.log('selected', item),
   }),
   withState('isEntryMode', 'setIsEntryMode', false),
   withState('items', 'setItems', []),
@@ -44,7 +49,7 @@ const enhance = compose(
       }
       clearSelection();
     },
-    requestItems: async query => {
+    requestItems: async (query) => {
       const response = await fetchItems({ query });
       setItems(response.resultSet);
     },
@@ -61,7 +66,7 @@ const enhance = compose(
   }),
 );
 
-const render = ({
+const ItemSelector = ({
   disabledItems,
   requestItems,
   items,
@@ -74,11 +79,11 @@ const render = ({
   handleStateChange,
   type,
 }) => {
-  const MenuComponent = props => {
+  const MenuComponent = (props) => {
     return type === USERS ? <Menu size="large" {...props} /> : <Menu size="small" {...props} />;
   };
 
-  const availableItems = differenceBy(items, disabledItems, item => item.id);
+  const availableItems = differenceBy(items, disabledItems, (item) => item.id);
 
   const getMenuItems = (inputValue, getItemProps, highlightedIndex) => {
     if (items.length === 0 || availableItems.length === 0) {
@@ -109,30 +114,29 @@ const render = ({
       isOpen={isEntryMode}
     >
       {({ getInputProps, getItemProps, inputValue = '', highlightedIndex }) => (
-        <div className={`ItemSelector ${css(styles.container)}`}>
-          {isEntryMode ? (
-            <div>
-              <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
-              <MenuComponent
-                className={`OptionList ${css(styles.optionsWrapper)}`}
-                style={{ zIndex: 1, overflowY: 'auto', maxHeight: 220 }}
-                vertical
-              >
-                {getMenuItems(inputValue, getItemProps, highlightedIndex)}
-              </MenuComponent>
-            </div>
-          ) : (
-            <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
-              <Icon name="add" />
-              Add
-            </Button>
-          )}
+        // extra unstyled container div, Downshift does not play nicely with the top level Emotion-styled div
+        <div className={`ItemSelector`}>
+          <div css={styles.container}>
+            {isEntryMode ? (
+              <div>
+                <Input {...getInputProps()} value={inputValue} focus autoFocus size="mini" />
+                <MenuComponent css={styles.optionsWrapper} vertical>
+                  {getMenuItems(inputValue, getItemProps, highlightedIndex)}
+                </MenuComponent>
+              </div>
+            ) : (
+              <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
+                <Icon name="add" />
+                Add
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </Downshift>
   );
 };
 
-const Component = enhance(render);
+const Component = enhance(ItemSelector);
 
 export default Component;
