@@ -1,43 +1,43 @@
-import { DEFAULT_BLACK, LIGHT_TEAL } from 'common/colors';
+/** @jsxImportSource @emotion/react */
 import React from 'react';
 import { Label, Table } from 'semantic-ui-react';
+import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 
-const styles = {
-  label: {
-    backgroundColor: LIGHT_TEAL,
-    color: DEFAULT_BLACK,
-    fontWeight: 100,
-  },
-};
+export const PermissionLabel = styled(Label)`
+  ${({ theme }) => `
+    &.ui.label {
+      background-color: ${theme.colors.primary_1};
+      color: ${theme.colors.black};
+      font-weight: 100;
+    }
+  `}
+`;
 
 export default ({ associatedItems }) => (
-  <div style={{ flex: 1 }}>
+  <div css={{ flex: 1 }}>
     <Table singleLine>
       <Table.Body>
-        {associatedItems.map(item => (
+        {associatedItems.map((item) => (
           <Table.Row key={item.policy.id}>
             <Table.Cell>
               <span
-                style={{
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
+                css={css`
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
                   width: 280,
-                  display: 'inline-block',
-                  overflow: 'hidden',
-                }}
+                  display: inline-block;
+                  overflow: hidden;
+                `}
               >
                 {item.policy.name}
               </span>
             </Table.Cell>
             <Table.Cell collapsing>
-              <Label style={styles.label}>
-                <span>{item.accessLevel}</span>
-              </Label>
+              <PermissionLabel>{item.accessLevel}</PermissionLabel>
             </Table.Cell>
             <Table.Cell collapsing>
-              <Label style={styles.label}>
-                <span>{item.ownerType}</span>
-              </Label>
+              <PermissionLabel>{item.ownerType}</PermissionLabel>
             </Table.Cell>
           </Table.Row>
         ))}
