@@ -1,4 +1,4 @@
-import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'common/colors';
+import { BLUE, LIGHT_BLUE, TEAL, WHITE } from 'theme/colors';
 
 const styles = {
   container: {
@@ -116,22 +116,6 @@ const styles = {
     color: '#fff',
     fontSize: 22,
     padding: 10,
-  },
-  currentUser: {
-    paddingLeft: '20%',
-    paddingRight: '10%',
-    paddingTop: 12,
-    paddingBottom: 12,
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: LIGHT_BLUE,
-    },
-    '& .display-name': {
-      // transition: 'opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
-      '.collapsed &': {
-        opacity: 0,
-      },
-    },
   },
 };
 
