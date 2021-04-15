@@ -26,7 +26,7 @@ class ItemName extends React.Component<IItemNameProps, { name: string }> {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchName(this.props);
   }
 

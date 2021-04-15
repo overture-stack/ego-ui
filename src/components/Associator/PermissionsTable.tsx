@@ -3,9 +3,8 @@ import { injectState } from 'freactal';
 import { capitalize, get } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
-import { Button, Checkbox, Label, Table } from 'semantic-ui-react';
+import { Button, Checkbox, Table } from 'semantic-ui-react';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 import { NavLink } from 'react-router-dom';
 
 import { MASK_LEVELS } from 'common/injectGlobals';

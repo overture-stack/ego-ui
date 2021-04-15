@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import Downshift from 'downshift';
-import { css } from '@emotion/react';
 import { differenceBy, get } from 'lodash';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
 import { Button, Icon, Input, Menu } from 'semantic-ui-react';

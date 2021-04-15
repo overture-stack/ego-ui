@@ -21,18 +21,14 @@ const StyledControlContainer = styled(ControlContainer)`
 const enhance = compose(provideEntity, injectState, withRouter);
 
 enum ContentState {
-  displaying,
-  creating,
-  editing,
-  disabling,
-  deleting,
-  confirmDelete,
-  savingEdit,
-  savingCreate,
-}
-
-interface IContentState {
-  contentState: ContentState;
+  DISPLAYING = 'displaying',
+  CREATING = 'creating',
+  EDITING = 'editing',
+  DISABLING = 'disabling',
+  DELETING = 'deleting',
+  CONFIRM_DELETE = 'confirmDelete',
+  SAVING_EDIT = 'savingEdit',
+  SAVING_CREATE = 'savingCreate',
 }
 
 const StyledBasicButton = styled(RippleButton)`
@@ -73,7 +69,7 @@ const Content = ({
   },
   history,
 }) => {
-  const [contentState, setContentState] = useState<any>(ContentState.displaying);
+  const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
   let lastValidId = null;
 
   const fetchData = async () => {
@@ -84,25 +80,26 @@ const Content = ({
     await setItem(id, resource);
     setContentState(
       id === 'create'
-        ? ContentState.creating
+        ? ContentState.CREATING
         : subResourceType === 'edit'
-        ? ContentState.editing
-        : ContentState.displaying,
+        ? ContentState.EDITING
+        : ContentState.DISPLAYING,
     );
   };
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
-    setContentState(subResourceType === 'edit' ? ContentState.editing : ContentState.displaying);
+    setContentState(subResourceType === 'edit' ? ContentState.EDITING : ContentState.DISPLAYING);
   }, [subResourceType]);
 
   const theme = useTheme();
 
   const isSaving =
-    contentState === ContentState.savingEdit || contentState === ContentState.savingCreate;
+    contentState === ContentState.SAVING_EDIT || contentState === ContentState.SAVING_CREATE;
 
   const CreateButton = () => (
     <StyledBasicButton
@@ -132,14 +129,14 @@ const Content = ({
   const DisableButton = () => (
     <StyledBasicButton
       basic
-      disabled={contentState === ContentState.disabling || (item || {}).status === 'DISABLED'}
-      loading={contentState === ContentState.disabling}
+      disabled={contentState === ContentState.DISABLING || (item || {}).status === 'DISABLED'}
+      loading={contentState === ContentState.DISABLING}
       onClick={async () => {
-        setContentState(ContentState.disabling);
+        setContentState(ContentState.DISABLING);
         await stageChange({ status: 'DISABLED' });
         await saveChanges();
         await refreshList();
-        setContentState(ContentState.displaying);
+        setContentState(ContentState.DISPLAYING);
       }}
       size="tiny"
     >
@@ -151,10 +148,10 @@ const Content = ({
     <StyledButton
       customcolor={theme.colors.error_dark}
       hovercolor={theme.colors.error_3}
-      disabled={contentState === ContentState.deleting}
-      loading={contentState === ContentState.deleting}
+      disabled={contentState === ContentState.DELETING}
+      loading={contentState === ContentState.DELETING}
       onClick={async () => {
-        setContentState(ContentState.deleting);
+        setContentState(ContentState.DELETING);
         await deleteItem();
         await refreshList();
         history.replace(`/${resource.name.plural}`);
@@ -169,7 +166,7 @@ const Content = ({
     <StyledBasicButton
       customcolor={theme.colors.error_dark}
       basic
-      onClick={() => setContentState(ContentState.confirmDelete)}
+      onClick={() => setContentState(ContentState.CONFIRM_DELETE)}
       size="tiny"
     >
       Delete
@@ -200,13 +197,13 @@ const Content = ({
         loading={isSaving}
         onClick={async () => {
           setContentState(
-            contentState === ContentState.editing
-              ? ContentState.savingEdit
-              : ContentState.savingCreate,
+            contentState === ContentState.EDITING
+              ? ContentState.SAVING_EDIT
+              : ContentState.SAVING_CREATE,
           );
           const newState = await saveChanges();
           await refreshList();
-          setContentState(ContentState.displaying);
+          setContentState(ContentState.DISPLAYING);
           history.replace(`/${resource.name.plural}/${newState.entity.item.id}`);
         }}
         size="tiny"
@@ -227,7 +224,7 @@ const Content = ({
       className="content"
     >
       <StyledControlContainer>
-        {![ContentState.editing, ContentState.creating].includes(contentState) && !isSaving ? (
+        {![ContentState.EDITING, ContentState.CREATING].includes(contentState) && !isSaving ? (
           <React.Fragment>
             <div>
               {resource.createItem && <CreateButton />}
@@ -236,8 +233,8 @@ const Content = ({
             {id &&
               (resource.noDelete ? (
                 <DisableButton />
-              ) : contentState === ContentState.confirmDelete ||
-                contentState === ContentState.deleting ? (
+              ) : contentState === ContentState.CONFIRM_DELETE ||
+                contentState === ContentState.DELETING ? (
                 <ConfirmDeleteButton />
               ) : (
                 <DeleteButton />
@@ -261,13 +258,13 @@ const Content = ({
         }}
         className="content contentPanel"
       >
-        {contentState === ContentState.creating ? (
+        {contentState === ContentState.CREATING ? (
           <EditingContentPanel entityType={resource.name.singular} rows={rows} hideImmutable />
         ) : !id ? (
           <EmptyContent message={resource.emptyMessage} />
         ) : !item ? (
           <EmptyContent message={'loading'} />
-        ) : contentState === ContentState.editing || contentState === ContentState.savingEdit ? (
+        ) : contentState === ContentState.EDITING || contentState === ContentState.SAVING_EDIT ? (
           <EditingContentPanel entityType={resource.name.singular} rows={rows} />
         ) : (
           <ContentPanel entityType={resource.name.singular} rows={rows} />

@@ -119,10 +119,10 @@ const List = ({
   resource,
   query,
 }: IListProps) => {
-  const updateData = async ({ offset }) => {
+  const updateData = async () => {
     await setListResource(resource, parent);
     updateList({
-      offset,
+      offset: 0,
       sortField: field.key,
       sortOrder: order,
       query,
@@ -131,12 +131,14 @@ const List = ({
   };
 
   useEffect(() => {
-    updateData({ offset: 0 });
+    updateData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const debouncedUpdate = debounce(() => updateData({ offset: 0 }), 100);
+    const debouncedUpdate = debounce(() => updateData(), 100);
     debouncedUpdate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resource, query, order, field.key]);
 
   const displayMode: any =
