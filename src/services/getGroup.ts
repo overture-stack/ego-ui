@@ -1,37 +1,20 @@
-import { USE_DUMMY_DATA } from 'common/injectGlobals';
 import { Group } from 'common/typedefs/Group';
-import { find, isNil, omitBy } from 'lodash';
+import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 
 import ajax from 'services/ajax';
 import { clientSideSort } from './clientSideSortUtil';
 
-import dummyApplications from './dummyData/applications';
-import dummyGroups from './dummyData/groups';
-import dummyUsers from './dummyData/users';
-
-export const getGroup = id => {
-  return USE_DUMMY_DATA
-    ? Promise.resolve(dummyGroups.find(group => id === group.id))
-    : ajax.get(`/groups/${id}`).then(r => r.data);
+export const getGroup = (id) => {
+  return ajax.get(`/groups/${id}`).then((r) => r.data);
 };
 
-export const getGroupUsers = id => {
-  return USE_DUMMY_DATA
-    ? Promise.resolve(
-        dummyUsers.filter((user: any) => (user.group || []).find(group => group.id === id)),
-      )
-    : ajax.get(`/groups/${id}/users`).then(r => r.data);
+export const getGroupUsers = (id) => {
+  return ajax.get(`/groups/${id}/users`).then((r) => r.data);
 };
 
-export const getGroupApplications = id => {
-  return USE_DUMMY_DATA
-    ? Promise.resolve(
-        (find(dummyGroups, group => id === group.id, {}).applications || []).map(appId =>
-          dummyApplications.find(application => appId === application.id),
-        ),
-      )
-    : ajax.get(`/groups/${id}/applications`).then(r => r.data);
+export const getGroupApplications = (id) => {
+  return ajax.get(`/groups/${id}/applications`).then((r) => r.data);
 };
 
 export const getGroupPermissions = ({
@@ -57,7 +40,7 @@ export const getGroupPermissions = ({
         ),
       )}`,
     )
-    .then(r => {
+    .then((r) => {
       // TODO: implement server side sorting and search
       // for client side pagination
       const sortBy = sortField !== 'policy' ? sortField : 'policy.name';
@@ -78,5 +61,5 @@ export const getGroupPermissions = ({
         ),
       };
     })
-    .catch(err => err);
+    .catch((err) => err);
 };

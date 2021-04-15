@@ -2,11 +2,10 @@
 import React from 'react';
 
 import Logout from 'components/Logout';
-import defaultTheme from 'theme';
 
 const NoAccess = () => (
   <div
-    css={(theme: typeof defaultTheme) => ({
+    css={(theme) => ({
       backgroundColor: theme.colors.primary_5,
       color: theme.colors.white,
       display: 'flex',

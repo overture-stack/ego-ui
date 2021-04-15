@@ -4,7 +4,7 @@ import { Menu } from 'semantic-ui-react';
 import { WIDTHS } from 'semantic-ui-react/dist/es/lib/SUI';
 import { css } from '@emotion/react';
 
-export default ({
+const Pagination = ({
   onChange,
   onLimitChange,
   offset,
@@ -86,3 +86,5 @@ export default ({
     </div>
   );
 };
+
+export default Pagination;

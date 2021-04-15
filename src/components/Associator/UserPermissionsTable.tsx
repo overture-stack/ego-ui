@@ -14,7 +14,7 @@ export const PermissionLabel = styled(Label)`
   `}
 `;
 
-export default ({ associatedItems }) => (
+const UserPermissionsTable = ({ associatedItems }) => (
   <div css={{ flex: 1 }}>
     <Table singleLine>
       <Table.Body>
@@ -45,3 +45,5 @@ export default ({ associatedItems }) => (
     </Table>
   </div>
 );
+
+export default UserPermissionsTable;

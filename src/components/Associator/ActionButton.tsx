@@ -13,14 +13,18 @@ const StyledActionButton = styled(Button)`
   `}
 `;
 
-export default ({ children, onClick }) => (
-  <StyledActionButton basic onClick={onClick} size="mini">
-    <span
-      css={{
-        fontWeight: 500,
-      }}
-    >
-      {children}
-    </span>
-  </StyledActionButton>
-);
+const ActionButton = ({ children, onClick }) => {
+  return (
+    <StyledActionButton basic onClick={onClick} size="mini">
+      <span
+        css={{
+          fontWeight: 500,
+        }}
+      >
+        {children}
+      </span>
+    </StyledActionButton>
+  );
+};
+
+export default ActionButton;

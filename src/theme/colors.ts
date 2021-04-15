@@ -62,7 +62,7 @@ const warning = {
   warning_dark: '#e6c104',
 };
 
-export default {
+const colors = {
   ...base,
   ...grey,
   ...accent,
@@ -72,3 +72,5 @@ export default {
   ...error,
   ...warning,
 };
+
+export default colors;

@@ -3,8 +3,6 @@ import React from 'react';
 import { User } from 'common/typedefs/User';
 import { css } from '@emotion/react';
 
-import defaultTheme from 'theme';
-
 const styles = {
   container: {
     fontSize: 18,
@@ -26,7 +24,7 @@ const styles = {
   },
 };
 
-const getName = user => {
+const getName = (user) => {
   const { lastName, firstName, id } = user;
   if (lastName) {
     if (firstName) {
@@ -42,7 +40,7 @@ const getName = user => {
 
 const AdminDisplay = () => (
   <div
-    css={(theme: typeof defaultTheme) => css`
+    css={(theme) => css`
       margin-left: 5px;
       font-size: 0.5em;
       color: ${theme.colors.primary_5};

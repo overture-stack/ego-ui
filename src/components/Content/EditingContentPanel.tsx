@@ -135,15 +135,7 @@ class EditingContentPanel extends React.Component<any, any> {
         }),
       );
 
-    return (
-      <ContentPanelView
-        entity={staged}
-        entityType={entityType}
-        hideImmutable={hideImmutable}
-        resource={resource}
-        rows={normalizedRows}
-      />
-    );
+    return <ContentPanelView entity={staged} entityType={entityType} rows={normalizedRows} />;
   }
 }
 

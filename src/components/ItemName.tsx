@@ -30,11 +30,12 @@ class ItemName extends React.Component<IItemNameProps, { name: string }> {
     this.fetchName(this.props);
   }
 
-  componentWillReceiveProps(nextProps: IItemNameProps) {
-    if (nextProps.id !== this.props.id || nextProps.type !== this.props.type) {
-      this.fetchName(nextProps);
+  componentDidUpdate(prevProps: IItemNameProps) {
+    if (prevProps.id !== this.props.id || prevProps.type !== this.props.type) {
+      this.fetchName(this.props);
     }
   }
+
   render() {
     return <span>{this.state.name}</span>;
   }

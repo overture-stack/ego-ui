@@ -25,7 +25,7 @@ export const getFieldContent = (row, data) => {
   return data[row.key] || <EmptyField />;
 };
 
-export const getUserFieldName = row => {
+export const getUserFieldName = (row) => {
   return row.key === 'lastName' ? 'Name' : row.fieldName || row.key;
 };
 
@@ -62,15 +62,8 @@ const ContentPanel = ({
     entity: { item, associated, resource },
   },
 }) => {
-  const normalizedRows = rows.map(row => normalizeRow(row, item, associated));
-  return (
-    <ContentPanelView
-      entity={item}
-      entityType={entityType}
-      resource={resource}
-      rows={normalizedRows}
-    />
-  );
+  const normalizedRows = rows.map((row) => normalizeRow(row, item, associated));
+  return <ContentPanelView entity={item} entityType={entityType} rows={normalizedRows} />;
 };
 
 export default enhance(ContentPanel);

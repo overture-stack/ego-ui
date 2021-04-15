@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { ReactNode } from 'react';
 
-import defaultTheme from 'theme';
-
 const ControlsContainer = ({
   children,
   className,
@@ -13,7 +11,7 @@ const ControlsContainer = ({
   return (
     <div
       className={className}
-      css={(theme: typeof defaultTheme) => ({
+      css={(theme) => ({
         backgroundColor: theme.colors.grey_2,
         borderBottom: `1px solid ${theme.colors.grey_3}`,
         display: 'flex',

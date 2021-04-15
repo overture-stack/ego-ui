@@ -42,7 +42,7 @@ export const FieldName = styled('span')`
   `}
 `;
 
-const ContentView = ({ entity, entityType, resource, rows, hideImmutable = true }) => {
+const ContentView = ({ entity, entityType, rows }) => {
   const panelSections = groupBy(rows, 'panelSection');
   const theme = useTheme();
   return (
