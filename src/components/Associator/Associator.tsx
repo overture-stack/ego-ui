@@ -142,7 +142,7 @@ const Associator = ({
   effects,
   ...props
 }: any) => {
-  useEffect((): any => {
+  useEffect(() => {
     const onMessage = async (e: any) => {
       if (e.type === 'PANEL_LIST_UPDATE') {
         await effects.setItem(parentId, resource);

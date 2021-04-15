@@ -60,8 +60,6 @@ interface IListProps {
   };
 }
 
-interface IListState {}
-
 const enhance = compose(
   injectState,
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),

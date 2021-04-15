@@ -43,7 +43,7 @@ const ItemsWrapper = ({
     const columns = Math.max(Math.floor(size.width / columnWidth), 1);
     const rows = Math.max(Math.floor(size.height / rowHeight), 1);
     updateList({ limit: columns * rows });
-  }, [size.width, size.height]);
+  }, [size.width, size.height, columnWidth, rowHeight]);
 
   const fillersRequired = Math.max(limit - resultSet.length, 0);
   return (
