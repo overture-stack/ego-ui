@@ -54,6 +54,7 @@ const error = {
   error_dark: '#ad404e', // RED - which wasn't used, but closest approximation
   error_1: '#f9eff0',
   error_2: '#e9c1c6',
+  error_3: '#842c37',
 };
 
 const warning = {

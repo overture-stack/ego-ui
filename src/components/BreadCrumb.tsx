@@ -34,36 +34,43 @@ const StyledBreadcrumbSectionContainer = styled.div`
   display: inline-block;
 `;
 
-const Breadcrumb = ({ path }) => (
-  <StyledBreadcrumb>
-    <SemanticBreadcrumb>
-      {path
-        .split('/')
-        .filter(Boolean)
-        .map((crumb: string, i: number, arr: string[]) => {
-          const isLast = i === arr.length - 1;
-          const linkPath = `/${arr.slice(0, i + 1).join('/')}`;
+const StyledBreadcrumbDivider = styled(SemanticBreadcrumb.Divider)`
+  ${({ theme }) => `
+    &.divider.styled-divider {
+      color: ${theme.colors.grey_5};
+      margin: 0px 0.4em 0 0.5em;
+    }
+  `}
+`;
 
-          return (
-            <React.Fragment key={`${linkPath}-section`}>
-              <StyledBreadcrumbSectionContainer>
-                <SemanticBreadcrumb.Section active={isLast}>
-                  <NavLink to={linkPath}>
-                    {i % 2 === 1 ? <ItemName type={arr[i - 1]} id={crumb} /> : crumb}
-                  </NavLink>
-                </SemanticBreadcrumb.Section>
-              </StyledBreadcrumbSectionContainer>
+const Breadcrumb = ({ path }) => {
+  return (
+    <StyledBreadcrumb>
+      <SemanticBreadcrumb>
+        {path
+          .split('/')
+          .filter(Boolean)
+          .map((crumb: string, i: number, arr: string[]) => {
+            const isLast = i === arr.length - 1;
+            const linkPath = `/${arr.slice(0, i + 1).join('/')}`;
 
-              {!isLast && (
-                <SemanticBreadcrumb.Divider
-                  style={{ color: '#ccc', margin: '0px 0.4em 0 0.5em' }}
-                />
-              )}
-            </React.Fragment>
-          );
-        })}
-    </SemanticBreadcrumb>
-  </StyledBreadcrumb>
-);
+            return (
+              <React.Fragment key={`${linkPath}-section`}>
+                <StyledBreadcrumbSectionContainer>
+                  <SemanticBreadcrumb.Section active={isLast}>
+                    <NavLink to={linkPath}>
+                      {i % 2 === 1 ? <ItemName type={arr[i - 1]} id={crumb} /> : crumb}
+                    </NavLink>
+                  </SemanticBreadcrumb.Section>
+                </StyledBreadcrumbSectionContainer>
+
+                {!isLast && <StyledBreadcrumbDivider className="styled-divider" />}
+              </React.Fragment>
+            );
+          })}
+      </SemanticBreadcrumb>
+    </StyledBreadcrumb>
+  );
+};
 
 export default Breadcrumb;

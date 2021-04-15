@@ -1,5 +1,4 @@
 import React from 'react';
-import { css } from 'glamor';
 import { configure, addDecorator } from '@storybook/react';
 /* import { action } from '@storybook/addon-actions';
  * import { linkTo } from '@storybook/addon-links'; */
@@ -16,19 +15,15 @@ global.gapi = {
   },
 };
 
-css.global('#root > div', {
-  height: '100%',
-});
-
 const req = require.context('../src/components', true, /\.stories\.(js|ts|tsx)$/);
 
 const StateProviders = provideLoggedInUser(({ children }) => children);
 
-addDecorator(storyFn => <StateProviders>{storyFn()}</StateProviders>);
+addDecorator((storyFn) => <StateProviders>{storyFn()}</StateProviders>);
 /* addDecorator(StoryRouter()); */
 
 function loadStories() {
-  req.keys().forEach(filename => req(filename));
+  req.keys().forEach((filename) => req(filename));
 }
 
 configure(loadStories, module);

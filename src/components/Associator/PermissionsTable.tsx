@@ -69,10 +69,10 @@ const enhance = compose(
 const RemoveButton = styled(Button)`
   ${({ theme }) => `
     &.ui.button {
-      background-color: ${theme.colors.secondary_dark};
+      background-color: ${theme.colors.accent};
       color: ${theme.colors.white};
       &:hover {
-        background-color: ${theme.colors.secondary_accessible};
+        background-color: ${theme.colors.accent_dark};
       }
     }
   `}
