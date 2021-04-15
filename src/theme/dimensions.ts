@@ -8,6 +8,9 @@ const dimensions = {
     policy: 3,
     user: 4,
   },
+  screen: {
+    minWidth: 1400,
+  },
 };
 
 export default dimensions;

@@ -1,51 +1,73 @@
-const TEAL = '#24dcbe';
-const HIGH_CONTRAST_TEAL = '#268271';
-const WHITE = '#fff';
-const LIGHT_GREY = '#f3f3f3'; // background
-const GREY = '#dfdedf';
-const DARK_GREY = '#666';
-const DARK_BLUE = '#003055';
-const MEDIUM_BLUE = '#1f7abf';
-const LIGHT_TEAL = '#e5f7f4';
-const DEFAULT_BLACK = '#262626';
-const LIGHT_RED = '#f1d8db';
-const RED = '#db2828';
-const VERY_LIGHT_TEAL = `rgb(36, 220, 190, 0.05)`;
-const BLUE = '#00a1d8';
-const LIGHT_BLUE = '#53bfe5';
-
-export default {
-  white: '#fff',
-  default_black: '#262626',
-  dark_grey: '#666',
-  grey: '#dfdedf',
-  light_grey: '#f3f3f3', // background
-  teal: '#24dcbe',
-  high_contrast_teal: '#268271',
-  light_teal: '#e5f7f4',
-  very_light_teal: `rgb(36, 220, 190, 0.05)`,
-  blue: '#53bfe5',
-  light_blue: '#53bfe5',
-  medium_blue: '#1f7abf',
-  dark_blue: '#003055',
-  red: '#db2828',
-  light_red: '#f1d8db',
+const base = {
+  white: '#fff', // WHITE
+  black: '#282a35', // replace previous DEFAULT_BLACK
 };
 
-export {
-  BLUE,
-  DARK_BLUE,
-  DARK_GREY,
-  DEFAULT_BLACK,
-  GREY,
-  HIGH_CONTRAST_TEAL,
-  MEDIUM_BLUE,
-  LIGHT_BLUE,
-  LIGHT_GREY,
-  LIGHT_RED,
-  LIGHT_TEAL,
-  RED,
-  TEAL,
-  VERY_LIGHT_TEAL,
-  WHITE,
+const grey = {
+  grey_0: '#f9f9f9',
+  grey_1: '#f2f5f8',
+  grey_2: '#f2f3f5', // #eaeaea, LIGHT_GREY
+  grey_3: '#dfdfe1', // GREY
+  grey_4: '#cecfd3',
+  grey_5: '#aeafb3',
+  grey_6: '#5e6068', // DARK_GREY
+  grey_highlight: '#eceff2',
+};
+
+// teals
+const primary = {
+  primary_1: '#e5fbf8', // LIGHT_TEAL
+  primary_2: '#ccf8f2',
+  primary_3: '#99f1e5',
+  primary_4: '#40e6cf',
+  primary_5: '#00ddbe', // TEAL, VERY_LIGHT_TEAL
+  primary_6: '#00c4a7',
+  primary_7: '#00a88f', // HIGH_CONTRAST_TEAL
+};
+
+// dark blues
+const accent = {
+  accent: '#04518c',
+  accent_light: '#4f85ae',
+  accent_dark: '#003055', // DARK_BLUE
+  accent_1: '#e5edf3',
+};
+
+// light blues
+const secondary = {
+  secondary: '#4bc6f0', // LIGHT_BLUE
+  secondary_light: '#edf9fd',
+  secondary_dark: '#109ed9', // BLUE
+  secondary_accessible: '#0c7cac', // MEDIUM_BLUE
+  secondary_1: '#d2f1fb',
+  secondary_2: '#aee5f8',
+};
+
+const accent2 = {
+  accent2_dark: '#9e005d',
+  accent2: '#b74a89',
+  accent2_light: '#f7ecf3',
+};
+
+const error = {
+  error: '#c86370',
+  error_dark: '#ad404e', // RED - which wasn't used, but closest approximation
+  error_1: '#f9eff0',
+  error_2: '#e9c1c6',
+};
+
+const warning = {
+  warning: '#f2d021',
+  warning_dark: '#e6c104',
+};
+
+export default {
+  ...base,
+  ...grey,
+  ...accent,
+  ...accent2,
+  ...primary,
+  ...secondary,
+  ...error,
+  ...warning,
 };
