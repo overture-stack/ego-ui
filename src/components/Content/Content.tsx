@@ -37,7 +37,7 @@ interface IContentState {
 
 const StyledBasicButton = styled(RippleButton)`
   ${({ customcolor }) => `
-    &.ui.button.basic.tiny {
+    &.ui.button.basic {
       box-shadow: none;
       color: ${customcolor} !important;
       border: 1px solid ${customcolor};
@@ -47,7 +47,7 @@ const StyledBasicButton = styled(RippleButton)`
 
 const StyledButton = styled(RippleButton)`
   ${({ theme, customcolor, hovercolor }) => `
-      &.ui.button.tiny {
+      &.ui.button {
         box-shadow: none;
         color: ${theme.colors.white};
         background-color: ${customcolor};

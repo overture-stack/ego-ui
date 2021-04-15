@@ -8,6 +8,7 @@ import { Button, Icon, Input, Menu } from 'semantic-ui-react';
 
 import { USERS } from 'common/enums';
 import { getUserDisplayName } from 'common/getUserDisplayName';
+import styled from '@emotion/styled';
 
 const styles = {
   container: {},
@@ -65,6 +66,19 @@ const enhance = compose(
     },
   }),
 );
+
+const StyledButton = styled(Button)`
+  ${({ theme }) => `
+    &.ui.button.mini {
+      box-shadow: none;
+      color: ${theme.colors.white};
+      background-color: ${theme.colors.accent};
+      &:hover {
+        background-color: ${theme.colors.accent_dark};
+      }
+    }
+  `}
+`;
 
 const ItemSelector = ({
   disabledItems,
@@ -125,10 +139,14 @@ const ItemSelector = ({
                 </MenuComponent>
               </div>
             ) : (
-              <Button size="mini" color="blue" onClick={() => setIsEntryMode(true, requestItems)}>
+              <StyledButton
+                className="addButton"
+                size="mini"
+                onClick={() => setIsEntryMode(true, requestItems)}
+              >
                 <Icon name="add" />
                 Add
-              </Button>
+              </StyledButton>
             )}
           </div>
         </div>
