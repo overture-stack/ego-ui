@@ -11,11 +11,11 @@ import { getApiKeyStatus } from './apiKeysUtils';
 import { FieldName } from 'components/Content/ContentPanelView';
 
 const CustomLabel = styled(Label)`
-  ${({ theme, bgColor }) => `
+  ${({ theme, bgcolor }) => `
     &.statusLabel {
       font-weight: 100;
       color: ${theme.colors.black};
-      background-color: ${bgColor};
+      background-color: ${bgcolor};
     }
   `}
 `;
@@ -114,7 +114,7 @@ const ApiKeysTable = ({ editing, handleAction, items }) => {
                         REVOKE
                       </CustomButton>
                     ) : (
-                      <CustomLabel bgColor={labelColours[status]} className="statusLabel">
+                      <CustomLabel bgcolor={labelColours[status]} className="statusLabel">
                         <span>{status}</span>
                       </CustomLabel>
                     )}

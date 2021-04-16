@@ -100,7 +100,6 @@ const Nav = ({ effects, state }) => {
 
       <CollapsedRipple
         className="collapsed-ripple"
-        passStyle
         as={UnstyledButton}
         onClick={() => {
           effects.setUserPreferences({ collapsed: !collapsedState });

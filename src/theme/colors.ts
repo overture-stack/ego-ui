@@ -51,7 +51,7 @@ const accent2 = {
 
 const error = {
   error: '#c86370',
-  error_dark: '#ad404e', // RED - which wasn't used, but closest approximation
+  error_dark: '#ad404e', // RED
   error_1: '#f9eff0',
   error_2: '#e9c1c6',
   error_3: '#842c37',

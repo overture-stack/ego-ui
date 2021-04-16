@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { injectState } from 'freactal';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -22,7 +23,7 @@ class App extends React.Component<any, any> {
   render() {
     return (
       <Router basename={PUBLIC_PATH}>
-        <div style={{ height: '100%', display: 'flex' }}>
+        <div css={{ height: '100%', display: 'flex' }}>
           <Switch>
             <Route path="/" exact component={Login} />
             <Route path="/no-access" exact component={NoAccess} />

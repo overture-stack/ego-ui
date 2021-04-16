@@ -120,7 +120,6 @@ const Content = ({
       disabled={isSaving}
       onClick={() => history.push(`/${resource.name.plural}/${id}/edit`)}
       size="tiny"
-      style={{ fontWeight: 'normal' }}
     >
       Edit
     </StyledButton>
@@ -129,6 +128,8 @@ const Content = ({
   const DisableButton = () => (
     <StyledBasicButton
       basic
+      customcolor={theme.colors.error_dark}
+      hovercolor={theme.colors.error_3}
       disabled={contentState === ContentState.DISABLING || (item || {}).status === 'DISABLED'}
       loading={contentState === ContentState.DISABLING}
       onClick={async () => {
