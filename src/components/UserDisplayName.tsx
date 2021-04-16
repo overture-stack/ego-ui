@@ -3,27 +3,6 @@ import React from 'react';
 import { User } from 'common/typedefs/User';
 import { css } from '@emotion/react';
 
-const styles = {
-  container: {
-    fontSize: 18,
-    lineHeight: 1,
-    display: 'flex',
-    alignItems: 'baseline',
-    WordBreak: 'break-all',
-  },
-  formattedName: {
-    maxWidth: '180px',
-    OverflowX: 'hidden',
-    textOverflow: 'ellipsis',
-    display: 'inline-block',
-    WordBreak: 'break-word',
-    WhiteSpace: 'nowrap',
-    lineHeight: 'normal',
-    paddingRight: '0.1em',
-    verticalAlign: 'text-bottom',
-  },
-};
-
 const getName = (user) => {
   const { lastName, firstName, id } = user;
   if (lastName) {
@@ -51,8 +30,30 @@ const AdminDisplay = () => (
 );
 
 export const UserDisplayName = ({ user }: { user: User }) => (
-  <div css={styles.container}>
-    <span css={styles.formattedName}>{getName(user)}</span>
+  <div
+    css={css`
+      font-size: 18px;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      word-break: break-all;
+    `}
+  >
+    <span
+      css={css`
+        ma-width: 180px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        word-break: break-word;
+        white-space: nowrap;
+        line-height: normal;
+        padding-right: 0.1em;
+        vertical-align: text-bottom;
+      `}
+    >
+      {getName(user)}
+    </span>
     {user.type === 'ADMIN' && <AdminDisplay />}
   </div>
 );
