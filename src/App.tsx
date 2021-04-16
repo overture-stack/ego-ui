@@ -31,7 +31,7 @@ class App extends React.Component<any, any> {
               component={(props) => (
                 <React.Fragment>
                   <Nav />
-                  <div style={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div css={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                     <BreadCrumb path={props.location.pathname} />
                     <Switch>
                       {Object.keys(RESOURCE_MAP).map((key) => {

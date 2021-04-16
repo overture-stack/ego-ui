@@ -83,7 +83,7 @@ const Nav = ({ effects, state }) => {
                 activeClassName={'active'}
               >
                 <div className="content">
-                  <resource.Icon css={{ opacity: 0.9 }} />
+                  <resource.Icon style={{ opacity: 0.9 }} />
                   {collapsedState ? (
                     <div css={{ height: 35 }} />
                   ) : (
