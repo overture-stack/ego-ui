@@ -1,18 +1,8 @@
+/** @jsxImportSource @emotion/react */
 import React from 'react';
-import { css } from 'glamor';
-
 import { Menu } from 'semantic-ui-react';
 import { WIDTHS } from 'semantic-ui-react/dist/es/lib/SUI';
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: '1em 0',
-    flexShrink: 0,
-  },
-};
+import { css } from '@emotion/react';
 
 const Pagination = ({
   onChange,
@@ -77,7 +67,15 @@ const Pagination = ({
     }, [] as any);
 
   return (
-    <div className={`Pagination ${css(styles.container)}`}>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding: 1rem 0;
+        flex-shrink: 0;
+      `}
+    >
       <Menu
         style={{ width: 'auto' }}
         pagination

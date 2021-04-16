@@ -1,16 +1,30 @@
+/** @jsxImportSource @emotion/react */
+import styled from '@emotion/styled';
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 
-const ActionButton = ({ children, onClick }) => (
-  <Button basic color="red" onClick={onClick} size="mini">
-    <span
-      style={{
-        fontWeight: 500,
-      }}
-    >
-      {children}
-    </span>
-  </Button>
-);
+const StyledActionButton = styled(Button)`
+  ${({ theme }) => `
+    &.ui.button.basic {
+      box-shadow: none;
+      color: ${theme.colors.error_dark} !important;
+      border: 1px solid ${theme.colors.error_dark};
+    }
+  `}
+`;
+
+const ActionButton = ({ children, onClick }) => {
+  return (
+    <StyledActionButton basic onClick={onClick} size="mini">
+      <span
+        css={{
+          fontWeight: 500,
+        }}
+      >
+        {children}
+      </span>
+    </StyledActionButton>
+  );
+};
 
 export default ActionButton;

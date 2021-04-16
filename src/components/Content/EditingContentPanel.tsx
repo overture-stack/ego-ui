@@ -1,16 +1,17 @@
-import { Application, Group, User } from 'common/typedefs';
-import { IField } from 'common/typedefs/Resource';
+/** @jsxImportSource @emotion/react */
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
-import { css } from 'glamor';
 import { upperCase } from 'lodash';
 import React from 'react';
 import { compose } from 'recompose';
 import { Dropdown, Input } from 'semantic-ui-react';
+import { css } from '@emotion/react';
 
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
+import { Application, Group, User } from 'common/typedefs';
+import { IField } from 'common/typedefs/Resource';
 
 const getFieldContent = (row, data, immutableKeys, stageChange) => {
   return (
@@ -36,20 +37,27 @@ function rowInput({
     case 'dropdown':
       return (
         <Dropdown
+          className="editDropdown"
           onChange={(event, { value }) => stageChange({ [row.key]: value })}
           options={(row.options || []).map((text) => ({ text, value: text }))}
           selection
-          style={{ minWidth: '9rem', fontSize: '12px' }}
+          css={css`
+            &.editDropdown.ui.selection.dropdown {
+              min-width: 9rem;
+              font-size: 12px;
+            }
+          `}
           text={data[row.key]}
           placeholder={data[row.key] ? undefined : `Select ${(row.fieldName || '').toLowerCase()}`}
         />
       );
     default:
       return (
-        <div style={{ display: 'flex', flex: '0 0 100%' }}>
+        <div css={{ display: 'flex', flex: '0 0 100%' }}>
           {row.key === 'lastName' ? (
             <Input
-              className={`firstName ${css({ marginRight: 10 })}`}
+              className="firstName"
+              css={{ marginRight: 10 }}
               size="mini"
               onChange={(e, { value }) => stageChange({ firstName: value })}
               type="text"
@@ -61,7 +69,7 @@ function rowInput({
             onChange={(e, { value }) => stageChange({ [row.key]: value })}
             type="text"
             value={data[row.key] || ''}
-            style={{ flex: 1 }}
+            css={{ flex: 1 }}
           />
         </div>
       );

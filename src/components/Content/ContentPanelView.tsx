@@ -1,223 +1,231 @@
-import { css } from 'glamor';
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import { groupBy } from 'lodash';
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
+import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
 
-import { DARK_GREY, GREY, HIGH_CONTRAST_TEAL } from 'common/colors';
 import { USER } from 'common/enums';
 
-const FIELD_NAME_WIDTHS = {
-  application: 5,
-  group: 3,
-  policy: 3,
-  user: 4,
-};
+const StyledRow = styled(Grid.Row)`
+  height: 48px;
+  align-items: center;
+  padding: 0.5rem 0rem;
+`;
 
-export const styles = {
-  contentHeight: {
-    height: 48,
-  },
-  contentRow: {
-    alignItems: 'center !important',
-    padding: '0.5rem 0rem !important',
-  },
-  fieldContent: {
-    fontSize: 14,
-  },
-  fieldName: {
-    alignItems: 'center !important',
-    color: DARK_GREY,
-    display: 'inline-flex',
-    fontSize: 11,
-  },
-  fieldNamePadding: {
-    paddingRight: '10px',
-  },
-  section: {
-    borderBottom: `1px solid ${GREY}`,
-    marginLeft: '1.5rem',
-    marginRight: '1rem',
-    paddingBottom: '1.5rem',
-    paddingTop: '1rem',
-  },
-};
+const StyledGrid = styled(Grid)`
+  &.customGrid {
+    margin: 0;
+  }
+`;
 
-const ContentView = ({ entity, entityType, fieldNameWidths = FIELD_NAME_WIDTHS, rows }) => {
+const Section = styled('div')`
+  ${({ theme }) => `
+    border-bottom: 1px solid ${theme.colors.grey_3};
+    margin: 0 1rem 0 1.5rem;
+    padding: 0.5rem 0 2rem;
+  `}
+`;
+
+const FieldContent = styled('span')`
+  font-size: 14px;
+`;
+
+export const FieldName = styled('span')`
+  ${({ theme }) => `
+    align-items: center;
+    color: ${theme.colors.grey_6};
+    display: inline-flex;
+    font-size: 11px;
+    padding-right: 10px;
+  `}
+`;
+
+const ContentView = ({ entity, entityType, rows }) => {
   const panelSections = groupBy(rows, 'panelSection');
-
+  const theme = useTheme();
   return (
-    <div style={{ marginTop: '0.5rem' }}>
-      <div className={`contentPanel id ${css(styles.section)}`}>
-        <Grid>
+    <div>
+      <Section
+        className="contentPanel id"
+        css={css`
+          padding-top: 0;
+        `}
+      >
+        <StyledGrid className="customGrid">
           {panelSections['id'].map(({ fieldContent, fieldName, key }) => {
             return (
-              <Grid.Row
-                className={`${css(styles.contentRow, styles.contentHeight)}`}
-                key={`${entity.id}-${key}`}
-              >
-                <Grid.Column width={fieldNameWidths[entityType]}>
-                  <Grid.Row
-                    className={`${css(styles.contentRow, styles.contentHeight, {
-                      padding: '0 !important', // override semantic-ui
-                    })}`}
-                  >
+              <StyledRow className="contentView contentRow" key={`${entity.id}-${key}`}>
+                <Grid.Column
+                  className="fieldNameColumn"
+                  css={css`
+                    &.fieldNameColumn.wide.column {
+                      padding-left: 0px;
+                    }
+                  `}
+                  width={theme.dimensions.fieldNameWidths[entityType]}
+                >
+                  <StyledRow className="contentRow" css={{ padding: 0 }}>
                     <span
-                      className={`contentFieldName ${css(
-                        styles.fieldName,
-                        styles.fieldNamePadding,
-                      )}`}
+                      css={(theme) => ({
+                        alignItems: 'center',
+                        color: theme.colors.grey_6,
+                        display: 'inline-flex',
+                        fontSize: 11,
+                        paddingRight: 10,
+                      })}
+                      className="contentFieldName"
                     >
                       {fieldName}
                     </span>
-                  </Grid.Row>
+                  </StyledRow>
                 </Grid.Column>
-                <Grid.Column width={11}>
-                  <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
-                    <span
-                      className={`contentFieldContent ${css(styles.fieldContent, {
-                        display: 'flex',
-                        flex: '0 0 100%',
-                      })}`}
+                <Grid.Column
+                  className="idContent"
+                  width={11}
+                  css={css`
+                    &.idContent.column.wide {
+                      padding-left: 5px;
+                    }
+                  `}
+                >
+                  <StyledRow className="contentRow">
+                    <FieldContent
+                      css={[
+                        {
+                          display: 'flex',
+                          flex: '0 0 100%',
+                          paddingLeft: 0,
+                        },
+                      ]}
+                      className="contentFieldContent"
                     >
                       {fieldContent}
-                    </span>
-                  </Grid.Row>
+                    </FieldContent>
+                  </StyledRow>
                 </Grid.Column>
-              </Grid.Row>
+              </StyledRow>
             );
           })}
-        </Grid>
-      </div>
+        </StyledGrid>
+      </Section>
 
       {panelSections['meta'] && panelSections['meta'].length > 0 && (
-        <div className={`contentPanel meta ${css(styles.section)}`}>
+        <Section className="contentPanel meta">
           <Grid columns="equal">
             {entityType === USER ? (
               <React.Fragment>
-                <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
+                <StyledRow className="contentView contentRow">
                   {panelSections['meta'].slice(0, 2).map(({ fieldContent, fieldName, key }) => {
+                    const adminStyle =
+                      entityType === USER &&
+                      key === 'type' &&
+                      typeof fieldContent === 'string' &&
+                      (fieldContent || '').toLowerCase() === 'admin'
+                        ? { color: theme.colors.primary_7 }
+                        : {};
                     return (
                       <Grid.Column key={`${entity.id}-${key}`}>
-                        <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
-                          <span
-                            className={`contentFieldName ${css(
-                              styles.fieldName,
-                              styles.fieldNamePadding,
-                              { width: 80 },
-                            )}`}
-                          >
+                        <StyledRow
+                          className="contentView contentRow"
+                          css={css`
+                            align-items: center !important;
+                            padding: 0.5rem 0 !important;
+                          `}
+                        >
+                          <FieldName css={{ width: 80 }} className="contentFieldName">
                             {fieldName}
-                          </span>
+                          </FieldName>
 
-                          <span
-                            className={`contentFieldContent ${css(
-                              styles.fieldContent,
-                              ...(entityType === USER &&
-                              key === 'type' &&
-                              typeof fieldContent === 'string' &&
-                              (fieldContent || '').toLowerCase() === 'admin'
-                                ? [{ color: HIGH_CONTRAST_TEAL }]
-                                : []),
-                            )}`}
-                          >
+                          <FieldContent css={adminStyle} className="contentFieldContent">
                             {fieldContent}
-                          </span>
-                        </Grid.Row>
+                          </FieldContent>
+                        </StyledRow>
                       </Grid.Column>
                     );
                   })}
-                </Grid.Row>
+                </StyledRow>
 
-                <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
+                <StyledRow className="contentView contentRow">
                   {panelSections['meta'].slice(2, 4).map(({ fieldContent, fieldName, key }) => {
                     return (
                       <Grid.Column key={`${entity.id}-${key}`}>
-                        <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
-                          <span
-                            className={`contentFieldName ${css(
-                              styles.fieldName,
-                              styles.fieldNamePadding,
-                              { width: 80 },
-                            )}`}
-                          >
-                            {fieldName}
-                          </span>
-                          <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                        <StyledRow className="contentView contentRow">
+                          <FieldName css={{ width: 80 }}>{fieldName}</FieldName>
+                          <FieldContent className="contentFieldContent">
                             {fieldContent}
-                          </span>
-                        </Grid.Row>
+                          </FieldContent>
+                        </StyledRow>
                       </Grid.Column>
                     );
                   })}
-                </Grid.Row>
-                <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
+                </StyledRow>
+                <StyledRow className="contentView contentRow">
                   {panelSections['meta'].slice(4, 5).map(({ fieldContent, fieldName, key }) => {
                     return (
                       <Grid.Column key={`${entity.id}-${key}`}>
-                        <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
-                          <span
-                            className={`contentFieldName ${css(
-                              styles.fieldName,
-                              styles.fieldNamePadding,
-                              { width: 80 },
-                            )}`}
-                          >
+                        <StyledRow className="contentView contentRow">
+                          <FieldName css={{ width: 80 }} className="contentFieldName">
                             {fieldName}
-                          </span>
-                          <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                          </FieldName>
+                          <FieldContent className="contentFieldContent">
                             {fieldContent}
-                          </span>
-                        </Grid.Row>
+                          </FieldContent>
+                        </StyledRow>
                       </Grid.Column>
                     );
                   })}
-                </Grid.Row>
+                </StyledRow>
               </React.Fragment>
             ) : (
               panelSections['meta'].map(({ fieldContent, fieldName, key }) => {
                 return (
-                  <Grid.Row
-                    className={`${css(styles.contentRow, styles.contentHeight)}`}
+                  <StyledRow
+                    css={css`
+                      &.contentView.contentRow.row {
+                        padding-top: 1.5rem;
+                      }
+                    `}
+                    className="contentView contentRow"
                     key={`${entity.id}-${key}`}
                   >
-                    <Grid.Column width={fieldNameWidths[entityType]}>
-                      <span
-                        className={`contentFieldName ${css(
-                          styles.fieldName,
-                          styles.fieldNamePadding,
-                        )}`}
-                      >
-                        {fieldName}
-                      </span>
+                    <Grid.Column width={theme.dimensions.fieldNameWidths[entityType]}>
+                      <FieldName className="contentFieldName">{fieldName}</FieldName>
                     </Grid.Column>
                     <Grid.Column width={11}>
-                      <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
-                        {fieldContent}
-                      </span>
+                      <FieldContent className="contentFieldContent">{fieldContent}</FieldContent>
                     </Grid.Column>
-                  </Grid.Row>
+                  </StyledRow>
                 );
               })
             )}
           </Grid>
-        </div>
+        </Section>
       )}
 
-      <div className={`contentPanel associatedTypes ${css(styles.section)}`}>
+      <Section css={{ paddingTop: '1rem' }} className="contentPanel associatedTypes">
         <Grid>
           {panelSections['associatedTypes'].map(({ fieldContent, fieldName, key }) => {
             return (
-              <Grid.Row className={`${css(styles.contentRow)}`} key={`${entity.id}-${key}`}>
+              <Grid.Row
+                className="contentRow"
+                css={css`
+                  &.contentRow.row {
+                    align-items: center;
+                    padding: 0.5rem 0rem;
+                  }
+                `}
+                key={`${entity.id}-${key}`}
+              >
                 <Grid.Column verticalAlign={'top'}>
-                  <div className={`contentFieldContent ${css(styles.fieldContent)}`}>
-                    {fieldContent}
-                  </div>
+                  <FieldContent className="contentFieldContent">{fieldContent}</FieldContent>
                 </Grid.Column>
               </Grid.Row>
             );
           })}
         </Grid>
-      </div>
+      </Section>
     </div>
   );
 };

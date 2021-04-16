@@ -1,5 +1,5 @@
+/** @jsxImportSource @emotion/react */
 import { injectState } from 'freactal';
-import { css } from 'glamor';
 import React from 'react';
 import { withRouter } from 'react-router';
 import { compose } from 'recompose';
@@ -29,7 +29,8 @@ const CopyJwt = class extends React.Component<any, any> {
     return (
       this.hasClipboard && (
         <div
-          className={`${css(styles.container, this.props.styles)} ${this.props.className}`}
+          css={[styles.container, this.props.styles]}
+          className={this.props.className}
           onClick={this.handleClick}
         >
           Copy My JWT {this.state.copied && <Icon name="check" />}

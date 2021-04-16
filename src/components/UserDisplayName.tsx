@@ -1,7 +1,7 @@
-import { TEAL } from 'common/colors';
-import { User } from 'common/typedefs/User';
-import { css } from 'glamor';
+/** @jsxImportSource @emotion/react */
 import React from 'react';
+import { User } from 'common/typedefs/User';
+import { css } from '@emotion/react';
 
 const styles = {
   container: {
@@ -9,20 +9,15 @@ const styles = {
     lineHeight: 1,
     display: 'flex',
     alignItems: 'baseline',
-    wordBreak: 'break-all',
-  },
-  userAdmin: {
-    marginLeft: 5,
-    fontSize: '0.5em',
-    color: TEAL,
+    WordBreak: 'break-all',
   },
   formattedName: {
     maxWidth: '180px',
-    overflowX: 'hidden',
+    OverflowX: 'hidden',
     textOverflow: 'ellipsis',
     display: 'inline-block',
-    wordBreak: 'break-word',
-    whiteSpace: 'nowrap',
+    WordBreak: 'break-word',
+    WhiteSpace: 'nowrap',
     lineHeight: 'normal',
     paddingRight: '0.1em',
     verticalAlign: 'text-bottom',
@@ -43,9 +38,21 @@ const getName = (user) => {
   }
 };
 
-export const UserDisplayName = ({ user, style = {} }: { user: User; style?: any }) => (
-  <div className={`DisplayName ${css(styles.container, style)}`}>
-    <span className={`${css(styles.formattedName)}`}>{getName(user)}</span>
-    {user.type === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
+const AdminDisplay = () => (
+  <div
+    css={(theme) => css`
+      margin-left: 5px;
+      font-size: 0.5em;
+      color: ${theme.colors.primary_5};
+    `}
+  >
+    ADMIN
+  </div>
+);
+
+export const UserDisplayName = ({ user }: { user: User }) => (
+  <div css={styles.container}>
+    <span css={styles.formattedName}>{getName(user)}</span>
+    {user.type === 'ADMIN' && <AdminDisplay />}
   </div>
 );

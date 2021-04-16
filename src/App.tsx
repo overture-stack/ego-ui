@@ -1,14 +1,13 @@
+/** @jsxImportSource @emotion/react */
 import { injectState } from 'freactal';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { compose } from 'recompose';
-import { provideLoggedInUser } from 'stateProviders';
 
+import { provideLoggedInUser } from 'stateProviders';
 import BreadCrumb from 'components/BreadCrumb';
 import Login from 'components/Login';
-
 import ResourceRoute from 'components/ResourceRoute';
-
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Nav from 'components/Nav';
 import NoAccess from 'components/NoAccess';
@@ -24,24 +23,24 @@ class App extends React.Component<any, any> {
   render() {
     return (
       <Router basename={PUBLIC_PATH}>
-        <div style={{ height: '100%', display: 'flex' }}>
+        <div css={{ height: '100%', display: 'flex' }}>
           <Switch>
             <Route path="/" exact component={Login} />
             <Route path="/no-access" exact component={NoAccess} />
             <ProtectedRoute
-              component={props => (
+              component={(props) => (
                 <React.Fragment>
                   <Nav />
-                  <div style={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div css={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                     <BreadCrumb path={props.location.pathname} />
                     <Switch>
-                      {Object.keys(RESOURCE_MAP).map(key => {
+                      {Object.keys(RESOURCE_MAP).map((key) => {
                         const resource = RESOURCE_MAP[key];
                         return (
                           <ProtectedRoute
                             key={key}
                             path={`/${resource.name.plural}/:id?/:subResourceType?/:subResourceId?`}
-                            render={p => <ResourceRoute {...p} resource={resource} />}
+                            render={(p) => <ResourceRoute {...p} resource={resource} />}
                             renderLogin
                           />
                         );

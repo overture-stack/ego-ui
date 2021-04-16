@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
 import { upperCase } from 'lodash';
@@ -7,7 +8,7 @@ import { compose } from 'recompose';
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
 
-const EmptyField = () => <span style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
+const EmptyField = () => <span css={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
 
 export const getFieldContent = (row, data) => {
   if (row.fieldContent) {
