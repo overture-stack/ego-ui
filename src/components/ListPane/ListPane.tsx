@@ -16,6 +16,7 @@ import ItemTable from './ItemTable';
 import getStyles from './ListPane.styles';
 
 import { isChildOfPolicy } from 'common/associatedUtils';
+import useAuthContext from 'components/global/hooks/useAuthContext';
 
 enum DisplayMode {
   Table,
@@ -41,12 +42,8 @@ interface IListProps {
     updateList: Function;
     refreshList: Function;
     setListResource: Function;
-    setUserPreferences: Function;
   };
   state: {
-    preferences: {
-      listDisplayMode: DisplayMode;
-    };
     list: {
       limit: number;
       resultSet: TEntity[];
@@ -105,13 +102,12 @@ const List = ({
   setCurrentSort,
   setQuery,
   state: {
-    preferences: { listDisplayMode },
     list: {
       count = 0,
       params: { offset, limit },
     },
   },
-  effects: { updateList, refreshList, setUserPreferences, setListResource },
+  effects: { updateList, refreshList, setListResource },
   columnWidth,
   parent,
   resource,
@@ -128,6 +124,14 @@ const List = ({
     });
   };
 
+  const { setUserPreferences, userPreferences } = useAuthContext();
+  const theme = useTheme();
+
+  const displayMode: any =
+    typeof userPreferences?.listDisplayMode !== 'undefined'
+      ? userPreferences.listDisplayMode
+      : DisplayMode.Table;
+
   useEffect(() => {
     updateData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,11 +142,6 @@ const List = ({
     debouncedUpdate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resource, query, order, field.key]);
-
-  const displayMode: any =
-    typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Table;
-
-  const theme = useTheme();
 
   return (
     <div css={styles.container}>
@@ -208,7 +207,9 @@ const List = ({
           <RippleButton
             compact
             style={displayMode === DisplayMode.Table ? { color: theme.colors.primary_5 } : {}}
-            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
+            onClick={() =>
+              setUserPreferences({ ...userPreferences, listDisplayMode: DisplayMode.Table })
+            }
           >
             <Button.Content>
               <Icon name="list" fitted />
@@ -217,7 +218,12 @@ const List = ({
           <RippleButton
             compact
             style={displayMode === DisplayMode.Grid ? { color: theme.colors.primary_5 } : {}}
-            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
+            onClick={() =>
+              setUserPreferences({
+                ...userPreferences,
+                listDisplayMode: DisplayMode.Grid,
+              })
+            }
           >
             <Button.Content>
               <Icon name="grid layout" fitted />

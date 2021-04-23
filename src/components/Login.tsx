@@ -1,16 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED } from 'common/injectGlobals';
-import { injectState } from 'freactal';
 import { css } from '@emotion/react';
 import jwtDecode from 'jwt-decode';
-import PropTypes from 'prop-types';
 import React, { ComponentType } from 'react';
-import { compose } from 'recompose';
 import styled from '@emotion/styled';
 
 import ajax from 'services/ajax';
 import { Orcid, Google, GitHub, LinkedIn } from './Icons';
 import brandImage from 'assets/brand-image.svg';
+import useAuthContext from './global/hooks/useAuthContext';
 
 const styles = {
   logo: {
@@ -42,8 +40,6 @@ const LoginButton = styled('a')`
   }
   `}
 `;
-
-const enhance = compose(injectState);
 
 enum LoginProvider {
   Keycloak = 'Keycloak',
@@ -90,13 +86,13 @@ const KeycloakLogin = () => {
   );
 };
 
-class Component extends React.Component<any, any> {
-  static propTypes = {
-    effects: PropTypes.object,
-    state: PropTypes.object,
-  };
+const Login = ({ location, history }) => {
+  const initialJwt = localStorage.getItem('user-token');
+  const { setToken } = useAuthContext();
 
-  componentDidMount() {
+  // need check for isValid instead, i.e. if (!isValidJwt(initialJwt))
+  // verify function is not working
+  if (!initialJwt) {
     ajax
       .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, { withCredentials: true })
       .then((resp) => {
@@ -116,15 +112,15 @@ class Component extends React.Component<any, any> {
           id: jwtData.sub,
         };
 
-        await this.props.effects.setUser(user);
-        await this.props.effects.setToken(jwt);
+        await setToken(jwt);
 
         if (user.type === 'ADMIN' && user.status === 'APPROVED') {
-          if (this.props.location.pathname === '/') {
-            this.props.history.push('/users');
+          // this check may be redundant because of the ego redirect uri
+          if (location.pathname === '/') {
+            history.push('/users');
           }
         } else {
-          this.props.history.push('/no-access');
+          history.push('/no-access');
         }
       })
       .catch((err) => {
@@ -132,68 +128,64 @@ class Component extends React.Component<any, any> {
       });
   }
 
-  render() {
-    return (
-      <div
-        className="Login"
-        css={(theme) => ({
-          backgroundColor: theme.colors.primary_5,
-          color: theme.colors.white,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-          width: '100%',
-        })}
+  return (
+    <div
+      className="Login"
+      css={(theme) => ({
+        backgroundColor: theme.colors.primary_5,
+        color: theme.colors.white,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        width: '100%',
+      })}
+    >
+      <img src={brandImage} alt="" css={styles.logo} />
+      <h1 css={styles.title}>Admin Portal</h1>
+
+      <ul
+        css={css`
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 0;
+          margin-top: 0.5rem;
+        `}
       >
-        <img src={brandImage} alt="" css={styles.logo} />
-        <h1 css={styles.title}>Admin Portal</h1>
-
-        <ul
-          // object style did not work here: typescript complained about property 'flexDirection',
-          // instead was looking for FlexDirection or FlexDirection[]', which did not apply the correctly rendered style
-          css={css`
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-            margin-top: 0.5rem;
-          `}
-        >
-          {KEYCLOAK_ENABLED && (
-            <div
-              css={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-              }}
+        {KEYCLOAK_ENABLED && (
+          <div
+            css={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+            }}
+          >
+            <KeycloakLogin />
+          </div>
+        )}
+        <h3 css={styles.title}>
+          {KEYCLOAK_ENABLED
+            ? 'Or login with one of the following services'
+            : 'Login with one of the following'}
+        </h3>
+        {providers.map(({ name, path, Icon }) => {
+          return (
+            <LoginButton
+              key={name}
+              href={`${API_ROOT}/oauth/login/${path}?client_id=${EGO_CLIENT_ID}`}
             >
-              <KeycloakLogin />
-            </div>
-          )}
-          <h3 css={styles.title}>
-            {KEYCLOAK_ENABLED
-              ? 'Or login with one of the following services'
-              : 'Login with one of the following'}
-          </h3>
-          {providers.map(({ name, path, Icon }) => {
-            return (
-              <LoginButton
-                key={name}
-                href={`${API_ROOT}/oauth/login/${path}?client_id=${EGO_CLIENT_ID}`}
-              >
-                {Icon !== undefined && <Icon width={15} height={15} />}
-                <span css={{ paddingLeft: 10 }}>{name}</span>
-              </LoginButton>
-            );
-          })}
-        </ul>
-      </div>
-    );
-  }
-}
+              {Icon !== undefined && <Icon width={15} height={15} />}
+              <span css={{ paddingLeft: 10 }}>{name}</span>
+            </LoginButton>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
 
-export default enhance(Component);
+export default Login;

@@ -3,8 +3,6 @@ import { css, useTheme } from '@emotion/react';
 import { capitalize, pickBy, throttle } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { injectState } from 'freactal';
-import { compose } from 'recompose';
 import { Icon } from 'semantic-ui-react';
 
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
@@ -14,6 +12,7 @@ import brandImage from 'assets/brand-image.svg';
 import brandImageSmall from 'assets/brand-image-small.svg';
 import LinkRipple, { CollapsedRipple } from './NavRipple';
 import Emblem from './Emblem';
+import useAuthContext from 'components/global/hooks/useAuthContext';
 
 const listStyles = {
   listStyleType: 'none',
@@ -22,17 +21,16 @@ const listStyles = {
   flexGrow: 1,
 };
 
-const enhance = compose(injectState);
-
-const Nav = ({ effects, state }) => {
+const Nav = () => {
   const theme = useTheme();
   const [collapsedState, setCollapsedState] = useState(false);
   const [windowSizeSmallState, setWindowSizeSmallState] = useState(false);
+  const { userPreferences, setUserPreferences } = useAuthContext();
 
   const onResize = throttle(() => {
     const windowSizeSmall = window.innerWidth < theme.dimensions.screen.minWidth;
     if (windowSizeSmall !== windowSizeSmallState) {
-      effects.setUserPreferences({ collapsed: undefined });
+      setUserPreferences({ ...userPreferences, collapsed: undefined });
       setWindowSizeSmallState(windowSizeSmall);
       setCollapsedState(windowSizeSmall);
     }
@@ -40,7 +38,7 @@ const Nav = ({ effects, state }) => {
 
   useEffect(() => {
     const windowSizeSmall = window.innerWidth < theme.dimensions.screen.minWidth;
-    const userSelected = state.preferences.collapsed;
+    const userSelected = userPreferences.collapsed;
     const collapsedPref = userSelected === undefined ? windowSizeSmall : userSelected;
     setWindowSizeSmallState(windowSizeSmall);
     setCollapsedState(collapsedPref);
@@ -102,7 +100,7 @@ const Nav = ({ effects, state }) => {
         className="collapsed-ripple"
         as={UnstyledButton}
         onClick={() => {
-          effects.setUserPreferences({ collapsed: !collapsedState });
+          setUserPreferences({ ...userPreferences, collapsed: !collapsedState });
           setCollapsedState(!collapsedState);
         }}
       >
@@ -112,4 +110,4 @@ const Nav = ({ effects, state }) => {
   );
 };
 
-export default enhance(Nav);
+export default Nav;

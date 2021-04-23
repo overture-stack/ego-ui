@@ -1,21 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import { injectState } from 'freactal';
 import React from 'react';
-import { withRouter } from 'react-router';
-import { compose } from 'recompose';
+import useAuthContext from './global/hooks/useAuthContext';
 
-const enhance = compose(withRouter, injectState);
-
-const Component = ({ effects, history, className }) => {
-  const handleClick = async () => {
-    effects.setUser(null);
-    history.push('/');
-  };
+const Logout = ({ className }: { className?: string }) => {
+  const { logout } = useAuthContext();
   return (
-    <div css={{ cursor: 'pointer' }} className={className} onClick={handleClick}>
+    <div css={{ cursor: 'pointer' }} className={className} onClick={logout}>
       Log Out
     </div>
   );
 };
 
-export default enhance(Component);
+export default Logout;
