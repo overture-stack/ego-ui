@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { injectState } from 'freactal';
 import { css, useTheme } from '@emotion/react';
 import { debounce, get, isEmpty, reject } from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
-import { compose, defaultProps, withHandlers, withPropsOnChange } from 'recompose';
+import { compose, defaultProps } from 'recompose';
 import 'react-table/react-table.css';
 
 import { isChildOfPolicy, isGroup, isUserPermission } from 'common/associatedUtils';
@@ -19,47 +18,6 @@ const enhance = compose(
   }),
   defaultProps({
     rowHeight: 38,
-  }),
-  injectState,
-  withPropsOnChange(
-    (props, nextProps) =>
-      // TODO: height change is not being detected
-      (props.size.width !== nextProps.size.width || props.size.height !== nextProps.size.height) &&
-      nextProps.size.width !== 0,
-    debounce(({ size, rowHeight, effects: { updateList } }) => {
-      const heightBuffer = 30;
-      const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight) - 1, 1);
-      const limit = rows;
-
-      updateList({ limit, rows });
-    }, 200),
-  ),
-  withHandlers({
-    handleAction: ({
-      parent,
-      resource,
-      effects: { updateList, saveChanges, stageChange },
-    }) => async (item) => {
-      if (resource.name.singular === 'API Key') {
-        await item.action(item);
-      } else {
-        await parent.resource[item.action][resource.name.plural]({
-          item: { id: parent.id },
-          [resource.name.singular]: item,
-        });
-      }
-
-      messenger.publish({
-        payload: {
-          item,
-          parentType: parent.resource.name.singular,
-          resourceType: resource.name.singular,
-        },
-        type: 'PANEL_LIST_UPDATE',
-      });
-
-      updateList({ item });
-    },
   }),
 );
 
@@ -91,17 +49,37 @@ const getColumns = (currentSort, resource, parent) => {
 const ItemsWrapper = ({
   resource,
   onSelect,
-  state: {
-    list: { resultSet },
-  },
   limit,
   currentSort,
   onSortChange,
-  handleAction,
   parent,
   selectedItemId,
-  ...props
+  size,
+  resultSet,
+  handleListUpdate,
 }) => {
+  const theme = useTheme();
+
+  const handleAction = async (item) => {
+    if (resource.name.singular === 'API Key') {
+      await item.action(item);
+    } else {
+      await parent.resource[item.action][resource.name.plural]({
+        item: { id: parent.id },
+        [resource.name.singular]: item,
+      });
+    }
+    messenger.publish({
+      payload: {
+        item,
+        parentType: parent.resource.name.singular,
+        resourceType: resource.name.singular,
+      },
+      type: 'PANEL_LIST_UPDATE',
+    });
+    handleListUpdate();
+  };
+
   const data = isEmpty(parent)
     ? resultSet
     : resource.mapTableData(resultSet).map((d) => {
@@ -114,7 +92,16 @@ const ItemsWrapper = ({
         };
       });
 
-  const theme = useTheme();
+  // not sure this is needed, because table container scrolls to always allow 20 rows
+  useEffect(() => {
+    debounce(({ size, rowHeight }) => {
+      const heightBuffer = 30;
+      const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight) - 1, 1);
+      const limit = rows;
+
+      handleListUpdate({ limit, rows });
+    }, 200);
+  }, [size.width, size.height]);
 
   return (
     <div

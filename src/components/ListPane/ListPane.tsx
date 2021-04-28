@@ -1,13 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { useTheme } from '@emotion/react';
-import { debounce, get, merge, noop } from 'lodash';
-import React, { useEffect } from 'react';
-import { compose, defaultProps, withProps, withState } from 'recompose';
+import { debounce, get, merge, noop, isEmpty } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { compose, defaultProps, withProps } from 'recompose';
 import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
-import { injectState } from 'freactal';
 
-import { TEntity } from 'common/typedefs';
-import { IResource, TSortDirection } from 'common/typedefs/Resource';
+import { IResource, SortOrder } from 'common/typedefs/Resource';
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
 import { RippleButton } from 'components/Ripple';
@@ -17,6 +15,9 @@ import getStyles from './ListPane.styles';
 
 import { isChildOfPolicy } from 'common/associatedUtils';
 import useAuthContext from 'components/global/hooks/useAuthContext';
+import { initialListState } from 'components/global/hooks/useListContext';
+import { PERMISSIONS } from 'common/enums';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 enum DisplayMode {
   Table,
@@ -31,26 +32,6 @@ interface IListProps {
   columnWidth: number;
   styles: any;
   selectedItemId: string;
-  currentSort: {
-    order: TSortDirection;
-    field: any;
-  };
-  setCurrentSort: Function;
-  setQuery: Function;
-  query: string;
-  effects: {
-    updateList: Function;
-    refreshList: Function;
-    setListResource: Function;
-  };
-  state: {
-    list: {
-      limit: number;
-      resultSet: TEntity[];
-      count: number;
-      params: any;
-    };
-  };
   parent: {
     id: string;
     resource: IResource;
@@ -58,13 +39,7 @@ interface IListProps {
 }
 
 const enhance = compose(
-  injectState,
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
-  withState('query', 'setQuery', (props) => props.initialQuery || ''),
-  withState('currentSort', 'setCurrentSort', (props) => ({
-    field: props.resource.initialSortField(isChildOfPolicy(get(props.parent, 'resource'))),
-    order: props.resource.initialSortOrder,
-  })),
   withProps(({ columnWidth, resource, styles: stylesProp }) => ({
     styles: merge(getStyles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
   })),
@@ -97,30 +72,65 @@ const List = ({
   getKey,
   styles,
   selectedItemId,
-  currentSort,
-  currentSort: { field, order },
-  setCurrentSort,
-  setQuery,
-  state: {
-    list: {
-      count = 0,
-      params: { offset, limit },
-    },
-  },
-  effects: { updateList, refreshList, setListResource },
   columnWidth,
   parent,
   resource,
-  query,
 }: IListProps) => {
-  const updateData = async () => {
-    await setListResource(resource, parent);
-    updateList({
+  const getListFunc = (associatedType, parent) => {
+    return associatedType === PERMISSIONS && !isEmpty(parent)
+      ? RESOURCE_MAP[associatedType].getList[parent.resource.name.plural]
+      : RESOURCE_MAP[associatedType].getList;
+  };
+
+  const listFunc = parent ? getListFunc(resource.name.plural, parent) : resource.getList;
+  const [listState, setListState] = useState(initialListState);
+  const {
+    params: { offset, limit },
+    count,
+  } = listState;
+
+  const [currentSort, setCurrentSort] = useState<{
+    order: SortOrder;
+    field: any;
+  }>({
+    field: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
+    order: resource.initialSortOrder,
+  });
+  const { order, field } = currentSort;
+  const [query, setQuery] = useState<string>('');
+
+  const refreshList = async (optParams) => {
+    const combinedParams = {
       offset: 0,
       sortField: field.key,
       sortOrder: order,
       query,
-      ...(parent && { [`${parent.resource.name.singular}Id`]: parent.id }),
+      ...optParams,
+    };
+
+    const match = (query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
+    const [, before, , statusQuoted, statusUnquoted, after] = match || Array(5);
+
+    const response = await listFunc({
+      ...combinedParams,
+      ...(parent && { [`${parent.resource.name.singular}Id`]: parent.id, parent }),
+      query:
+        (match ? `${before || ''}${after || ''}` : query || '').replace(/\s+/g, ' ').trim() || null,
+      status: statusQuoted || statusUnquoted || null,
+    });
+
+    return {
+      ...listState,
+      ...response,
+    };
+  };
+
+  const updateData = async (optParams = {}) => {
+    const data = await refreshList(optParams);
+    setListState({
+      ...listState,
+      resultSet: data.resultSet,
+      count: data.count,
     });
   };
 
@@ -133,15 +143,10 @@ const List = ({
       : DisplayMode.Table;
 
   useEffect(() => {
-    updateData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
+    console.log('updating');
     const debouncedUpdate = debounce(() => updateData(), 100);
     debouncedUpdate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resource, query, order, field.key]);
+  }, [resource, parent, query, order, field.key]);
 
   return (
     <div css={styles.container}>
@@ -233,6 +238,7 @@ const List = ({
       </ControlContainer>
       {displayMode === DisplayMode.Grid ? (
         <ItemGrid
+          resultSet={listState.resultSet}
           Component={resource.ListItem}
           getKey={resource.getKey}
           sortField={currentSort.field}
@@ -250,13 +256,14 @@ const List = ({
                 [resource.name.plural]: item,
                 item: parent,
               });
-              refreshList();
+              updateData();
             })
           }
           parent={parent}
         />
       ) : (
         <ItemTable
+          resultSet={listState.resultSet}
           parent={parent}
           resource={resource}
           getKey={getKey}
@@ -273,6 +280,7 @@ const List = ({
                 .find((field) => field.key === newSortField),
             });
           }}
+          handleListUpdate={updateData}
           onRemove={
             parent &&
             (async (item) => {
@@ -282,14 +290,14 @@ const List = ({
                 [resource.name.plural]: item,
                 item: parent,
               });
-              refreshList();
+              updateData();
             })
           }
         />
       )}
       {(limit < count || offset > 0) && (
         <Pagination
-          onChange={(page) => updateList({ offset: page * limit })}
+          onChange={(page) => updateData({ offset: page * limit })}
           offset={offset}
           limit={limit}
           total={count}

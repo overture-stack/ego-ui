@@ -22,9 +22,9 @@ export interface IField {
 
 export type ISchema = IField[];
 
-export type TResourceType = GROUPS | APPLICATIONS | USERS | API_KEYS | PERMISSIONS | POLICIES;
+export type ResourceType = GROUPS | APPLICATIONS | USERS | API_KEYS | PERMISSIONS | POLICIES;
 
-export type TSortDirection = 'DESC' | 'ASC';
+export type SortOrder = 'DESC' | 'ASC';
 
 interface IBaseListParams {
   offset?: number = null;
@@ -135,7 +135,7 @@ export interface IResource {
   emptyMessage: string;
   schema: Schema;
   noDelete?: true;
-  name: { singular: string; plural: TResourceType };
+  name: { singular: string; plural: ResourceType };
   ListItem: JSX.Element<any>;
   getList: TGetList | IPermissionsGetList;
   getListAll: (params: IListParams) => Promise<IListResponse>;

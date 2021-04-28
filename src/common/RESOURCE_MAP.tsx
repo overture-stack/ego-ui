@@ -54,7 +54,7 @@ import {
   UserListItem,
 } from 'components/ListItem';
 
-import { IResource, TResourceType } from 'common/typedefs/Resource';
+import { IResource, ResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
 
 import {
@@ -75,7 +75,7 @@ import ApplicationIcon from 'components/Icons/application';
 import PolicyIcon from 'components/Icons/policy';
 
 // ignore tslint sort, resources listed in deliberate order
-const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
+const RESOURCE_MAP: { [key in ResourceType]: IResource } = {
   users: {
     add: {
       applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
