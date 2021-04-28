@@ -15,7 +15,6 @@ import getStyles from './ListPane.styles';
 
 import { isChildOfPolicy } from 'common/associatedUtils';
 import useAuthContext from 'components/global/hooks/useAuthContext';
-import { initialListState } from 'components/global/hooks/useListContext';
 import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
@@ -65,6 +64,20 @@ const paneControls = {
   displayModeContainer: {
     marginRight: '10px',
   },
+};
+
+const initialParams = {
+  offset: 0,
+  limit: 20,
+  sortField: null,
+  sortOrder: null,
+  query: null,
+};
+
+const initialListState = {
+  resultSet: [],
+  count: 0,
+  params: initialParams,
 };
 
 const List = ({
@@ -260,6 +273,8 @@ const List = ({
             })
           }
           parent={parent}
+          handleListUpdate={updateData}
+          offset={offset}
         />
       ) : (
         <ItemTable

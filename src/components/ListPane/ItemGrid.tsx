@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { injectState } from 'freactal';
 import { css } from '@emotion/react';
 import { range } from 'lodash';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import withSize from 'react-sizeme';
 import { compose } from 'recompose';
 import { Button } from 'semantic-ui-react';
@@ -12,7 +11,6 @@ const enhance = compose(
     refreshRate: 100,
     monitorHeight: true,
   }),
-  injectState,
 );
 
 const ItemsWrapper = ({
@@ -23,29 +21,27 @@ const ItemsWrapper = ({
   onSelect,
   styles,
   onRemove,
-  state: {
-    list: {
-      resultSet,
-      params: { offset, limit },
-    },
-  },
   size,
   columnWidth,
   rowHeight,
-  effects: { updateList },
   parent,
+  resultSet,
+  handleListUpdate,
+  offset,
 }: any) => {
+  const [fillersRequired, setFillersRequired] = useState<number>(0);
+
   useEffect(() => {
     if (size.width === 0) {
       return;
     }
-
     const columns = Math.max(Math.floor(size.width / columnWidth), 1);
     const rows = Math.max(Math.floor(size.height / rowHeight), 1);
-    updateList({ limit: columns * rows });
+    const setLimit = columns * rows;
+    setFillersRequired(Math.max(setLimit - resultSet.length, 0));
+    handleListUpdate({ limit: setLimit });
   }, [size.width, size.height, columnWidth, rowHeight]);
 
-  const fillersRequired = Math.max(limit - resultSet.length, 0);
   return (
     <div
       css={css`
