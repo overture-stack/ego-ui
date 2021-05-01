@@ -1,10 +1,8 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
-import { isEmpty, isEqual, omit, uniq, findIndex, get } from 'lodash';
-import { ENTITY_MAX_ASSOCIATED } from 'common/injectGlobals';
+import { isEmpty, get } from 'lodash';
 import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import { isChildOfPolicy, isGroup, isPolicy } from 'common/associatedUtils';
-import { IResource, SortOrder } from 'common/typedefs/Resource';
+import { isChildOfPolicy } from 'common/associatedUtils';
 import { useLocation } from 'react-router-dom';
 
 // type T_EntityContext = {};
@@ -61,16 +59,10 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
       query,
       ...optParams,
     };
-    // console.log(combinedParams);
+
     const match = (query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
     const [, before, , statusQuoted, statusUnquoted, after] = match || Array(5);
 
-    // const listFunc = resource ? resource.getList : () => Promise.resolve({});
-    // let listFunc = parent
-    //   ? RESOURCE_MAP[resource.name.plural].getList[parent.resource.name.plural]
-    //   : resource
-    //   ? resource.getList
-    //   : () => Promise.resolve({});
     const listFunc = resource
       ? getListFunc(resource.name.plural, parent)
       : () => Promise.resolve({});
@@ -97,7 +89,7 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
       ...listState,
       params: {
         ...listState.params,
-        ...(optParams.offset ? { offset: optParams.offset } : {}),
+        ...optParams,
       },
       resultSet: data.resultSet,
       count: data.count,
@@ -111,7 +103,6 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
     getListFunc,
   };
 
-  // console.log(listState);
   return <ListContext.Provider value={listData}>{children}</ListContext.Provider>;
 };
 

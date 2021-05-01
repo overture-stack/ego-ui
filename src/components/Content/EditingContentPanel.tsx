@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import format from 'date-fns/format/index.js';
-import { injectState } from 'freactal';
 import { upperCase } from 'lodash';
 import React from 'react';
-import { compose } from 'recompose';
 import { Dropdown, Input } from 'semantic-ui-react';
 import { css } from '@emotion/react';
 
@@ -12,6 +10,7 @@ import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
 import { Application, Group, User } from 'common/typedefs';
 import { IField } from 'common/typedefs/Resource';
+import useEntityContext from 'components/global/hooks/useEntityContext';
 
 const getFieldContent = (row, data, immutableKeys, stageChange) => {
   return (
@@ -108,35 +107,26 @@ function normalizeRow({
   };
 }
 
-const enhance = compose(injectState);
+const EditingContentPanel = ({ entityType, rows, hideImmutable = false }) => {
+  const {
+    entity: { resource, associated, staged },
+    stageChange,
+  } = useEntityContext();
 
-class EditingContentPanel extends React.Component<any, any> {
-  render() {
-    const {
-      entityType,
-      rows,
-      state: {
-        entity: { staged, associated, resource },
-      },
-      effects: { stageChange },
-      hideImmutable,
-    } = this.props;
+  const immutableKeys = resource.schema.filter((f) => f.immutable).map((f) => f.key);
+  const normalizedRows = rows
+    .filter((field) => !hideImmutable || !immutableKeys.includes(field.key || field))
+    .map((row) =>
+      normalizeRow({
+        associated,
+        data: staged,
+        immutableKeys,
+        row,
+        stageChange,
+      }),
+    );
 
-    const immutableKeys = resource.schema.filter((f) => f.immutable).map((f) => f.key);
-    const normalizedRows = rows
-      .filter((field) => !hideImmutable || !immutableKeys.includes(field.key || field))
-      .map((row) =>
-        normalizeRow({
-          associated,
-          data: staged,
-          immutableKeys,
-          row,
-          stageChange,
-        }),
-      );
+  return <ContentPanelView entity={staged} entityType={entityType} rows={normalizedRows} />;
+};
 
-    return <ContentPanelView entity={staged} entityType={entityType} rows={normalizedRows} />;
-  }
-}
-
-export default enhance(EditingContentPanel);
+export default EditingContentPanel;

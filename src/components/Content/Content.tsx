@@ -2,23 +2,24 @@
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 import React, { useEffect, useState } from 'react';
-import { injectState } from 'freactal';
 import { withRouter } from 'react-router';
 import { compose } from 'recompose';
 
 import ControlContainer from 'components/ControlsContainer';
 import EmptyContent from 'components/EmptyContent';
 import { RippleButton } from 'components/Ripple';
-import { provideEntity } from 'stateProviders';
 import ContentPanel from './ContentPanel';
 import EditingContentPanel from './EditingContentPanel';
+
+import useEntityContext from 'components/global/hooks/useEntityContext';
+import useListContext from 'components/global/hooks/useListContext';
 
 const StyledControlContainer = styled(ControlContainer)`
   padding: 0 24px;
   justify-content: space-between;
 `;
 
-const enhance = compose(provideEntity, injectState, withRouter);
+const enhance = compose(withRouter);
 
 enum ContentState {
   DISPLAYING = 'displaying',
@@ -59,25 +60,32 @@ const StyledButton = styled(RippleButton)`
 const Content = ({
   id,
   resource,
+  parent,
   match: {
     params: { subResourceType },
   },
   rows,
-  effects: { saveChanges, deleteItem, stageChange, refreshList, undoChanges, setItem },
-  state: {
-    entity: { item, valid },
-  },
   history,
 }) => {
+  const theme = useTheme();
   const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
-  let lastValidId = null;
-
+  const {
+    setEntity,
+    entity: { item, valid },
+    stageChange,
+    undoChanges,
+    deleteItem,
+    saveChanges,
+    setItem,
+  } = useEntityContext();
+  const { updateList } = useListContext();
+  const [lastValidId, setLastValidId] = useState<string>(null);
   const fetchData = async () => {
     if (id !== 'create') {
-      lastValidId = id;
+      setLastValidId(id);
     }
-
-    await setItem(id, resource);
+    const newItem = await setItem(id, resource, parent);
+    setEntity(newItem);
     setContentState(
       id === 'create'
         ? ContentState.CREATING
@@ -88,15 +96,16 @@ const Content = ({
   };
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // seems weird to have to check this, but Content will re-render as empty when displaying the child table,
+    // because the id needs to be null in order for the child list to work properly
+    if (!parent) {
+      fetchData();
+    }
   }, [id]);
 
   useEffect(() => {
     setContentState(subResourceType === 'edit' ? ContentState.EDITING : ContentState.DISPLAYING);
   }, [subResourceType]);
-
-  const theme = useTheme();
 
   const isSaving =
     contentState === ContentState.SAVING_EDIT || contentState === ContentState.SAVING_CREATE;
@@ -136,7 +145,7 @@ const Content = ({
         setContentState(ContentState.DISABLING);
         await stageChange({ status: 'DISABLED' });
         await saveChanges();
-        await refreshList();
+        await updateList(resource, parent);
         setContentState(ContentState.DISPLAYING);
       }}
       size="tiny"
@@ -154,7 +163,7 @@ const Content = ({
       onClick={async () => {
         setContentState(ContentState.DELETING);
         await deleteItem();
-        await refreshList();
+        await updateList(resource, parent);
         history.replace(`/${resource.name.plural}`);
       }}
       size="tiny"
@@ -180,7 +189,7 @@ const Content = ({
       basic
       disabled={isSaving}
       onClick={async () => {
-        await undoChanges();
+        await undoChanges(lastValidId);
         history.push(`/${resource.name.plural}/${lastValidId || ''}`);
       }}
       size="tiny"
@@ -203,9 +212,9 @@ const Content = ({
               : ContentState.SAVING_CREATE,
           );
           const newState = await saveChanges();
-          await refreshList();
-          setContentState(ContentState.DISPLAYING);
-          history.replace(`/${resource.name.plural}/${newState.entity.item.id}`);
+          await updateList(resource, parent);
+          await setContentState(ContentState.DISPLAYING);
+          history.replace(`/${resource.name.plural}/${newState.item.id}`);
         }}
         size="tiny"
       >

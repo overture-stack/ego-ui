@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { injectState } from 'freactal';
 import { capitalize, get } from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
 import { Button, Checkbox, Table } from 'semantic-ui-react';
 import styled from '@emotion/styled';
@@ -10,6 +9,8 @@ import { NavLink } from 'react-router-dom';
 import { MASK_LEVELS } from 'common/injectGlobals';
 import { USERS } from 'common/enums';
 import { PermissionLabel } from './UserPermissionsTable';
+import useEntityContext from 'components/global/hooks/useEntityContext';
+import { debug } from 'console';
 
 const EditMask = compose(withState('checkedMask', 'setCheckedMask', (props) => props.mask))(
   ({ mask, checkedMask, permission, setCheckedMask, handleSelectMask, associatedByType }) => {
@@ -34,36 +35,22 @@ const EditMask = compose(withState('checkedMask', 'setCheckedMask', (props) => p
   },
 );
 
-const enhance = compose(
-  injectState,
-  defaultProps({
-    getKey: (item) => get(item, 'id'),
-    getName: (item) => get(item, 'name'),
-    onSelect: (item) => global.log('selected', item),
-  }),
-  withState('items', 'setItems', ({ associatedItems }) => associatedItems),
-  withProps(({ fetchItems, setItems, type, effects: { stageChange } }) => ({
-    handleSelectMask: (permission, mask) => {
-      stageChange({
-        [type]: { add: { ...permission, mask } },
-      });
-    },
-    requestItems: async (query) => {
-      const response = await fetchItems({ query });
-      setItems(response.resultSet);
-    },
-  })),
-  withHandlers({
-    handleStateChange: ({ requestItems }) => async (changes, stateAndHelpers) => {
-      if (
-        changes.hasOwnProperty('inputValue') &&
-        changes.type === '__autocomplete_change_input__'
-      ) {
-        requestItems(changes.inputValue);
-      }
-    },
-  }),
-);
+const enhance = compose();
+// defaultProps({
+//   getKey: (item) => get(item, 'id'),
+//   getName: (item) => get(item, 'name'),
+//   onSelect: (item) => global.log('selected', item),
+// }),
+// withHandlers({
+//   handleStateChange: ({ requestItems }) => async (changes, stateAndHelpers) => {
+//     if (
+//       changes.hasOwnProperty('inputValue') &&
+//       changes.type === '__autocomplete_change_input__'
+//     ) {
+//       requestItems(changes.inputValue);
+//     }
+//   },
+// }),
 
 const RemoveButton = styled(Button)`
   ${({ theme }) => `
@@ -77,16 +64,41 @@ const RemoveButton = styled(Button)`
   `}
 `;
 
-const PermissionsTable = ({
-  editing,
-  associatedItems,
-  removeItem,
-  handleSelectMask,
-  type,
-  state: {
+const PermissionsTable = ({ editing, associatedItems, removeItem, fetchItems, type }) => {
+  const [items, setItems] = useState(associatedItems);
+  const {
     entity: { associated },
-  },
-}) => {
+    stageChange,
+  } = useEntityContext();
+  // withState('items', 'setItems', ({ associatedItems }) => associatedItems),
+  // withProps(({ fetchItems, setItems, type, effects: { stageChange } }) => ({
+  //   handleSelectMask: (permission, mask) => {
+  //     stageChange({
+  //       [type]: { add: { ...permission, mask } },
+  //     });
+  //   },
+  //   requestItems: async (query) => {
+  //     const response = await fetchItems({ query });
+  //     setItems(response.resultSet);
+  //   },
+  // })),
+
+  const handleSelectMask = (permission, mask) => {
+    stageChange({
+      [type]: { add: { ...permission, mask } },
+    });
+  };
+
+  // const requestItems = async (query) => {
+  //   const response = await fetchItems({ query });
+  //   setItems(response.resultSet);
+  // };
+
+  // const handleStateChange = ({ requestItems }) => async (changes, stateAndHelpers) => {
+  //   if (changes.hasOwnProperty('inputValue') && changes.type === '__autocomplete_change_input__') {
+  //     requestItems(changes.inputValue);
+  //   }
+  // };
   return (
     <div css={{ flex: 1, marginTop: '0.5rem' }}>
       <Table singleLine>
@@ -154,4 +166,4 @@ const PermissionsTable = ({
   );
 };
 
-export default enhance(PermissionsTable);
+export default PermissionsTable;

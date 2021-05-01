@@ -490,14 +490,21 @@ const RESOURCE_MAP: { [key in ResourceType]: IResource } = {
     ListItem: PermissionListItem,
     name: { singular: PERMISSION, plural: PERMISSIONS },
     mapTableData(results) {
-      return results.map((result) => ({
-        accessLevel: result.accessLevel,
-        id: result.policy.id,
-        ownerType: result.ownerType,
-        policy: result.policy.name,
-        action: 'remove',
-        actionText: 'REMOVE',
-      }));
+      return results.map((result) => {
+        // when first loading the list, the previous entity (now the parent entity) is still in state,
+        // so need to prevent loading the results until list state is updated. Need to do this because
+        // permissions have a nested structure
+        return result.policy
+          ? {
+              accessLevel: result.accessLevel,
+              id: result.policy.id,
+              ownerType: result.ownerType,
+              policy: result.policy.name,
+              action: 'remove',
+              actionText: 'REMOVE',
+            }
+          : {};
+      });
     },
     rowHeight: 44,
     schema: [

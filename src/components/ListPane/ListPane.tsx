@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useTheme } from '@emotion/react';
-import { debounce, get, merge, noop, isEmpty } from 'lodash';
+import { debounce, get, merge, noop } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { compose, defaultProps, withProps } from 'recompose';
 import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
@@ -15,8 +15,8 @@ import getStyles from './ListPane.styles';
 
 import { isChildOfPolicy } from 'common/associatedUtils';
 import useAuthContext from 'components/global/hooks/useAuthContext';
-import { PERMISSIONS } from 'common/enums';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import useListContext from 'components/global/hooks/useListContext';
+import { useParams } from 'react-router';
 
 enum DisplayMode {
   Table,
@@ -66,89 +66,28 @@ const paneControls = {
   },
 };
 
-const initialParams = {
-  offset: 0,
-  limit: 20,
-  sortField: null,
-  sortOrder: null,
-  query: null,
-};
-
-const initialListState = {
-  resultSet: [],
-  count: 0,
-  params: initialParams,
-};
-
-const List = ({
-  onSelect,
-  getKey,
-  styles,
-  selectedItemId,
-  columnWidth,
-  parent,
-  resource,
-}: IListProps) => {
-  const getListFunc = (associatedType, parent) => {
-    return associatedType === PERMISSIONS && !isEmpty(parent)
-      ? RESOURCE_MAP[associatedType].getList[parent.resource.name.plural]
-      : RESOURCE_MAP[associatedType].getList;
-  };
-
-  const listFunc = parent ? getListFunc(resource.name.plural, parent) : resource.getList;
-  const [listState, setListState] = useState(initialListState);
+const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
   const {
-    params: { offset, limit },
-    count,
-  } = listState;
-
+    list,
+    list: {
+      count,
+      params: { offset, limit },
+    },
+    updateList,
+  } = useListContext();
+  const [query, setQuery] = useState<string>('');
   const [currentSort, setCurrentSort] = useState<{
-    order: SortOrder;
     field: any;
+    order: SortOrder;
   }>({
     field: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
     order: resource.initialSortOrder,
   });
-  const { order, field } = currentSort;
-  const [query, setQuery] = useState<string>('');
-
-  const refreshList = async (optParams) => {
-    const combinedParams = {
-      offset: 0,
-      sortField: field.key,
-      sortOrder: order,
-      query,
-      ...optParams,
-    };
-
-    const match = (query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
-    const [, before, , statusQuoted, statusUnquoted, after] = match || Array(5);
-
-    const response = await listFunc({
-      ...combinedParams,
-      ...(parent && { [`${parent.resource.name.singular}Id`]: parent.id, parent }),
-      query:
-        (match ? `${before || ''}${after || ''}` : query || '').replace(/\s+/g, ' ').trim() || null,
-      status: statusQuoted || statusUnquoted || null,
-    });
-
-    return {
-      ...listState,
-      ...response,
-    };
-  };
-
-  const updateData = async (optParams = {}) => {
-    const data = await refreshList(optParams);
-    setListState({
-      ...listState,
-      resultSet: data.resultSet,
-      count: data.count,
-    });
-  };
 
   const { setUserPreferences, userPreferences } = useAuthContext();
   const theme = useTheme();
+  const { order, field } = currentSort;
+  const routerParams: any = useParams();
 
   const displayMode: any =
     typeof userPreferences?.listDisplayMode !== 'undefined'
@@ -156,10 +95,28 @@ const List = ({
       : DisplayMode.Table;
 
   useEffect(() => {
-    console.log('updating');
-    const debouncedUpdate = debounce(() => updateData(), 100);
-    debouncedUpdate();
-  }, [resource, parent, query, order, field.key]);
+    setCurrentSort({
+      field: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
+      order: resource.initialSortOrder,
+    });
+  }, [resource]);
+
+  useEffect(() => {
+    if (parent || !routerParams.subResourceType) {
+      const debouncedUpdate = debounce(
+        () =>
+          updateList(resource, parent, {
+            offset,
+            limit,
+            sortField: field.key,
+            sortOrder: order,
+            query,
+          }),
+        100,
+      );
+      debouncedUpdate();
+    }
+  }, [resource, currentSort.field.key, order, query, routerParams.subResourceType]);
 
   return (
     <div css={styles.container}>
@@ -251,7 +208,7 @@ const List = ({
       </ControlContainer>
       {displayMode === DisplayMode.Grid ? (
         <ItemGrid
-          resultSet={listState.resultSet}
+          resultSet={list.resultSet}
           Component={resource.ListItem}
           getKey={resource.getKey}
           sortField={currentSort.field}
@@ -269,16 +226,16 @@ const List = ({
                 [resource.name.plural]: item,
                 item: parent,
               });
-              updateData();
+              updateList(resource, parent);
             })
           }
           parent={parent}
-          handleListUpdate={updateData}
+          handleListUpdate={updateList}
           offset={offset}
         />
       ) : (
         <ItemTable
-          resultSet={listState.resultSet}
+          resultSet={list.resultSet}
           parent={parent}
           resource={resource}
           getKey={getKey}
@@ -295,7 +252,7 @@ const List = ({
                 .find((field) => field.key === newSortField),
             });
           }}
-          handleListUpdate={updateData}
+          handleListUpdate={updateList}
           onRemove={
             parent &&
             (async (item) => {
@@ -305,14 +262,14 @@ const List = ({
                 [resource.name.plural]: item,
                 item: parent,
               });
-              updateData();
+              updateList(resource, parent);
             })
           }
         />
       )}
       {(limit < count || offset > 0) && (
         <Pagination
-          onChange={(page) => updateData({ offset: page * limit })}
+          onChange={(page) => updateList(resource, parent, { offset: page * limit })}
           offset={offset}
           limit={limit}
           total={count}

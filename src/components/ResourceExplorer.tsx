@@ -9,13 +9,14 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Associator from 'components/Associator/Associator';
 import Content from 'components/Content';
 import ListPane from 'components/ListPane';
-import { provideList } from 'stateProviders';
 import { PERMISSIONS } from 'common/enums';
 import { getListFunc } from 'stateProviders/provideEntity';
+import useEntityContext from 'components/global/hooks/useEntityContext';
 
-const enhance = compose(withRouter, provideList);
+const enhance = compose(withRouter);
 
 const ResourceExplorer = ({ id, resource, history, parent }) => {
+  const { stageChange } = useEntityContext();
   return (
     <React.Fragment>
       <ListPane
@@ -42,7 +43,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
           ...resource.associatedTypes.map((associatedType) => {
             return {
               key: associatedType,
-              fieldContent: ({ associated, editing, stageChange }) => {
+              fieldContent: ({ associated, editing }) => {
                 return (
                   <React.Fragment>
                     <Associator

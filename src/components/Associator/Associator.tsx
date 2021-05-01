@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { injectState } from 'freactal';
 import { css } from '@emotion/react';
 import { capitalize, get, noop, uniqBy, without } from 'lodash';
 import React, { useEffect } from 'react';
-import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
+import { compose, defaultProps, withStateHandlers } from 'recompose';
 import { Icon, Label } from 'semantic-ui-react';
 
 import { messenger } from 'common/injectGlobals';
@@ -14,6 +13,7 @@ import ItemSelector from './ItemSelector';
 import { isGroup } from 'common/associatedUtils';
 import { API_KEYS, PERMISSIONS, USERS } from 'common/enums';
 import { getUserDisplayName } from 'common/getUserDisplayName';
+import useEntityContext from 'components/global/hooks/useEntityContext';
 
 interface AssociatedItemsProps {
   addItem: Function;
@@ -56,7 +56,6 @@ const getParsedItem = (item) => ({
 });
 
 const enhance = compose(
-  injectState,
   defaultProps({
     getKey: (item) => get(item, 'id'),
     onAdd: noop,
@@ -93,20 +92,6 @@ const enhance = compose(
       }),
     },
   ),
-  lifecycle({
-    componentDidMount() {
-      if (this.props.editing) {
-        fetchAllAssociatedItems(this.props);
-      }
-    },
-    componentWillReceiveProps(nextProps: AssociatedItemsProps) {
-      const { editing } = nextProps;
-
-      if (editing && this.props.editing !== editing) {
-        fetchAllAssociatedItems(nextProps);
-      }
-    },
-  }),
 );
 
 const ListDisplayNameForUser = (item) => {
@@ -139,13 +124,20 @@ const Associator = ({
   type,
   parentId,
   setItemsInList,
-  effects,
   ...props
 }: any) => {
+  const { setItem } = useEntityContext();
+
+  useEffect(() => {
+    if (editing) {
+      fetchAllAssociatedItems(props);
+    }
+  }, [editing]);
+
   useEffect(() => {
     const onMessage = async (e: any) => {
       if (e.type === 'PANEL_LIST_UPDATE') {
-        await effects.setItem(parentId, resource);
+        await setItem(parentId, resource);
         const data = await fetchAllAssociatedItems(props);
         await setItemsInList(data);
       }

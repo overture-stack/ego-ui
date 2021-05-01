@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
-import { isEmpty, isEqual, omit, uniq, findIndex } from 'lodash';
+import { isEmpty, omit, uniq, findIndex } from 'lodash';
 import { ENTITY_MAX_ASSOCIATED } from 'common/injectGlobals';
 import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
@@ -12,7 +12,6 @@ type T_EntityContext = any;
 const EntityContext = createContext<T_EntityContext>({});
 
 const initialEntityState = {
-  // entity: { item: null, staged: {}, associated: {}, valid: false, resource: null },
   item: null,
   staged: {},
   associated: {},
@@ -30,7 +29,6 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
   const [entityState, setEntityState] = useState(initialEntityState);
 
   const setItem = async (id, resource, parent = undefined) => {
-    console.log('setting item');
     const resourceToUse = parent ? parent.resource : resource;
     const isCreate = id === 'create';
 
@@ -67,6 +65,8 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
         {},
       ),
     };
+
+    setEntityState(newEntityState);
     return newEntityState;
   };
 
@@ -75,18 +75,12 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const stageChange = async (change) => {
-    console.log('staging changes');
-    // return ({ entity, ...state }) => {
-    // TODO: refactor to keep single timeline of changes and reconcile on save.
-    // return (entityState) => {
     const staged = {
       ...entityState.staged,
       ...omit(change, entityState.resource.associatedTypes),
     };
 
     const stagedEntity: any = {
-      // ...state,
-      // entity: {
       ...entityState,
       staged,
       valid: entityState.resource.schema.filter((f) => f.required).every((f) => staged[f.key]),
@@ -145,12 +139,9 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
           return { ...acc, [currentType]: entityState.associated[currentType] };
         }
       }, {}),
-      // },
     };
     // to disable Save when adding new permissions on policies/groups tab
     const newEntityState = {
-      // ...stagedEntity,
-      // entity: {
       ...stagedEntity,
       valid:
         stagedEntity.valid &&
@@ -160,24 +151,17 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
           : isGroup(entityState.resource)
           ? (stagedEntity.associated.permissions.add || []).every((a) => a.mask)
           : true),
-      // },
     };
     setEntityState(newEntityState);
     return newEntityState;
-    // };
   };
 
   const undoChanges = async (id) => {
-    console.log('undoing changes');
-    // const {
-    //   entity: { id, resource },
-    // } = await effects.getState();
     await setItem(id, entityState.resource);
     return entityState;
   };
 
   const saveChanges = async () => {
-    console.log('saving changes');
     const { associated, resource, staged, item } = entityState;
     let idToSave = item ? item.id : null;
     const saveAssociated = (item) =>
@@ -207,7 +191,6 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const result = await setItem(idToSave, resource);
-
     return result;
   };
 
@@ -226,7 +209,7 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
     deleteItem,
     setItem,
   };
-  console.log(entityState);
+
   return <EntityContext.Provider value={entityData}>{children}</EntityContext.Provider>;
 };
 
