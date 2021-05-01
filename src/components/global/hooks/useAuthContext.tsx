@@ -29,7 +29,6 @@ const AuthContext = createContext<T_AuthContext>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const initialJwt = localStorage.getItem('user-token');
-  // const [initialJwt, setInitialJwt] = useLocalStorage('user-token', undefined);
   const [tokenState, setTokenState] = useState(initialJwt);
   // const [userState, setUserState] = useState(null);
   const [userPreferencesState, setUserPreferencesState] = useState({});
