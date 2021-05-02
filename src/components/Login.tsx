@@ -2,13 +2,14 @@
 import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED } from 'common/injectGlobals';
 import { css } from '@emotion/react';
 import jwtDecode from 'jwt-decode';
-import React, { ComponentType } from 'react';
+import React, { ComponentType, useEffect } from 'react';
 import styled from '@emotion/styled';
 
 import ajax from 'services/ajax';
 import { Orcid, Google, GitHub, LinkedIn } from './Icons';
 import brandImage from 'assets/brand-image.svg';
 import useAuthContext from './global/hooks/useAuthContext';
+import { isValidJwt } from './global/utils/egoJwt';
 
 const styles = {
   logo: {
@@ -86,13 +87,17 @@ const KeycloakLogin = () => {
   );
 };
 
-const Login = ({ location, history }) => {
-  const initialJwt = localStorage.getItem('user-token');
-  const { setToken } = useAuthContext();
+const adminCheck = (user, history) => {
+  if (user.type === 'ADMIN' && user.status === 'APPROVED') {
+    history.push('/users');
+  } else {
+    history.push('/no-access');
+  }
+};
 
-  // need check for isValid instead, i.e. if (!isValidJwt(initialJwt))
-  // verify function is not working
-  if (!initialJwt) {
+const Login = ({ history }) => {
+  const { setToken, token, removeToken, user } = useAuthContext();
+  const fetchEgoToken = () => {
     ajax
       .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, { withCredentials: true })
       .then((resp) => {
@@ -114,19 +119,23 @@ const Login = ({ location, history }) => {
 
         await setToken(jwt);
 
-        if (user.type === 'ADMIN' && user.status === 'APPROVED') {
-          // this check may be redundant because of the ego redirect uri
-          if (location.pathname === '/') {
-            history.push('/users');
-          }
-        } else {
-          history.push('/no-access');
-        }
+        adminCheck(user, history);
       })
       .catch((err) => {
         console.warn('Error: ', err);
       });
-  }
+  };
+  useEffect(() => {
+    if (token) {
+      if (isValidJwt(token)) {
+        adminCheck(user, history);
+      } else {
+        removeToken();
+      }
+    } else {
+      fetchEgoToken();
+    }
+  }, []);
 
   return (
     <div

@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import jwtDecode from 'jwt-decode';
-import { isEqual, has, isEmpty } from 'lodash';
+import { isEqual, has } from 'lodash';
 
 import { setAjaxToken } from 'services/ajax';
 import { isValidJwt } from '../utils/egoJwt';
@@ -15,6 +15,7 @@ type T_AuthContext = {
   getUser: any;
   setUserPreferences: (preferences: any) => void;
   userPreferences: any;
+  removeToken: () => void;
 };
 
 const AuthContext = createContext<T_AuthContext>({
@@ -25,12 +26,12 @@ const AuthContext = createContext<T_AuthContext>({
   getUser: () => null,
   setUserPreferences: () => null,
   userPreferences: {},
+  removeToken: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const initialJwt = localStorage.getItem('user-token');
   const [tokenState, setTokenState] = useState(initialJwt);
-  // const [userState, setUserState] = useState(null);
   const [userPreferencesState, setUserPreferencesState] = useState({});
 
   const history = useHistory();
@@ -50,6 +51,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     removeToken();
     history.push('/');
   };
+
+  if (tokenState && !isValidJwt(tokenState)) {
+    logout();
+  }
 
   if (initialJwt && !has(ajax, 'defaults.headers.common.Authorization')) {
     setAjaxToken(initialJwt);
@@ -89,6 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     getUser,
     setUserPreferences,
     userPreferences: userPreferencesState,
+    removeToken,
   };
 
   return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;

@@ -10,14 +10,11 @@ const verifyJwt: (egoPublicKey: string) => (egoJwt?: string) => boolean = (egoPu
 ) => {
   try {
     if (!egoJwt || !egoPublicKey) {
-      console.log('no jwt or no public key', egoJwt, 'public key: ', egoPublicKey);
       return false;
     } else {
-      console.log('verifying');
       return jwt.verify(egoJwt, egoPublicKey, { algorithms: ['RS256'] }) && true;
     }
   } catch (err) {
-    console.log('error!', err);
     return false;
   }
 };
