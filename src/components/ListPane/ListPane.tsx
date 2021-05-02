@@ -232,6 +232,7 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
           parent={parent}
           handleListUpdate={updateList}
           offset={offset}
+          resource={resource}
         />
       ) : (
         <ItemTable

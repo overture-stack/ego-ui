@@ -77,7 +77,7 @@ const ItemsWrapper = ({
       },
       type: 'PANEL_LIST_UPDATE',
     });
-    handleListUpdate();
+    handleListUpdate(resource, parent);
   };
 
   const data = isEmpty(parent)
@@ -99,7 +99,7 @@ const ItemsWrapper = ({
       const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight) - 1, 1);
       const limit = rows;
 
-      handleListUpdate({ limit, rows });
+      handleListUpdate(resource, parent, { limit, rows });
     }, 200);
   }, [size.width, size.height]);
 

@@ -10,8 +10,7 @@ import Associator from 'components/Associator/Associator';
 import Content from 'components/Content';
 import ListPane from 'components/ListPane';
 import { PERMISSIONS } from 'common/enums';
-import { getListFunc } from 'stateProviders/provideEntity';
-import useEntityContext from 'components/global/hooks/useEntityContext';
+import useEntityContext, { getListFunc } from 'components/global/hooks/useEntityContext';
 
 const enhance = compose(withRouter);
 
