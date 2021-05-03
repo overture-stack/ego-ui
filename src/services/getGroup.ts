@@ -1,4 +1,4 @@
-import { Group } from 'common/typedefs/Group';
+import { Permission } from 'common/typedefs/Permission';
 import { isNil, omitBy } from 'lodash';
 import queryString from 'querystring';
 
@@ -24,7 +24,7 @@ export const getGroupPermissions = ({
   query = null,
   sortField = null,
   sortOrder = null,
-}): Promise<{ count: number; resultSet: Group[]; offset: number; limit: number }> => {
+}): Promise<{ count: number; resultSet: Permission[]; offset: number; limit: number }> => {
   return ajax
     .get(
       `/groups/${groupId}/permissions?${queryString.stringify(
