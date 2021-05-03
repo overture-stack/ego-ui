@@ -8,9 +8,9 @@ import { css } from '@emotion/react';
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import { getUserFieldName } from './ContentPanel';
 import ContentPanelView from './ContentPanelView';
-import { Application, Group, User } from 'common/typedefs';
+import { Application, Entity, Group, User } from 'common/typedefs';
 import { IField } from 'common/typedefs/Resource';
-import useEntityContext from 'components/global/hooks/useEntityContext';
+import useEntityContext, { AssociatedEntities } from 'components/global/hooks/useEntityContext';
 
 const getFieldContent = (row, data, immutableKeys, stageChange) => {
   return (
@@ -83,8 +83,8 @@ function normalizeRow({
   immutableKeys,
 }: {
   row: IField;
-  data: object[];
-  associated: object[];
+  data: Entity;
+  associated: AssociatedEntities;
   stageChange: () => void;
   immutableKeys: string[];
 }) {

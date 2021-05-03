@@ -2,7 +2,7 @@
 import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED } from 'common/injectGlobals';
 import { css } from '@emotion/react';
 import jwtDecode from 'jwt-decode';
-import React, { ComponentType, useEffect } from 'react';
+import React, { ComponentType, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import ajax from 'services/ajax';
@@ -97,6 +97,7 @@ const adminCheck = (user, history) => {
 
 const Login = ({ history }) => {
   const { setToken, token, removeToken, user } = useAuthContext();
+  const [sessionExpired, setSessionExpired] = useState(false);
   const fetchEgoToken = () => {
     ajax
       .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, { withCredentials: true })
@@ -116,12 +117,13 @@ const Login = ({ history }) => {
           ...jwtData.context.user,
           id: jwtData.sub,
         };
-
+        setSessionExpired(false);
         await setToken(jwt);
 
         adminCheck(user, history);
       })
       .catch((err) => {
+        setSessionExpired(false);
         console.warn('Error: ', err);
       });
   };
@@ -130,6 +132,7 @@ const Login = ({ history }) => {
       if (isValidJwt(token)) {
         adminCheck(user, history);
       } else {
+        setSessionExpired(true);
         removeToken();
       }
     } else {
@@ -154,6 +157,7 @@ const Login = ({ history }) => {
       <img src={brandImage} alt="" css={styles.logo} />
       <h1 css={styles.title}>Admin Portal</h1>
 
+      {sessionExpired && <h3 css={styles.title}>Your session has expired. Please log in again.</h3>}
       <ul
         css={css`
           display: flex;

@@ -4,7 +4,8 @@ import { Application } from 'common/typedefs/Application';
 import { Group } from 'common/typedefs/Group';
 import { Policy } from 'common/typedefs/Policy';
 import { User } from 'common/typedefs/User';
-import { TMaskLevel, UserPermission } from 'common/typedefs/UserPermission';
+import { MaskLevel, Permission } from 'common/typedefs/Permission';
+import { Entity } from '.';
 
 export type TFieldType = 'dropdown' | 'text';
 
@@ -53,7 +54,7 @@ interface IListResponse {
   limit: number;
   offset: number;
   count: number;
-  resultSet: User[] | Group[] | Application[] | Policy[] | UserPermission[] | ApiKey[];
+  resultSet: User[] | Group[] | Application[] | Policy[] | Permission[] | ApiKey[];
 }
 
 type TGetItem = (id: string) => Promise<User | Group | Application | string>;
@@ -93,7 +94,7 @@ interface TAddEntity {
 }
 
 interface PermissionInterface {
-  accessLevel: TMaskLevel;
+  accessLevel: MaskLevel;
   owner: User;
   policy: {
     name: string;
@@ -108,7 +109,7 @@ interface IAddToUser {
     item: User,
   ) => (user: { item: User }, application: any) => Promise<User>;
   groups: (group: Group, item: User) => Promise<any>;
-  permissions: (permission: UserPermission, item: User) => Promise<any>;
+  permissions: (permission: Permission, item: User) => Promise<any>;
 }
 
 interface IAddToGroup {
@@ -131,7 +132,7 @@ type TGetList = (params: IListParams) => Promise<IListResponse>;
 
 export interface IResource {
   Icon: any;
-  getName: (params: User | Policy | Group | Application | Permission | ApiKey) => string;
+  getName: (params: Partial<Entity> | string) => string;
   emptyMessage: string;
   schema: Schema;
   noDelete?: true;
@@ -140,13 +141,9 @@ export interface IResource {
   getList: TGetList | IPermissionsGetList;
   getListAll: (params: IListParams) => Promise<IListResponse>;
   getItem?: TGetItem | undefined;
-  updateItem?: (
-    item: UserInterface | GroupInterface | ApplicationInterface,
-  ) => Promise<User | Group | Application>;
-  createItem?: (item: GroupInterface | ApplicationInterface) => Promise<Group | Application>;
-  deleteItem?: (
-    item: UserInterface | GroupInterface | ApplicationInterface,
-  ) => Promise<null | string>;
+  updateItem?: ({ item: Entity }) => Promise<User | Group | Application>;
+  createItem?: ({ item: Entity }) => Promise<Group | Application>;
+  deleteItem?: ({ item }: { item: Entity }) => Promise<null | string>;
   rowHeight: number;
   initialSortOrder: SortDirection;
   associatedTypes: Types[];

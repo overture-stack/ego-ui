@@ -4,12 +4,36 @@ import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { isChildOfPolicy } from 'common/associatedUtils';
 import { useLocation } from 'react-router-dom';
+import { IResource, SortOrder } from 'common/typedefs/Resource';
+import { Entity } from 'common/typedefs';
 
-// type T_EntityContext = {};
-type T_ListContext = any;
+interface ListParams {
+  offset: number;
+  limit: number;
+  sortField: string;
+  sortOrder: SortOrder;
+  query: string;
+}
 
-//T_ListContext
-const ListContext = createContext<T_ListContext>({});
+interface List {
+  resultSet: Entity[];
+  count: number;
+  params: ListParams;
+}
+
+type T_ListContext = {
+  list: List;
+  updateList: (
+    resource: IResource,
+    parent: { id: string; resource: IResource },
+    optParams?: Partial<ListParams>,
+  ) => void;
+};
+
+const ListContext = createContext<T_ListContext>({
+  list: undefined,
+  updateList: () => {},
+});
 
 const initialParams: any = {
   offset: 0,
@@ -51,10 +75,7 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
     const { sortOrder, sortField, query } = listState.params;
     const combinedParams = {
       offset: 0,
-
       sortField: sortField.key,
-      // sortField: field.key,
-      // sortOrder: order,
       sortOrder,
       query,
       ...optParams,
@@ -62,7 +83,6 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
 
     const match = (query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
     const [, before, , statusQuoted, statusUnquoted, after] = match || Array(5);
-
     const listFunc = resource
       ? getListFunc(resource.name.plural, parent)
       : () => Promise.resolve({});
@@ -99,8 +119,6 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
   const listData = {
     list: listState,
     updateList,
-    setList: setListState,
-    getListFunc,
   };
 
   return <ListContext.Provider value={listData}>{children}</ListContext.Provider>;

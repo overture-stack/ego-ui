@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 
 import BreadCrumb from 'components/BreadCrumb';
@@ -9,10 +9,11 @@ import ResourceRoute from 'components/ResourceRoute';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Nav from 'components/Nav';
 import NoAccess from 'components/NoAccess';
-import { AuthProvider } from 'components/global/hooks/useAuthContext';
+import useAuthContext, { AuthProvider } from 'components/global/hooks/useAuthContext';
 import defaultTheme from './theme';
 import { EntityProvider } from 'components/global/hooks/useEntityContext';
 import { ListProvider } from 'components/global/hooks/useListContext';
+import { isValidJwt } from 'components/global/utils/egoJwt';
 
 const ProtectedRoute = ({
   component,
@@ -22,8 +23,12 @@ const ProtectedRoute = ({
   path?: string;
   render?: any;
 }) => {
-  const initialJwt = localStorage.getItem('user-token');
-  return <Route {...rest} component={initialJwt ? component : Login} />;
+  const { token } = useAuthContext();
+  const history = useHistory();
+  if (token && !isValidJwt(token)) {
+    history.replace('/');
+  }
+  return <Route {...rest} component={token ? component : Login} />;
 };
 
 const App = () => {

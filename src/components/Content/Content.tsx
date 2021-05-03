@@ -4,6 +4,7 @@ import { useTheme } from '@emotion/react';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { compose } from 'recompose';
+import { get } from 'lodash';
 
 import ControlContainer from 'components/ControlsContainer';
 import EmptyContent from 'components/EmptyContent';
@@ -11,8 +12,9 @@ import { RippleButton } from 'components/Ripple';
 import ContentPanel from './ContentPanel';
 import EditingContentPanel from './EditingContentPanel';
 
-import useEntityContext from 'components/global/hooks/useEntityContext';
+import useEntityContext, { EntityState } from 'components/global/hooks/useEntityContext';
 import useListContext from 'components/global/hooks/useListContext';
+import { Entity } from 'common/typedefs';
 
 const StyledControlContainer = styled(ControlContainer)`
   padding: 0 24px;
@@ -84,7 +86,8 @@ const Content = ({
     if (id !== 'create') {
       setLastValidId(id);
     }
-    const newItem = await setItem(id, resource, parent);
+
+    const newItem = ((await setItem(id, resource, parent)) as unknown) as EntityState;
     setEntity(newItem);
     setContentState(
       id === 'create'
@@ -139,7 +142,7 @@ const Content = ({
       basic
       customcolor={theme.colors.error_dark}
       hovercolor={theme.colors.error_3}
-      disabled={contentState === ContentState.DISABLING || (item || {}).status === 'DISABLED'}
+      disabled={contentState === ContentState.DISABLING || get(item, 'status') === 'DISABLED'}
       loading={contentState === ContentState.DISABLING}
       onClick={async () => {
         setContentState(ContentState.DISABLING);
@@ -211,7 +214,7 @@ const Content = ({
               ? ContentState.SAVING_EDIT
               : ContentState.SAVING_CREATE,
           );
-          const newState = await saveChanges();
+          const newState = ((await saveChanges()) as unknown) as EntityState;
           await updateList(resource, parent);
           await setContentState(ContentState.DISPLAYING);
           history.replace(`/${resource.name.plural}/${newState.item.id}`);

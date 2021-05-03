@@ -6,6 +6,7 @@ import React from 'react';
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
 import useEntityContext from 'components/global/hooks/useEntityContext';
+import { Entity } from 'common/typedefs';
 
 const EmptyField = () => <span css={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
 
@@ -31,7 +32,7 @@ export const getUserFieldName = (row) => {
 
 function normalizeRow(
   row: { key: string; fieldName?: any; fieldContent?: any },
-  data: object[],
+  data: Entity,
   associated: any,
 ) {
   const rowData = {

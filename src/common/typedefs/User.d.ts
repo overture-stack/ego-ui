@@ -11,8 +11,7 @@ enum UserType {
   ADMIN = 'ADMIN',
 }
 
-export interface User {
-  id: string;
+export interface UserFromJwt {
   email: string;
   type: UserType;
   status: string;
@@ -24,4 +23,22 @@ export interface User {
   groups: string[];
   providerSubjectId: string;
   providerType: EgoProviderType;
+  scope: string[];
+}
+
+export type EgoJwtData = {
+  iat: number;
+  exp: number;
+  sub: string;
+  iss: string;
+  aud: string[];
+  jti: string;
+  context: {
+    scope: string[];
+    user: UserFromJwt;
+  };
+};
+
+export interface User extends UserFromJwt {
+  id: string;
 }

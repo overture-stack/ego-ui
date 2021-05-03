@@ -2,8 +2,8 @@ import jwtDecode from 'jwt-decode';
 import { memoize } from 'lodash';
 import jwt from 'jsonwebtoken';
 
-// import { EgoJwtData, UserWithId } from '../types';
 import { EGO_PUBLIC_KEY } from 'common/injectGlobals';
+import { EgoJwtData, User } from 'common/typedefs';
 
 const verifyJwt: (egoPublicKey: string) => (egoJwt?: string) => boolean = (egoPublicKey) => (
   egoJwt,
@@ -21,11 +21,11 @@ const verifyJwt: (egoPublicKey: string) => (egoJwt?: string) => boolean = (egoPu
 
 export const isValidJwt = verifyJwt(EGO_PUBLIC_KEY);
 
-export const decodeToken: (egoJwt?: string) => any | null = memoize((egoJwt) =>
+export const decodeToken: (egoJwt?: string) => EgoJwtData | null = memoize((egoJwt) =>
   egoJwt && isValidJwt(egoJwt) ? jwtDecode(egoJwt) : null,
 );
 
-export const extractUser: (decodedToken: any) => any | undefined = (decodedToken) => {
+export const extractUser: (decodedToken: EgoJwtData) => User | undefined = (decodedToken) => {
   if (decodedToken) {
     return {
       ...decodedToken?.context.user,

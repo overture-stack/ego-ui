@@ -1,20 +1,66 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
-import { isEmpty, omit, uniq, findIndex } from 'lodash';
+import { isEmpty, omit, uniq, findIndex, get } from 'lodash';
 import { ENTITY_MAX_ASSOCIATED } from 'common/injectGlobals';
 import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { isGroup, isPolicy } from 'common/associatedUtils';
+import { Application, Entity, Group, User } from 'common/typedefs';
+import { IResource } from 'common/typedefs/Resource';
+import { Permission, SimplePermission } from 'common/typedefs/Permission';
+import { ApiKey } from 'common/typedefs/ApiKey';
 
-// type T_EntityContext = {};
-type T_EntityContext = any;
+interface AssociatedItems {
+  limit: number;
+  offset: number;
+  count: number;
+}
 
-//T_EntityContext
-const EntityContext = createContext<T_EntityContext>({});
+interface AssociatedEntity<T> extends AssociatedItems {
+  resultSet: T[] | SimplePermission[];
+  add?: T[];
+  remove?: T[] | SimplePermission[];
+}
 
-const initialEntityState = {
+export interface AssociatedEntities {
+  users?: AssociatedEntity<User>;
+  groups?: AssociatedEntity<Group>;
+  applications?: AssociatedEntity<Application>;
+  permissions?: AssociatedEntity<Permission>;
+  ['API Keys']?: AssociatedEntity<ApiKey>;
+}
+
+export interface EntityState {
+  item: Entity;
+  staged: Entity;
+  associated: Partial<AssociatedEntities>;
+  valid: boolean;
+  resource: IResource;
+}
+
+type T_EntityContext = {
+  entity: EntityState;
+  setEntity: (item: EntityState) => void;
+  stageChange: (change?: any) => void;
+  undoChanges: (id?: string) => void;
+  saveChanges: () => void;
+  deleteItem: () => void;
+  setItem: (id: string, resource: IResource, parent?: { resource: IResource; id: string }) => void;
+};
+
+const EntityContext = createContext<T_EntityContext>({
+  entity: null,
+  setEntity: () => {},
+  stageChange: () => {},
+  undoChanges: () => {},
+  saveChanges: () => {},
+  deleteItem: () => {},
+  setItem: () => {},
+});
+
+export const initialEntityState: EntityState = {
   item: null,
-  staged: {},
-  associated: {},
+  staged: null,
+  associated: null,
   valid: false,
   resource: null,
 };
@@ -80,7 +126,7 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
       ...omit(change, entityState.resource.associatedTypes),
     };
 
-    const stagedEntity: any = {
+    const stagedEntity: EntityState = {
       ...entityState,
       staged,
       valid: entityState.resource.schema.filter((f) => f.required).every((f) => staged[f.key]),
@@ -140,16 +186,17 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
         }
       }, {}),
     };
+
     // to disable Save when adding new permissions on policies/groups tab
     const newEntityState = {
       ...stagedEntity,
       valid:
         stagedEntity.valid &&
         (isPolicy(entityState.resource)
-          ? (stagedEntity.associated.groups.add || []).every((a) => a.mask) &&
-            (stagedEntity.associated.users.add || []).every((a) => a.mask)
+          ? (stagedEntity.associated.groups.add || []).every((a: any) => a.mask) &&
+            (stagedEntity.associated.users.add || []).every((a: any) => a.mask)
           : isGroup(entityState.resource)
-          ? (stagedEntity.associated.permissions.add || []).every((a) => a.mask)
+          ? (stagedEntity.associated.permissions.add || []).every((a: any) => a.mask)
           : true),
     };
     setEntityState(newEntityState);
@@ -163,7 +210,7 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
 
   const saveChanges = async () => {
     const { associated, resource, staged, item } = entityState;
-    let idToSave = item ? item.id : null;
+    let idToSave = item ? get(item, 'id') : null;
     const saveAssociated = (item) =>
       Promise.all(
         Object.keys(associated).map((key) => {
@@ -178,7 +225,7 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
                   }),
                 ),
               ];
-            }, [] as any),
+            }, []),
           );
         }),
       );
