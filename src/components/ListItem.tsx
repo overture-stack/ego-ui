@@ -51,8 +51,8 @@ const BasicListItem = ({
       parent={parent}
       style={style}
     >
-      <PrimaryField className={`primary-field ${className}`}>{primaryField}</PrimaryField>
-      <SecondaryField className={`secondary-field ${className}`}>
+      <PrimaryField className={'primary-field'}>{primaryField}</PrimaryField>
+      <SecondaryField className={'secondary-field'}>
         <Truncate lines={1}>{secondaryField}</Truncate>
       </SecondaryField>
     </StyledRipple>
@@ -116,7 +116,7 @@ export const UserListItem = ({ item, sortField, className = '', parent, ...props
   return (
     <StyledRipple className={`UserListItem ${className}`} {...props}>
       <UserDisplayName user={item} />
-      <SecondaryField className={`secondary-field ${className}`}>
+      <SecondaryField className={'secondary-field'}>
         <Truncate lines={1}>{secondaryValue}</Truncate>
       </SecondaryField>
     </StyledRipple>
