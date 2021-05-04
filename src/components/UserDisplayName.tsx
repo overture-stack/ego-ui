@@ -41,7 +41,7 @@ export const UserDisplayName = ({ user }: { user: User }) => (
   >
     <span
       css={css`
-        ma-width: 180px;
+        max-width: 180px;
         overflow-x: hidden;
         text-overflow: ellipsis;
         display: inline-block;
