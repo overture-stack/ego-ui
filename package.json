@@ -1,6 +1,6 @@
 {
   "name": "auth-ui",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^11.2.0",
