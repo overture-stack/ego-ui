@@ -1,10 +1,10 @@
-import { GREY, LIGHT_GREY } from 'common/colors';
+import defaultTheme from 'theme';
 
 const styles = ({ columnWidth, rowHeight }) => ({
   container: {
     minWidth: columnWidth,
-    background: LIGHT_GREY,
-    borderRight: `1px solid ${GREY}`,
+    background: defaultTheme.colors.grey_2,
+    borderRight: `1px solid ${defaultTheme.colors.grey_3}`,
     overflowY: 'auto',
     display: 'flex',
     flexGrow: 1,
@@ -44,11 +44,11 @@ const styles = ({ columnWidth, rowHeight }) => ({
     borderRadius: 3,
     height: '100%',
     '&:not(.selected):not(:active):hover': {
-      background: 'linear-gradient(to right, #f0f0f0, #f9f9f9)',
+      background: `linear-gradient(to right, ${defaultTheme.colors.grey_2}, ${defaultTheme.colors.grey_0})`,
     },
-    '&:active': { backgroundColor: '#e0e0e0' },
+    '&:active': { backgroundColor: defaultTheme.colors.grey_0 },
     '&.selected': {
-      backgroundColor: '#fbfbfb',
+      backgroundColor: defaultTheme.colors.grey_0,
       boxShadow: `-1px 2px 1px 0px rgba(199, 194, 199, 0.4), 0px 0px 2px 0px rgba(195, 184, 195, 0.3)`,
     },
   },

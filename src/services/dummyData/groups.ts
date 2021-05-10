@@ -1,4 +1,4 @@
-export default [
+const groups = [
   {
     applications: [],
     description:
@@ -321,3 +321,5 @@ export default [
     status: 'Neal',
   },
 ];
+
+export default groups;

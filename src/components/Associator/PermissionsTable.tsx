@@ -1,34 +1,25 @@
-import { DEFAULT_BLACK, LIGHT_TEAL, MEDIUM_BLUE } from 'common/colors';
+/** @jsxImportSource @emotion/react */
 import { injectState } from 'freactal';
 import { capitalize, get } from 'lodash';
 import React from 'react';
 import { compose, defaultProps, withHandlers, withProps, withState } from 'recompose';
-import { Button, Checkbox, Label, Table } from 'semantic-ui-react';
+import { Button, Checkbox, Table } from 'semantic-ui-react';
+import styled from '@emotion/styled';
+import { NavLink } from 'react-router-dom';
 
 import { MASK_LEVELS } from 'common/injectGlobals';
 import { USERS } from 'common/enums';
-import { NavLink } from 'react-router-dom';
+import { PermissionLabel } from './UserPermissionsTable';
 
-const styles = {
-  label: {
-    backgroundColor: LIGHT_TEAL,
-  },
-  optionsWrapper: {
-    left: '26px',
-    right: '0px',
-    top: '54px',
-  },
-};
-
-const EditMask = compose(withState('checkedMask', 'setCheckedMask', props => props.mask))(
+const EditMask = compose(withState('checkedMask', 'setCheckedMask', (props) => props.mask))(
   ({ mask, checkedMask, permission, setCheckedMask, handleSelectMask, associatedByType }) => {
     const newPermission =
-      associatedByType.add && associatedByType.add.find(x => x.id === permission.id);
+      associatedByType.add && associatedByType.add.find((x) => x.id === permission.id);
     const currentMask = newPermission ? newPermission.mask : permission.mask;
     return (
       <div>
-        {MASK_LEVELS.map(maskLevel => (
-          <span key={maskLevel} style={{ paddingRight: 10 }}>
+        {MASK_LEVELS.map((maskLevel) => (
+          <span key={maskLevel} css={{ paddingRight: 10 }}>
             <Checkbox
               key={maskLevel}
               radio
@@ -46,9 +37,9 @@ const EditMask = compose(withState('checkedMask', 'setCheckedMask', props => pro
 const enhance = compose(
   injectState,
   defaultProps({
-    getKey: item => get(item, 'id'),
-    getName: item => get(item, 'name'),
-    onSelect: item => global.log('selected', item),
+    getKey: (item) => get(item, 'id'),
+    getName: (item) => get(item, 'name'),
+    onSelect: (item) => global.log('selected', item),
   }),
   withState('items', 'setItems', ({ associatedItems }) => associatedItems),
   withProps(({ fetchItems, setItems, type, effects: { stageChange } }) => ({
@@ -57,7 +48,7 @@ const enhance = compose(
         [type]: { add: { ...permission, mask } },
       });
     },
-    requestItems: async query => {
+    requestItems: async (query) => {
       const response = await fetchItems({ query });
       setItems(response.resultSet);
     },
@@ -74,6 +65,18 @@ const enhance = compose(
   }),
 );
 
+const RemoveButton = styled(Button)`
+  ${({ theme }) => `
+    &.ui.button {
+      background-color: ${theme.colors.accent};
+      color: ${theme.colors.white};
+      &:hover {
+        background-color: ${theme.colors.accent_dark};
+      }
+    }
+  `}
+`;
+
 const PermissionsTable = ({
   editing,
   associatedItems,
@@ -85,16 +88,16 @@ const PermissionsTable = ({
   },
 }) => {
   return (
-    <div style={{ flex: 1, marginTop: '0.5rem' }}>
+    <div css={{ flex: 1, marginTop: '0.5rem' }}>
       <Table singleLine>
         <Table.Body>
-          {associatedItems.map(item => {
+          {associatedItems.map((item) => {
             // TODO: currently, incoming saved items have a different structure (permission) than newly added items(User/Group). Can these be matched up?
             return (
               <Table.Row key={item.id}>
-                <Table.Cell style={{ paddingTop: '0.5rem', paddingBottom: '0.4rem' }}>
+                <Table.Cell css={{ paddingTop: '0.5rem', paddingBottom: '0.4rem' }}>
                   <span
-                    style={{
+                    css={{
                       whiteSpace: 'nowrap',
                       textOverflow: 'ellipsis',
                       width: editing ? 165 : 370,
@@ -106,14 +109,14 @@ const PermissionsTable = ({
                     {type === USERS && (
                       <NavLink
                         to={`/${type}/${item.id}`}
-                        style={{
-                          color: MEDIUM_BLUE,
+                        css={(theme) => ({
+                          color: theme.colors.secondary_accessible,
                           display: 'block',
                           fontSize: 11,
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
-                        }}
+                        })}
                       >
                         {item.id}
                       </NavLink>
@@ -128,16 +131,14 @@ const PermissionsTable = ({
                       associatedByType={associated[type]}
                     />
                   ) : (
-                    <Label style={styles.label}>
-                      <span style={{ color: DEFAULT_BLACK, fontWeight: 100 }}>{item.mask}</span>
-                    </Label>
+                    <PermissionLabel>{item.mask}</PermissionLabel>
                   )}
                 </Table.Cell>
                 {editing ? (
                   <Table.Cell collapsing>
-                    <Button
+                    <RemoveButton
+                      className="removeButton"
                       circular
-                      color="blue"
                       icon="remove"
                       onClick={() => removeItem(item)}
                       size="mini"

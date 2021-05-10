@@ -1,37 +1,9 @@
-import { TEAL } from 'common/colors';
-import { User } from 'common/typedefs/User';
-import { css } from 'glamor';
+/** @jsxImportSource @emotion/react */
 import React from 'react';
+import { User } from 'common/typedefs/User';
+import { css } from '@emotion/react';
 
-import Truncate from 'react-truncate';
-
-const styles = {
-  container: {
-    fontSize: 18,
-    lineHeight: 1,
-    display: 'flex',
-    alignItems: 'baseline',
-    wordBreak: 'break-all',
-  },
-  userAdmin: {
-    marginLeft: 5,
-    fontSize: '0.5em',
-    color: TEAL,
-  },
-  formattedName: {
-    maxWidth: '180px',
-    overflowX: 'hidden',
-    textOverflow: 'ellipsis',
-    display: 'inline-block',
-    wordBreak: 'break-word',
-    whiteSpace: 'nowrap',
-    lineHeight: 'normal',
-    paddingRight: '0.1em',
-    verticalAlign: 'text-bottom',
-  },
-};
-
-const getName = user => {
+const getName = (user) => {
   const { lastName, firstName, id } = user;
   if (lastName) {
     if (firstName) {
@@ -45,9 +17,43 @@ const getName = user => {
   }
 };
 
-export const UserDisplayName = ({ user, style = {} }: { user: User; style?: any }) => (
-  <div className={`DisplayName ${css(styles.container, style)}`}>
-    <span className={`${css(styles.formattedName)}`}>{getName(user)}</span>
-    {user.type === 'ADMIN' && <div className={`${css(styles.userAdmin)}`}>ADMIN</div>}
+const AdminDisplay = () => (
+  <div
+    css={(theme) => css`
+      margin-left: 5px;
+      font-size: 0.5em;
+      color: ${theme.colors.primary_5};
+    `}
+  >
+    ADMIN
+  </div>
+);
+
+export const UserDisplayName = ({ user }: { user: User }) => (
+  <div
+    css={css`
+      font-size: 18px;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      word-break: break-all;
+    `}
+  >
+    <span
+      css={css`
+        max-width: 180px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        word-break: break-word;
+        white-space: nowrap;
+        line-height: normal;
+        padding-right: 0.1em;
+        vertical-align: text-bottom;
+      `}
+    >
+      {getName(user)}
+    </span>
+    {user.type === 'ADMIN' && <AdminDisplay />}
   </div>
 );

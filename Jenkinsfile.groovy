@@ -45,7 +45,7 @@ spec:
             steps {
                 container('node') {
                     sh "yarn install --frozen-lockfile"
-                    sh "yarn test --coverage"
+                    sh "CI=true yarn test --coverage"
                 }
             }
         }

@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import React from 'react';
-import { css } from 'glamor';
+import { jsx } from '@emotion/react';
 import { Button } from 'semantic-ui-react';
 
 export class Ripple extends React.Component<any, any> {
@@ -15,24 +16,21 @@ export class Ripple extends React.Component<any, any> {
   }
 
   render() {
-    const { passStyle, as = 'div', children, className = '', style, ...props } = this.props as any;
-    return React.createElement(
+    const { passStyle, as = 'div', children, className = '', style, ...props } = this.props;
+
+    return jsx(
       as,
       {
         ...(typeof as === 'string' ? { ref: this.elRef } : null),
-        ...(passStyle
-          ? {
-              className,
-              style: { position: 'relative', ...style },
-            }
-          : {
-              className: `${className} ${css({ position: 'relative' }, style)}`,
-            }),
+        ...{
+          className,
+          css: [{ position: 'relative' }, style],
+        },
         ...props,
       },
       [
         ...React.Children.toArray(children),
-        <div key="ripple" className="rippleJS" style={{ zIndex: 2 }} />,
+        <div key="ripple" className="rippleJS" css={{ zIndex: 2 }} />,
       ],
     );
   }

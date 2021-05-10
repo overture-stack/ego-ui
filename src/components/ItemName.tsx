@@ -1,14 +1,12 @@
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import React from 'react';
 
 import { TEntity } from 'common/typedefs';
 import { IResource } from 'common/typedefs/Resource';
-import { css } from 'glamor';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 interface IItemNameProps {
   id: string;
   type: string;
-  className?: any;
 }
 
 class ItemName extends React.Component<IItemNameProps, { name: string }> {
@@ -28,17 +26,18 @@ class ItemName extends React.Component<IItemNameProps, { name: string }> {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchName(this.props);
   }
 
-  componentWillReceiveProps(nextProps: IItemNameProps) {
-    if (nextProps.id !== this.props.id || nextProps.type !== this.props.type) {
-      this.fetchName(nextProps);
+  componentDidUpdate(prevProps: IItemNameProps) {
+    if (prevProps.id !== this.props.id || prevProps.type !== this.props.type) {
+      this.fetchName(this.props);
     }
   }
+
   render() {
-    return <span className={`${css({ textTransform: 'none' })}`}>{this.state.name}</span>;
+    return <span>{this.state.name}</span>;
   }
 }
 
