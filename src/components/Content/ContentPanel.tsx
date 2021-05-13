@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import format from 'date-fns/format/index.js';
 import { injectState } from 'freactal';
 import { upperCase } from 'lodash';
@@ -7,7 +8,7 @@ import { compose } from 'recompose';
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
 
-const EmptyField = () => <span style={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
+const EmptyField = () => <span css={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
 
 export const getFieldContent = (row, data) => {
   if (row.fieldContent) {
@@ -25,7 +26,7 @@ export const getFieldContent = (row, data) => {
   return data[row.key] || <EmptyField />;
 };
 
-export const getUserFieldName = row => {
+export const getUserFieldName = (row) => {
   return row.key === 'lastName' ? 'Name' : row.fieldName || row.key;
 };
 
@@ -62,15 +63,8 @@ const ContentPanel = ({
     entity: { item, associated, resource },
   },
 }) => {
-  const normalizedRows = rows.map(row => normalizeRow(row, item, associated));
-  return (
-    <ContentPanelView
-      entity={item}
-      entityType={entityType}
-      resource={resource}
-      rows={normalizedRows}
-    />
-  );
+  const normalizedRows = rows.map((row) => normalizeRow(row, item, associated));
+  return <ContentPanelView entity={item} entityType={entityType} rows={normalizedRows} />;
 };
 
 export default enhance(ContentPanel);

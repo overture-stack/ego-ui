@@ -1,79 +1,112 @@
-import { css } from 'glamor';
-import { isEmpty } from 'lodash';
 import React from 'react';
 import Truncate from 'react-truncate';
 import format from 'date-fns/format/index.js';
+import styled from '@emotion/styled';
 
-import { TEAL } from 'common/colors';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 import Ripple from 'components/Ripple';
 import { UserDisplayName } from 'components/UserDisplayName';
 import { DATE_FORMAT } from 'common/injectGlobals';
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    padding: '10px 0',
-  },
-  primaryField: {
-    fontSize: 18,
-    fontWeight: 200,
-    lineHeight: 'normal',
-    maxWidth: '100%',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflowX: 'hidden',
-  },
-  secondaryField: {
-    color: '#aaa',
-    fontWeight: 200,
-    fontSize: '0.9em',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    lineHeight: 1.2,
-  },
-  userAdmin: {
-    marginLeft: 5,
-    fontSize: '0.5em',
-    color: TEAL,
-  },
-};
+const StyledRipple = styled(Ripple)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 
-export const GroupListItem = ({ item, sortField, className = '', style, ...props }) => {
+const PrimaryField = styled('div')`
+  font-size: 18px;
+  font-weight: 200;
+  line-height: normal;
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+`;
+
+const SecondaryField = styled('div')`
+  color: ${({ theme }) => theme.colors.grey_5};
+  font-weight: 200;
+  font-size: 0.9em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+`;
+
+const BasicListItem = ({
+  primaryField,
+  secondaryField,
+  className,
+  parent,
+  onClick,
+  selected,
+  style,
+  resourceType,
+}) => {
+  return (
+    <StyledRipple
+      className={`${resourceType}ListItem ${className}`}
+      onClick={onClick}
+      selected={selected}
+      parent={parent}
+      style={style}
+    >
+      <PrimaryField className={'primary-field'}>{primaryField}</PrimaryField>
+      <SecondaryField className={'secondary-field'}>
+        <Truncate lines={1}>{secondaryField}</Truncate>
+      </SecondaryField>
+    </StyledRipple>
+  );
+};
+export const GroupListItem = ({
+  item,
+  sortField,
+  className = '',
+  onClick,
+  parent,
+  selected,
+  style,
+}) => {
   const secondaryField = sortField === 'name' ? 'description' : sortField;
   return (
-    <Ripple
-      className={`GroupListItem ${className}`}
-      style={{ ...styles.container, ...style }}
-      {...props}
-    >
-      <div className={`name ${css(styles.primaryField)}`}>{item.name}</div>
-      <div className={`secondary-field ${css(styles.secondaryField)}`}>
-        <Truncate lines={1}>{item[secondaryField]}</Truncate>
-      </div>
-    </Ripple>
+    <BasicListItem
+      className={className}
+      onClick={onClick}
+      selected={selected}
+      parent={parent}
+      resourceType="group"
+      primaryField={item.name}
+      secondaryField={item[secondaryField]}
+      style={style}
+    />
   );
 };
 
-export const ApplicationListItem = ({ item, sortField, className = '', style, ...props }) => {
+export const ApplicationListItem = ({
+  item,
+  sortField,
+  className = '',
+  onClick,
+  parent,
+  selected,
+  style,
+}) => {
   const secondaryField = sortField === 'name' ? 'clientId' : sortField;
   return (
-    <Ripple
-      className={`AppListItem ${className}`}
-      style={{ ...styles.container, ...style }}
-      {...props}
-    >
-      <div className={`primary-field ${css(styles.primaryField)}`}>{item.name}</div>
-      <div className={`secondary-field ${css(styles.secondaryField)}`}>
-        <Truncate lines={1}>{item[secondaryField]}</Truncate>
-      </div>
-    </Ripple>
+    <BasicListItem
+      className={className}
+      onClick={onClick}
+      selected={selected}
+      parent={parent}
+      resourceType="application"
+      primaryField={item.name}
+      secondaryField={item[secondaryField]}
+      style={style}
+    />
   );
 };
 
-export const UserListItem = ({ item, sortField, className = '', style, parent, ...props }) => {
+export const UserListItem = ({ item, sortField, className = '', parent, ...props }) => {
   const secondaryField = sortField === 'lastName' ? 'email' : sortField;
   const secondaryValue =
     secondaryField === 'createdAt' || secondaryField === 'lastLogin'
@@ -81,64 +114,88 @@ export const UserListItem = ({ item, sortField, className = '', style, parent, .
       : item[secondaryField];
 
   return (
-    <Ripple
-      className={`UserListItem ${className}`}
-      style={{ ...styles.container, ...style }}
-      {...props}
-    >
+    <StyledRipple className={`UserListItem ${className}`} {...props}>
       <UserDisplayName user={item} />
-      <div className={`secondary-field ${css(styles.secondaryField)}`}>{secondaryValue}</div>
-    </Ripple>
+      <SecondaryField className={'secondary-field'}>
+        <Truncate lines={1}>{secondaryValue}</Truncate>
+      </SecondaryField>
+    </StyledRipple>
   );
 };
 
-export const PolicyListItem = ({ item, sortField, className = '', style, ...props }) => {
+export const PolicyListItem = ({
+  item,
+  sortField,
+  className = '',
+  onClick,
+  parent,
+  selected,
+  style,
+}) => {
   const { name } = item;
   const secondaryField = sortField === 'name' ? 'id' : sortField;
 
   return (
-    <Ripple
-      className={`PolicyListItem ${className}`}
-      style={{ ...styles.container, ...style }}
-      {...props}
-    >
-      <div className={`primary-field ${css(styles.primaryField)}`}>{name}</div>
-      <div className={`secondary-field ${css(styles.secondaryField)}`}>
-        <Truncate lines={1}>{item[secondaryField]}</Truncate>
-      </div>
-    </Ripple>
+    <BasicListItem
+      className={className}
+      onClick={onClick}
+      selected={selected}
+      parent={parent}
+      resourceType="policy"
+      primaryField={name}
+      secondaryField={item[secondaryField]}
+      style={style}
+    />
   );
 };
 
-export const ApiKeyListItem = ({ item, sortField, className = '', style = {}, ...props }) => {
+export const ApiKeyListItem = ({
+  item,
+  sortField,
+  className = '',
+  onClick,
+  parent,
+  selected,
+  style,
+}) => {
   const secondaryField = sortField === 'name' ? 'isRevoked' : sortField;
   return (
-    <Ripple
-      className={`ApiKeyListItem ${className}`}
-      style={{ ...styles.container, ...style }}
-      {...props}
-    >
-      <div className={`primary-field ${css(styles.primaryField)}`}>{item.name}</div>
-      <div className={`secondary-field ${css(styles.secondaryField)}`}>
-        {secondaryField === 'isRevoked' ? getApiKeyStatus(item) : item[secondaryField]}
-      </div>
-    </Ripple>
+    <BasicListItem
+      className={className}
+      onClick={onClick}
+      selected={selected}
+      parent={parent}
+      resourceType="apiKey"
+      primaryField={item.name}
+      secondaryField={secondaryField === 'isRevoked' ? getApiKeyStatus(item) : item[secondaryField]}
+      style={style}
+    />
   );
 };
 
-export const PermissionListItem = ({ item, sortField, className = '', style, ...props }) => {
-  const { id, policy, accessLevel, owner } = item;
+export const PermissionListItem = ({
+  item,
+  sortField,
+  className = '',
+  onClick,
+  parent,
+  selected,
+  style,
+}) => {
+  const { policy } = item;
 
   const secondaryField = sortField === 'policy' ? 'accessLevel' : sortField;
 
   return (
-    <Ripple
-      className={`PermissionListItem ${className}`}
-      style={{ ...styles.container, ...style }}
-      {...props}
-    >
-      <div className={`primary-field ${css(styles.primaryField)}`}>{policy.name}</div>
-      <div className={`secondary-field ${css(styles.secondaryField)}`}>{item[secondaryField]}</div>
-    </Ripple>
+    <BasicListItem
+      className={className}
+      onClick={onClick}
+      selected={selected}
+      parent={parent}
+      resourceType="permission"
+      primaryField={policy.name}
+      secondaryField={item[secondaryField]}
+      style={style}
+    />
   );
 };

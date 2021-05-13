@@ -1,20 +1,27 @@
-import React from 'react';
-import { css } from 'glamor';
+/** @jsxImportSource @emotion/react */
+import React, { ReactNode } from 'react';
 
-const paneControls = {
-  container: {
-    backgroundColor: 'rgba(144, 144, 144, 0.05)',
-    borderBottom: '1px solid #eaeaea',
-    display: 'flex',
-    minHeight: 70,
-    alignItems: 'center',
-  },
-};
-
-export default ({ children, style, className = '', ...props }: any) => {
+const ControlsContainer = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
   return (
-    <div className={`${className} pane-controls ${css(paneControls.container, style)}`} {...props}>
+    <div
+      className={className}
+      css={(theme) => ({
+        backgroundColor: theme.colors.grey_2,
+        borderBottom: `1px solid ${theme.colors.grey_3}`,
+        display: 'flex',
+        minHeight: '70px',
+        alignItems: 'center',
+      })}
+    >
       {children}
     </div>
   );
 };
+
+export default ControlsContainer;

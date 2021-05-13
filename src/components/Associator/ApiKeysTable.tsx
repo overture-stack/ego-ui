@@ -1,89 +1,43 @@
-import { css } from 'glamor';
-import { upperCase } from 'lodash';
+/** @jsxImportSource @emotion/react */
 import moment from 'moment';
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { compose, withHandlers, withPropsOnChange, withState } from 'recompose';
 import { Button, Grid, Label } from 'semantic-ui-react';
+import styled from '@emotion/styled';
+import { useTheme } from '@emotion/react';
 
-import { DARK_GREY, DEFAULT_BLACK, GREY, LIGHT_RED, LIGHT_TEAL } from 'common/colors';
 import { DATE_FORMAT } from 'common/injectGlobals';
 import { getApiKeyStatus } from './apiKeysUtils';
+import { FieldName } from 'components/Content/ContentPanelView';
 
-interface IStyles {
-  container: CSSProperties;
-  row: CSSProperties;
-  contentHeight: CSSProperties;
-  contentRow: CSSProperties;
-  fieldContent: CSSProperties;
-  fieldNamePadding: CSSProperties;
-  section: CSSProperties;
-  fieldName: CSSProperties;
-}
+const CustomLabel = styled(Label)`
+  ${({ theme, bgcolor }) => `
+    &.statusLabel {
+      font-weight: 100;
+      color: ${theme.colors.black};
+      background-color: ${bgcolor};
+    }
+  `}
+`;
 
-const labelColours = {
-  ACTIVE: LIGHT_TEAL,
-  EXPIRED: GREY,
-  REVOKED: GREY,
-};
-
-const titleStyle = css({
-  backgroundColor: LIGHT_TEAL,
-});
-
-const CustomLabel = ({ bgColor, children }) => (
-  <Label style={{ backgroundColor: bgColor, fontWeight: 100, color: DEFAULT_BLACK }}>
-    {children}
-  </Label>
-);
-
-const styles: IStyles = {
-  container: {
-    borderLeft: `1px solid ${GREY}`,
-    borderRight: `1px solid ${GREY}`,
-    borderTop: `1px solid ${GREY}`,
-    flex: 1,
-    margin: '0.5rem 0',
-  },
-  contentHeight: {
-    height: 34,
-  },
-  contentRow: {
-    padding: '0.5rem 0rem !important',
-  },
-  fieldContent: {
-    fontSize: 13,
-  },
-  fieldName: {
-    alignItems: 'center !important',
-    color: DARK_GREY,
-    display: 'inline-flex',
-    fontSize: 11,
-  },
-  fieldNamePadding: {
-    paddingRight: '10px',
-  },
-  row: {
-    borderBottom: `1px solid ${GREY}`,
-    display: 'flex',
-    flex: 1,
-    padding: 10,
-  },
-  section: {
-    borderBottom: `1px solid ${GREY}`,
-    display: 'flex',
-    flex: 1,
-    flexBasis: 'auto',
-    flexDirection: 'column',
-    paddingBottom: '0.5rem',
-    paddingTop: '0.5rem',
-  },
-};
+const CustomButton = styled(Button)`
+  ${({ theme }) => `
+    &.revokeButton {
+      background-color: ${theme.colors.error_dark};
+      color: ${theme.colors.white};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+  `}
+`;
 
 const enhance = compose(
   // setting items in state to show revoking changes immediately
   withState('items', 'setItems', ({ associatedItems }) => associatedItems),
   withHandlers({
-    handleAction: ({ onRemove, fetchItems, setItems, parentId }) => async item => {
+    handleAction: ({ onRemove, fetchItems, setItems, parentId }) => async (item) => {
       await onRemove(item);
       const response = await fetchItems({ userId: parentId, limit: 5 });
       setItems(response.resultSet);
@@ -94,84 +48,105 @@ const enhance = compose(
   ),
 );
 
-const ApiKeysTable = ({ disabledItems, editing, handleAction, items }) => {
+const FieldContent = styled('span')`
+  font-size: 13px;
+`;
+
+const ContentRow = styled(Grid.Row)`
+  height: 34px;
+  padding: 0.5rem 0rem !important;
+`;
+
+const StyledGrid = styled(Grid)`
+  ${({ theme }) => `
+    border-left: 1px solid ${theme.colors.grey_3};
+    border-right: 1px solid ${theme.colors.grey_3};
+    border-top: 1px solid ${theme.colors.grey_3};
+    flex: 1;
+    &.apiKeysTable {
+      margin: 0.5rem 0;
+    }
+  `}
+`;
+
+const ApiKeysTable = ({ editing, handleAction, items }) => {
+  const theme = useTheme();
+
+  const labelColours = {
+    ACTIVE: theme.colors.primary_1,
+    EXPIRED: theme.colors.grey_3,
+    REVOKED: theme.colors.grey_3,
+  };
+
   return (
-    <div style={{ marginTop: '0.5rem' }}>
-      <Grid style={styles.container}>
-        {items.map(item => {
+    <div css={{ marginTop: '0.5rem' }} className="apiKeysTableContainer">
+      <StyledGrid className="apiKeysTable">
+        {items.map((item) => {
           const status = getApiKeyStatus(item);
           return (
-            <div className={`contentPanel id ${css(styles.section)}`} key={item.name}>
-              <Grid.Row
-                className={`${css(styles.contentRow, styles.contentHeight, {
-                  justifyContent: 'space-between',
-                })}`}
-              >
+            <div
+              css={(theme) => `
+                border-bottom: 1px solid ${theme.colors.grey_3};
+                display: flex;
+                flex: 1;
+                flex-basis: auto;
+                flex-direction: column;
+                padding-bottom: 0.5rem;
+                padding-top: 0.5rem;
+              `}
+              className="contentPanel id"
+              key={item.name}
+            >
+              <ContentRow css={{ justifyContent: 'space-between' }} className="contentRow">
                 <Grid.Column width={12}>
-                  <span
-                    className={`contentFieldContent ${css(styles.fieldContent, {
-                      fontWeight: 600,
-                    })}`}
-                  >
+                  <FieldContent css={{ fontWeight: 600 }} className="contentFieldContent">
                     {item.name}
-                  </span>
+                  </FieldContent>
                 </Grid.Column>
                 <Grid.Column width={3}>
-                  <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                  <FieldContent className="contentFieldContent">
                     {editing && status === 'ACTIVE' ? (
-                      <Button color="red" onClick={() => handleAction(item)} size="tiny">
+                      <CustomButton
+                        className="revokeButton"
+                        onClick={() => handleAction(item)}
+                        size="tiny"
+                      >
                         REVOKE
-                      </Button>
+                      </CustomButton>
                     ) : (
-                      <CustomLabel bgColor={labelColours[status]}>
+                      <CustomLabel bgcolor={labelColours[status]} className="statusLabel">
                         <span>{status}</span>
                       </CustomLabel>
                     )}
-                  </span>
+                  </FieldContent>
                 </Grid.Column>
-              </Grid.Row>
-              <Grid.Row className={`${css(styles.contentRow, styles.contentHeight)}`}>
+              </ContentRow>
+              <ContentRow className="contentRow">
                 <Grid.Column width={16}>
-                  <span
-                    className={`contentFieldName ${css(styles.fieldName, styles.fieldNamePadding)}`}
-                  >
-                    {'SCOPES: '}
-                  </span>
-                  <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                  <FieldName className="contentFieldName">{'SCOPES: '}</FieldName>
+                  <FieldContent className="contentFieldContent">
                     {item.scope.join(', ')}
-                  </span>
+                  </FieldContent>
                 </Grid.Column>
-              </Grid.Row>
-              <Grid.Row
-                className={`${css(styles.contentRow, styles.contentHeight, {
-                  justifyContent: 'space-between',
-                })}`}
-              >
+              </ContentRow>
+              <ContentRow css={{ justifyContent: 'space-between' }} className="contentRow">
                 <Grid.Column>
-                  <span
-                    className={`contentFieldName ${css(styles.fieldName, styles.fieldNamePadding)}`}
-                  >
-                    {'ISSUED '}
-                  </span>
-                  <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                  <FieldName className="contentFieldName ">{'ISSUED '}</FieldName>
+                  <FieldContent className="contentFieldContent">
                     {moment(item.issueDate).format(DATE_FORMAT)}
-                  </span>
+                  </FieldContent>
                 </Grid.Column>
                 <Grid.Column>
-                  <span
-                    className={`contentFieldName ${css(styles.fieldName, styles.fieldNamePadding)}`}
-                  >
-                    {'EXPIRY '}
-                  </span>
-                  <span className={`contentFieldContent ${css(styles.fieldContent)}`}>
+                  <FieldName className="contentFieldName">{'EXPIRY '}</FieldName>
+                  <FieldContent className="contentFieldContent">
                     {moment(item.expiryDate).format(DATE_FORMAT)}
-                  </span>
+                  </FieldContent>
                 </Grid.Column>
-              </Grid.Row>
+              </ContentRow>
             </div>
           );
         })}
-      </Grid>
+      </StyledGrid>
     </div>
   );
 };

@@ -1,23 +1,21 @@
+/** @jsxImportSource @emotion/react */
 import { injectState } from 'freactal';
-import { css } from 'glamor';
+import { css } from '@emotion/react';
 import { capitalize, get, noop, uniqBy, without } from 'lodash';
 import React, { useEffect } from 'react';
-
 import { compose, defaultProps, lifecycle, withStateHandlers } from 'recompose';
 import { Icon, Label } from 'semantic-ui-react';
 
-import { DARK_BLUE, DARK_GREY, GREY } from 'common/colors';
 import { messenger } from 'common/injectGlobals';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { IResource } from 'common/typedefs/Resource';
-import { styles as contentStyles } from 'components/Content/ContentPanelView';
 import ItemSelector from './ItemSelector';
 
 import { isGroup } from 'common/associatedUtils';
 import { API_KEYS, PERMISSIONS, USERS } from 'common/enums';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 
-interface TProps {
+interface AssociatedItemsProps {
   addItem: Function;
   allAssociatedItems: any[];
   itemsInList: any[];
@@ -33,23 +31,10 @@ interface TProps {
   parentId: string;
 }
 
-const styles = {
-  container: {
-    alignItems: 'baseline',
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  fieldName: {
-    color: DARK_BLUE,
-    fontSize: 14,
-  },
-};
-
 async function fetchAllAssociatedItems({
   fetchExistingAssociations,
   setAllAssociatedItems,
-}: TProps) {
+}: AssociatedItemsProps) {
   let items: any = [];
   let count: number = 0;
 
@@ -64,7 +49,7 @@ async function fetchAllAssociatedItems({
   return items.slice(0, 5);
 }
 
-const getParsedItem = item => ({
+const getParsedItem = (item) => ({
   id: item.policy.id,
   mask: item.accessLevel,
   name: item.policy.name,
@@ -73,7 +58,7 @@ const getParsedItem = item => ({
 const enhance = compose(
   injectState,
   defaultProps({
-    getKey: item => get(item, 'id'),
+    getKey: (item) => get(item, 'id'),
     onAdd: noop,
     onRemove: noop,
   }),
@@ -81,29 +66,29 @@ const enhance = compose(
     ({ initialItems, resource, type }) => {
       const parsedItems =
         isGroup(resource) && type === PERMISSIONS
-          ? (initialItems || []).map(item => getParsedItem(item))
+          ? (initialItems || []).map((item) => getParsedItem(item))
           : initialItems;
       return { allAssociatedItems: [], itemsInList: parsedItems || [] };
     },
     {
-      addItem: ({ itemsInList }, { onAdd }) => item => {
+      addItem: ({ itemsInList }, { onAdd }) => (item) => {
         onAdd(item);
 
         return {
           itemsInList: [item].concat(itemsInList),
         };
       },
-      removeItem: ({ itemsInList }, { onRemove }) => item => {
+      removeItem: ({ itemsInList }, { onRemove }) => (item) => {
         onRemove(item);
         return {
           itemsInList: without(itemsInList, item),
         };
       },
-      setAllAssociatedItems: () => allAssociatedItems => ({ allAssociatedItems }),
-      setItemsInList: ({ itemsInList }, { resource, type }) => items => ({
+      setAllAssociatedItems: () => (allAssociatedItems) => ({ allAssociatedItems }),
+      setItemsInList: ({ itemsInList }, { resource, type }) => (items) => ({
         itemsInList:
           isGroup(resource) && type === PERMISSIONS
-            ? (items || []).map(i => getParsedItem(i))
+            ? (items || []).map((i) => getParsedItem(i))
             : items,
       }),
     },
@@ -114,7 +99,7 @@ const enhance = compose(
         fetchAllAssociatedItems(this.props);
       }
     },
-    componentWillReceiveProps(nextProps: TProps) {
+    componentWillReceiveProps(nextProps: AssociatedItemsProps) {
       const { editing } = nextProps;
 
       if (editing && this.props.editing !== editing) {
@@ -123,6 +108,24 @@ const enhance = compose(
     },
   }),
 );
+
+const ListDisplayNameForUser = (item) => {
+  return (
+    <div>
+      <span>{RESOURCE_MAP[USERS].getName(item)}</span>
+      <div
+        css={(theme) => `
+          font-size: 11px;
+          color: ${theme.colors.grey_6};
+          padding-top: 5px;
+          word-break: break-all;
+        `}
+      >
+        {item.id}
+      </div>
+    </div>
+  );
+};
 
 const Associator = ({
   addItem,
@@ -139,7 +142,7 @@ const Associator = ({
   effects,
   ...props
 }: any) => {
-  useEffect((): any => {
+  useEffect(() => {
     const onMessage = async (e: any) => {
       if (e.type === 'PANEL_LIST_UPDATE') {
         await effects.setItem(parentId, resource);
@@ -166,53 +169,44 @@ const Associator = ({
 
   const parsedAssocItems =
     type === PERMISSIONS && isGroup(resource)
-      ? allAssociatedItems.map(assoc => ({
+      ? allAssociatedItems.map((assoc) => ({
           accessLevel: assoc.accessLevel,
           id: assoc.policy.id,
           name: assoc.policy.name,
         }))
       : allAssociatedItems;
 
-  const getListDisplayNameForUser = item => {
-    return (
-      <div>
-        <span>{RESOURCE_MAP[USERS].getName(item)}</span>
-        <div style={{ fontSize: 11, color: DARK_GREY, paddingTop: 5, wordBreak: 'break-all' }}>
-          {item.id}
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className={`Associator ${css(styles.container)}`}>
+    <div
+      className="Associator"
+      css={css`
+        align-items: baseline;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      `}
+    >
       <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingBottom: '0.5rem',
-          width: '100%',
-        }}
+        css={css`
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          padding-bottom: 0.5rem;
+          width: 100%;
+        `}
       >
-        <span
-          className={`${css(
-            contentStyles.fieldName,
-            contentStyles.fieldNamePadding,
-            styles.fieldName,
-          )}`}
-        >
+        <span css={(theme) => ({ color: theme.colors.accent_dark, fontSize: 14 })}>
           {type === API_KEYS ? API_KEYS : capitalize(type)}
         </span>
         {editing && includeAddButton && (
           <ItemSelector
-            fetchItems={args => fetchItems({ ...args, limit: 1000 })}
-            onSelect={item => addItem(item, type)}
-            disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], item => item && item.id)}
-            getItemName={item =>
-              type === USERS ? getListDisplayNameForUser(item) : get(item, 'name')
+            fetchItems={(args) => fetchItems({ ...args, limit: 1000 })}
+            onSelect={(item) => addItem(item, type)}
+            disabledItems={uniqBy([...parsedAssocItems, ...itemsInList], (item) => item && item.id)}
+            getItemName={(item) =>
+              type === USERS ? ListDisplayNameForUser(item) : get(item, 'name')
             }
-            getName={item =>
+            getName={(item) =>
               item ? (type === USERS ? getUserDisplayName(item) : get(item, 'name')) : ''
             }
             type={type}
@@ -224,24 +218,34 @@ const Associator = ({
           <AssociatorComponent
             editing={editing}
             associatedItems={itemsInList}
-            removeItem={item => removeItem(item, type)}
-            onSelect={item => addItem(item, type)}
+            removeItem={(item) => removeItem(item, type)}
+            onSelect={(item) => addItem(item, type)}
             type={type}
-            fetchItems={args => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
+            fetchItems={(args) => RESOURCE_MAP[type].getListAll({ ...args, limit: 5 })}
             onRemove={RESOURCE_MAP[type].deleteItem}
             parentId={parentId}
             resource={resource}
           />
         ) : (
-          itemsInList.map(item => (
-            <Label key={getKey(item)} style={{ marginBottom: '0.27em' }}>
+          itemsInList.map((item) => (
+            <Label
+              key={getKey(item)}
+              className="listItemLabel"
+              css={css`
+                &.listItemLabel {
+                  margin-bottom: 0.27em;
+                }
+              `}
+            >
               {RESOURCE_MAP[type].getName(item)}
               {editing && <Icon name="delete" onClick={() => removeItem(item)} />}
             </Label>
           ))
         )
       ) : (
-        <div style={{ color: GREY, fontStyle: 'italic' }}>No data found</div>
+        <div css={(theme) => ({ color: theme.colors.grey_4, fontStyle: 'italic' })}>
+          No data found
+        </div>
       )}
     </div>
   );

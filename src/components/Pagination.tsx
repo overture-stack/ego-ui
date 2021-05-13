@@ -1,20 +1,10 @@
+/** @jsxImportSource @emotion/react */
 import React from 'react';
-import { css } from 'glamor';
-
 import { Menu } from 'semantic-ui-react';
 import { WIDTHS } from 'semantic-ui-react/dist/es/lib/SUI';
+import { css } from '@emotion/react';
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: '1em 0',
-    flexShrink: 0,
-  },
-};
-
-export default ({
+const Pagination = ({
   onChange,
   onLimitChange,
   offset,
@@ -61,26 +51,31 @@ export default ({
         return null;
       }
     })
-    .reduce(
-      (acc, item, i, arr) => {
-        if (item) {
-          return [...acc, item];
-        } else if (arr[i + 1]) {
-          return [
-            ...acc,
-            <Menu.Item key={`${i}...`} disabled>
-              ...
-            </Menu.Item>,
-          ];
-        } else {
-          return acc;
-        }
-      },
-      [] as any,
-    );
+    .reduce((acc, item, i, arr) => {
+      if (item) {
+        return [...acc, item];
+      } else if (arr[i + 1]) {
+        return [
+          ...acc,
+          <Menu.Item key={`${i}...`} disabled>
+            ...
+          </Menu.Item>,
+        ];
+      } else {
+        return acc;
+      }
+    }, [] as any);
 
   return (
-    <div className={`Pagination ${css(styles.container)}`}>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding: 1rem 0;
+        flex-shrink: 0;
+      `}
+    >
       <Menu
         style={{ width: 'auto' }}
         pagination
@@ -91,3 +86,5 @@ export default ({
     </div>
   );
 };
+
+export default Pagination;
