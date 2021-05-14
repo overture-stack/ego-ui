@@ -3,7 +3,7 @@ import queryString from 'querystring';
 
 import ajax from 'services/ajax';
 
-import { UserPermission } from 'common/typedefs/UserPermission';
+import { Permission } from 'common/typedefs/Permission';
 import { clientSideSort } from './clientSideSortUtil';
 
 export const getUser = (id) => {
@@ -25,7 +25,7 @@ export const getUserAndUserGroupPermissions = ({
   query = null,
   sortField = null,
   sortOrder = null,
-}): Promise<{ count: number; resultSet: UserPermission[]; offset: number; limit: number }> => {
+}): Promise<{ count: number; resultSet: Permission[]; offset: number; limit: number }> => {
   return ajax
     .get(
       `/users/${userId}/groups/permissions?${queryString.stringify(

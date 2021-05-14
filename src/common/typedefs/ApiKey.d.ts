@@ -1,7 +1,8 @@
 export interface ApiKey {
-  exp: string;
-  iss: string;
+  expiryDate: string;
+  issueDate: string;
   name: string;
   description: string;
   scope: [string];
+  isRevoked: boolean;
 }

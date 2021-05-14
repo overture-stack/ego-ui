@@ -1,13 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { useTheme } from '@emotion/react';
 import { debounce, get, merge, noop } from 'lodash';
-import React, { useEffect } from 'react';
-import { compose, defaultProps, withProps, withState } from 'recompose';
+import React, { useEffect, useState } from 'react';
+import { compose, defaultProps, withProps } from 'recompose';
 import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
-import { injectState } from 'freactal';
 
-import { TEntity } from 'common/typedefs';
-import { IResource, TSortDirection } from 'common/typedefs/Resource';
+import { IResource, SortOrder } from 'common/typedefs/Resource';
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
 import { RippleButton } from 'components/Ripple';
@@ -16,6 +14,9 @@ import ItemTable from './ItemTable';
 import getStyles from './ListPane.styles';
 
 import { isChildOfPolicy } from 'common/associatedUtils';
+import useAuthContext from 'components/global/hooks/useAuthContext';
+import useListContext from 'components/global/hooks/useListContext';
+import { useParams } from 'react-router';
 
 enum DisplayMode {
   Table,
@@ -30,30 +31,6 @@ interface IListProps {
   columnWidth: number;
   styles: any;
   selectedItemId: string;
-  currentSort: {
-    order: TSortDirection;
-    field: any;
-  };
-  setCurrentSort: Function;
-  setQuery: Function;
-  query: string;
-  effects: {
-    updateList: Function;
-    refreshList: Function;
-    setListResource: Function;
-    setUserPreferences: Function;
-  };
-  state: {
-    preferences: {
-      listDisplayMode: DisplayMode;
-    };
-    list: {
-      limit: number;
-      resultSet: TEntity[];
-      count: number;
-      params: any;
-    };
-  };
   parent: {
     id: string;
     resource: IResource;
@@ -61,13 +38,7 @@ interface IListProps {
 }
 
 const enhance = compose(
-  injectState,
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
-  withState('query', 'setQuery', (props) => props.initialQuery || ''),
-  withState('currentSort', 'setCurrentSort', (props) => ({
-    field: props.resource.initialSortField(isChildOfPolicy(get(props.parent, 'resource'))),
-    order: props.resource.initialSortOrder,
-  })),
   withProps(({ columnWidth, resource, styles: stylesProp }) => ({
     styles: merge(getStyles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
   })),
@@ -95,54 +66,57 @@ const paneControls = {
   },
 };
 
-const List = ({
-  onSelect,
-  getKey,
-  styles,
-  selectedItemId,
-  currentSort,
-  currentSort: { field, order },
-  setCurrentSort,
-  setQuery,
-  state: {
-    preferences: { listDisplayMode },
+const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
+  const {
+    list,
     list: {
-      count = 0,
+      count,
       params: { offset, limit },
     },
-  },
-  effects: { updateList, refreshList, setUserPreferences, setListResource },
-  columnWidth,
-  parent,
-  resource,
-  query,
-}: IListProps) => {
-  const updateData = async () => {
-    await setListResource(resource, parent);
-    updateList({
-      offset: 0,
-      sortField: field.key,
-      sortOrder: order,
-      query,
-      ...(parent && { [`${parent.resource.name.singular}Id`]: parent.id }),
-    });
-  };
+    updateList,
+  } = useListContext();
+  const [query, setQuery] = useState<string>('');
+  const [currentSort, setCurrentSort] = useState<{
+    field: any;
+    order: SortOrder;
+  }>({
+    field: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
+    order: resource.initialSortOrder,
+  });
 
-  useEffect(() => {
-    updateData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const debouncedUpdate = debounce(() => updateData(), 100);
-    debouncedUpdate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resource, query, order, field.key]);
+  const { setUserPreferences, userPreferences } = useAuthContext();
+  const theme = useTheme();
+  const { order, field } = currentSort;
+  const routerParams: any = useParams();
 
   const displayMode: any =
-    typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Table;
+    typeof userPreferences?.listDisplayMode !== 'undefined'
+      ? userPreferences.listDisplayMode
+      : DisplayMode.Table;
 
-  const theme = useTheme();
+  useEffect(() => {
+    setCurrentSort({
+      field: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
+      order: resource.initialSortOrder,
+    });
+  }, [resource]);
+
+  useEffect(() => {
+    if (parent || !routerParams.subResourceType) {
+      const debouncedUpdate = debounce(
+        () =>
+          updateList(resource, parent, {
+            offset,
+            limit,
+            sortField: field.key,
+            sortOrder: order,
+            query,
+          }),
+        100,
+      );
+      debouncedUpdate();
+    }
+  }, [resource, currentSort.field.key, order, query, routerParams.subResourceType]);
 
   return (
     <div css={styles.container}>
@@ -208,7 +182,9 @@ const List = ({
           <RippleButton
             compact
             style={displayMode === DisplayMode.Table ? { color: theme.colors.primary_5 } : {}}
-            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
+            onClick={() =>
+              setUserPreferences({ ...userPreferences, listDisplayMode: DisplayMode.Table })
+            }
           >
             <Button.Content>
               <Icon name="list" fitted />
@@ -217,7 +193,12 @@ const List = ({
           <RippleButton
             compact
             style={displayMode === DisplayMode.Grid ? { color: theme.colors.primary_5 } : {}}
-            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
+            onClick={() =>
+              setUserPreferences({
+                ...userPreferences,
+                listDisplayMode: DisplayMode.Grid,
+              })
+            }
           >
             <Button.Content>
               <Icon name="grid layout" fitted />
@@ -227,6 +208,7 @@ const List = ({
       </ControlContainer>
       {displayMode === DisplayMode.Grid ? (
         <ItemGrid
+          resultSet={list.resultSet}
           Component={resource.ListItem}
           getKey={resource.getKey}
           sortField={currentSort.field}
@@ -244,13 +226,17 @@ const List = ({
                 [resource.name.plural]: item,
                 item: parent,
               });
-              refreshList();
+              updateList(resource, parent);
             })
           }
           parent={parent}
+          handleListUpdate={updateList}
+          offset={offset}
+          resource={resource}
         />
       ) : (
         <ItemTable
+          resultSet={list.resultSet}
           parent={parent}
           resource={resource}
           getKey={getKey}
@@ -267,6 +253,7 @@ const List = ({
                 .find((field) => field.key === newSortField),
             });
           }}
+          handleListUpdate={updateList}
           onRemove={
             parent &&
             (async (item) => {
@@ -276,14 +263,14 @@ const List = ({
                 [resource.name.plural]: item,
                 item: parent,
               });
-              refreshList();
+              updateList(resource, parent);
             })
           }
         />
       )}
       {(limit < count || offset > 0) && (
         <Pagination
-          onChange={(page) => updateList({ offset: page * limit })}
+          onChange={(page) => updateList(resource, parent, { offset: page * limit })}
           offset={offset}
           limit={limit}
           total={count}

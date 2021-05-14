@@ -1,10 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { injectState } from 'freactal';
 import { css } from '@emotion/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Gravatar from 'react-gravatar';
 import { NavLink } from 'react-router-dom';
-import { compose, withState } from 'recompose';
 import styled from '@emotion/styled';
 
 import Logout from 'components/Logout';
@@ -12,8 +10,7 @@ import Ripple from 'components/Ripple';
 import CopyJwt from './CopyJwt';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 import theme from 'theme';
-
-const enhance = compose(injectState, withState('shouldShowMenu', 'setShouldShowMenu', false));
+import useAuthContext from 'components/global/hooks/useAuthContext';
 
 const menuItemStyles = css`
     display: block;
@@ -47,9 +44,23 @@ const CurrentNavContainer = styled(Ripple)`
   `}
 `;
 
-const render = ({ state, shouldShowMenu, setShouldShowMenu, ref }) => {
+const CurrentUserNavItem = () => {
+  const [shouldShowMenu, setShouldShowMenu] = useState(false);
+  const ref: React.RefObject<any> = React.createRef();
+  const handleClickOutside = (e) => {
+    if ((!ref || !ref.current.contains(e.target)) && shouldShowMenu) {
+      setShouldShowMenu(false);
+    }
+  };
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => document.removeEventListener('click', handleClickOutside, true);
+  });
+
   return (
-    state.loggedInUser && (
+    user && (
       <CurrentNavContainer
         className="CurrentUserNavItem"
         ref={ref}
@@ -76,7 +87,7 @@ const render = ({ state, shouldShowMenu, setShouldShowMenu, ref }) => {
             }
           `}
         >
-          <Gravatar css={{ borderRadius: '50%' }} email={state.loggedInUser.email} size={30} />
+          <Gravatar css={{ borderRadius: '50%' }} email={user.email} size={30} />
         </div>
         <div
           css={css`
@@ -88,7 +99,7 @@ const render = ({ state, shouldShowMenu, setShouldShowMenu, ref }) => {
             text-overflow: ellipsis;
           `}
         >
-          {getUserDisplayName(state.loggedInUser)}
+          {getUserDisplayName(user)}
         </div>
         {shouldShowMenu && (
           <div
@@ -104,7 +115,7 @@ const render = ({ state, shouldShowMenu, setShouldShowMenu, ref }) => {
             `}
           >
             <CopyJwt css={menuItemStyles} className="menu-item" />
-            <NavLink to={`/users/${state.loggedInUser.id}`} css={menuItemStyles}>
+            <NavLink to={`/users/${user.id}`} css={menuItemStyles}>
               Profile Page
             </NavLink>
             <Logout css={menuItemStyles} className={'menu-item Logout'} />
@@ -115,26 +126,4 @@ const render = ({ state, shouldShowMenu, setShouldShowMenu, ref }) => {
   );
 };
 
-const Component = class extends React.Component<any, any> {
-  ref;
-
-  componentDidMount() {
-    document.addEventListener('click', this.handleClickOutside, true);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.handleClickOutside, true);
-  }
-
-  handleClickOutside = (e) => {
-    if ((!this.ref || !this.ref.contains(e.target)) && this.props.shouldShowMenu) {
-      this.props.setShouldShowMenu(false);
-    }
-  };
-
-  render() {
-    return render({ ...this.props, ref: (c) => (this.ref = c) } as any);
-  }
-};
-
-export default enhance(Component);
+export default CurrentUserNavItem;

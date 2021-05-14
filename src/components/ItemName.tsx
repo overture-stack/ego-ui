@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TEntity } from 'common/typedefs';
+import { Entity } from 'common/typedefs';
 import { IResource } from 'common/typedefs/Resource';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
@@ -13,12 +13,14 @@ class ItemName extends React.Component<IItemNameProps, { name: string }> {
   state = { name: '' };
   async fetchName(props: IItemNameProps) {
     const { type, id }: IItemNameProps = props;
-    const { getName = ({ name }) => name, getItem }: IResource = RESOURCE_MAP[type];
+    const { getName = ({ name }: { name?: string }) => name, getItem }: IResource = RESOURCE_MAP[
+      type
+    ];
     if (id === 'create') {
       this.setState({ name: id });
     } else {
       if (getItem) {
-        const item: TEntity | string = await getItem(id);
+        const item: Partial<Entity> | string = await getItem(id);
         this.setState({ name: item ? getName(item) : id });
       } else {
         return '';

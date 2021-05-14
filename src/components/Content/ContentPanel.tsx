@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import format from 'date-fns/format/index.js';
-import { injectState } from 'freactal';
 import { upperCase } from 'lodash';
 import React from 'react';
-import { compose } from 'recompose';
 
 import { DATE_FORMAT, DATE_KEYS } from 'common/injectGlobals';
 import ContentPanelView from './ContentPanelView';
+import useEntityContext from 'components/global/hooks/useEntityContext';
+import { Entity } from 'common/typedefs';
 
 const EmptyField = () => <span css={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
 
@@ -32,7 +32,7 @@ export const getUserFieldName = (row) => {
 
 function normalizeRow(
   row: { key: string; fieldName?: any; fieldContent?: any },
-  data: object[],
+  data: Entity,
   associated: any,
 ) {
   const rowData = {
@@ -54,17 +54,12 @@ function normalizeRow(
   };
 }
 
-const enhance = compose(injectState);
-
-const ContentPanel = ({
-  entityType,
-  rows,
-  state: {
-    entity: { item, associated, resource },
-  },
-}) => {
+const ContentPanel = ({ entityType, rows }) => {
+  const {
+    entity: { item, associated },
+  } = useEntityContext();
   const normalizedRows = rows.map((row) => normalizeRow(row, item, associated));
   return <ContentPanelView entity={item} entityType={entityType} rows={normalizedRows} />;
 };
 
-export default enhance(ContentPanel);
+export default ContentPanel;

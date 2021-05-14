@@ -54,7 +54,7 @@ import {
   UserListItem,
 } from 'components/ListItem';
 
-import { IResource, TResourceType } from 'common/typedefs/Resource';
+import { IResource, ResourceType } from 'common/typedefs/Resource';
 import { Icon } from 'semantic-ui-react';
 
 import {
@@ -75,7 +75,7 @@ import ApplicationIcon from 'components/Icons/application';
 import PolicyIcon from 'components/Icons/policy';
 
 // ignore tslint sort, resources listed in deliberate order
-const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
+const RESOURCE_MAP: { [key in ResourceType]: IResource } = {
   users: {
     add: {
       applications: ({ application, item }) => addApplicationToUser({ user: item, application }),
@@ -490,14 +490,21 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     ListItem: PermissionListItem,
     name: { singular: PERMISSION, plural: PERMISSIONS },
     mapTableData(results) {
-      return results.map((result) => ({
-        accessLevel: result.accessLevel,
-        id: result.policy.id,
-        ownerType: result.ownerType,
-        policy: result.policy.name,
-        action: 'remove',
-        actionText: 'REMOVE',
-      }));
+      return results.map((result) => {
+        // when first loading the list, the previous entity (now the parent entity) is still in state,
+        // so need to prevent loading the results until list state is updated. Need to do this because
+        // permissions have a nested structure
+        return result.policy
+          ? {
+              accessLevel: result.accessLevel,
+              id: result.policy.id,
+              ownerType: result.ownerType,
+              policy: result.policy.name,
+              action: 'remove',
+              actionText: 'REMOVE',
+            }
+          : {};
+      });
     },
     rowHeight: 44,
     schema: [
