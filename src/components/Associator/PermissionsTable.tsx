@@ -10,7 +10,6 @@ import { MASK_LEVELS } from 'common/injectGlobals';
 import { USERS } from 'common/enums';
 import { PermissionLabel } from './UserPermissionsTable';
 import useEntityContext from 'components/global/hooks/useEntityContext';
-import { debug } from 'console';
 
 const EditMask = compose(withState('checkedMask', 'setCheckedMask', (props) => props.mask))(
   ({ mask, checkedMask, permission, setCheckedMask, handleSelectMask, associatedByType }) => {

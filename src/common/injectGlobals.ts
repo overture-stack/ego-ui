@@ -15,6 +15,8 @@ export const PUBLIC_PATH = process.env.REACT_APP_PUBLIC_PATH;
 export const KEYCLOAK_ENABLED = process.env.REACT_APP_KEYCLOAK_ENABLED === 'true' || false;
 export const EGO_PUBLIC_KEY = process.env.REACT_APP_EGO_PUBLIC_KEY;
 
+export const EGO_JWT_KEY = 'user-token';
+export const USER_PREFERENCES_PREFIX = 'user-preferences-';
 export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING', 'REJECTED'];
 export const DATE_KEYS = ['createdAt', 'lastLogin'];
 export const DATE_FORMAT = 'YYYY-MM-DD hh:mm A';

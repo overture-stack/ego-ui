@@ -6,58 +6,47 @@ import { isEqual, has } from 'lodash';
 import { setAjaxToken } from 'services/ajax';
 import { isValidJwt } from '../utils/egoJwt';
 import ajax from 'services/ajax';
+import { EGO_JWT_KEY, USER_PREFERENCES_PREFIX } from 'common/injectGlobals';
 
 type T_AuthContext = {
   token?: string;
   logout: () => void;
   user?: any;
-  setToken: (token: string) => void;
   getUser: any;
   setUserPreferences: (preferences: any) => void;
   userPreferences: any;
-  removeToken: () => void;
 };
 
 const AuthContext = createContext<T_AuthContext>({
   token: undefined,
   logout: () => {},
   user: undefined,
-  setToken: () => null,
   getUser: () => null,
   setUserPreferences: () => null,
   userPreferences: {},
-  removeToken: () => {},
 });
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const initialJwt = localStorage.getItem('user-token');
-  const [tokenState, setTokenState] = useState(initialJwt);
+export const AuthProvider = ({
+  children,
+  initialJwt: egoJwt,
+}: {
+  children: ReactNode;
+  initialJwt?: string;
+}) => {
   const [userPreferencesState, setUserPreferencesState] = useState({});
-
   const history = useHistory();
 
-  const setToken = (jwt) => {
-    localStorage.setItem('user-token', jwt);
-    setTokenState(jwt);
-    setAjaxToken(jwt);
-  };
-
-  const removeToken = () => {
-    setToken(null);
-    localStorage.removeItem('user-token');
-  };
-
   const logout = () => {
-    removeToken();
+    localStorage.removeItem(EGO_JWT_KEY);
     history.push('/');
   };
 
-  if (tokenState && !isValidJwt(tokenState)) {
-    logout();
+  if (isValidJwt(egoJwt) && !has(ajax, 'defaults.headers.common.Authorization')) {
+    setAjaxToken(egoJwt);
   }
 
-  if (initialJwt && !has(ajax, 'defaults.headers.common.Authorization')) {
-    setAjaxToken(initialJwt);
+  if (egoJwt && !isValidJwt(egoJwt)) {
+    logout();
   }
 
   const getUser = (jwt: string) => {
@@ -69,17 +58,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const setUserPreferences = (preferences) => {
-    localStorage.setItem(`user-preferences-${user.id}`, JSON.stringify(preferences));
+    localStorage.setItem(`${USER_PREFERENCES_PREFIX}${user.id}`, JSON.stringify(preferences));
     setUserPreferencesState(preferences);
   };
 
-  const user = tokenState ? getUser(tokenState) : null;
+  const user = egoJwt ? getUser(egoJwt) : undefined;
   if (user) {
-    const storedPrefs = localStorage.getItem(`user-preferences-${user.id}`);
+    const storedPrefs = localStorage.getItem(`${USER_PREFERENCES_PREFIX}${user.id}`);
     if (!storedPrefs) {
-      localStorage.setItem(`user-preferences-${user.id}`, JSON.stringify({}));
+      localStorage.setItem(`${USER_PREFERENCES_PREFIX}${user.id}`, JSON.stringify({}));
     } else {
-      const parsedPrefs = JSON.parse(localStorage.getItem(`user-preferences-${user.id}`) || '{}');
+      const parsedPrefs = JSON.parse(
+        localStorage.getItem(`${USER_PREFERENCES_PREFIX}${user.id}`) || '{}',
+      );
       if (!isEqual(parsedPrefs, userPreferencesState)) {
         setUserPreferencesState(parsedPrefs);
       }
@@ -87,14 +78,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const authData = {
-    token: tokenState,
+    token: egoJwt,
     logout,
     user,
-    setToken,
     getUser,
     setUserPreferences,
     userPreferences: userPreferencesState,
-    removeToken,
   };
 
   return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;

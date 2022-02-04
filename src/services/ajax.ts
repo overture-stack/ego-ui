@@ -7,8 +7,4 @@ export const setAjaxToken = (token) => {
   ajax.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 };
 
-export const clearAjaxToken = () => {
-  localStorage.removeItem('user-token');
-};
-
 export default ajax;

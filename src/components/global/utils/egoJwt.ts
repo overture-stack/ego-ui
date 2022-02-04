@@ -12,7 +12,7 @@ const verifyJwt: (egoPublicKey: string) => (egoJwt?: string) => boolean = (egoPu
     if (!egoJwt || !egoPublicKey) {
       return false;
     } else {
-      return jwt.verify(egoJwt, egoPublicKey, { algorithms: ['RS256'] }) && true;
+      return !!jwt.verify(egoJwt, egoPublicKey, { algorithms: ['RS256'] });
     }
   } catch (err) {
     return false;
@@ -22,7 +22,7 @@ const verifyJwt: (egoPublicKey: string) => (egoJwt?: string) => boolean = (egoPu
 export const isValidJwt = verifyJwt(EGO_PUBLIC_KEY);
 
 export const decodeToken: (egoJwt?: string) => EgoJwtData | null = memoize((egoJwt) =>
-  egoJwt && isValidJwt(egoJwt) ? jwtDecode(egoJwt) : null,
+  isValidJwt(egoJwt) ? jwtDecode(egoJwt) : null,
 );
 
 export const extractUser: (decodedToken: EgoJwtData) => User | undefined = (decodedToken) => {

@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED } from 'common/injectGlobals';
+import { API_ROOT, EGO_CLIENT_ID, EGO_JWT_KEY, KEYCLOAK_ENABLED } from 'common/injectGlobals';
 import { css } from '@emotion/react';
 import jwtDecode from 'jwt-decode';
-import React, { ComponentType, useEffect, useState } from 'react';
+import { ComponentType, useEffect } from 'react';
 import styled from '@emotion/styled';
 
 import ajax from 'services/ajax';
@@ -45,7 +45,6 @@ const LoginButton = styled('a')`
 enum LoginProvider {
   Keycloak = 'Keycloak',
   Google = 'Google',
-  // Facebook = 'Facebook',
   Github = 'GitHub',
   Linkedin = 'LinkedIn',
   Orcid = 'ORCiD',
@@ -54,7 +53,6 @@ enum LoginProvider {
 enum ProviderLoginPaths {
   keycloak = 'keycloak',
   google = 'google',
-  // facebook = 'facebook',
   github = 'github',
   linkedin = 'linkedin',
   orcid = 'orcid',
@@ -72,7 +70,6 @@ const providers: ProviderType[] = [
   { name: LoginProvider.Google, path: ProviderLoginPaths.google, Icon: Google },
   { name: LoginProvider.Orcid, path: ProviderLoginPaths.orcid, Icon: Orcid },
   { name: LoginProvider.Github, path: ProviderLoginPaths.github, Icon: GitHub },
-  // { name: LoginProvider.Facebook, path: ProviderLoginPaths.facebook, Icon: Facebook },
   { name: LoginProvider.Linkedin, path: ProviderLoginPaths.linkedin, Icon: LinkedIn },
 ];
 
@@ -87,7 +84,7 @@ const KeycloakLogin = () => {
   );
 };
 
-const adminCheck = (user, history) => {
+export const adminCheck = (user, history) => {
   if (user.type === 'ADMIN' && user.status === 'APPROVED') {
     history.push('/users');
   } else {
@@ -95,18 +92,18 @@ const adminCheck = (user, history) => {
   }
 };
 
-const Login = ({ history }) => {
-  const { setToken, token, removeToken, user } = useAuthContext();
-  const [sessionExpired, setSessionExpired] = useState(false);
+const Login = ({ history }: { history: any }) => {
+  const { token } = useAuthContext();
   const fetchEgoToken = () => {
     ajax
-      .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, { withCredentials: true })
-      .then((resp) => {
-        if (resp.status === 200) {
-          return resp.data;
-        } else {
-          return '';
+      .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        if (res.status !== 200) {
+          throw new Error(`Could not login: ${res.statusText}`);
         }
+        return res.data;
       })
       .then(async (jwt) => {
         if (jwt === '') {
@@ -117,25 +114,16 @@ const Login = ({ history }) => {
           ...jwtData.context.user,
           id: jwtData.sub,
         };
-        setSessionExpired(false);
-        await setToken(jwt);
-
+        localStorage.setItem(EGO_JWT_KEY, jwt);
         adminCheck(user, history);
       })
       .catch((err) => {
-        setSessionExpired(false);
         console.warn('Error: ', err);
       });
   };
+
   useEffect(() => {
-    if (token) {
-      if (isValidJwt(token)) {
-        adminCheck(user, history);
-      } else {
-        setSessionExpired(true);
-        removeToken();
-      }
-    } else {
+    if (!isValidJwt(token)) {
       fetchEgoToken();
     }
   }, []);
@@ -157,7 +145,6 @@ const Login = ({ history }) => {
       <img src={brandImage} alt="" css={styles.logo} />
       <h1 css={styles.title}>Admin Portal</h1>
 
-      {sessionExpired && <h3 css={styles.title}>Your session has expired. Please log in again.</h3>}
       <ul
         css={css`
           display: flex;

@@ -59,70 +59,70 @@ const CurrentUserNavItem = () => {
     return () => document.removeEventListener('click', handleClickOutside, true);
   });
 
-  return (
-    user && (
-      <CurrentNavContainer
-        className="CurrentUserNavItem"
-        ref={ref}
-        onClick={() =>
-          // Timeout gives enough delay to see checkmark on copy JWT but is not too long to be annoying on other options
-          setTimeout(() => setShouldShowMenu(!shouldShowMenu), shouldShowMenu ? 500 : 0)
-        }
+  return user ? (
+    <CurrentNavContainer
+      className="CurrentUserNavItem"
+      ref={ref}
+      onClick={() =>
+        // Timeout gives enough delay to see checkmark on copy JWT but is not too long to be annoying on other options
+        setTimeout(() => setShouldShowMenu(!shouldShowMenu), shouldShowMenu ? 500 : 0)
+      }
+    >
+      <div
+        css={css`
+          position: relative;
+          overflow: hidden;
+          flex: none;
+          &::after {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(100, 100, 100, 0.1);
+            box-sizing: border-box;
+            content: '';
+            top: 2px;
+            left: 2px;
+            height: 42px;
+            width: 42px;
+          }
+        `}
       >
+        <Gravatar css={{ borderRadius: '50%' }} email={user.email} size={30} />
+      </div>
+      <div
+        css={css`
+          margin-left: 10px;
+          font-size: 18px;
+          width: 160px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        `}
+      >
+        {getUserDisplayName(user)}
+      </div>
+      {shouldShowMenu && (
         <div
           css={css`
-            position: relative;
+            position: absolute;
+            left: 100%;
+            bottom: 0;
+            width: 240px;
+            box-shadow: -2px 2px 2px 0 rgba(51, 7, 49, 0.24);
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
             overflow: hidden;
-            flex: none;
-            &::after {
-              position: absolute;
-              border-radius: 50%;
-              border: 2px solid rgba(100, 100, 100, 0.1);
-              box-sizing: border-box;
-              content: '';
-              top: 2px;
-              left: 2px;
-              height: 42px;
-              width: 42px;
-            }
           `}
         >
-          <Gravatar css={{ borderRadius: '50%' }} email={user.email} size={30} />
+          <CopyJwt css={menuItemStyles} className="menu-item" />
+          <NavLink to={`/users/${user.id}`} css={menuItemStyles}>
+            Profile Page
+          </NavLink>
+          <Logout css={menuItemStyles} className={'menu-item Logout'} />
         </div>
-        <div
-          css={css`
-            margin-left: 10px;
-            font-size: 18px;
-            width: 160px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          `}
-        >
-          {getUserDisplayName(user)}
-        </div>
-        {shouldShowMenu && (
-          <div
-            css={css`
-              position: absolute;
-              left: 100%;
-              bottom: 0;
-              width: 240px;
-              box-shadow: -2px 2px 2px 0 rgba(51, 7, 49, 0.24);
-              border-top-right-radius: 3px;
-              border-bottom-right-radius: 3px;
-              overflow: hidden;
-            `}
-          >
-            <CopyJwt css={menuItemStyles} className="menu-item" />
-            <NavLink to={`/users/${user.id}`} css={menuItemStyles}>
-              Profile Page
-            </NavLink>
-            <Logout css={menuItemStyles} className={'menu-item Logout'} />
-          </div>
-        )}
-      </CurrentNavContainer>
-    )
+      )}
+    </CurrentNavContainer>
+  ) : (
+    <div />
   );
 };
 
