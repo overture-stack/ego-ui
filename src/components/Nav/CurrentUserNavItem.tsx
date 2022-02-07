@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import React, { useEffect, useState } from 'react';
 import Gravatar from 'react-gravatar';
-import { NavLink } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import Logout from 'components/Logout';
@@ -45,6 +45,7 @@ const CurrentNavContainer = styled(Ripple)`
 `;
 
 const CurrentUserNavItem = () => {
+  const history = useHistory();
   const [shouldShowMenu, setShouldShowMenu] = useState(false);
   const ref: React.RefObject<any> = React.createRef();
   const handleClickOutside = (e) => {
@@ -114,9 +115,16 @@ const CurrentUserNavItem = () => {
           `}
         >
           <CopyJwt css={menuItemStyles} className="menu-item" />
-          <NavLink to={`/users/${user.id}`} css={menuItemStyles}>
+          <div
+            onClick={() => {
+              history.replace({ pathname: `/users/${user.id}` });
+              // force reload to allow entity context to refresh if this link is clicked while viewing a different entity type
+              window.location.reload();
+            }}
+            css={menuItemStyles}
+          >
             Profile Page
-          </NavLink>
+          </div>
           <Logout css={menuItemStyles} className={'menu-item Logout'} />
         </div>
       )}

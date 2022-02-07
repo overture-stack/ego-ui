@@ -21,7 +21,10 @@ const AppProviders = ({ children }: { children: React.ReactElement }) => {
     } else {
       setInitialJwt(undefined);
     }
-  });
+    // TODO: this will kick out the user when the path changes and the jwt is found to be expired
+    // but does not handle a 403 on a request like saving changes to an entity. Will need to handle this in
+    // https://github.com/overture-stack/ego-ui/issues/144
+  }, [location.pathname]);
   return (
     <AuthProvider initialJwt={initialJwt}>
       <ThemeProvider theme={defaultTheme}>
