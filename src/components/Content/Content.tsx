@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { withRouter } from 'react-router';
 import { compose } from 'recompose';
 import { get } from 'lodash';
@@ -12,9 +12,11 @@ import { RippleButton } from 'components/Ripple';
 import ContentPanel from './ContentPanel';
 import EditingContentPanel from './EditingContentPanel';
 
-import useEntityContext, { EntityState } from 'components/global/hooks/useEntityContext';
+import useEntityContext, {
+  ContentState,
+  EntityState,
+} from 'components/global/hooks/useEntityContext';
 import useListContext from 'components/global/hooks/useListContext';
-import { Entity } from 'common/typedefs';
 
 const StyledControlContainer = styled(ControlContainer)`
   padding: 0 24px;
@@ -22,17 +24,6 @@ const StyledControlContainer = styled(ControlContainer)`
 `;
 
 const enhance = compose(withRouter);
-
-enum ContentState {
-  DISPLAYING = 'displaying',
-  CREATING = 'creating',
-  EDITING = 'editing',
-  DISABLING = 'disabling',
-  DELETING = 'deleting',
-  CONFIRM_DELETE = 'confirmDelete',
-  SAVING_EDIT = 'savingEdit',
-  SAVING_CREATE = 'savingCreate',
-}
 
 const StyledBasicButton = styled(RippleButton)`
   ${({ customcolor }) => `
@@ -70,45 +61,21 @@ const Content = ({
   history,
 }) => {
   const theme = useTheme();
-  const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
   const {
-    setEntity,
     entity: { item, valid },
     stageChange,
     undoChanges,
     deleteItem,
     saveChanges,
-    setItem,
+    lastValidId,
+    contentState,
+    setContentState,
   } = useEntityContext();
   const { updateList } = useListContext();
-  const [lastValidId, setLastValidId] = useState<string>(null);
-  const fetchData = async () => {
-    if (id !== 'create') {
-      setLastValidId(id);
-    }
-
-    const newItem = ((await setItem(id, resource, parent)) as unknown) as EntityState;
-    setEntity(newItem);
-    setContentState(
-      id === 'create'
-        ? ContentState.CREATING
-        : subResourceType === 'edit'
-        ? ContentState.EDITING
-        : ContentState.DISPLAYING,
-    );
-  };
-
-  useEffect(() => {
-    // seems weird to have to check this, but Content will re-render as empty when displaying the child table,
-    // because the id needs to be null in order for the child list to work properly
-    if (!parent) {
-      fetchData();
-    }
-  }, [id]);
 
   useEffect(() => {
     setContentState(subResourceType === 'edit' ? ContentState.EDITING : ContentState.DISPLAYING);
-  }, [subResourceType]);
+  }, [subResourceType, setContentState]);
 
   const isSaving =
     contentState === ContentState.SAVING_EDIT || contentState === ContentState.SAVING_CREATE;

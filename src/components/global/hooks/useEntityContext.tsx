@@ -5,9 +5,20 @@ import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { isGroup, isPolicy } from 'common/associatedUtils';
 import { Application, Entity, Group, User } from 'common/typedefs';
-import { IResource } from 'common/typedefs/Resource';
+import { IResource, ResourceType } from 'common/typedefs/Resource';
 import { Permission, SimplePermission } from 'common/typedefs/Permission';
 import { ApiKey } from 'common/typedefs/ApiKey';
+
+export enum ContentState {
+  DISPLAYING = 'displaying',
+  CREATING = 'creating',
+  EDITING = 'editing',
+  DISABLING = 'disabling',
+  DELETING = 'deleting',
+  CONFIRM_DELETE = 'confirmDelete',
+  SAVING_EDIT = 'savingEdit',
+  SAVING_CREATE = 'savingCreate',
+}
 
 interface AssociatedItems {
   limit: number;
@@ -39,22 +50,26 @@ export interface EntityState {
 
 type T_EntityContext = {
   entity: EntityState;
-  setEntity: (item: EntityState) => void;
   stageChange: (change?: any) => void;
   undoChanges: (id?: string) => void;
   saveChanges: () => void;
   deleteItem: () => void;
   setItem: (id: string, resource: IResource, parent?: { resource: IResource; id: string }) => void;
+  lastValidId?: string;
+  contentState: ContentState;
+  setContentState: (contentState: ContentState) => void;
 };
 
 const EntityContext = createContext<T_EntityContext>({
   entity: null,
-  setEntity: () => {},
   stageChange: () => {},
   undoChanges: () => {},
   saveChanges: () => {},
   deleteItem: () => {},
   setItem: () => {},
+  lastValidId: undefined,
+  contentState: ContentState.DISPLAYING,
+  setContentState: () => {},
 });
 
 export const initialEntityState: EntityState = {
@@ -71,13 +86,35 @@ export const getListFunc = (associatedType, parent) => {
     : RESOURCE_MAP[associatedType].getList;
 };
 
-export const EntityProvider = ({ children }: { children: ReactNode }) => {
+export const EntityProvider = ({
+  id,
+  subResource,
+  resource,
+  children,
+}: {
+  id?: string;
+  subResource?: string;
+  resource: ResourceType;
+  children: ReactNode;
+}) => {
   const [entityState, setEntityState] = useState(initialEntityState);
+  const [currentResource, setCurrentResource] = useState<ResourceType>(resource);
+  const [currentId, setCurrentId] = useState<string>(id); // separate from lastValidId because it can also be 'create'
+  const [currentSubResource, setCurrentSubResource] = useState<string>(subResource);
+  const [lastValidId, setLastValidId] = useState<string>(undefined);
+  const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
 
+  // would it be useful, in both entity and list context, to track resource, parent and id (and possibly lastValidId?) to
+  // be able to compare incoming values from update, set functions to what is currently in state?
   const setItem = async (id, resource, parent = undefined) => {
-    const resourceToUse = parent ? parent.resource : resource;
+    const resourceToUse = resource;
+    // const resourceToUse = subResource ? parent.resource : resource
+    // const resourceToUse = parent ? parent.resource : resource;
     const isCreate = id === 'create';
 
+    if (!isCreate) {
+      setLastValidId(id);
+    }
     const [item, ...associated] =
       id && !isCreate
         ? await Promise.all([
@@ -116,9 +153,24 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
     return newEntityState;
   };
 
-  const setEntity = (entity) => {
-    setEntityState(entity);
-  };
+  if (currentId !== id || (lastValidId !== id && id !== 'create')) {
+    setCurrentId(id);
+    setItem(id, resource, subResource);
+    setContentState(
+      id === 'create'
+        ? ContentState.CREATING
+        : subResource === 'edit'
+        ? ContentState.EDITING
+        : ContentState.DISPLAYING,
+    );
+  }
+
+  if (currentResource !== resource) {
+    setCurrentResource(resource);
+  }
+  if (currentSubResource !== subResource) {
+    setCurrentSubResource(subResource);
+  }
 
   const stageChange = async (change) => {
     const staged = {
@@ -140,11 +192,11 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
                 const otherAction = action === 'add' ? 'remove' : 'add';
                 const currentActionIndex = findIndex(
                   entityState.associated[currentType][action],
-                  (e) => e.id && e.id === change[currentType][action].id,
+                  (e: Entity) => e.id && e.id === change[currentType][action].id,
                 );
                 const otherActionIndex = findIndex(
                   entityState.associated[currentType][otherAction],
-                  (e) => e.id && e.id === change[currentType][action].id,
+                  (e: Entity) => e.id && e.id === change[currentType][action].id,
                 );
 
                 if (
@@ -248,13 +300,16 @@ export const EntityProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const entityData = {
-    setEntity,
+    // setEntity,
     entity: entityState,
     stageChange,
     undoChanges,
     saveChanges,
     deleteItem,
     setItem,
+    lastValidId,
+    contentState,
+    setContentState,
   };
 
   return <EntityContext.Provider value={entityData}>{children}</EntityContext.Provider>;

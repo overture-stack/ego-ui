@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { AuthProvider } from './global/hooks/useAuthContext';
-import { EntityProvider } from './global/hooks/useEntityContext';
 import { ListProvider } from './global/hooks/useListContext';
 import defaultTheme from '../theme';
 
@@ -28,9 +27,7 @@ const AppProviders = ({ children }: { children: React.ReactElement }) => {
   return (
     <AuthProvider initialJwt={initialJwt}>
       <ThemeProvider theme={defaultTheme}>
-        <ListProvider>
-          <EntityProvider>{children}</EntityProvider>
-        </ListProvider>
+        <ListProvider>{children}</ListProvider>
       </ThemeProvider>
     </AuthProvider>
   );
