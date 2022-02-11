@@ -8,8 +8,9 @@ import styled from '@emotion/styled';
 import ajax from 'services/ajax';
 import { Orcid, Google, GitHub, LinkedIn } from './Icons';
 import brandImage from 'assets/brand-image.svg';
-import useAuthContext from './global/hooks/useAuthContext';
 import { isValidJwt } from './global/utils/egoJwt';
+import { useHistory } from 'react-router-dom';
+import { History } from 'history';
 
 const styles = {
   logo: {
@@ -92,41 +93,42 @@ export const adminCheck = (user, history) => {
   }
 };
 
-const Login = ({ history }: { history: any }) => {
-  const { token } = useAuthContext();
-  const fetchEgoToken = () => {
-    ajax
-      .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        if (res.status !== 200) {
-          throw new Error(`Could not login: ${res.statusText}`);
-        }
-        return res.data;
-      })
-      .then(async (jwt) => {
-        if (jwt === '') {
-          return;
-        }
-        const jwtData = jwtDecode(jwt);
-        const user = {
-          ...jwtData.context.user,
-          id: jwtData.sub,
-        };
-        localStorage.setItem(EGO_JWT_KEY, jwt);
-        adminCheck(user, history);
-      })
-      .catch((err) => {
-        console.warn('Error: ', err);
-      });
-  };
+const fetchEgoToken = (history: History<unknown>) => {
+  ajax
+    .post(`/oauth/ego-token?client_id=${EGO_CLIENT_ID}`, null, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      if (res.status !== 200) {
+        throw new Error(`Could not login: ${res.statusText}`);
+      }
+      return res.data;
+    })
+    .then(async (jwt) => {
+      if (jwt === '') {
+        return;
+      }
+      const jwtData = jwtDecode(jwt);
+      const user = {
+        ...jwtData.context.user,
+        id: jwtData.sub,
+      };
+      localStorage.setItem(EGO_JWT_KEY, jwt);
+      adminCheck(user, history);
+    })
+    .catch((err) => {
+      console.warn('Error: ', err);
+    });
+};
 
+const Login = () => {
+  const history = useHistory();
   useEffect(() => {
-    if (!isValidJwt(token)) {
-      fetchEgoToken();
+    const egoJwt = localStorage.getItem(EGO_JWT_KEY);
+    if (!isValidJwt(egoJwt)) {
+      fetchEgoToken(history);
     }
-  }, []);
+  }, [history]);
 
   return (
     <div

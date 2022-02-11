@@ -8,6 +8,7 @@ import { Button, Icon, Input, Menu } from 'semantic-ui-react';
 import { USERS } from 'common/enums';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 import styled from '@emotion/styled';
+import { Entity } from 'common/typedefs';
 
 const styles = {
   container: {},
@@ -96,7 +97,7 @@ const ItemSelector = ({
     return type === USERS ? <Menu size="large" {...props} /> : <Menu size="small" {...props} />;
   };
 
-  const availableItems = differenceBy(items, disabledItems, (item) => item.id);
+  const availableItems = differenceBy(items, disabledItems, (item: Entity) => item.id);
 
   const getMenuItems = (inputValue, getItemProps, highlightedIndex) => {
     if (items.length === 0 || availableItems.length === 0) {

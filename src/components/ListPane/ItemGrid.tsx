@@ -41,7 +41,16 @@ const ItemsWrapper = ({
     const setLimit = columns * rows;
     setFillersRequired(Math.max(setLimit - resultSet.length, 0));
     handleListUpdate(resource, parent, { limit: setLimit });
-  }, [size.width, size.height, columnWidth, rowHeight]);
+  }, [
+    size.width,
+    size.height,
+    columnWidth,
+    rowHeight,
+    handleListUpdate,
+    parent,
+    resource,
+    resultSet.length,
+  ]);
 
   return (
     <div

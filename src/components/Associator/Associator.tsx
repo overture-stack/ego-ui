@@ -34,7 +34,7 @@ interface AssociatedItemsProps {
 async function fetchAllAssociatedItems({
   fetchExistingAssociations,
   setAllAssociatedItems,
-}: AssociatedItemsProps) {
+}: Partial<AssociatedItemsProps>) {
   let items: any = [];
   let count: number = 0;
 
@@ -124,28 +124,39 @@ const Associator = ({
   type,
   parentId,
   setItemsInList,
-  ...props
+  fetchExistingAssociations,
+  setAllAssociatedItems,
 }: any) => {
   const { setItem } = useEntityContext();
 
   useEffect(() => {
     if (editing) {
-      fetchAllAssociatedItems(props);
+      fetchAllAssociatedItems({ fetchExistingAssociations, setAllAssociatedItems });
     }
-  }, [editing]);
+  }, [editing, fetchExistingAssociations, setAllAssociatedItems]);
 
   useEffect(() => {
     const onMessage = async (e: any) => {
       if (e.type === 'PANEL_LIST_UPDATE') {
         await setItem(parentId, resource);
-        const data = await fetchAllAssociatedItems(props);
+        const data = await fetchAllAssociatedItems({
+          fetchExistingAssociations,
+          setAllAssociatedItems,
+        });
         await setItemsInList(data);
       }
     };
 
     messenger.subscribe(onMessage);
     return () => messenger.unsubscribe(onMessage);
-  }, []);
+  }, [
+    fetchExistingAssociations,
+    setAllAssociatedItems,
+    parentId,
+    resource,
+    setItem,
+    setItemsInList,
+  ]);
 
   const AssociatorComponent =
     type === PERMISSIONS

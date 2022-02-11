@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, useTheme } from '@emotion/react';
-import { debounce, get, isEmpty, reject } from 'lodash';
-import React, { useEffect } from 'react';
+import { get, isEmpty, reject } from 'lodash';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
 import { compose, defaultProps } from 'recompose';
@@ -54,7 +53,6 @@ const ItemsWrapper = ({
   onSortChange,
   parent,
   selectedItemId,
-  size,
   resultSet,
   handleListUpdate,
 }) => {
@@ -91,17 +89,6 @@ const ItemsWrapper = ({
             ),
         };
       });
-
-  // not sure this is needed, because table container scrolls to always allow 20 rows
-  useEffect(() => {
-    debounce(({ size, rowHeight }) => {
-      const heightBuffer = 30;
-      const rows = Math.max(Math.floor((size.height - heightBuffer) / rowHeight) - 1, 1);
-      const limit = rows;
-
-      handleListUpdate(resource, parent, { limit, rows });
-    }, 200);
-  }, [size.width, size.height]);
 
   return (
     <div

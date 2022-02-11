@@ -44,7 +44,7 @@ const Nav = () => {
     setCollapsedState(collapsedPref);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  }, [onResize, userPreferences.collapsed, theme.dimensions.screen.minWidth]);
 
   return (
     <div
