@@ -9,7 +9,6 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Nav from 'components/Nav';
 import NoAccess from 'components/NoAccess';
 import useAuthContext from 'components/global/hooks/useAuthContext';
-import { EntityProvider } from 'components/global/hooks/useEntityContext';
 
 const ProtectedRoute = ({
   component,
@@ -42,18 +41,7 @@ const App = () => {
                       <ProtectedRoute
                         key={key}
                         path={`/${resource.name.plural}/:id?/:subResourceType?/:subResourceId?`}
-                        render={(p) => {
-                          const { match } = p;
-                          return (
-                            <EntityProvider
-                              id={match.params.id}
-                              subResource={match.params.subResourceType}
-                              resource={resource}
-                            >
-                              <ResourceRoute {...p} resource={resource} />
-                            </EntityProvider>
-                          );
-                        }}
+                        render={(p) => <ResourceRoute {...p} resource={resource} />}
                       />
                     );
                   })}

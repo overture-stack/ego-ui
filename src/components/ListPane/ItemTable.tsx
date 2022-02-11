@@ -38,7 +38,7 @@ const getColumns = (currentSort, resource, parent) => {
         accessor: schema.key,
         Header: schema.fieldName,
         sortable: schema.sortable || false,
-        sortMethod: () => (currentSort.order === 'DESC' ? 1 : -1),
+        sortMethod: () => (currentSort.sortOrder === 'DESC' ? 1 : -1),
       };
     });
 
@@ -119,7 +119,7 @@ const ItemsWrapper = ({
         pageSize={limit}
         data={data}
         showPagination={false}
-        sorted={[{ id: currentSort.field.key, desc: currentSort.order === 'DESC' }]}
+        sorted={[{ id: currentSort.sortField.key, desc: currentSort.sortOrder === 'DESC' }]}
         onSortedChange={(newSort) => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
         getTdProps={(state, rowInfo, column, instance) => ({
           onClick: () => rowInfo && onSelect(rowInfo.original),

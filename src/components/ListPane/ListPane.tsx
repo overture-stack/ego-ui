@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { useTheme } from '@emotion/react';
 import { debounce, get, merge, noop } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { compose, defaultProps, withProps } from 'recompose';
 import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
 
-import { IResource, SortOrder } from 'common/typedefs/Resource';
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
 import { RippleButton } from 'components/Ripple';
@@ -21,20 +20,6 @@ import { useParams } from 'react-router';
 enum DisplayMode {
   Table,
   Grid,
-}
-
-interface IListProps {
-  initialQuery: string;
-  resource: IResource;
-  onSelect: Function;
-  getKey: Function;
-  columnWidth: number;
-  styles: any;
-  selectedItemId: string;
-  parent: {
-    id: string;
-    resource: IResource;
-  };
 }
 
 const enhance = compose(
@@ -69,24 +54,14 @@ const paneControls = {
 const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
   const {
     list,
-    list: {
-      count,
-      params: { offset, limit },
-    },
+    list: { count },
+    listParams,
+    setListParams,
     updateList,
   } = useListContext();
-  const [query, setQuery] = useState<string>('');
-  const [currentSort, setCurrentSort] = useState<{
-    field: any;
-    order: SortOrder;
-  }>({
-    field: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
-    order: resource.initialSortOrder,
-  });
 
   const { setUserPreferences, userPreferences } = useAuthContext();
   const theme = useTheme();
-  const { order, field } = currentSort;
   const routerParams: any = useParams();
 
   const displayMode: any =
@@ -95,28 +70,19 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
       : DisplayMode.Table;
 
   useEffect(() => {
-    setCurrentSort({
-      field: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
-      order: resource.initialSortOrder,
-    });
-  }, [resource]);
+    if (!(listParams.sortOrder && listParams.sortField)) {
+      setListParams({
+        ...listParams,
+        sortField: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
+        sortOrder: resource.initialSortOrder,
+      });
+    }
+  }, [listParams, setListParams, resource, parent]);
 
   useEffect(() => {
-    if (parent || !routerParams.subResourceType) {
-      const debouncedUpdate = debounce(
-        () =>
-          updateList(resource, parent, {
-            offset,
-            limit,
-            sortField: field.key,
-            sortOrder: order,
-            query,
-          }),
-        100,
-      );
-      debouncedUpdate();
-    }
-  }, [resource, currentSort.field.key, order, query, routerParams.subResourceType]);
+    const debouncedSetListParams = debounce(() => setListParams(listParams), 100);
+    debouncedSetListParams();
+  }, [resource, parent, listParams, setListParams, routerParams.subResourceType]);
 
   return (
     <div css={styles.container}>
@@ -124,15 +90,15 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
         <div css={paneControls.searchContainer}>
           <Input
             icon={
-              query.length > 0 ? (
-                <Icon name={'close'} onClick={(e) => setQuery('')} link={true} />
+              listParams.query.length > 0 ? (
+                <Icon name={'close'} onClick={(e) => setListParams({ query: '' })} link={true} />
               ) : (
                 <Icon name={'search'} />
               )
             }
-            value={query}
+            value={listParams.query}
             placeholder="Search..."
-            onChange={(event, { value }) => setQuery(value)}
+            onChange={(event, { value }) => setListParams({ query: value })}
           />
         </div>
         <div css={paneControls.sortContainer}>
@@ -147,11 +113,12 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
                 text: field.fieldName,
                 value: field.key,
               }))}
-            text={currentSort.field.fieldName}
+            text={listParams.sortField.fieldName}
+            // TODO: using the dropdown controls loses the correct sortField value (api request gets no sort value)
+            // added ...listParams to this setListParams and the one on pagination change, seems to be fixed but need to test more
             onChange={(event, { value }) =>
-              setCurrentSort({
-                ...currentSort,
-                field: resource
+              setListParams({
+                sortField: resource
                   .sortableFields(isChildOfPolicy(get(parent, 'resource')))
                   .find((field) => field.key === value),
               })
@@ -162,18 +129,18 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
               style={{
                 backgroundColor: 'transparent',
                 paddingBottom: 0,
-                ...(currentSort.order === 'ASC' && { color: theme.colors.primary_5 }),
+                ...(listParams.sortOrder === 'ASC' && { color: theme.colors.primary_5 }),
               }}
-              onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
+              onClick={() => setListParams({ ...listParams, sortOrder: 'ASC' })}
               icon="chevron up"
             />
             <Button
               style={{
                 paddingTop: 0,
                 backgroundColor: 'transparent',
-                ...(currentSort.order === 'DESC' && { color: theme.colors.primary_5 }),
+                ...(listParams.sortOrder === 'DESC' && { color: theme.colors.primary_5 }),
               }}
-              onClick={() => setCurrentSort({ ...currentSort, order: 'DESC' })}
+              onClick={() => setListParams({ ...listParams, sortOrder: 'DESC' })}
               icon="chevron down"
             />
           </Button.Group>
@@ -211,7 +178,7 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
           resultSet={list.resultSet}
           Component={resource.ListItem}
           getKey={resource.getKey}
-          sortField={currentSort.field}
+          sortField={listParams.sortField}
           selectedItemId={selectedItemId}
           onSelect={onSelect}
           styles={styles}
@@ -226,12 +193,13 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
                 [resource.name.plural]: item,
                 item: parent,
               });
-              updateList(resource, parent);
+              // commenting out so don't need to worry about behaviour while fixing updateList functionality
+              // updateList(resource, parent);
             })
           }
           parent={parent}
           handleListUpdate={updateList}
-          offset={offset}
+          offset={listParams.offset}
           resource={resource}
         />
       ) : (
@@ -240,21 +208,20 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
           parent={parent}
           resource={resource}
           getKey={getKey}
-          currentSort={currentSort}
+          currentSort={{ sortField: listParams.sortField, sortOrder: listParams.sortOrder }}
           selectedItemId={selectedItemId}
           onSelect={onSelect}
-          // styles={styles}
           onSortChange={(newSortField, newSortOrder) => {
-            setCurrentSort({
-              ...currentSort,
-              order: newSortOrder,
-              field: resource
+            setListParams({
+              sortOrder: newSortOrder,
+              sortField: resource
                 .sortableFields(isChildOfPolicy(get(parent, 'resource')))
                 .find((field) => field.key === newSortField),
             });
           }}
           handleListUpdate={updateList}
           onRemove={
+            // only for child tables
             parent &&
             (async (item) => {
               const removeFunction =
@@ -268,11 +235,11 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
           }
         />
       )}
-      {(limit < count || offset > 0) && (
+      {(listParams.limit < count || listParams.offset > 0) && (
         <Pagination
-          onChange={(page) => updateList(resource, parent, { offset: page * limit })}
-          offset={offset}
-          limit={limit}
+          onChange={(page) => setListParams({ ...listParams, offset: page * listParams.limit })}
+          offset={listParams.offset}
+          limit={listParams.limit}
           total={count}
           range={3}
         />

@@ -92,9 +92,9 @@ export const EntityProvider = ({
   resource,
   children,
 }: {
-  id?: string;
-  subResource?: string;
-  resource: ResourceType;
+  id: string;
+  subResource: string;
+  resource: IResource;
   children: ReactNode;
 }) => {
   const [entityState, setEntityState] = useState(initialEntityState);
@@ -300,7 +300,6 @@ export const EntityProvider = ({
   };
 
   const entityData = {
-    // setEntity,
     entity: entityState,
     stageChange,
     undoChanges,

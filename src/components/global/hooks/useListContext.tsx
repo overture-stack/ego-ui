@@ -1,16 +1,15 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, isEqual } from 'lodash';
 import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { isChildOfPolicy } from 'common/associatedUtils';
-import { useLocation } from 'react-router-dom';
-import { IResource, SortOrder } from 'common/typedefs/Resource';
+import { IField, IResource, SortOrder } from 'common/typedefs/Resource';
 import { Entity } from 'common/typedefs';
 
 interface ListParams {
   offset: number;
   limit: number;
-  sortField: string;
+  sortField: IField;
   sortOrder: SortOrder;
   query: string;
 }
@@ -18,7 +17,6 @@ interface ListParams {
 interface List {
   resultSet: Entity[];
   count: number;
-  params: ListParams;
 }
 
 type T_ListContext = {
@@ -28,11 +26,19 @@ type T_ListContext = {
     parent: { id: string; resource: IResource },
     optParams?: Partial<ListParams>,
   ) => void;
+  setCurrentResource: (resource: IResource) => void;
+  setCurrentParent: ({ resource: IResource, id: string }) => void;
+  listParams: ListParams;
+  setListParams: (params: Partial<ListParams>) => void;
 };
 
 const ListContext = createContext<T_ListContext>({
   list: undefined,
   updateList: () => {},
+  setCurrentResource: () => {},
+  setCurrentParent: () => {},
+  listParams: undefined,
+  setListParams: () => {},
 });
 
 const initialParams: any = {
@@ -46,24 +52,41 @@ const initialParams: any = {
 const initialListState = {
   resultSet: [],
   count: 0,
-  params: initialParams,
 };
 
-export const ListProvider = ({ children }: { children: ReactNode }) => {
-  const location = useLocation();
-  const path = location.pathname.split('/');
-  const initialResource = RESOURCE_MAP[path[1]];
-  const initialParent = RESOURCE_MAP[path[3]];
-  const [listState, setListState] = useState({
-    ...initialListState,
-    params: {
+export const getResourceParent = (
+  resourceName: string,
+  resourceId?: string,
+  subResourceName?: string,
+) => (subResourceName ? { resource: RESOURCE_MAP[resourceName], id: resourceId } : undefined);
+
+export const ListProvider = ({
+  resourceName,
+  subResourceName,
+  resourceId,
+  children,
+}: {
+  resourceName: string;
+  subResourceName?: string;
+  resourceId?: string;
+  children: ReactNode;
+}) => {
+  const [currentResource, setCurrentResource] = useState<IResource>(RESOURCE_MAP[resourceName]);
+  const [currentParent, setCurrentParent] = useState<
+    { resource: IResource; id: string } | undefined
+  >(getResourceParent(resourceName, resourceId, subResourceName));
+  const [currentSubResourceName, setCurrentSubResourceName] = useState<string>(subResourceName);
+  const [currentListParams, setCurrentListParams] = useState<ListParams>({
+    ...initialParams,
+    ...{
       ...initialParams,
-      sortField: initialResource
-        ? initialResource.initialSortField(isChildOfPolicy(get(initialParent, 'resource')))
-        : 'id',
-      sortOrder: initialResource ? initialResource.initialSortOrder : 'ASC',
+      sortField: currentResource
+        ? currentResource.initialSortField(isChildOfPolicy(get(currentParent, 'resource')))
+        : { key: 'id', fieldName: 'ID' },
+      sortOrder: currentResource ? currentResource.initialSortOrder : 'ASC',
     },
   });
+  const [listState, setListState] = useState<List>(initialListState);
 
   const getListFunc = (associatedType, parent) => {
     return associatedType === PERMISSIONS && !isEmpty(parent)
@@ -71,14 +94,22 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
       : RESOURCE_MAP[associatedType].getList;
   };
 
-  const refreshList = async (resource, parent, optParams) => {
-    const { sortOrder, sortField, query } = listState.params;
+  type RefreshList = (
+    resource: IResource,
+    parent: { resource: IResource; id: string },
+    optParams: Partial<ListParams>,
+  ) => Promise<List>;
+
+  const refreshList: RefreshList = async (resource, parent, optParams) => {
+    const { sortOrder, sortField, query } = currentListParams;
     const combinedParams = {
       offset: 0,
       sortField: sortField.key,
       sortOrder,
       query,
+      ...currentListParams,
       ...optParams,
+      ...(optParams.sortField ? { sortField: optParams.sortField.key } : {}),
     };
 
     const match = (query || '').match(/^(.*)status:\s*("([^"]*)"|([^\s]+))(.*)$/);
@@ -89,7 +120,7 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
 
     const response = await listFunc({
       ...combinedParams,
-      ...(parent && { [`${parent.resource.name.singular}Id`]: parent.id, parent }),
+      ...(!isEmpty(parent) && { [`${parent.resource.name.singular}Id`]: parent.id, parent }),
       query:
         (match ? `${before || ''}${after || ''}` : combinedParams.query || '')
           .replace(/\s+/g, ' ')
@@ -103,22 +134,43 @@ export const ListProvider = ({ children }: { children: ReactNode }) => {
     };
   };
 
-  const updateList = async (resource, parent, optParams: any = {}) => {
+  const updateList = async (resource, parent, optParams: Partial<ListParams> = {}) => {
     const data = await refreshList(resource, parent, optParams);
     setListState({
       ...listState,
-      params: {
-        ...listState.params,
-        ...optParams,
-      },
       resultSet: data.resultSet,
       count: data.count,
     });
   };
 
+  if (
+    (resourceName && !currentResource) ||
+    (currentResource && resourceName !== currentResource.name.plural) ||
+    subResourceName !== currentSubResourceName
+  ) {
+    const newResource = RESOURCE_MAP[resourceName];
+    const newParent = getResourceParent(resourceName, resourceId, subResourceName);
+    setCurrentResource(newResource);
+    setCurrentParent(newParent);
+    setCurrentSubResourceName(subResourceName);
+    const resourceToUse = subResourceName ? RESOURCE_MAP[subResourceName] : newResource;
+    updateList(resourceToUse, newParent, currentListParams);
+  }
+
+  const setListParams = (params: ListParams) => {
+    if (!isEqual(params, currentListParams)) {
+      setCurrentListParams({ ...currentListParams, ...params });
+      updateList(currentResource, currentParent, params);
+    }
+  };
+
   const listData = {
     list: listState,
     updateList,
+    setCurrentResource,
+    setCurrentParent,
+    listParams: currentListParams,
+    setListParams,
   };
 
   return <ListContext.Provider value={listData}>{children}</ListContext.Provider>;
