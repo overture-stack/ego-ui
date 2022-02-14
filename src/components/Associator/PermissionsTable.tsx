@@ -3,12 +3,13 @@ import { capitalize } from 'lodash';
 import { compose, withState } from 'recompose';
 import { Button, Checkbox, Table } from 'semantic-ui-react';
 import styled from '@emotion/styled';
-import { NavLink } from 'react-router-dom';
+import theme from 'theme';
 
 import { MASK_LEVELS } from 'common/injectGlobals';
 import { USERS } from 'common/enums';
 import { PermissionLabel } from './UserPermissionsTable';
 import useEntityContext from 'components/global/hooks/useEntityContext';
+import { CurrentUserLink } from 'components/Nav/CurrentUserNavItem';
 
 const EditMask = compose(withState('checkedMask', 'setCheckedMask', (props) => props.mask))(
   ({ permission, handleSelectMask, associatedByType }) => {
@@ -77,19 +78,20 @@ const PermissionsTable = ({ editing, associatedItems, removeItem, type }) => {
                   >
                     <span>{item.name}</span>
                     {type === USERS && (
-                      <NavLink
-                        to={`/${type}/${item.id}`}
-                        css={(theme) => ({
+                      <CurrentUserLink
+                        user={item}
+                        styles={{
                           color: theme.colors.secondary_accessible,
                           display: 'block',
                           fontSize: 11,
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
-                        })}
+                          cursor: 'pointer',
+                        }}
                       >
                         {item.id}
-                      </NavLink>
+                      </CurrentUserLink>
                     )}
                   </span>
                 </Table.Cell>

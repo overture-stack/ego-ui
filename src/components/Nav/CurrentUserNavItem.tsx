@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Gravatar from 'react-gravatar';
 import { useHistory } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -11,6 +11,7 @@ import CopyJwt from './CopyJwt';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 import theme from 'theme';
 import useAuthContext from 'components/global/hooks/useAuthContext';
+import { Entity } from 'common/typedefs';
 
 const menuItemStyles = css`
     display: block;
@@ -44,8 +45,32 @@ const CurrentNavContainer = styled(Ripple)`
   `}
 `;
 
-const CurrentUserNavItem = () => {
+export const CurrentUserLink = ({
+  user,
+  styles,
+  children,
+}: {
+  user: Entity;
+  styles?: any;
+  children: ReactNode;
+}) => {
   const history = useHistory();
+
+  return (
+    <div
+      onClick={() => {
+        history.replace({ pathname: `/users/${user.id}` });
+        // force reload to allow entity context to refresh if this link is clicked while viewing a different entity type
+        window.location.reload();
+      }}
+      css={styles}
+    >
+      {children}
+    </div>
+  );
+};
+
+const CurrentUserNavItem = () => {
   const [shouldShowMenu, setShouldShowMenu] = useState(false);
   const ref: React.RefObject<any> = React.createRef();
   const handleClickOutside = (e) => {
@@ -115,16 +140,9 @@ const CurrentUserNavItem = () => {
           `}
         >
           <CopyJwt css={menuItemStyles} className="menu-item" />
-          <div
-            onClick={() => {
-              history.replace({ pathname: `/users/${user.id}` });
-              // force reload to allow entity context to refresh if this link is clicked while viewing a different entity type
-              window.location.reload();
-            }}
-            css={menuItemStyles}
-          >
+          <CurrentUserLink user={user} styles={menuItemStyles}>
             Profile Page
-          </div>
+          </CurrentUserLink>
           <Logout css={menuItemStyles} className={'menu-item Logout'} />
         </div>
       )}
