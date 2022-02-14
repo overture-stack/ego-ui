@@ -116,7 +116,7 @@ export const EntityProvider = ({
       id && !isCreate
         ? await Promise.all([
             resource.getItem(id),
-            ...resource.associatedTypes.map((associatedType) => {
+            ...(resource?.associatedTypes || []).map((associatedType) => {
               const listFunc = getListFunc(associatedType, resource);
               return listFunc({
                 [`${resource.name.singular}Id`]: id,
@@ -124,7 +124,7 @@ export const EntityProvider = ({
               });
             }),
           ])
-        : [null, ...resource.associatedTypes.map(() => ({}))];
+        : [null, ...(resource?.associatedTypes || []).map(() => ({}))];
 
     const staged = item || {};
     const newEntityState = {
@@ -133,7 +133,7 @@ export const EntityProvider = ({
       item,
       id: isCreate ? null : id,
       staged,
-      valid: resource.schema.filter((f) => f.required).every((f) => staged[f.key]),
+      valid: (resource?.schema || []).filter((f) => f.required).every((f) => staged[f.key]),
       associated: associated.reduce(
         (acc, a, i) => ({
           ...acc,
@@ -149,25 +149,6 @@ export const EntityProvider = ({
     setEntityState(newEntityState);
     return newEntityState;
   };
-
-  if (currentId !== id || (lastValidId !== id && id !== 'create')) {
-    setCurrentId(id);
-    setItem(id, resource);
-    setContentState(
-      id === 'create'
-        ? ContentState.CREATING
-        : subResource === 'edit'
-        ? ContentState.EDITING
-        : ContentState.DISPLAYING,
-    );
-  }
-
-  if (currentResource !== resource) {
-    setCurrentResource(resource);
-  }
-  if (currentSubResource !== subResource) {
-    setCurrentSubResource(subResource);
-  }
 
   const stageChange = async (change) => {
     const staged = {
@@ -295,6 +276,25 @@ export const EntityProvider = ({
     await resource.deleteItem({ item });
     return entityState;
   };
+
+  if (currentResource !== resource) {
+    setCurrentResource(resource);
+  }
+  if (currentSubResource !== subResource) {
+    setCurrentSubResource(subResource);
+  }
+
+  if (currentId !== id || (lastValidId !== id && id !== 'create')) {
+    setCurrentId(id);
+    setItem(id, resource);
+    setContentState(
+      id === 'create'
+        ? ContentState.CREATING
+        : subResource === 'edit'
+        ? ContentState.EDITING
+        : ContentState.DISPLAYING,
+    );
+  }
 
   const entityData = {
     entity: entityState,

@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Gravatar from 'react-gravatar';
-import { useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import Logout from 'components/Logout';
@@ -11,7 +11,6 @@ import CopyJwt from './CopyJwt';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 import theme from 'theme';
 import useAuthContext from 'components/global/hooks/useAuthContext';
-import { Entity } from 'common/typedefs';
 
 const menuItemStyles = css`
     display: block;
@@ -44,31 +43,6 @@ const CurrentNavContainer = styled(Ripple)`
     }
   `}
 `;
-
-export const CurrentUserLink = ({
-  user,
-  styles,
-  children,
-}: {
-  user: Entity;
-  styles?: any;
-  children: ReactNode;
-}) => {
-  const history = useHistory();
-
-  return (
-    <div
-      onClick={() => {
-        history.replace({ pathname: `/users/${user.id}` });
-        // force reload to allow entity context to refresh if this link is clicked while viewing a different entity type
-        window.location.reload();
-      }}
-      css={styles}
-    >
-      {children}
-    </div>
-  );
-};
 
 const CurrentUserNavItem = () => {
   const [shouldShowMenu, setShouldShowMenu] = useState(false);
@@ -140,9 +114,9 @@ const CurrentUserNavItem = () => {
           `}
         >
           <CopyJwt css={menuItemStyles} className="menu-item" />
-          <CurrentUserLink user={user} styles={menuItemStyles}>
+          <NavLink to={`/users/${user.id}`} css={menuItemStyles}>
             Profile Page
-          </CurrentUserLink>
+          </NavLink>
           <Logout css={menuItemStyles} className={'menu-item Logout'} />
         </div>
       )}

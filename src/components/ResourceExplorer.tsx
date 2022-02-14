@@ -67,7 +67,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                         });
                       }}
                       getName={RESOURCE_MAP[associatedType].getName}
-                      initialItems={associated[associatedType].resultSet}
+                      initialItems={associated[associatedType]?.resultSet}
                       onAdd={(item) => {
                         stageChange({ [associatedType]: { add: item } });
                       }}
@@ -78,7 +78,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       parentId={id}
                     />
                     {!parent &&
-                      associated[associatedType].count >
+                      associated[associatedType]?.count >
                         get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
@@ -89,7 +89,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                             paddingTop: 10,
                           })}
                         >
-                          View {associated[associatedType].count} {associatedType}
+                          View {associated[associatedType]?.count} {associatedType}
                         </NavLink>
                       )}
                   </React.Fragment>

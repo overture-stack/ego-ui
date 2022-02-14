@@ -18,7 +18,7 @@ export const getFieldContent = (row, data) => {
     return format(data[row.key], DATE_FORMAT);
   }
   if (row.key === 'lastName') {
-    if (!data.firstName.length && !data.lastName.length) {
+    if (!data.firstName?.length && !data.lastName?.length) {
       return <EmptyField />;
     }
     return [data.firstName, data.lastName].join(' ');
