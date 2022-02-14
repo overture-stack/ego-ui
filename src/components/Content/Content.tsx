@@ -120,7 +120,7 @@ const Content = ({
           const updated: Entity = await resource.updateItem({
             item: { ...item, ...{ status: 'DISABLED' } },
           });
-          await setItem(updated.id, resource, parent);
+          await setItem(updated.id, resource);
           await updateList(resource, parent);
           setContentState(ContentState.DISPLAYING);
         }

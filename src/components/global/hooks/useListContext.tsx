@@ -60,6 +60,20 @@ export const getResourceParent = (
   subResourceName?: string,
 ) => (subResourceName ? { resource: RESOURCE_MAP[resourceName], id: resourceId } : undefined);
 
+const getInitialParamsByResource = (
+  resource: IResource,
+  parent: { id: string; resource: IResource },
+) => ({
+  ...initialParams,
+  ...{
+    ...initialParams,
+    sortField: resource
+      ? resource.initialSortField(isChildOfPolicy(get(parent, 'resource')))
+      : { key: 'id', fieldName: 'ID' },
+    sortOrder: resource ? resource.initialSortOrder : 'ASC',
+  },
+});
+
 export const ListProvider = ({
   resourceName,
   subResourceName,
@@ -76,16 +90,9 @@ export const ListProvider = ({
     { resource: IResource; id: string } | undefined
   >(getResourceParent(resourceName, resourceId, subResourceName));
   const [currentSubResourceName, setCurrentSubResourceName] = useState<string>(subResourceName);
-  const [currentListParams, setCurrentListParams] = useState<ListParams>({
-    ...initialParams,
-    ...{
-      ...initialParams,
-      sortField: currentResource
-        ? currentResource.initialSortField(isChildOfPolicy(get(currentParent, 'resource')))
-        : { key: 'id', fieldName: 'ID' },
-      sortOrder: currentResource ? currentResource.initialSortOrder : 'ASC',
-    },
-  });
+  const [currentListParams, setCurrentListParams] = useState<ListParams>(
+    getInitialParamsByResource(currentResource, currentParent),
+  );
   const [listState, setListState] = useState<List>(initialListState);
 
   const getListFunc = (associatedType, parent) => {
@@ -150,11 +157,15 @@ export const ListProvider = ({
   ) {
     const newResource = RESOURCE_MAP[resourceName];
     const newParent = getResourceParent(resourceName, resourceId, subResourceName);
+    // this ensures the correct resource type is used, depending on whether the table is for the parent or the child
+    const resourceToUse = subResourceName ? RESOURCE_MAP[subResourceName] : newResource;
+    // reset params when switching resource or subResource so initial sorting field is correct
+    const newParams = getInitialParamsByResource(resourceToUse, newParent);
     setCurrentResource(newResource);
     setCurrentParent(newParent);
     setCurrentSubResourceName(subResourceName);
-    const resourceToUse = subResourceName ? RESOURCE_MAP[subResourceName] : newResource;
-    updateList(resourceToUse, newParent, currentListParams);
+    setCurrentListParams(newParams);
+    updateList(resourceToUse, newParent, newParams);
   }
 
   const setListParams = (params: ListParams) => {

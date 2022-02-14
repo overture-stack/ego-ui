@@ -46,6 +46,7 @@ export interface EntityState {
   associated: Partial<AssociatedEntities>;
   valid: boolean;
   resource: IResource;
+  id: string | null;
 }
 
 type T_EntityContext = {
@@ -54,7 +55,7 @@ type T_EntityContext = {
   undoChanges: (id?: string) => void;
   saveChanges: () => void;
   deleteItem: () => void;
-  setItem: (id: string, resource: IResource, parent?: { resource: IResource; id: string }) => void;
+  setItem: (id: string, resource: IResource) => void;
   lastValidId?: string;
   contentState: ContentState;
   setContentState: (contentState: ContentState) => void;
@@ -78,6 +79,7 @@ export const initialEntityState: EntityState = {
   associated: null,
   valid: false,
   resource: null,
+  id: null,
 };
 
 export const getListFunc = (associatedType, parent) => {
@@ -104,12 +106,7 @@ export const EntityProvider = ({
   const [lastValidId, setLastValidId] = useState<string>(undefined);
   const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
 
-  // would it be useful, in both entity and list context, to track resource, parent and id (and possibly lastValidId?) to
-  // be able to compare incoming values from update, set functions to what is currently in state?
-  const setItem = async (id, resource, parent = undefined) => {
-    const resourceToUse = resource;
-    // const resourceToUse = subResource ? parent.resource : resource
-    // const resourceToUse = parent ? parent.resource : resource;
+  const setItem = async (id: string, resource: IResource) => {
     const isCreate = id === 'create';
 
     if (!isCreate) {
@@ -118,36 +115,36 @@ export const EntityProvider = ({
     const [item, ...associated] =
       id && !isCreate
         ? await Promise.all([
-            resourceToUse.getItem(id),
-            ...resourceToUse.associatedTypes.map((associatedType) => {
-              const listFunc = getListFunc(associatedType, resourceToUse);
+            resource.getItem(id),
+            ...resource.associatedTypes.map((associatedType) => {
+              const listFunc = getListFunc(associatedType, resource);
               return listFunc({
-                [`${resourceToUse.name.singular}Id`]: id,
+                [`${resource.name.singular}Id`]: id,
                 limit: ENTITY_MAX_ASSOCIATED,
               });
             }),
           ])
-        : [null, ...resourceToUse.associatedTypes.map(() => ({}))];
+        : [null, ...resource.associatedTypes.map(() => ({}))];
 
     const staged = item || {};
     const newEntityState = {
       ...entityState,
-      resource: resourceToUse,
+      resource,
       item,
       id: isCreate ? null : id,
       staged,
-      valid: resourceToUse.schema.filter((f) => f.required).every((f) => staged[f.key]),
+      valid: resource.schema.filter((f) => f.required).every((f) => staged[f.key]),
       associated: associated.reduce(
         (acc, a, i) => ({
           ...acc,
-          [resourceToUse.associatedTypes[i]]: {
+          [resource.associatedTypes[i]]: {
             ...a,
             resultSet: a.count > ENTITY_MAX_ASSOCIATED ? a.resultSet.slice(0, 5) : a.resultSet,
           },
         }),
         {},
       ),
-    };
+    } as EntityState;
 
     setEntityState(newEntityState);
     return newEntityState;
@@ -155,7 +152,7 @@ export const EntityProvider = ({
 
   if (currentId !== id || (lastValidId !== id && id !== 'create')) {
     setCurrentId(id);
-    setItem(id, resource, subResource);
+    setItem(id, resource);
     setContentState(
       id === 'create'
         ? ContentState.CREATING
