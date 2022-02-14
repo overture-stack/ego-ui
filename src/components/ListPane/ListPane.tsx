@@ -80,7 +80,7 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
   }, [listParams, setListParams, resource, parent]);
 
   useEffect(() => {
-    const debouncedSetListParams = debounce(() => setListParams(listParams), 100);
+    const debouncedSetListParams = debounce(() => setListParams(listParams), 300);
     debouncedSetListParams();
   }, [resource, parent, listParams, setListParams, routerParams.subResourceType]);
 
@@ -114,8 +114,6 @@ const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, r
                 value: field.key,
               }))}
             text={listParams.sortField.fieldName}
-            // TODO: using the dropdown controls loses the correct sortField value (api request gets no sort value)
-            // added ...listParams to this setListParams and the one on pagination change, seems to be fixed but need to test more
             onChange={(event, { value }) =>
               setListParams({
                 sortField: resource

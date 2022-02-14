@@ -17,6 +17,7 @@ import useEntityContext, {
   EntityState,
 } from 'components/global/hooks/useEntityContext';
 import useListContext from 'components/global/hooks/useListContext';
+import { Entity } from 'common/typedefs';
 
 const StyledControlContainer = styled(ControlContainer)`
   padding: 0 24px;
@@ -63,13 +64,13 @@ const Content = ({
   const theme = useTheme();
   const {
     entity: { item, valid },
-    stageChange,
     undoChanges,
     deleteItem,
     saveChanges,
     lastValidId,
     contentState,
     setContentState,
+    setItem,
   } = useEntityContext();
   const { updateList } = useListContext();
 
@@ -112,11 +113,17 @@ const Content = ({
       disabled={contentState === ContentState.DISABLING || get(item, 'status') === 'DISABLED'}
       loading={contentState === ContentState.DISABLING}
       onClick={async () => {
-        setContentState(ContentState.DISABLING);
-        await stageChange({ status: 'DISABLED' });
-        await saveChanges();
-        await updateList(resource, parent);
-        setContentState(ContentState.DISPLAYING);
+        // direct DISABLE option available only for entities that cannot be deleted, currently just for USERS
+        if (resource.noDelete) {
+          setContentState(ContentState.DISABLING);
+          // update entity immediately, this action does not follow the stageChange/saveChange flow
+          const updated: Entity = await resource.updateItem({
+            item: { ...item, ...{ status: 'DISABLED' } },
+          });
+          await setItem(updated.id, resource, parent);
+          await updateList(resource, parent);
+          setContentState(ContentState.DISPLAYING);
+        }
       }}
       size="tiny"
     >
