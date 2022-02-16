@@ -3,7 +3,7 @@ import { isEmpty, get, isEqual } from 'lodash';
 import { PERMISSIONS } from 'common/enums';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { isChildOfPolicy } from 'common/associatedUtils';
-import { IField, IResource, SortOrder } from 'common/typedefs/Resource';
+import { IField, IResource, ResourceType, SortOrder } from 'common/typedefs/Resource';
 import { Entity } from 'common/typedefs';
 
 interface ListParams {
@@ -19,6 +19,12 @@ interface List {
   count: number;
 }
 
+type RefreshList = (
+  resource: IResource,
+  parent: { resource: IResource; id: string },
+  optParams: Partial<ListParams>,
+) => Promise<List>;
+
 type T_ListContext = {
   list: List;
   updateList: (
@@ -26,8 +32,6 @@ type T_ListContext = {
     parent: { id: string; resource: IResource },
     optParams?: Partial<ListParams>,
   ) => void;
-  setCurrentResource: (resource: IResource) => void;
-  setCurrentParent: ({ resource: IResource, id: string }) => void;
   listParams: ListParams;
   setListParams: (params: Partial<ListParams>) => void;
 };
@@ -35,8 +39,6 @@ type T_ListContext = {
 const ListContext = createContext<T_ListContext>({
   list: undefined,
   updateList: () => {},
-  setCurrentResource: () => {},
-  setCurrentParent: () => {},
   listParams: undefined,
   setListParams: () => {},
 });
@@ -55,9 +57,9 @@ const initialListState = {
 };
 
 export const getResourceParent = (
-  resourceName: string,
+  resourceName: ResourceType | 'create',
   resourceId?: string,
-  subResourceName?: string,
+  subResourceName?: ResourceType | 'edit',
 ) => (subResourceName ? { resource: RESOURCE_MAP[resourceName], id: resourceId } : undefined);
 
 const getInitialParamsByResource = (
@@ -74,24 +76,36 @@ const getInitialParamsByResource = (
   },
 });
 
+// this ensures the correct resource type is used for api requests, depending on whether the list is for the parent or the child
+const getRelevantResource: (
+  childResourceName: ResourceType | 'edit',
+  parentResourceName: ResourceType | 'create',
+) => IResource = (childResourceName, parentResourceName) => {
+  return childResourceName ? RESOURCE_MAP[childResourceName] : RESOURCE_MAP[parentResourceName];
+};
+
 export const ListProvider = ({
   resourceName,
   subResourceName,
   resourceId,
   children,
 }: {
-  resourceName: string;
-  subResourceName?: string;
+  resourceName: ResourceType | 'create';
+  subResourceName?: ResourceType | 'edit';
   resourceId?: string;
   children: ReactNode;
 }) => {
-  const [currentResource, setCurrentResource] = useState<IResource>(RESOURCE_MAP[resourceName]);
-  const [currentParent, setCurrentParent] = useState<
-    { resource: IResource; id: string } | undefined
-  >(getResourceParent(resourceName, resourceId, subResourceName));
-  const [currentSubResourceName, setCurrentSubResourceName] = useState<string>(subResourceName);
+  // tracking resource and subresource changes because "parent" can be constructed based on their state
+  // tracking just the resource type name as that can be used to access anything in the RESOURCE MAP
+  const [currentResource, setCurrentResource] = useState<ResourceType | 'create'>(resourceName);
+  const [currentSubResourceName, setCurrentSubResourceName] = useState<ResourceType | 'edit'>(
+    subResourceName,
+  );
   const [currentListParams, setCurrentListParams] = useState<ListParams>(
-    getInitialParamsByResource(currentResource, currentParent),
+    getInitialParamsByResource(
+      RESOURCE_MAP[resourceName],
+      getResourceParent(resourceName, resourceId, subResourceName),
+    ),
   );
   const [listState, setListState] = useState<List>(initialListState);
 
@@ -100,12 +114,6 @@ export const ListProvider = ({
       ? RESOURCE_MAP[associatedType].getList[parent.resource.name.plural]
       : RESOURCE_MAP[associatedType].getList;
   };
-
-  type RefreshList = (
-    resource: IResource,
-    parent: { resource: IResource; id: string },
-    optParams: Partial<ListParams>,
-  ) => Promise<List>;
 
   const refreshList: RefreshList = async (resource, parent, optParams) => {
     const { sortOrder, sortField, query } = currentListParams;
@@ -152,17 +160,14 @@ export const ListProvider = ({
 
   if (
     (resourceName && !currentResource) ||
-    (currentResource && resourceName !== currentResource.name.plural) ||
+    (currentResource && resourceName !== currentResource) ||
     subResourceName !== currentSubResourceName
   ) {
-    const newResource = RESOURCE_MAP[resourceName];
     const newParent = getResourceParent(resourceName, resourceId, subResourceName);
-    // this ensures the correct resource type is used, depending on whether the table is for the parent or the child
-    const resourceToUse = subResourceName ? RESOURCE_MAP[subResourceName] : newResource;
+    const resourceToUse = getRelevantResource(subResourceName, resourceName);
     // reset params when switching resource or subResource so initial sorting field is correct
     const newParams = getInitialParamsByResource(resourceToUse, newParent);
-    setCurrentResource(newResource);
-    setCurrentParent(newParent);
+    setCurrentResource(resourceName);
     setCurrentSubResourceName(subResourceName);
     setCurrentListParams(newParams);
     updateList(resourceToUse, newParent, newParams);
@@ -171,15 +176,17 @@ export const ListProvider = ({
   const setListParams = (params: ListParams) => {
     if (!isEqual(params, currentListParams)) {
       setCurrentListParams({ ...currentListParams, ...params });
-      updateList(currentResource, currentParent, params);
+      updateList(
+        getRelevantResource(subResourceName, currentResource),
+        getResourceParent(currentResource, resourceId, currentSubResourceName),
+        params,
+      );
     }
   };
 
   const listData = {
     list: listState,
     updateList,
-    setCurrentResource,
-    setCurrentParent,
     listParams: currentListParams,
     setListParams,
   };
