@@ -1,36 +1,46 @@
 import { omit } from 'lodash';
+
+import { User } from 'common/typedefs';
+import {
+  AddApplicationToEntity,
+  AddGroupToEntity,
+  AddToEntity,
+  RemoveApplicationFromEntity,
+  RemoveFromEntity,
+  RemoveGroupFromEntity,
+  UpdateEntity,
+} from 'services/types';
 import ajax from 'services/ajax';
 
 const BLOCKED_KEYS = ['groups', 'applications'];
 
-function add({ user, key, value }: any) {
-  return ajax.post(`/users/${user.id}/${key}`, [value]).then((r) => r.data);
-}
+const add: AddToEntity<User> = ({ entity, key, value }: any) => {
+  return ajax.post(`/users/${entity.id}/${key}`, [value]).then((r) => r.data);
+};
 
-function remove({ user, key, value }: any) {
-  return ajax.delete(`/users/${user.id}/${key}/${value}`).then((r) => r.data);
-}
+const remove: RemoveFromEntity<User> = ({ entity, key, value }) => {
+  return ajax.delete(`/users/${entity.id}/${key}/${value}`).then((r) => r.data);
+};
 
-export const updateUser = ({ item }) => {
+export const updateUser: UpdateEntity<User> = ({ item }) => {
   return ajax.patch(`/users/${item.id}`, omit(item, BLOCKED_KEYS)).then((r) => r.data);
 };
 
-export const addGroupToUser = ({ user, group }) => {
-  return add({ user, key: 'groups', value: group.id });
+export const addGroupToUser: AddGroupToEntity<User> = ({ entity, group }) => {
+  return add({ entity, key: 'groups', value: group.id });
 };
 
-export const removeGroupFromUser = ({ user, group }) => {
-  return remove({ user, key: 'groups', value: group.id });
+export const removeGroupFromUser: RemoveGroupFromEntity<User> = ({ entity, group }) => {
+  return remove({ entity, key: 'groups', value: group.id });
 };
 
-export const addApplicationToUser = ({ user, application }) => {
-  return add({ user, key: 'applications', value: application.id });
+export const addApplicationToUser: AddApplicationToEntity<User> = ({ entity, application }) => {
+  return add({ entity, key: 'applications', value: application.id });
 };
 
-export const removeApplicationFromUser = ({ user, application }) => {
-  return remove({ user, key: 'applications', value: application.id });
-};
-
-export const deleteUser = ({ item }) => {
-  return ajax.delete(`/users/${item.id}`).then((r) => r.data);
+export const removeApplicationFromUser: RemoveApplicationFromEntity<User> = ({
+  entity,
+  application,
+}) => {
+  return remove({ entity, key: 'applications', value: application.id });
 };

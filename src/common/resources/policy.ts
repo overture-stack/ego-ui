@@ -42,9 +42,7 @@ const PolicyResource: PolicyResourceInterface = {
   getList: getPolicies,
   updateItem: updatePolicy,
   add: {
-    // Request URL: https://ego.qa.overture.bio/api/policies/a73d7e7b-ea43-4919-8bc8-e1d22c14954f/permission/group/93ba5aba-5eba-4b6f-ae04-177fa8cbc8af
     groups: ({ group, item }) => addGroupPermissionToPolicy({ policy: item, group }),
-    // Request URL: https://ego.qa.overture.bio/api/policies/a73d7e7b-ea43-4919-8bc8-e1d22c14954f/permission/user/e8848b32-cc2b-4113-9891-5de7f6abbbc9
     users: ({ user, item }) => addUserPermissionToPolicy({ policy: item, user }),
   },
   remove: {

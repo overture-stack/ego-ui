@@ -1,18 +1,18 @@
-import _ from 'lodash';
+import { omit } from 'lodash';
 import ajax from 'services/ajax';
 
 const BLOCKED_KEYS = ['groups', 'applications'];
 
 function add({ group, key, value }: any) {
-  return ajax.post(`/groups/${group.id}/${key}`, [value]).then(r => r.data);
+  return ajax.post(`/groups/${group.id}/${key}`, [value]).then((r) => r.data);
 }
 
 function remove({ group, key, value }: any) {
-  return ajax.delete(`/groups/${group.id}/${key}/${value}`).then(r => r.data);
+  return ajax.delete(`/groups/${group.id}/${key}/${value}`).then((r) => r.data);
 }
 
 export const updateGroup = ({ item }) => {
-  return ajax.put(`/groups/${item.id}`, _.omit(item, BLOCKED_KEYS)).then(r => r.data);
+  return ajax.put(`/groups/${item.id}`, omit(item, BLOCKED_KEYS)).then((r) => r.data);
 };
 
 export const addApplicationToGroup = ({ application, group }) => {
@@ -24,5 +24,5 @@ export const removeApplicationFromGroup = ({ application, group }) => {
 };
 
 export const deleteGroup = ({ item }) => {
-  return ajax.delete(`/groups/${item.id}`).then(r => r.data);
+  return ajax.delete(`/groups/${item.id}`).then((r) => r.data);
 };

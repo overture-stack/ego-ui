@@ -65,7 +65,6 @@ const GroupResource: GroupResourceInterface = {
   updateItem: updateGroup,
   add: {
     applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
-    // Request URL: https://ego.qa.overture.bio/api/policies/d913719c-22e6-431a-a725-5e490c7d8b87/permission/group/3c662e9b-866c-474f-a70d-3c5802e8758a
     permissions: ({ permission, item }) =>
       addGroupPermissionToPolicy({
         group: { ...item, mask: permission.mask },
