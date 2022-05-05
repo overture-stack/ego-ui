@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { DATE_FORMAT } from 'common/injectGlobals';
+import { DATE_FORMAT } from 'common/constants';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 import { revokeApiKey } from 'services';
 import { Schema } from './types';

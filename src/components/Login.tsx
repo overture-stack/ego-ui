@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { API_ROOT, EGO_CLIENT_ID, EGO_JWT_KEY, KEYCLOAK_ENABLED } from 'common/injectGlobals';
+import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED } from 'common/injectGlobals';
 import { css } from '@emotion/react';
 import jwtDecode from 'jwt-decode';
 import { ComponentType, useEffect } from 'react';
@@ -11,6 +11,7 @@ import brandImage from 'assets/brand-image.svg';
 import { isValidJwt } from './global/utils/egoJwt';
 import { useHistory } from 'react-router-dom';
 import { History } from 'history';
+import { EGO_JWT_KEY } from 'common/constants';
 
 const styles = {
   logo: {

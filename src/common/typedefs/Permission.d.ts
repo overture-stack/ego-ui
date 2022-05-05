@@ -1,8 +1,11 @@
 import { Entity } from '.';
 import { Policy } from './Policy';
 
-export type MaskLevel = 'READ' | 'WRITE' | 'DENY';
-
+export enum MaskLevel {
+  READ = 'READ',
+  WRITE = 'WRITE',
+  DENY = 'DENY',
+}
 export interface Permission {
   id: string;
   accessLevel: MaskLevel;
