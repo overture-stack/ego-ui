@@ -14,6 +14,8 @@ import ajax from 'services/ajax';
 
 const BLOCKED_KEYS = ['groups', 'applications'];
 
+// "key" should be renamed to "childResource" or something like that
+// "value" should renamed to "childId"
 const add: AddToEntity<User> = ({ entity, key, value }: any) => {
   return ajax.post(`/users/${entity.id}/${key}`, [value]).then((r) => r.data);
 };

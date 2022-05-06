@@ -1,8 +1,10 @@
-import _ from 'lodash';
+import { Application } from 'common/typedefs';
+import { omit } from 'lodash';
 import ajax from 'services/ajax';
+import { CreateEntity } from './types';
 
 const BLOCKED_KEYS = ['id', 'groups', 'users'];
 
-export const createApplication = ({ item }) => {
-  return ajax.post(`/applications`, _.omit(item, BLOCKED_KEYS)).then(r => r.data);
+export const createApplication: CreateEntity<Application> = ({ item }) => {
+  return ajax.post(`/applications`, omit(item, BLOCKED_KEYS)).then((r) => r.data);
 };

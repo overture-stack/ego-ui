@@ -10,9 +10,8 @@ import {
   addUserPermissionToPolicy,
   removeGroupPermissionFromPolicy,
   removeUserPermissionFromPolicy,
-  GroupWithMask,
-  UserWithMask,
 } from 'services';
+import { GroupWithMask, UserWithMask } from 'services/types';
 
 interface PolicyResourceInterface {
   createItem: ({ item }: { item: Partial<Policy> }) => Promise<Policy>;

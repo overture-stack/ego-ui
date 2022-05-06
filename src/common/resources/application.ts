@@ -43,11 +43,11 @@ const ApplicationResource: ApplicationResourceInterface = {
   getItem: getApp,
   getList: getApps,
   add: {
-    groups: ({ group, item }) => addApplicationToGroup({ application: item, group }),
+    groups: ({ group, item }) => addApplicationToGroup({ application: item, entity: group }),
     users: ({ entity, application }) => addApplicationToUser({ application, entity }),
   },
   remove: {
-    groups: ({ application, item }) => removeApplicationFromGroup({ application, group: item }),
+    groups: ({ application, item }) => removeApplicationFromGroup({ application, entity: item }),
     users: ({ application, entity }) => removeApplicationFromUser({ application, entity }),
   },
   updateItem: updateApplication,

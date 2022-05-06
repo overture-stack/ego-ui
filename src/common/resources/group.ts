@@ -64,7 +64,7 @@ const GroupResource: GroupResourceInterface = {
   getList: getGroups,
   updateItem: updateGroup,
   add: {
-    applications: ({ application, item }) => addApplicationToGroup({ group: item, application }),
+    applications: ({ application, item }) => addApplicationToGroup({ entity: item, application }),
     permissions: ({ permission, item }) =>
       addGroupPermissionToPolicy({
         group: { ...item, mask: permission.mask },
@@ -74,7 +74,7 @@ const GroupResource: GroupResourceInterface = {
   },
   remove: {
     applications: ({ application, item }) =>
-      removeApplicationFromGroup({ group: item, application }),
+      removeApplicationFromGroup({ entity: item, application }),
     permissions: ({ permission, item }) =>
       removeGroupPermissionFromPolicy({ group: item, policy: permission }),
     users: ({ user, item }) => removeGroupFromUser({ group: item, entity: user }),

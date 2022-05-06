@@ -2,34 +2,9 @@ import { omit } from 'lodash';
 import { Group, Policy, User } from 'common/typedefs';
 import { MaskLevel } from 'common/typedefs/Permission';
 import ajax from 'services/ajax';
+import { AddUserPermissionToPolicy, AddGroupPermissionToPolicy } from './types';
 
 const BLOCKED_KEYS = ['groups', 'users'];
-
-export interface GroupWithMask extends Group {
-  mask: MaskLevel;
-}
-
-export interface UserWithMask extends User {
-  mask: MaskLevel;
-}
-
-// TODO: mask should be passed in as its own argument for each of these add functions, for clarity
-// it's possible it's set up this way because of the structure of staged changes, but if it can be refactored it should be
-type AddUserPermissionToPolicy = ({
-  policy,
-  user,
-}: {
-  policy: Policy;
-  user: UserWithMask;
-}) => Promise<Policy>;
-
-type AddGroupPermissionToPolicy = ({
-  policy,
-  group,
-}: {
-  policy: Policy;
-  group: GroupWithMask;
-}) => Promise<Policy>;
 
 export const updatePolicy = ({ item }) => {
   return ajax
