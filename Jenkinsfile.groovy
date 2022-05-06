@@ -19,14 +19,24 @@ spec:
   - name: docker
     image: docker:18-git
     tty: true
+    env:
+    - name: DOCKER_HOST
+      value: tcp://localhost:2375
+    - name: HOME
+      value: /home/jenkins/agent
+  - name: dind-daemon
+    image: docker:18.06-dind
+    securityContext:
+      privileged: true
+      runAsUser: 0
     volumeMounts:
-    - mountPath: /var/run/docker.sock
-      name: docker-sock
+    - name: docker-graph-storage
+      mountPath: /var/lib/docker
+  securityContext:
+    runAsUser: 1000
   volumes:
-  - name: docker-sock
-    hostPath:
-      path: /var/run/docker.sock
-      type: File
+  - name: docker-graph-storage
+    emptyDir: {}
 """
         }
     }
@@ -37,7 +47,7 @@ spec:
                     commit = sh(returnStdout: true, script: 'git describe --always').trim()
                 }
                 script {
-                    version = sh(returnStdout: true, script: 'cat ./package.json | grep version | cut -d \':\' -f2 | sed -e \'s/"//\' -e \'s/",//\'').trim()
+                    version = sh(returnStdout: true, script: 'cat ./package.json | grep version | cut -d \':\' -f2 | sed -e \'s/"//\' -e \'s/",//\' | head -1').trim()
                 }
             }
         }
