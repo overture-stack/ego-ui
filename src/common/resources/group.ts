@@ -41,7 +41,7 @@ interface GroupResourceInterface {
       permission: PolicyWithMask;
       item: GroupWithMask;
     }) => Promise<Policy>;
-    // TODO: create service call to add users TO a group. This call adds a group to a user one by one, so that in the ui, if several
+    // TODO: create service call to add users to a group. This call adds a group to a user one by one, so that in the ui, if several
     // users are added to a group, there is an api call for each addition
     // typing will be: ({ users, entity }: { user: User[]; entity: Group }) => Promise<Group>;
     // ticket: https://github.com/overture-stack/ego-ui/issues/204

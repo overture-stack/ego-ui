@@ -31,7 +31,7 @@ export interface UserFromJwt {
   lastName: string;
   lastLogin: string;
   createdAt: string;
-  preferredLanguage: UserLanguage;
+  preferredLanguage: UserLanguage | null;
   groups: string[];
   providerSubjectId: string;
   providerType: EgoProviderType;
