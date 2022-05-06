@@ -60,6 +60,10 @@ export interface UserWithMask extends User {
   mask: MaskLevel;
 }
 
+export interface PolicyWithMask extends Policy {
+  mask: MaskLevel;
+}
+
 // TODO: mask should be passed in as its own argument for each of these add functions, for clarity
 // it's possible it's set up this way because of the structure of staged changes, but if it can be refactored it should be
 export type AddUserPermissionToPolicy = ({

@@ -1,4 +1,5 @@
-import { Application, Entity, Group, User } from 'common/typedefs';
+import { Application, Entity, Group, Policy, User } from 'common/typedefs';
+import { MaskLevel, Permission } from 'common/typedefs/Permission';
 import { IListParams, IListResponse } from 'common/typedefs/Resource';
 import {
   createGroup,
@@ -13,6 +14,7 @@ import {
   removeGroupPermissionFromPolicy,
   removeGroupFromUser,
 } from 'services';
+import { GroupWithMask, PolicyWithMask } from 'services/types';
 
 interface GroupResourceInterface {
   createItem: ({ item }: { item: Partial<Group> }) => Promise<Group>;
@@ -32,11 +34,17 @@ interface GroupResourceInterface {
       application: Application;
       item: Group;
     }) => Promise<Group>;
-    // TODO: typing
-    permissions: any;
+    permissions: ({
+      permission,
+      item,
+    }: {
+      permission: PolicyWithMask;
+      item: GroupWithMask;
+    }) => Promise<Policy>;
     // TODO: create service call to add users TO a group. This call adds a group to a user one by one, so that in the ui, if several
     // users are added to a group, there is an api call for each addition
     // typing will be: ({ users, entity }: { user: User[]; entity: Group }) => Promise<Group>;
+    // ticket: https://github.com/overture-stack/ego-ui/issues/204
     users: ({ entity, item }: { entity: User; item: Group }) => Promise<User>;
   };
   remove: {
@@ -47,13 +55,17 @@ interface GroupResourceInterface {
       application: Application;
       item: Group;
     }) => Promise<Group>;
-    // TODO: typing
-    permissions: any;
+    permissions: ({
+      permission,
+      item,
+    }: {
+      permission: Policy;
+      item: GroupWithMask;
+    }) => Promise<string>;
     // TODO: same as with add users above
     // typing will be: ({ users, entity }: { user: User[]; entity: Group }) => Promise<Group>;
     users: ({ user, item }: { user: User; item: Group }) => Promise<User>;
   };
-  // entity provider
   getItem: (id: string) => Promise<User>;
 }
 
@@ -82,17 +94,3 @@ const GroupResource: GroupResourceInterface = {
 };
 
 export default GroupResource;
-// TO REMOVE
-// addItem: true,
-// associatedTypes: [USERS, APPLICATIONS, PERMISSIONS],
-// AssociatorComponent: null,
-// rowHeight: 44,
-// name: { singular: GROUP, plural: GROUPS },
-// isParent: true,
-// getName: (item) => get(item, 'name'),
-// Icon: ({ style }) => <Icon name="group" style={style} />,
-// ListItem: GroupListItem,
-// getKey: (item) => item.id.toString(),
-// initialSortOrder: 'ASC',
-// emptyMessage: 'Please select a group',
-// getListAll: getGroups,

@@ -54,17 +54,3 @@ const ApplicationResource: ApplicationResourceInterface = {
 };
 
 export default ApplicationResource;
-// TO REMOVE:
-// rowHeight: 44,
-// name: { singular: APPLICATION, plural: APPLICATIONS },
-// Icon: ({ style }) => <ApplicationIcon style={style} />,
-// getName: (item) => get(item, 'name'),
-// ListItem: ApplicationListItem,
-// isParent: true,
-// getKey: (item) => item.id.toString(),
-// associatedTypes: [GROUPS, USERS],
-// addItem: true,
-// AssociatorComponent: null,
-// getListAll: getApps,
-// emptyMessage: 'Please select an application',
-// initialSortOrder: 'ASC',

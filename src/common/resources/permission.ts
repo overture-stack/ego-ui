@@ -19,23 +19,3 @@ const PermissionResource: PermissionResourceInterface = {
 };
 
 export default PermissionResource;
-
-// TO REMOVE
-// initialSortOrder: 'ASC',
-// rowHeight: 44,
-// getName: (item) => get(item, 'name'),
-// Icon: () => null,
-// isParent: false,
-// ListItem: PermissionListItem,
-// name: { singular: PERMISSION, plural: PERMISSIONS },
-// emptyMessage: '',
-// associatedTypes: [],
-// AssociatorComponent: {
-//   groups: PermissionsTable,
-//   users: UserPermissionsTable,
-// },
-// getKey: (item) => item.id.toString(),
-// addItem: {
-//   groups: true,
-//   users: false,
-// },

@@ -19,15 +19,3 @@ const ApiKeyResource: ApiKeyResourceInterface = {
 };
 
 export default ApiKeyResource;
-// TO REMOVE
-// name: { singular: 'API Key', plural: API_KEYS },
-// rowHeight: 44,
-// isParent: false,
-// ListItem: ApiKeyListItem,
-// getName: (item) => get(item, 'name'),
-// Icon: () => null,
-// getKey: (item) => item.name,
-// emptyMessage: '',
-// addItem: false,
-// associatedTypes: [],
-// AssociatorComponent: ApiKeysTable,

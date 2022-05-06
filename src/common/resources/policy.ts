@@ -51,18 +51,3 @@ const PolicyResource: PolicyResourceInterface = {
 };
 
 export default PolicyResource;
-
-// TO REMOVE:
-// rowHeight: 44,
-// name: { singular: POLICY, plural: POLICIES },
-// getName: (item) => get(item, 'name'),
-// Icon: ({ style }) => <PolicyIcon style={style} />,
-// initialSortOrder: 'ASC',
-// isParent: true,
-// ListItem: PolicyListItem,
-// getKey: (item) => item.id.toString(),
-// addItem: false,
-// associatedTypes: [GROUPS, USERS],
-// AssociatorComponent: PermissionsTable,
-// emptyMessage: 'Please select a policy',
-// getListAll: getPolicies,

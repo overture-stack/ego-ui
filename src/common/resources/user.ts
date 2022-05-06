@@ -58,18 +58,3 @@ const UserResource: UserResourceInterface = {
 };
 
 export default UserResource;
-
-// Icon: ({ style }) => <Icon name="user" style={style} />,
-// rowHeight: 50,
-// emptyMessage: 'Please select a user',
-// name: { singular: USER, plural: USERS },
-// initialSortOrder: 'ASC',
-// isParent: true,
-// noDelete: true,
-// ListItem: UserListItem,
-// associatedTypes: [GROUPS, APPLICATIONS, PERMISSIONS, API_KEYS],
-// getListAll: getUsers,
-// getName: getUserDisplayName,
-// addItem: true,
-// getKey: (item) => item.id.toString(),
-// AssociatorComponent: null,
