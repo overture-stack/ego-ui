@@ -6,7 +6,7 @@ import { Grid } from 'semantic-ui-react';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { USER } from 'common/enums';
+import { SingularResourceType } from 'common/enums';
 
 const StyledRow = styled(Grid.Row)`
   height: 48px;
@@ -114,12 +114,12 @@ const ContentView = ({ entity, entityType, rows }) => {
       {panelSections['meta'] && panelSections['meta'].length > 0 && (
         <Section className="contentPanel meta">
           <Grid columns="equal">
-            {entityType === USER ? (
+            {entityType === SingularResourceType.USER ? (
               <React.Fragment>
                 <StyledRow className="contentView contentRow">
                   {panelSections['meta'].slice(0, 2).map(({ fieldContent, fieldName, key }) => {
                     const adminStyle =
-                      entityType === USER &&
+                      entityType === SingularResourceType.USER &&
                       key === 'type' &&
                       typeof fieldContent === 'string' &&
                       (fieldContent || '').toLowerCase() === 'admin'

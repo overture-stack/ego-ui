@@ -1,6 +1,5 @@
 import { omit } from 'lodash';
 import { Group, Policy, User } from 'common/typedefs';
-import { MaskLevel } from 'common/typedefs/Permission';
 import ajax from 'services/ajax';
 import { AddUserPermissionToPolicy, AddGroupPermissionToPolicy } from './types';
 

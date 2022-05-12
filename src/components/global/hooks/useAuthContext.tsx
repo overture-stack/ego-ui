@@ -6,7 +6,7 @@ import { isEqual, has } from 'lodash';
 import { setAjaxToken } from 'services/ajax';
 import { isValidJwt } from '../utils/egoJwt';
 import ajax from 'services/ajax';
-import { EGO_JWT_KEY, USER_PREFERENCES_PREFIX } from 'common/injectGlobals';
+import { EGO_JWT_KEY, USER_PREFERENCES_PREFIX } from 'common/constants';
 
 type T_AuthContext = {
   token?: string;
