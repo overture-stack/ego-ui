@@ -16,13 +16,6 @@ import { ResourceType } from 'common/enums';
 import ApplicationIcon from 'components/Icons/application';
 import PolicyIcon from 'components/Icons/policy';
 
-const listStyles = {
-  listStyleType: 'none',
-  margin: 0,
-  padding: 0,
-  flexGrow: 1,
-};
-
 type ParentResource =
   | ResourceType.USERS
   | ResourceType.GROUPS
@@ -30,7 +23,7 @@ type ParentResource =
   | ResourceType.POLICIES;
 
 const iconStyle = { opacity: 0.9 };
-const Icons: { [key in ParentResource]: () => ReactElement } = {
+const navIcons: { [key in ParentResource]: () => ReactElement } = {
   [ResourceType.USERS]: () => <Icon style={iconStyle} name="user" />,
   [ResourceType.GROUPS]: () => <Icon style={iconStyle} name="group" />,
   [ResourceType.APPLICATIONS]: () => <ApplicationIcon style={iconStyle} />,
@@ -85,14 +78,21 @@ const Nav = () => {
           <img className="regular" src={brandImage} alt="" />
         </Emblem>
       </div>
-      <ul css={listStyles}>
+      <ul
+        css={css`
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          flex-grow: 1;
+        `}
+      >
         {[
           ResourceType.USERS,
           ResourceType.GROUPS,
           ResourceType.APPLICATIONS,
           ResourceType.POLICIES,
         ].map((resourceName) => {
-          const ResourceIcon = Icons[resourceName];
+          const ResourceIcon = navIcons[resourceName];
           return (
             <li key={resourceName}>
               <LinkRipple
