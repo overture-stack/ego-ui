@@ -17,6 +17,12 @@ interface ApplicationResourceInterface {
   deleteItem: ({ item }: { item: Application }) => Promise<string>;
   updateItem: ({ item }: { item: Application }) => Promise<Application>;
   getList: (params: IListParams) => Promise<IListResponse>;
+  // TODO: implement without parent resource type, that's already known
+  // getChild: {
+  //   groups: (applicationId: string) => Promise<IListResponse<Group>>;
+  //   users: (applicationId: string) => Promise<IListResponse<User>>;
+  //   ... etc
+  //   }
   getChildList?: (
     resourceType: string,
     childResourceType: string,

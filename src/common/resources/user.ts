@@ -13,6 +13,7 @@ import { IListParams, IListResponse } from '../typedefs/Resource';
 interface UserResourceInterface {
   updateItem: ({ item }: { item: User }) => Promise<User>;
   getList: (params: IListParams) => Promise<IListResponse>;
+  // TODO: implement without parent resource type, that's already known. See applicationResource for sample type def
   getChildList?: (
     resourceType: string,
     childResourceType: string,

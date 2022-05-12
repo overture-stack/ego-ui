@@ -21,6 +21,7 @@ interface GroupResourceInterface {
   deleteItem: ({ item }: { item: Group }) => Promise<string>;
   updateItem: ({ item }: { item: Group }) => Promise<Group>;
   getList: (params: IListParams) => Promise<IListResponse>;
+  // TODO: implement without parent resource type, that's already known. See applicationResource for sample type def
   getChildList?: (
     resourceType: string,
     childResourceType: string,
