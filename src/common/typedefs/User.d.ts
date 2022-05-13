@@ -1,25 +1,37 @@
 enum EgoProviderType {
   GOOGLE = 'GOOGLE',
-  // FACEBOOK = 'FACEBOOK',
   GITHUB = 'GITHUB',
   LINKEDIN = 'LINKEDIN',
   ORCID = 'ORCID',
 }
 
-enum UserType {
+export enum UserType {
   USER = 'USER',
   ADMIN = 'ADMIN',
+}
+
+export enum UserStatus {
+  DISABLED = 'DISABLED',
+  APPROVED = 'APPROVED',
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
+}
+
+export enum UserLanguage {
+  ENGLISH = 'ENGLISH',
+  FRENCH = 'FRENCH',
+  SPANISH = 'SPANISH',
 }
 
 export interface UserFromJwt {
   email: string;
   type: UserType;
-  status: string;
+  status: UserStatus;
   firstName: string;
   lastName: string;
   lastLogin: string;
   createdAt: string;
-  preferredLanguage: string;
+  preferredLanguage: UserLanguage | null;
   groups: string[];
   providerSubjectId: string;
   providerType: EgoProviderType;

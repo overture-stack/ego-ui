@@ -7,3 +7,5 @@ declare namespace NodeJS {
     location: any;
   }
 }
+
+declare module 'jsonwebtoken';
