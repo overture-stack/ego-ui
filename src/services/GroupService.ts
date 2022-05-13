@@ -131,6 +131,7 @@ export const createGroup: CreateEntity<Group> = ({ item }) => {
 };
 
 // update
+// TODO: need all add/remove methods relative to group as parent
 const BLOCKED_KEYS_FOR_UPDATE = ['groups', 'applications'];
 
 const add: AddToEntity<Group> = ({ entity: group, key, value }: any) => {

@@ -15,7 +15,7 @@ import {
   UpdateEntity,
 } from 'services/types';
 
-// TODO: can rename methods these as get/create/delete + getChildType
+// TODO: can rename methods these as get + getChildType
 // get one
 export const getUser = (id) => {
   return ajax.get(`/users/${id}`).then((r) => r.data);

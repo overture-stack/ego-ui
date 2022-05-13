@@ -66,6 +66,7 @@ export const createApplication: CreateEntity<Application> = ({ item }) => {
 };
 
 // update
+// TODO: need all add/remove methods relative to application as parent
 const BLOCKED_KEYS_FOR_UPDATE = ['groups', 'users'];
 
 export const updateApplication: UpdateEntity<Application> = ({ item }) => {
