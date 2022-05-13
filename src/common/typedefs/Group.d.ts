@@ -1,7 +1,11 @@
-export interface Group {
-  applications: string[];
-  id: string;
+interface RequiredGroupFields {
   name: string;
   status: string;
-  description: string;
 }
+
+export interface Group extends RequiredGroupFields {
+  id: string;
+  description: string | null;
+}
+
+export type CreateGroupInput = RequiredGroupFields & Partial<Group>;

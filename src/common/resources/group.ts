@@ -1,4 +1,4 @@
-import { Application, Entity, Group, Policy, User } from 'common/typedefs';
+import { Application, CreateGroupInput, Entity, Group, Policy, User } from 'common/typedefs';
 import { MaskLevel, Permission } from 'common/typedefs/Permission';
 import { IListParams, IListResponse } from 'common/typedefs/Resource';
 import {
@@ -17,7 +17,7 @@ import {
 import { GroupWithMask, PolicyWithMask } from 'services/types';
 
 interface GroupResourceInterface {
-  createItem: ({ item }: { item: Partial<Group> }) => Promise<Group>;
+  createItem: ({ item }: { item: CreateGroupInput }) => Promise<Group>;
   deleteItem: ({ item }: { item: Group }) => Promise<string>;
   updateItem: ({ item }: { item: Group }) => Promise<Group>;
   getList: (params: IListParams) => Promise<IListResponse>;

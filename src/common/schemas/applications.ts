@@ -78,6 +78,7 @@ export default schema;
 //   options: STATUSES,
 //   panelSection: 'meta',
 //   sortable: true,
+//  not nullable in ego, change to required
 // },
 // {
 //   fieldName: 'Application Type',
@@ -86,6 +87,7 @@ export default schema;
 //   options: ['ADMIN', 'CLIENT'],
 //   panelSection: 'meta',
 //   sortable: true,
+//  not nullable in ego, change to required
 // },
 // {
 //   fieldName: 'Client ID',
@@ -103,12 +105,12 @@ export default schema;
 //   fieldName: 'Redirect Uri',
 //   key: 'redirectUri',
 //   panelSection: 'meta',
-//   required: true,
+//   required: true, -> nullable in ego, should be false
 // },
 // {
 //   fieldName: 'Error Redirect Uri',
 //   key: 'errorRedirectUri',
 //   panelSection: 'meta',
-//   required: true,
+//   required: true, -> nullable in ego, should be false
 // },
 // ],

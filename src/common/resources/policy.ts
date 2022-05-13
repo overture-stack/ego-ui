@@ -1,4 +1,4 @@
-import { Application, Group, Policy, User } from 'common/typedefs';
+import { Application, RequiredPolicyFields, Group, Policy, User } from 'common/typedefs';
 import { IListParams, IListResponse } from 'common/typedefs/Resource';
 import {
   createPolicy,
@@ -14,7 +14,7 @@ import {
 import { GroupWithMask, UserWithMask } from 'services/types';
 
 interface PolicyResourceInterface {
-  createItem: ({ item }: { item: Partial<Policy> }) => Promise<Policy>;
+  createItem: ({ item }: { item: RequiredPolicyFields }) => Promise<Policy>;
   deleteItem: ({ item }: { item: Policy }) => Promise<string>;
   updateItem: ({ item }: { item: Policy }) => Promise<Policy>;
   getList: (params: IListParams) => Promise<IListResponse>;
