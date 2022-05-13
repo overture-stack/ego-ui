@@ -1,4 +1,4 @@
-import { Group, Application, User } from 'common/typedefs';
+import { Group, Application, User, CreateApplicationInput } from 'common/typedefs';
 import { IListParams, IListResponse } from 'common/typedefs/Resource';
 import {
   addApplicationToGroup,
@@ -13,10 +13,16 @@ import {
 } from 'services';
 
 interface ApplicationResourceInterface {
-  createItem: ({ item }: { item: Partial<Application> }) => Promise<Application>;
+  createItem: ({ item }: { item: CreateApplicationInput }) => Promise<Application>;
   deleteItem: ({ item }: { item: Application }) => Promise<string>;
   updateItem: ({ item }: { item: Application }) => Promise<Application>;
   getList: (params: IListParams) => Promise<IListResponse>;
+  // TODO: implement without parent resource type, that's already known
+  // getChild: {
+  //   groups: (applicationId: string) => Promise<IListResponse<Group>>;
+  //   users: (applicationId: string) => Promise<IListResponse<User>>;
+  //   ... etc
+  //   }
   getChildList?: (
     resourceType: string,
     childResourceType: string,

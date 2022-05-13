@@ -1,4 +1,4 @@
-import { Application, Group, Policy, User } from 'common/typedefs';
+import { Application, CreateGroupInput, Group, Policy, User } from 'common/typedefs';
 import { IListParams, IListResponse } from 'common/typedefs/Resource';
 import {
   createGroup,
@@ -16,10 +16,11 @@ import {
 import { GroupWithMask, PolicyWithMask } from 'services/types';
 
 interface GroupResourceInterface {
-  createItem: ({ item }: { item: Partial<Group> }) => Promise<Group>;
+  createItem: ({ item }: { item: CreateGroupInput }) => Promise<Group>;
   deleteItem: ({ item }: { item: Group }) => Promise<string>;
   updateItem: ({ item }: { item: Group }) => Promise<Group>;
   getList: (params: IListParams) => Promise<IListResponse>;
+  // TODO: implement without parent resource type, that's already known. See applicationResource for sample type def
   getChildList?: (
     resourceType: string,
     childResourceType: string,

@@ -1,13 +1,60 @@
-import { omit } from 'lodash';
-import { Group, Policy, User } from 'common/typedefs';
-import ajax from 'services/ajax';
-import { AddUserPermissionToPolicy, AddGroupPermissionToPolicy } from './types';
+import { isNil, omitBy, omit } from 'lodash';
+import queryString from 'querystring';
 
-const BLOCKED_KEYS = ['groups', 'users'];
+import ajax from 'services/ajax';
+import { Group, Policy, User } from 'common/typedefs';
+import { AddUserPermissionToPolicy, AddGroupPermissionToPolicy, CreateEntity } from './types';
+
+// TODO: can rename methods these as get/create/delete + getChildType
+// get
+export const getPolicy = (id) => {
+  return ajax
+    .get(`/policies/${id}`)
+    .then((r) => r.data)
+    .catch((err) => err);
+};
+
+// get list
+export const getPolicies = ({
+  offset = 0,
+  limit = 20,
+  query = null,
+  sortField = null,
+  sortOrder = null,
+  status = null,
+}): Promise<{ count: number; resultSet: Policy[]; offset: number; limit: number }> => {
+  return ajax
+    .get(
+      `/policies?${queryString.stringify(
+        omitBy(
+          {
+            limit,
+            name: query,
+            offset,
+            sort: sortField,
+            sortOrder,
+          },
+          isNil,
+        ),
+      )}`,
+    )
+    .then((r) => r.data)
+    .catch((err) => err);
+};
+
+// create
+const BLOCKED_KEYS_FOR_CREATE = ['id', 'groups', 'users'];
+
+export const createPolicy: CreateEntity<Policy> = ({ item }) => {
+  return ajax.post(`/policies`, omit(item, BLOCKED_KEYS_FOR_CREATE)).then((r) => r.data);
+};
+
+// update
+const BLOCKED_KEYS_FOR_UPDATE = ['groups', 'users'];
 
 export const updatePolicy = ({ item }) => {
   return ajax
-    .put(`/policies/${item.id}`, omit(item, BLOCKED_KEYS))
+    .put(`/policies/${item.id}`, omit(item, BLOCKED_KEYS_FOR_UPDATE))
     .then((r) => r.data)
     .catch((err) => err);
 };
