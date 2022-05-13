@@ -1,22 +1,23 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 // import { isEmpty, get, isEqual } from 'lodash';
 // import { ResourceType } from 'common/enums';
 // import RESOURCE_MAP from 'common/RESOURCE_MAP';
-// import { IField, IResource, SortOrder } from 'common/typedefs/Resource';
-// import { Entity } from 'common/typedefs';
+import { IField, ResourceType, SortOrder } from 'common/typedefs/Resource';
+import { Application, Group, Policy, User } from 'common/typedefs';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
-// interface ListParams {
-//   offset: number;
-//   limit: number;
-//   sortField: IField;
-//   sortOrder: SortOrder;
-//   query: string;
-// }
+interface ListParams {
+  offset: number;
+  limit: number;
+  sortField: IField;
+  sortOrder: SortOrder;
+  query: string;
+}
 
-// interface List {
-//   resultSet: Entity[];
-//   count: number;
-// }
+interface List {
+  resultSet: User[] | Group[] | Application[] | Policy[];
+  count: number;
+}
 
 // type RefreshList = (
 //   resource: IResource,
@@ -38,23 +39,23 @@ import React, { createContext, ReactNode, useContext } from 'react';
 type T_ListContext = any;
 const ListContext = createContext<T_ListContext>({
   list: undefined,
-  updateList: () => {},
-  listParams: undefined,
-  setListParams: () => {},
+  // updateList: () => {},
+  // listParams: undefined,
+  // setListParams: () => {},
 });
 
-// const initialParams: any = {
-//   offset: 0,
-//   limit: 20,
-//   sortField: null,
-//   sortOrder: null,
-//   query: '',
-// };
+const initialParams: any = {
+  offset: 0,
+  limit: 20,
+  sortField: 'id', // double check this can apply to all entity types
+  sortOrder: 'ASC',
+  query: '',
+};
 
-// const initialListState = {
-//   resultSet: [],
-//   count: 0,
-// };
+const initialListState = {
+  resultSet: [],
+  count: 0,
+};
 
 // export const getResourceParent = (
 //   resourceName: ResourceType | 'create',
@@ -85,16 +86,16 @@ const ListContext = createContext<T_ListContext>({
 // };
 
 export const ListProvider = ({
-  // resourceName,
+  resourceName,
   // subResourceName,
   // resourceId,
   children,
 }: {
   resourceName: any;
-  subResourceName: any;
+  // subResourceName: any;
   // resourceName: ResourceType | 'create';
   // subResourceName?: ResourceType | 'edit';
-  resourceId?: string;
+  // resourceId?: string;
   children: ReactNode;
 }) => {
   // tracking resource and subresource changes because "parent" can be constructed based on their state
@@ -109,7 +110,24 @@ export const ListProvider = ({
   //     getResourceParent(resourceName, resourceId, subResourceName),
   //   ),
   // );
-  // const [listState, setListState] = useState<List>(initialListState);
+  const [currentResource, setCurrentResource] = useState<ResourceType>(resourceName);
+  const [currentListParams, setCurrentListParams] = useState<ListParams>(initialParams);
+  const [listState, setListState] = useState<List>(initialListState);
+
+  useEffect(() => {
+    setCurrentResource(resourceName);
+  }, [resourceName]);
+
+  const loadList = async () => {
+    if (resourceName) {
+      const listFunc = RESOURCE_MAP[resourceName].getList;
+      const data = await listFunc(currentListParams);
+      setListState(data);
+    }
+  };
+  useEffect(() => {
+    loadList();
+  }, [resourceName]);
 
   // const getListFunc = (associatedType, parent) => {
   //   return associatedType === ResourceType.PERMISSIONS && !isEmpty(parent)
@@ -187,9 +205,10 @@ export const ListProvider = ({
   // };
 
   const listData = {
-    // list: listState,
+    list: listState,
+    currentResource,
     // updateList,
-    // listParams: currentListParams,
+    listParams: currentListParams,
     // setListParams,
   };
 

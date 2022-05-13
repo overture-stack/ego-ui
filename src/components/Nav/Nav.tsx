@@ -15,12 +15,7 @@ import useAuthContext from 'components/global/hooks/useAuthContext';
 import { ResourceType } from 'common/enums';
 import ApplicationIcon from 'components/Icons/application';
 import PolicyIcon from 'components/Icons/policy';
-
-type ParentResource =
-  | ResourceType.USERS
-  | ResourceType.GROUPS
-  | ResourceType.APPLICATIONS
-  | ResourceType.POLICIES;
+import { ParentResource } from 'common/typedefs/Resource';
 
 const iconStyle = { opacity: 0.9 };
 const navIcons: { [key in ParentResource]: () => ReactElement } = {

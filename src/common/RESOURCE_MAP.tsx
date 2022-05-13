@@ -6,7 +6,6 @@ import ApiKeyResource from './resources/apiKey';
 import PermissionResource from './resources/permission';
 import PolicyResource from './resources/policy';
 
-// ignore tslint sort, resources listed in deliberate order
 const RESOURCE_MAP = {
   [ResourceType.USERS]: UserResource,
   [ResourceType.GROUPS]: GroupResource,

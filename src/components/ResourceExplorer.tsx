@@ -5,35 +5,36 @@ import { withRouter } from 'react-router';
 // import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
 
-// import RESOURCE_MAP from 'common/RESOURCE_MAP';
-// import Associator from 'components/Associator/Associator';
-// import Content from 'components/Content';
-// import ListPane from 'components/ListPane';
-// import { ResourceType } from 'common/enums';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import Associator from 'components/Associator/Associator';
+import Content from 'components/Content';
+import ListPane from 'components/ListPane';
+import { ResourceType } from 'common/enums';
 // import useEntityContext, { getListFunc } from 'components/global/hooks/useEntityContext';
 
 const enhance = compose(withRouter);
 
 // const ResourceExplorer = ({ id, resource, history, parent }) => {
-const ResourceExplorer = () => {
+const ResourceExplorer = (props: any) => {
   // const { stageChange } = useEntityContext();
   return (
     <React.Fragment>
-      {/* <ListPane
-        resource={resource}
-        parent={parent}
-        selectedItemId={id}
-        onSelect={(item) => {
-          // prevent select action on child tables
-          if (isEmpty(parent)) {
-            history.replace(
-              `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
-                resource.name.plural
-              }${item.id.toString() === id ? '' : `/${item.id}`}`,
-            );
-          }
-        }}
-      /> */}
+      <ListPane
+      // resource={resource}
+      // parent={parent}
+      // selectedItemId={id}
+      // onSelect={(item) => {
+      //   // prevent select action on child tables
+      //   if (isEmpty(parent)) {
+      //     history.replace(
+      //       `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
+      //         resource.name.plural
+      //       }${item.id.toString() === id ? '' : `/${item.id}`}`,
+      //     );
+      //   }
+      // }}
+      />
+      <Content />
       {/* <Content
         id={id}
         resource={resource}

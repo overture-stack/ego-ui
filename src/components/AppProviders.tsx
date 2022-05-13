@@ -44,8 +44,7 @@ const AppProviders = ({ children }: { children: React.ReactElement }) => {
       <ThemeProvider theme={defaultTheme}>
         <ListProvider
           resourceName={initialResourceName}
-          subResourceName={initialSubResourceName}
-          resourceId={initialResourceId}
+          // resourceId={initialResourceId}
         >
           {/* <EntityProvider
             id={initialResourceId}
