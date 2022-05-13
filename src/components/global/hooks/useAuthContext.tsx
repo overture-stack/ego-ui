@@ -45,9 +45,10 @@ export const AuthProvider = ({
     setAjaxToken(egoJwt);
   }
 
-  if (egoJwt && !isValidJwt(egoJwt)) {
-    logout();
-  }
+  // TODO: causing infinite loop
+  // if (egoJwt && !isValidJwt(egoJwt)) {
+  //   logout();
+  // }
 
   const getUser = (jwt: string) => {
     const jwtData = jwtDecode(jwt);
