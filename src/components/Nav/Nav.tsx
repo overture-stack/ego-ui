@@ -30,6 +30,8 @@ const navIcons: { [key in ParentResource]: () => ReactElement } = {
   [ResourceType.POLICIES]: () => <PolicyIcon style={iconStyle} />,
 };
 
+export const navResourceList = Object.keys(navIcons);
+
 const Nav = () => {
   const theme = useTheme();
   const [collapsedState, setCollapsedState] = useState(false);
@@ -86,12 +88,7 @@ const Nav = () => {
           flex-grow: 1;
         `}
       >
-        {[
-          ResourceType.USERS,
-          ResourceType.GROUPS,
-          ResourceType.APPLICATIONS,
-          ResourceType.POLICIES,
-        ].map((resourceName) => {
+        {navResourceList.map((resourceName) => {
           const ResourceIcon = navIcons[resourceName];
           return (
             <li key={resourceName}>

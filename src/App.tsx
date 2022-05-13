@@ -8,7 +8,7 @@ import ResourceRoute from 'components/ResourceRoute';
 import Nav from 'components/Nav';
 import NoAccess from 'components/NoAccess';
 import useAuthContext from 'components/global/hooks/useAuthContext';
-import { ResourceType } from 'common/enums';
+import { navResourceList } from 'components/Nav/Nav';
 
 const ProtectedRoute = ({
   component,
@@ -35,12 +35,7 @@ const App = () => {
               <div css={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 <BreadCrumb path={props.location.pathname} />
                 <Switch>
-                  {[
-                    ResourceType.USERS,
-                    ResourceType.GROUPS,
-                    ResourceType.APPLICATIONS,
-                    ResourceType.POLICIES,
-                  ].map((resourceName) => {
+                  {navResourceList.map((resourceName) => {
                     return (
                       <ProtectedRoute
                         key={resourceName}
