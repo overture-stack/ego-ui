@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import { css, useTheme } from '@emotion/react';
-import { get, isEmpty, reject } from 'lodash';
+import { css } from '@emotion/react';
+// import { get, isEmpty, reject } from 'lodash';
 import withSize from 'react-sizeme';
 import ReactTable from 'react-table';
 import { compose, defaultProps } from 'recompose';
 import 'react-table/react-table.css';
 
 // import { isChildOfPolicy, isGroup, isUserPermission } from 'common/associatedUtils';
-import { messenger } from 'common/injectGlobals';
-import ActionButton from 'components/Associator/ActionButton';
+// import { messenger } from 'common/injectGlobals';
+// import ActionButton from 'components/Associator/ActionButton';
 import schemas from 'common/schemas';
 import useListContext from 'components/global/hooks/useListContext';
 import { useEffect, useState } from 'react';
@@ -53,7 +53,7 @@ const getColumns = (currentSort, resource) => {
 //   handleListUpdate,
 // }) => {
 const Table = (props: any) => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const { currentResource, list, listParams } = useListContext();
   const [columns, setColumns] = useState<any>([]);
   useEffect(() => {

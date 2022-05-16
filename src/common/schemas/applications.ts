@@ -44,7 +44,7 @@ const schema: Schema = [
   },
 ];
 
-const mapTableData = (results) => results;
+// const mapTableData = (results) => results;
 
 export default schema;
 // childSchema: [],

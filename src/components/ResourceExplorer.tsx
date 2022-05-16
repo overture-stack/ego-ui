@@ -5,11 +5,11 @@ import { withRouter } from 'react-router';
 // import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
 
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import Associator from 'components/Associator/Associator';
+// import RESOURCE_MAP from 'common/RESOURCE_MAP';
+// import Associator from 'components/Associator/Associator';
 import Content from 'components/Content';
 import ListPane from 'components/ListPane';
-import { ResourceType } from 'common/enums';
+// import { ResourceType } from 'common/enums';
 // import useEntityContext, { getListFunc } from 'components/global/hooks/useEntityContext';
 
 const enhance = compose(withRouter);
