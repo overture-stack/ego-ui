@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css, useTheme } from '@emotion/react';
-import { debounce, get, merge, noop } from 'lodash';
-import React, { useEffect } from 'react';
-import { compose, defaultProps, withProps } from 'recompose';
-import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
-import { useParams } from 'react-router';
+import { noop } from 'lodash';
+// import React, { useEffect } from 'react';
+import { compose, defaultProps } from 'recompose';
+import { Button, Dropdown } from 'semantic-ui-react';
+// import { useParams } from 'react-router';
 
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
-import { RippleButton } from 'components/Ripple';
-import getStyles from './ListPane.styles';
+// import { RippleButton } from 'components/Ripple';
+// import getStyles from './ListPane.styles';
 
 // import { isChildOfPolicy } from 'common/associatedUtils';
-import useAuthContext from 'components/global/hooks/useAuthContext';
+// import useAuthContext from 'components/global/hooks/useAuthContext';
 import useListContext from 'components/global/hooks/useListContext';
 import Table from './ItemTable';
 import schemas from 'common/schemas';
@@ -49,20 +49,17 @@ const paneControls = {
 const List = (props: any) => {
   // const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
   const {
-    list: { count },
+    list,
     listParams,
-    setListParams,
+    // setListParams,
     currentResource,
     // updateList,
   } = useListContext();
-
+  // right now this log show currentResource updating before listState resultSet
+  // console.log(currentResource, ': ', list);
   const theme = useTheme();
-  const routerParams: any = useParams();
+  // const routerParams: any = useParams();
   const columnWidth = 200;
-  // const displayMode: any =
-  //   typeof userPreferences?.listDisplayMode !== 'undefined'
-  //     ? userPreferences.listDisplayMode
-  //     : DisplayMode.Table;
 
   // useEffect(() => {
   //   if (!(listParams.sortOrder && listParams.sortField)) {
@@ -102,7 +99,7 @@ const List = (props: any) => {
     >
       <ControlContainer>
         <div css={paneControls.searchContainer}>
-          <Input
+          {/* <Input
             icon={
               listParams.query.length > 0 ? (
                 <Icon name={'close'} onClick={(e) => setListParams({ query: '' })} link={true} />
@@ -113,7 +110,7 @@ const List = (props: any) => {
             value={listParams.query}
             placeholder="Search..."
             onChange={(event, { value }) => setListParams({ query: value })}
-          />
+          /> */}
         </div>
         <div css={paneControls.sortContainer}>
           Sort by:
@@ -143,7 +140,7 @@ const List = (props: any) => {
                 paddingBottom: 0,
                 ...(listParams.sortOrder === 'ASC' && { color: theme.colors.primary_5 }),
               }}
-              onClick={() => setListParams({ ...listParams, sortOrder: 'ASC' })}
+              // onClick={() => setListParams({ ...listParams, sortOrder: 'ASC' })}
               icon="chevron up"
             />
             <Button
@@ -152,7 +149,7 @@ const List = (props: any) => {
                 backgroundColor: 'transparent',
                 ...(listParams.sortOrder === 'DESC' && { color: theme.colors.primary_5 }),
               }}
-              onClick={() => setListParams({ ...listParams, sortOrder: 'DESC' })}
+              // onClick={() => setListParams({ ...listParams, sortOrder: 'DESC' })}
               icon="chevron down"
             />
           </Button.Group>
@@ -191,12 +188,13 @@ const List = (props: any) => {
         }
       /> */}
       {/* )} */}
-      {(listParams.limit < count || listParams.offset > 0) && (
+      {(listParams.limit < list.count || listParams.offset > 0) && (
         <Pagination
-          onChange={(page) => setListParams({ ...listParams, offset: page * listParams.limit })}
+          onChange={() => null}
+          // onChange={(page) => setListParams({ ...listParams, offset: page * listParams.limit })}
           offset={listParams.offset}
           limit={listParams.limit}
-          total={count}
+          total={list.count}
           range={3}
         />
       )}
