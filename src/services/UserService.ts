@@ -87,8 +87,11 @@ export const getUsers = ({
   groupId = null,
   applicationId = null,
   policyId = null,
-  status = null,
 }): Promise<{ count: number; resultSet: User[]; offset: number; limit: number }> => {
+  // TODO: what is all this logic for??
+  // might be related to the associated items issue mentioned in group.ts
+  // ideally this method should just get a list of users
+  // there are already separate calls for a GET for a user's assoc items, not sure what this does
   const baseUrl = groupId
     ? `/groups/${groupId}`
     : applicationId
@@ -105,9 +108,8 @@ export const getUsers = ({
             limit,
             offset,
             query,
-            sort: sortField,
+            sort: sortField.key,
             sortOrder,
-            status: status === 'All' ? null : status,
           },
           isNil,
         ),

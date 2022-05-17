@@ -31,6 +31,7 @@ export const getApps = ({
   sortOrder = null,
   status = null,
 }): Promise<{ count: number; resultSet: Application[]; offset: number; limit: number }> => {
+  // TODO: same comment as in UserService getUsers call, find out what this is for
   const baseUrl = userId ? `/users/${userId}` : groupId ? `/groups/${groupId}` : '';
 
   // prevent 400 error on /create
@@ -47,7 +48,7 @@ export const getApps = ({
             limit,
             offset,
             query,
-            sort: sortField,
+            sort: sortField.key,
             sortOrder,
             status: status === 'All' ? null : status,
           },
