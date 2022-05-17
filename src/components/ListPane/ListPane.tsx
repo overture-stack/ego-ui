@@ -14,7 +14,7 @@ import Pagination from 'components/Pagination';
 // import { isChildOfPolicy } from 'common/associatedUtils';
 // import useAuthContext from 'components/global/hooks/useAuthContext';
 import useListContext from 'components/global/hooks/useListContext';
-import Table from './ItemTable';
+import Table from './Table';
 import schemas from 'common/schemas';
 
 const enhance = compose(
@@ -46,7 +46,7 @@ const paneControls = {
   },
 };
 
-const List = (props: any) => {
+const List = () => {
   // const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
   const {
     list,
@@ -55,12 +55,11 @@ const List = (props: any) => {
     currentResource,
     // updateList,
   } = useListContext();
-  // right now this log show currentResource updating before listState resultSet
-  // console.log(currentResource, ': ', list);
   const theme = useTheme();
   // const routerParams: any = useParams();
   const columnWidth = 200;
-
+  // TODO: for the moment schema setup for parent resources only
+  const tableSchema = schemas[currentResource];
   // useEffect(() => {
   //   if (!(listParams.sortOrder && listParams.sortField)) {
   //     setListParams({
@@ -155,7 +154,7 @@ const List = (props: any) => {
           </Button.Group>
         </div>
       </ControlContainer>
-      <Table rowHeight={40} />
+      <Table schema={tableSchema} />
       {/* <ItemTable
         resultSet={list.resultSet}
         parent={parent}
@@ -187,7 +186,6 @@ const List = (props: any) => {
           })
         }
       /> */}
-      {/* )} */}
       {(listParams.limit < list.count || listParams.offset > 0) && (
         <Pagination
           onChange={() => null}

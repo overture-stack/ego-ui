@@ -15,7 +15,7 @@ import ListPane from 'components/ListPane';
 const enhance = compose(withRouter);
 
 // const ResourceExplorer = ({ id, resource, history, parent }) => {
-const ResourceExplorer = (props: any) => {
+const ResourceExplorer = () => {
   // const { stageChange } = useEntityContext();
   return (
     <React.Fragment>
