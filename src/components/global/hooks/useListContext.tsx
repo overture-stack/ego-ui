@@ -1,4 +1,11 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 // import { isEmpty, get, isEqual } from 'lodash';
 import { ResourceType, SortOrder } from 'common/typedefs/Resource';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
@@ -109,26 +116,33 @@ export const ListProvider = ({
   });
   const [listState, setListState] = useState<List>(initialListState);
 
-  // const setParams = (newParams: Partial<ListParams>) => {
-  //   setCurrentListParams({ ...currentListParams, ...newParams });
-  // };
-  // useEffect(() => {
-  //   // const reqParams = { ...currentListParams, sortField: getInitialSortField(resourceName) };
-  //   // setParams(reqParams);
-  // }, [resourceName]);
+  const loadList = useCallback(async () => {
+    if (resourceName) {
+      const getList = RESOURCE_MAP[resourceName].getList;
+      const newParams = {
+        ...currentListParams,
+        sortField: getInitialSortField(resourceName),
+      };
+      // TODO: there's still 2 api requests happening, because of params update i think. need to investigate
+      const data = await getList(newParams);
+      setListState(data);
+    }
+  }, [resourceName, currentListParams]);
 
-  const loadList = async (params: Partial<ListParams>) => {
-    const getList = RESOURCE_MAP[resourceName].getList;
-    const data = await getList(params);
-    setListState(data);
-  };
+  useEffect(() => {
+    if (resourceName) {
+      setCurrentResource(resourceName);
+      setCurrentListParams((current) => ({
+        ...current,
+        sortField: getInitialSortField(resourceName),
+      }));
+    }
+  }, [resourceName]);
 
-  if (resourceName && resourceName !== currentResource) {
-    setCurrentResource(resourceName);
-    const reqParams = { ...currentListParams, sortField: getInitialSortField(resourceName) };
-    setCurrentListParams(reqParams);
-    loadList(reqParams);
-  }
+  useEffect(() => {
+    loadList();
+  }, [loadList]);
+
   // const getListFunc = (associatedType, parent) => {
   //   return associatedType === ResourceType.PERMISSIONS && !isEmpty(parent)
   //     ? RESOURCE_MAP[associatedType].getList[parent.resource.name.plural]
