@@ -16,6 +16,7 @@ import Pagination from 'components/Pagination';
 import useListContext from 'components/global/hooks/useListContext';
 import Table from './Table';
 import schemas from 'common/schemas';
+import { SyntheticEvent } from 'react';
 
 const enhance = compose(
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
@@ -51,7 +52,7 @@ const List = () => {
   const {
     list,
     listParams,
-    // setListParams,
+    setListParams,
     currentResource,
     // updateList,
   } = useListContext();
@@ -114,24 +115,42 @@ const List = () => {
         <div css={paneControls.sortContainer}>
           Sort by:
           <Dropdown
-            selection
-            style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
+            button
+            style={{
+              minWidth: '9.1em',
+              marginLeft: '0.5em',
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: theme.colors.white,
+              border: `1px solid ${theme.colors.grey_3}`,
+              paddingLeft: '15px',
+              paddingRight: '12px',
+              fontWeight: 'normal',
+              color: theme.colors.black,
+            }}
             selectOnNavigation={false}
-            options={schemas[currentResource]
-              .filter((field) => field.sortable)
-              .map((sortableField) => ({
-                text: sortableField.fieldName,
-                value: sortableField.key,
-              }))}
             text={listParams.sortField.fieldName}
-            // onChange={(event, { value }) =>
-            //   setListParams({
-            //     sortField: resource
-            //       .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-            //       .find((field) => field.key === value),
-            //   })
-            // }
-          />
+          >
+            <Dropdown.Menu>
+              {schemas[currentResource]
+                .filter((field) => field.sortable)
+                .map((sortableField) => {
+                  return (
+                    <Dropdown.Item
+                      key={sortableField.key}
+                      text={sortableField.fieldName}
+                      value={sortableField.key}
+                      onClick={(
+                        event: SyntheticEvent,
+                        { value, text }: { value: string; text: string },
+                      ) => {
+                        setListParams({ sortField: { key: value, fieldName: text } });
+                      }}
+                    />
+                  );
+                })}
+            </Dropdown.Menu>
+          </Dropdown>
           <Button.Group css={paneControls.sortOrderWrapper} vertical>
             <Button
               style={{
@@ -139,7 +158,9 @@ const List = () => {
                 paddingBottom: 0,
                 ...(listParams.sortOrder === 'ASC' && { color: theme.colors.primary_5 }),
               }}
-              // onClick={() => setListParams({ ...listParams, sortOrder: 'ASC' })}
+              onClick={() =>
+                setListParams({ sortOrder: listParams.sortOrder === 'ASC' ? 'DESC' : 'ASC' })
+              }
               icon="chevron up"
             />
             <Button
@@ -148,7 +169,9 @@ const List = () => {
                 backgroundColor: 'transparent',
                 ...(listParams.sortOrder === 'DESC' && { color: theme.colors.primary_5 }),
               }}
-              // onClick={() => setListParams({ ...listParams, sortOrder: 'DESC' })}
+              onClick={() =>
+                setListParams({ sortOrder: listParams.sortOrder === 'ASC' ? 'DESC' : 'ASC' })
+              }
               icon="chevron down"
             />
           </Button.Group>

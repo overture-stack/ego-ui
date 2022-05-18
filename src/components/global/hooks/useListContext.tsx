@@ -60,13 +60,14 @@ type T_ListContext = {
   list: List;
   listParams: ListParams;
   currentResource: any;
+  setListParams: (params: Partial<ListParams>) => void;
 };
 const ListContext = createContext<T_ListContext>({
   list: initialListState,
   listParams: initialParams,
   currentResource: undefined,
   // updateList: () => {},
-  // setListParams: () => {},
+  setListParams: () => {},
 });
 
 const getInitialSortField = (resource: ResourceType) => {
@@ -116,12 +117,20 @@ export const ListProvider = ({
   });
   const [listState, setListState] = useState<List>(initialListState);
 
+  const setListParams = (newParams: Partial<ListParams>) =>
+    setCurrentListParams((params) => ({ ...params, ...newParams }));
+
   const loadList = useCallback(async () => {
     if (resourceName) {
       const getList = RESOURCE_MAP[resourceName].getList;
+      const validSortField = schemas[resourceName].find(
+        (r) => r.key === currentListParams.sortField.key,
+      )
+        ? currentListParams.sortField
+        : null;
       const newParams = {
         ...currentListParams,
-        sortField: getInitialSortField(resourceName),
+        sortField: validSortField || getInitialSortField(resourceName),
       };
       // TODO: there's still 2 api requests happening, because of params update i think. need to investigate
       const data = await getList(newParams);
@@ -223,7 +232,7 @@ export const ListProvider = ({
     currentResource,
     // updateList,
     listParams: currentListParams,
-    // setListParams,
+    setListParams,
   };
 
   return <ListContext.Provider value={listData}>{children}</ListContext.Provider>;
