@@ -1,14 +1,12 @@
 /** @jsxImportSource @emotion/react */
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { css, useTheme } from '@emotion/react';
 import { noop } from 'lodash';
-// import React, { useEffect } from 'react';
 import { compose, defaultProps } from 'recompose';
-import { Button, Dropdown } from 'semantic-ui-react';
-// import { useParams } from 'react-router';
+import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
 
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
-// import { RippleButton } from 'components/Ripple';
 // import getStyles from './ListPane.styles';
 
 // import { isChildOfPolicy } from 'common/associatedUtils';
@@ -16,7 +14,7 @@ import Pagination from 'components/Pagination';
 import useListContext from 'components/global/hooks/useListContext';
 import Table from './Table';
 import schemas from 'common/schemas';
-import { SyntheticEvent } from 'react';
+import useDebounce from 'components/global/hooks/useDebounce';
 
 const enhance = compose(
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
@@ -49,32 +47,17 @@ const paneControls = {
 
 const List = () => {
   // const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
-  const {
-    list,
-    listParams,
-    setListParams,
-    currentResource,
-    // updateList,
-  } = useListContext();
+  const { list, listParams, setListParams, currentResource } = useListContext();
   const theme = useTheme();
-  // const routerParams: any = useParams();
   const columnWidth = 200;
   // TODO: for the moment schema setup for parent resources only
   const tableSchema = schemas[currentResource];
-  // useEffect(() => {
-  //   if (!(listParams.sortOrder && listParams.sortField)) {
-  //     setListParams({
-  //       ...listParams,
-  //       sortField: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
-  //       sortOrder: resource.initialSortOrder,
-  //     });
-  //   }
-  // }, [listParams, setListParams, resource, parent]);
+  const [query, setQuery] = useState<string>('');
 
-  // useEffect(() => {
-  //   const debouncedSetListParams = debounce(() => setListParams(listParams), 300);
-  //   debouncedSetListParams();
-  // }, [resource, parent, listParams, setListParams, routerParams.subResourceType]);
+  const debouncedQuery = useDebounce(query, 200);
+  useEffect(() => {
+    setListParams({ query: debouncedQuery });
+  }, [debouncedQuery, setListParams]);
 
   return (
     <div
@@ -99,18 +82,18 @@ const List = () => {
     >
       <ControlContainer>
         <div css={paneControls.searchContainer}>
-          {/* <Input
+          <Input
             icon={
               listParams.query.length > 0 ? (
-                <Icon name={'close'} onClick={(e) => setListParams({ query: '' })} link={true} />
+                <Icon name={'close'} onClick={() => setQuery('')} link={true} />
               ) : (
                 <Icon name={'search'} />
               )
             }
-            value={listParams.query}
+            value={query}
             placeholder="Search..."
-            onChange={(event, { value }) => setListParams({ query: value })}
-          /> */}
+            onChange={(event, { value }) => setQuery(value)}
+          />
         </div>
         <div css={paneControls.sortContainer}>
           Sort by:
@@ -211,8 +194,7 @@ const List = () => {
       /> */}
       {(listParams.limit < list.count || listParams.offset > 0) && (
         <Pagination
-          onChange={() => null}
-          // onChange={(page) => setListParams({ ...listParams, offset: page * listParams.limit })}
+          onChange={(page) => setListParams({ offset: page * listParams.limit })}
           offset={listParams.offset}
           limit={listParams.limit}
           total={list.count}

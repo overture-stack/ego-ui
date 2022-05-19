@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 // import { isEmpty, get, isEqual } from 'lodash';
@@ -100,15 +101,8 @@ export const ListProvider = ({
 }) => {
   // tracking resource and subresource changes because "parent" can be constructed based on their state
   // tracking just the resource type name as that can be used to access anything in the RESOURCE MAP
-  // const [currentResource, setCurrentResource] = useState<ResourceType | 'create'>(resourceName);
   // const [currentSubResourceName, setCurrentSubResourceName] = useState<ResourceType | 'edit'>(
   //   subResourceName,
-  // );
-  // const [currentListParams, setCurrentListParams] = useState<ListParams>(
-  //   getInitialParamsByResource(
-  //     RESOURCE_MAP[resourceName],
-  //     getResourceParent(resourceName, resourceId, subResourceName),
-  //   ),
   // );
   const [currentResource, setCurrentResource] = useState<ResourceType>(resourceName);
   const [currentListParams, setCurrentListParams] = useState<ListParams>({
@@ -117,12 +111,16 @@ export const ListProvider = ({
   });
   const [listState, setListState] = useState<List>(initialListState);
 
-  const setListParams = (newParams: Partial<ListParams>) =>
-    setCurrentListParams((params) => ({ ...params, ...newParams }));
+  const setListParams = useMemo(
+    () => (newParams: Partial<ListParams>) =>
+      setCurrentListParams((params) => ({ ...params, ...newParams })),
+    [],
+  );
 
   const loadList = useCallback(async () => {
     if (resourceName) {
       const getList = RESOURCE_MAP[resourceName].getList;
+      // TODO: make sure correct schema is used here once child list context is introduced
       const validSortField = schemas[resourceName].find(
         (r) => r.key === currentListParams.sortField.key,
       )
@@ -144,6 +142,7 @@ export const ListProvider = ({
       setCurrentListParams((current) => ({
         ...current,
         sortField: getInitialSortField(resourceName),
+        // TODO: should changing resource reset the sortOrder to the default order (ASC)?
       }));
     }
   }, [resourceName]);

@@ -35,7 +35,7 @@ const getColumns = (schema: Schema, sortOrder: SortOrder) => {
     accessor: s.key,
     Header: s.fieldName,
     sortable: s.sortable || false,
-    sortMethod: () => (sortOrder === 'DESC' ? 1 : -1),
+    sortMethod: () => (sortOrder === 'ASC' ? 1 : -1),
   }));
 };
 
@@ -52,7 +52,7 @@ const getColumns = (schema: Schema, sortOrder: SortOrder) => {
 // }) => {
 const Table = ({ schema }: { schema: Schema }) => {
   const theme = useTheme();
-  const { list, listParams } = useListContext();
+  const { list, listParams, setListParams } = useListContext();
 
   // const handleAction = async (item) => {
   //   if (resource.name.singular === 'API Key') {
@@ -115,8 +115,16 @@ const Table = ({ schema }: { schema: Schema }) => {
         pageSize={listParams.limit}
         data={list.resultSet}
         showPagination={false}
-        // sorted={[{ id: listParams.sortField.key, desc: listParams.sortOrder === 'DESC' }]}
-        // onSortedChange={(newSort) => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
+        sorted={[{ id: listParams.sortField.key, desc: listParams.sortOrder === 'DESC' }]}
+        onSortedChange={(newSort) => {
+          setListParams({
+            sortField: {
+              key: newSort[0].id,
+              fieldName: schema.find((r) => r.key === newSort[0].id).fieldName,
+            },
+            sortOrder: newSort[0].desc ? 'DESC' : 'ASC',
+          });
+        }}
         getTdProps={(state, rowInfo, column, instance) => ({
           // onClick: () => rowInfo && onSelect(rowInfo.original),
           ...(column.id === 'type' &&
