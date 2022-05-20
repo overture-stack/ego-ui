@@ -95,7 +95,7 @@ const Nav = () => {
               <LinkRipple
                 className="link-ripple"
                 as={NavLink}
-                to={resourceName}
+                to={`/${resourceName}`}
                 activeClassName={'active'}
               >
                 <div className="content">
