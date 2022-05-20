@@ -1,10 +1,21 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 // import { isEmpty, omit, uniq, findIndex, get } from 'lodash';
 // import { ENTITY_MAX_ASSOCIATED } from 'common/constants';
 // import { ResourceType } from 'common/enums';
 // import RESOURCE_MAP from 'common/RESOURCE_MAP';
 // import { isGroup, isPolicy } from 'common/associatedUtils';
-// import { Application, Entity, Group, User } from 'common/typedefs';
+import { Application, Group, Policy, User } from 'common/typedefs';
+import useListContext from './useListContext';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import { get } from 'lodash';
 // import { IResource } from 'common/typedefs/Resource';
 // import { Permission, SimplePermission } from 'common/typedefs/Permission';
 // import { ApiKey } from 'common/typedefs/ApiKey';
@@ -41,17 +52,16 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 // }
 
 export interface EntityState {
-  //   item: Entity;
+  item: User | Group | Application | Policy;
   //   staged: Entity;
   //   associated: Partial<AssociatedEntities>;
   //   valid: boolean;
   //   resource: IResource;
-  // id: string | null;
 }
 
 type T_EntityContext = {
   currentId?: string;
-  // entity: EntityState;
+  entity: EntityState;
   //   stageChange: (change?: any) => void;
   //   undoChanges: (id?: string) => void;
   //   saveChanges: () => void;
@@ -64,7 +74,7 @@ type T_EntityContext = {
 
 const EntityContext = createContext<T_EntityContext>({
   currentId: undefined,
-  // entity: null,
+  entity: null,
   //   stageChange: () => {},
   //   undoChanges: () => {},
   //   saveChanges: () => {},
@@ -76,7 +86,7 @@ const EntityContext = createContext<T_EntityContext>({
 });
 
 export const initialEntityState: EntityState = {
-  //   item: null,
+  item: null,
   //   staged: null,
   //   associated: null,
   //   valid: false,
@@ -90,25 +100,31 @@ export const initialEntityState: EntityState = {
 //     : RESOURCE_MAP[associatedType].getList;
 // };
 
-export const EntityProvider = ({
-  id,
-  // subResource,
-  // resource,
-  children,
-}: {
-  id: string;
-  // subResource: string;
-  // resource: ResourceType;
-  children: ReactNode;
-}) => {
-  // const [entityState, setEntityState] = useState(initialEntityState);
-  //   const [currentResource, setCurrentResource] = useState<any>(resource);
+export const EntityProvider = ({ id, children }: { id: string; children: ReactNode }) => {
+  const { currentResource } = useListContext();
+  const [entityState, setEntityState] = useState(initialEntityState);
   const [currentId, setCurrentId] = useState<string>(id); // separate from lastValidId because it can also be 'create'
   //   const [currentSubResource, setCurrentSubResource] = useState<string>(subResource);
   //   const [lastValidId, setLastValidId] = useState<string>(undefined);
   //   const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
 
   useEffect(() => setCurrentId(id), [id]);
+
+  const getResource = useMemo(() => () => get(RESOURCE_MAP, currentResource), [currentResource]);
+
+  const loadEntity = useCallback(async () => {
+    if (currentId) {
+      const resource = getResource();
+      const data = await resource.getItem(currentId);
+      setEntityState(data);
+    } else {
+      setEntityState(null);
+    }
+  }, [currentId, getResource]);
+
+  useEffect(() => {
+    loadEntity();
+  }, [loadEntity]);
   //   const setItem = async (id: string, resource: IResource) => {
   //     const isCreate = id === 'create';
 
@@ -301,7 +317,7 @@ export const EntityProvider = ({
 
   const entityData = {
     currentId,
-    // entity: entityState,
+    entity: entityState,
     //     stageChange,
     //     undoChanges,
     //     saveChanges,

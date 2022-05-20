@@ -118,23 +118,22 @@ export const ListProvider = ({
   );
 
   const loadList = useCallback(async () => {
-    if (resourceName) {
-      const getList = RESOURCE_MAP[resourceName].getList;
+    if (currentResource) {
+      const getList = RESOURCE_MAP[currentResource].getList;
       // TODO: make sure correct schema is used here once child list context is introduced
-      const validSortField = schemas[resourceName].find(
+      const validSortField = schemas[currentResource].find(
         (r) => r.key === currentListParams.sortField.key,
       )
         ? currentListParams.sortField
         : null;
       const newParams = {
         ...currentListParams,
-        sortField: validSortField || getInitialSortField(resourceName),
+        sortField: validSortField || getInitialSortField(currentResource),
       };
-      // TODO: there's still 2 api requests happening, because of params update i think. need to investigate
       const data = await getList(newParams);
       setListState(data);
     }
-  }, [resourceName, currentListParams]);
+  }, [currentResource, currentListParams]);
 
   useEffect(() => {
     if (resourceName) {
