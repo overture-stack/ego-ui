@@ -13,6 +13,8 @@ import useListContext from 'components/global/hooks/useListContext';
 import { Schema } from 'common/schemas/types';
 import { get } from 'lodash';
 import { SortOrder } from 'common/typedefs/Resource';
+import { useHistory } from 'react-router-dom';
+import useEntityContext from 'components/global/hooks/useEntityContext';
 
 const enhance = compose(
   withSize({
@@ -52,7 +54,8 @@ const getColumns = (schema: Schema, sortOrder: SortOrder) => {
 // }) => {
 const Table = ({ schema }: { schema: Schema }) => {
   const theme = useTheme();
-  const { list, listParams, setListParams } = useListContext();
+  const { list, listParams, setListParams, currentResource } = useListContext();
+  const { currentId } = useEntityContext();
 
   // const handleAction = async (item) => {
   //   if (resource.name.singular === 'API Key') {
@@ -85,7 +88,7 @@ const Table = ({ schema }: { schema: Schema }) => {
   //           ),
   //       };
   //     });
-
+  const history = useHistory();
   return (
     <div
       css={css`
@@ -134,14 +137,17 @@ const Table = ({ schema }: { schema: Schema }) => {
         })}
         getTrGroupProps={(state, rowInfo, column, instance) => {
           return {
+            onClick: () => {
+              history.push(`/${currentResource}/${rowInfo.original.id}`);
+            },
             ...(get(rowInfo, 'original.status') === 'DISABLED' && {
               style: { color: theme.colors.grey_6 },
             }),
             // ...(isEmpty(parent) &&
             //   rowInfo &&
-            //   get(rowInfo, 'original.id') === selectedItemId && {
-            //     style: { backgroundColor: `${theme.colors.primary_1}50` },
-            //   }),
+            ...(get(rowInfo, 'original.id') === currentId && {
+              style: { backgroundColor: `${theme.colors.primary_1}50` },
+            }),
           };
         }}
         getTheadThProps={(state, rowInfo, column, instance) => ({

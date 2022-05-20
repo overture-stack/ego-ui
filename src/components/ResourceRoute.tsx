@@ -38,7 +38,6 @@ const enhance = compose(
 
 // const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
 const ResourceRoute = ({ size }) => {
-  // const id = match.params.id;
   const theme = useTheme();
   // const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
   const shouldShowSubResourceDetails = false;
@@ -76,6 +75,7 @@ const ResourceRoute = ({ size }) => {
         // css={{ zIndex: 9, transform: `translateX(${translateX})` }}
         className="Screen"
       >
+        {/* this route is for the child table, it's possible this setup will no longer be necessary with ChildContext */}
         {/* {resource.associatedTypes.map((associatedType) => {
           const associatedResource = RESOURCE_MAP[associatedType];
 
