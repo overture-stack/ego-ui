@@ -1,13 +1,4 @@
-import React, {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-// import { isEmpty, get, isEqual } from 'lodash';
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { ResourceType, SortOrder } from 'common/typedefs/Resource';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import schemas from 'common/schemas';
@@ -117,25 +108,6 @@ export const ListProvider = ({
     [],
   );
 
-  const loadList = useCallback(async () => {
-    if (resourceName) {
-      const getList = RESOURCE_MAP[resourceName].getList;
-      // TODO: make sure correct schema is used here once child list context is introduced
-      const validSortField = schemas[resourceName].find(
-        (r) => r.key === currentListParams.sortField.key,
-      )
-        ? currentListParams.sortField
-        : null;
-      const newParams = {
-        ...currentListParams,
-        sortField: validSortField || getInitialSortField(resourceName),
-      };
-      // TODO: there's still 2 api requests happening, because of params update i think. need to investigate
-      const data = await getList(newParams);
-      setListState(data);
-    }
-  }, [resourceName, currentListParams]);
-
   useEffect(() => {
     if (resourceName) {
       setCurrentResource(resourceName);
@@ -148,8 +120,28 @@ export const ListProvider = ({
   }, [resourceName]);
 
   useEffect(() => {
+    const loadList = async () => {
+      if (currentResource) {
+        const getList = RESOURCE_MAP[currentResource].getList;
+        // TODO: make sure correct schema is used here once child list context is introduced
+        const validSortField = schemas[currentResource].find(
+          (r) => r.key === currentListParams.sortField.key,
+        )
+          ? currentListParams.sortField
+          : null;
+        const newParams = {
+          ...currentListParams,
+          sortField: validSortField || getInitialSortField(currentResource),
+        };
+        // TODO: there's still 1 extra api request happening when the resource type changes, possibly because of params update. need to investigate
+        // previously this useEffect was watching resourceType instead of currentResource, and that caused a second extra request with the old resource
+        // if there is an existing search query, the first request will still have that query in the params.
+        const data = await getList(newParams);
+        setListState(data);
+      }
+    };
     loadList();
-  }, [loadList]);
+  }, [currentResource, currentListParams]);
 
   // const getListFunc = (associatedType, parent) => {
   //   return associatedType === ResourceType.PERMISSIONS && !isEmpty(parent)
