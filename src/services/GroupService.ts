@@ -89,6 +89,7 @@ export const getGroups = ({
   status = null,
   policyId = null,
 }): Promise<{ count: number; resultSet: Group[]; offset: number; limit: number }> => {
+  // TODO: same comment as in UserService getUsers call, find out what this is for
   const baseUrl = userId
     ? `/users/${userId}`
     : applicationId
@@ -111,7 +112,7 @@ export const getGroups = ({
             limit,
             offset,
             query,
-            sort: sortField,
+            sort: sortField.key,
             sortOrder,
             status: status === 'All' ? null : status,
           },

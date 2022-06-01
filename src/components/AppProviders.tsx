@@ -11,8 +11,8 @@ import { EGO_JWT_KEY } from 'common/constants';
 const AppProviders = ({ children }: { children: React.ReactElement }) => {
   const [initialJwt, setInitialJwt] = useState<string>(undefined);
   const [initialResourceName, setInitialResourceName] = useState<string>(undefined);
-  const [initialResourceId, setInitialResourceId] = useState<string>(undefined);
-  const [initialSubResourceName, setInitialSubResourceName] = useState<string>(undefined);
+  // const [initialResourceId, setInitialResourceId] = useState<string>(undefined);
+  // const [initialSubResourceName, setInitialSubResourceName] = useState<string>(undefined);
   // app does not respond to route change on login when useLocation() is not called (???)
   const location = useLocation();
   useEffect(() => {
@@ -30,21 +30,17 @@ const AppProviders = ({ children }: { children: React.ReactElement }) => {
   useEffect(() => {
     const pathInfo = location.pathname.split('/');
     const resourceName = pathInfo[1];
-    const id = pathInfo[2];
-    const subResourceName = pathInfo[3];
+    // const id = pathInfo[2];
+    // const subResourceName = pathInfo[3];
     setInitialResourceName(resourceName);
-    setInitialResourceId(id);
-    setInitialSubResourceName(subResourceName);
+    // setInitialResourceId(id);
+    // setInitialSubResourceName(subResourceName);
   }, [location.pathname]);
 
   return (
     <AuthProvider initialJwt={initialJwt}>
       <ThemeProvider theme={defaultTheme}>
-        <ListProvider
-          resourceName={initialResourceName}
-          subResourceName={initialSubResourceName}
-          resourceId={initialResourceId}
-        >
+        <ListProvider resourceName={initialResourceName}>
           {/* <EntityProvider
             id={initialResourceId}
             subResource={initialSubResourceName}

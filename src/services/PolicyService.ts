@@ -31,7 +31,7 @@ export const getPolicies = ({
             limit,
             name: query,
             offset,
-            sort: sortField,
+            sort: sortField.key,
             sortOrder,
           },
           isNil,

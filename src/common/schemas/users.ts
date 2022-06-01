@@ -32,31 +32,26 @@ const schema: Schema = [
     key: 'status',
     sortable: false,
   },
-  {
-    fieldName: 'Action',
-    key: 'action',
-    sortable: false,
-  },
 ];
 
 // only children of policies have a different schema
 // so would be better to have a PermissionTable of some sort, the schema will always be the same
 // only users and groups have permissions right now (applications will next)
 // for some reason the old code has a child schema for Policy resource, not sure why
-const childSchema: Schema = [
-  { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
-  { key: 'name', fieldName: 'Name', sortable: true },
-  { key: 'mask', fieldName: 'Access Level', sortable: true },
-  { key: 'action', fieldName: 'Action', sortable: false },
-];
+// const childSchema: Schema = [
+//   { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+//   { key: 'name', fieldName: 'Name', sortable: true },
+//   { key: 'mask', fieldName: 'Access Level', sortable: true },
+//   { key: 'action', fieldName: 'Action', sortable: false },
+// ];
 
-const mapTableData = (results) => {
-  return results.map((result) => ({
-    ...result,
-    action: 'remove',
-    actionText: 'REMOVE',
-  }));
-};
+// const mapTableData = (results) => {
+//   return results.map((result) => ({
+//     ...result,
+//     action: 'remove',
+//     actionText: 'REMOVE',
+//   }));
+// };
 
 export default schema;
 

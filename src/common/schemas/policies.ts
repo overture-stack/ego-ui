@@ -14,14 +14,14 @@ const schema: Schema = [
   },
 ];
 
-const mapTableData = (results) => results;
+// const mapTableData = (results) => results;
 
-const childSchema: Schema = [
-  { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
-  { key: 'name', fieldName: 'Name', sortable: true },
-  { key: 'mask', fieldName: 'Access Level', sortable: true },
-  { fieldName: 'Action', key: 'action', sortable: false },
-];
+// const childSchema: Schema = [
+//   { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+//   { key: 'name', fieldName: 'Name', sortable: true },
+//   { key: 'mask', fieldName: 'Access Level', sortable: true },
+//   { fieldName: 'Action', key: 'action', sortable: false },
+// ];
 
 export default schema;
 

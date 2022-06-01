@@ -7,6 +7,12 @@ import { User } from 'common/typedefs/User';
 import { MaskLevel, Permission } from 'common/typedefs/Permission';
 import { Entity } from '.';
 
+export type ParentResource =
+  | ResourceType.USERS
+  | ResourceType.GROUPS
+  | ResourceType.APPLICATIONS
+  | ResourceType.POLICIES;
+
 export type TFieldType = 'dropdown' | 'text';
 
 export interface IField {

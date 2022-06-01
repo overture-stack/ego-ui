@@ -1,22 +1,28 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 // import { isEmpty, get, isEqual } from 'lodash';
-// import { ResourceType } from 'common/enums';
-// import RESOURCE_MAP from 'common/RESOURCE_MAP';
-// import { IField, IResource, SortOrder } from 'common/typedefs/Resource';
-// import { Entity } from 'common/typedefs';
+import { ResourceType, SortOrder } from 'common/typedefs/Resource';
+import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import schemas from 'common/schemas';
 
-// interface ListParams {
-//   offset: number;
-//   limit: number;
-//   sortField: IField;
-//   sortOrder: SortOrder;
-//   query: string;
-// }
+interface ListParams {
+  offset: number;
+  limit: number;
+  sortField: { key: string; fieldName: string };
+  sortOrder: SortOrder;
+  query: string;
+}
 
-// interface List {
-//   resultSet: Entity[];
-//   count: number;
-// }
+interface List {
+  resultSet: ResourceType[];
+  count: number;
+}
 
 // type RefreshList = (
 //   resource: IResource,
@@ -35,46 +41,46 @@ import React, { createContext, ReactNode, useContext } from 'react';
 //   setListParams: (params: Partial<ListParams>) => void;
 // };
 
-type T_ListContext = any;
+const initialSortField = { key: 'id', fieldName: 'ID' };
+const initialParams: any = {
+  offset: 0,
+  limit: 20,
+  // TODO: add fieldNames enum
+  sortField: initialSortField, // double check this can apply to all entity types
+  sortOrder: 'ASC',
+  query: '',
+};
+
+const initialListState = {
+  resultSet: [],
+  count: 0,
+};
+
+type T_ListContext = {
+  list: List;
+  listParams: ListParams;
+  currentResource: any;
+};
 const ListContext = createContext<T_ListContext>({
-  list: undefined,
-  updateList: () => {},
-  listParams: undefined,
-  setListParams: () => {},
+  list: initialListState,
+  listParams: initialParams,
+  currentResource: undefined,
+  // updateList: () => {},
+  // setListParams: () => {},
 });
 
-// const initialParams: any = {
-//   offset: 0,
-//   limit: 20,
-//   sortField: null,
-//   sortOrder: null,
-//   query: '',
-// };
-
-// const initialListState = {
-//   resultSet: [],
-//   count: 0,
-// };
-
+const getInitialSortField = (resource: ResourceType) => {
+  if (resource) {
+    const resourceSort = schemas[resource].find((s) => s.initialSort);
+    return { key: resourceSort.key, fieldName: resourceSort.fieldName };
+  }
+  return initialSortField;
+};
 // export const getResourceParent = (
 //   resourceName: ResourceType | 'create',
 //   resourceId?: string,
 //   subResourceName?: ResourceType | 'edit',
 // ) => (subResourceName ? { resource: RESOURCE_MAP[resourceName], id: resourceId } : undefined);
-
-// const getInitialParamsByResource = (
-//   resource: IResource,
-//   parent: { id: string; resource: IResource },
-// ) => ({
-//   ...initialParams,
-//   ...{
-//     ...initialParams,
-//     sortField: resource
-//       ? resource.initialSortField(isChildOfPolicy(get(parent, 'resource')))
-//       : { key: 'id', fieldName: 'ID' },
-//     sortOrder: resource ? resource.initialSortOrder : 'ASC',
-//   },
-// });
 
 // this ensures the correct resource type is used for api requests, depending on whether the list is for the parent or the child
 // const getRelevantResource: (
@@ -85,16 +91,10 @@ const ListContext = createContext<T_ListContext>({
 // };
 
 export const ListProvider = ({
-  // resourceName,
-  // subResourceName,
-  // resourceId,
+  resourceName,
   children,
 }: {
-  resourceName: any;
-  subResourceName: any;
-  // resourceName: ResourceType | 'create';
-  // subResourceName?: ResourceType | 'edit';
-  resourceId?: string;
+  resourceName: ResourceType;
   children: ReactNode;
 }) => {
   // tracking resource and subresource changes because "parent" can be constructed based on their state
@@ -109,7 +109,39 @@ export const ListProvider = ({
   //     getResourceParent(resourceName, resourceId, subResourceName),
   //   ),
   // );
-  // const [listState, setListState] = useState<List>(initialListState);
+  const [currentResource, setCurrentResource] = useState<ResourceType>(resourceName);
+  const [currentListParams, setCurrentListParams] = useState<ListParams>({
+    ...initialParams,
+    sortField: getInitialSortField(resourceName),
+  });
+  const [listState, setListState] = useState<List>(initialListState);
+
+  const loadList = useCallback(async () => {
+    if (resourceName) {
+      const getList = RESOURCE_MAP[resourceName].getList;
+      const newParams = {
+        ...currentListParams,
+        sortField: getInitialSortField(resourceName),
+      };
+      // TODO: there's still 2 api requests happening, because of params update i think. need to investigate
+      const data = await getList(newParams);
+      setListState(data);
+    }
+  }, [resourceName, currentListParams]);
+
+  useEffect(() => {
+    if (resourceName) {
+      setCurrentResource(resourceName);
+      setCurrentListParams((current) => ({
+        ...current,
+        sortField: getInitialSortField(resourceName),
+      }));
+    }
+  }, [resourceName]);
+
+  useEffect(() => {
+    loadList();
+  }, [loadList]);
 
   // const getListFunc = (associatedType, parent) => {
   //   return associatedType === ResourceType.PERMISSIONS && !isEmpty(parent)
@@ -187,9 +219,10 @@ export const ListProvider = ({
   // };
 
   const listData = {
-    // list: listState,
+    list: listState,
+    currentResource,
     // updateList,
-    // listParams: currentListParams,
+    listParams: currentListParams,
     // setListParams,
   };
 

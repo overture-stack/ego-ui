@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 // import path from 'ramda/src/path';
 // import React from 'react';
 // import { Route } from 'react-router';
 import withSize from 'react-sizeme';
 import { compose } from 'recompose';
 import styled from '@emotion/styled';
+import ResourceExplorer from './ResourceExplorer';
 
 // import RESOURCE_MAP from 'common/RESOURCE_MAP';
 // import ResourceExplorer from 'components/ResourceExplorer';
@@ -36,15 +37,17 @@ const enhance = compose(
 );
 
 // const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
-const ResourceRoute = () => {
+const ResourceRoute = ({ size }) => {
   // const id = match.params.id;
-  // const theme = useTheme();
+  const theme = useTheme();
   // const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
-  // const translateX = shouldShowSubResourceDetails
-  //   ? '-100%'
-  //   : shouldListSubResource
-  //   ? `${-(size.width - theme.dimensions.contentPanel.width)}px`
-  //   : 0;
+  const shouldShowSubResourceDetails = false;
+  const shouldListSubResource = false;
+  const translateX = shouldShowSubResourceDetails
+    ? '-100%'
+    : shouldListSubResource
+    ? `${-(size.width - theme.dimensions.contentPanel.width)}px`
+    : 0;
 
   return (
     <div
@@ -63,11 +66,11 @@ const ResourceRoute = () => {
       <StyledScreenDiv
         css={{
           zIndex: 10,
-          // transform: `translateX(${translateX})`,
+          transform: `translateX(${translateX})`,
         }}
         className="Screen"
       >
-        {/* <ResourceExplorer id={id} resource={resource} /> */}
+        <ResourceExplorer />
       </StyledScreenDiv>
       <StyledScreenDiv
         // css={{ zIndex: 9, transform: `translateX(${translateX})` }}
