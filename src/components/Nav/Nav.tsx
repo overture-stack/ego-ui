@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, useTheme } from '@emotion/react';
-import { capitalize, pickBy, throttle } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { capitalize, throttle } from 'lodash';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Icon } from 'semantic-ui-react';
 
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import UnstyledButton from 'components/UnstyledButton';
 import CurrentUserNavItem from './CurrentUserNavItem';
 import brandImage from 'assets/brand-image.svg';
@@ -13,13 +12,25 @@ import brandImageSmall from 'assets/brand-image-small.svg';
 import LinkRipple, { CollapsedRipple } from './NavRipple';
 import Emblem from './Emblem';
 import useAuthContext from 'components/global/hooks/useAuthContext';
+import { ResourceType } from 'common/enums';
+import ApplicationIcon from 'components/Icons/application';
+import PolicyIcon from 'components/Icons/policy';
 
-const listStyles = {
-  listStyleType: 'none',
-  margin: 0,
-  padding: 0,
-  flexGrow: 1,
+type ParentResource =
+  | ResourceType.USERS
+  | ResourceType.GROUPS
+  | ResourceType.APPLICATIONS
+  | ResourceType.POLICIES;
+
+const iconStyle = { opacity: 0.9 };
+const navIcons: Record<ParentResource, () => ReactElement> = {
+  [ResourceType.USERS]: () => <Icon style={iconStyle} name="user" />,
+  [ResourceType.GROUPS]: () => <Icon style={iconStyle} name="group" />,
+  [ResourceType.APPLICATIONS]: () => <ApplicationIcon style={iconStyle} />,
+  [ResourceType.POLICIES]: () => <PolicyIcon style={iconStyle} />,
 };
+
+export const navResourceList = Object.keys(navIcons);
 
 const Nav = () => {
   const theme = useTheme();
@@ -69,23 +80,30 @@ const Nav = () => {
           <img className="regular" src={brandImage} alt="" />
         </Emblem>
       </div>
-      <ul css={listStyles}>
-        {Object.keys(pickBy(RESOURCE_MAP, (r) => r.isParent)).map((key) => {
-          const resource = RESOURCE_MAP[key];
+      <ul
+        css={css`
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          flex-grow: 1;
+        `}
+      >
+        {navResourceList.map((resourceName) => {
+          const ResourceIcon = navIcons[resourceName];
           return (
-            <li key={key}>
+            <li key={resourceName}>
               <LinkRipple
                 className="link-ripple"
                 as={NavLink}
-                to={`/${resource.name.plural}`}
+                to={`/${resourceName}`}
                 activeClassName={'active'}
               >
                 <div className="content">
-                  <resource.Icon style={{ opacity: 0.9 }} />
+                  <ResourceIcon />
                   {collapsedState ? (
                     <div css={{ height: 35 }} />
                   ) : (
-                    <span className="text">{capitalize(`${resource.name.plural}`)}</span>
+                    <span className="text">{capitalize(resourceName)}</span>
                   )}
                 </div>
               </LinkRipple>

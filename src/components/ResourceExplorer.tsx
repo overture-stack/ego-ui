@@ -1,24 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { get, isEmpty } from 'lodash';
+// import { get, isEmpty } from 'lodash';
 import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
 
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import Associator from 'components/Associator/Associator';
-import Content from 'components/Content';
-import ListPane from 'components/ListPane';
-import { PERMISSIONS } from 'common/enums';
-import useEntityContext, { getListFunc } from 'components/global/hooks/useEntityContext';
+// import RESOURCE_MAP from 'common/RESOURCE_MAP';
+// import Associator from 'components/Associator/Associator';
+// import Content from 'components/Content';
+// import ListPane from 'components/ListPane';
+// import { ResourceType } from 'common/enums';
+// import useEntityContext, { getListFunc } from 'components/global/hooks/useEntityContext';
 
 const enhance = compose(withRouter);
 
-const ResourceExplorer = ({ id, resource, history, parent }) => {
-  const { stageChange } = useEntityContext();
+// const ResourceExplorer = ({ id, resource, history, parent }) => {
+const ResourceExplorer = () => {
+  // const { stageChange } = useEntityContext();
   return (
     <React.Fragment>
-      <ListPane
+      {/* <ListPane
         resource={resource}
         parent={parent}
         selectedItemId={id}
@@ -32,8 +33,8 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
             );
           }
         }}
-      />
-      <Content
+      /> */}
+      {/* <Content
         id={id}
         resource={resource}
         parent={parent}
@@ -49,7 +50,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       editing={editing}
                       fetchItems={
                         RESOURCE_MAP[associatedType][
-                          associatedType === PERMISSIONS ? 'getListAll' : 'getList'
+                          associatedType === ResourceType.PERMISSIONS ? 'getListAll' : 'getList'
                         ]
                       }
                       fetchExistingAssociations={(params) => {
@@ -99,7 +100,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
             };
           }),
         ]}
-      />
+      /> */}
     </React.Fragment>
   );
 };

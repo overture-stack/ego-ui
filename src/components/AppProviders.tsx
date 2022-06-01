@@ -6,9 +6,7 @@ import { AuthProvider } from './global/hooks/useAuthContext';
 import { ListProvider } from './global/hooks/useListContext';
 import defaultTheme from '../theme';
 
-import { EGO_JWT_KEY } from 'common/injectGlobals';
-import { EntityProvider } from './global/hooks/useEntityContext';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
+import { EGO_JWT_KEY } from 'common/constants';
 
 const AppProviders = ({ children }: { children: React.ReactElement }) => {
   const [initialJwt, setInitialJwt] = useState<string>(undefined);
@@ -47,13 +45,13 @@ const AppProviders = ({ children }: { children: React.ReactElement }) => {
           subResourceName={initialSubResourceName}
           resourceId={initialResourceId}
         >
-          <EntityProvider
+          {/* <EntityProvider
             id={initialResourceId}
             subResource={initialSubResourceName}
             resource={RESOURCE_MAP[initialResourceName]}
-          >
-            {children}
-          </EntityProvider>
+          > */}
+          {children}
+          {/* </EntityProvider> */}
         </ListProvider>
       </ThemeProvider>
     </AuthProvider>

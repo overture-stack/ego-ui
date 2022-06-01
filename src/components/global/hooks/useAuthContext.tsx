@@ -6,7 +6,7 @@ import { isEqual, has } from 'lodash';
 import { setAjaxToken } from 'services/ajax';
 import { isValidJwt } from '../utils/egoJwt';
 import ajax from 'services/ajax';
-import { EGO_JWT_KEY, USER_PREFERENCES_PREFIX } from 'common/injectGlobals';
+import { EGO_JWT_KEY, USER_PREFERENCES_PREFIX } from 'common/constants';
 
 type T_AuthContext = {
   token?: string;
@@ -45,9 +45,10 @@ export const AuthProvider = ({
     setAjaxToken(egoJwt);
   }
 
-  if (egoJwt && !isValidJwt(egoJwt)) {
-    logout();
-  }
+  // TODO: causing infinite loop
+  // if (egoJwt && !isValidJwt(egoJwt)) {
+  //   logout();
+  // }
 
   const getUser = (jwt: string) => {
     const jwtData = jwtDecode(jwt);

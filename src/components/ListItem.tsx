@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 import Ripple from 'components/Ripple';
 import { UserDisplayName } from 'components/UserDisplayName';
-import { DATE_FORMAT } from 'common/injectGlobals';
+import { DATE_FORMAT } from 'common/constants';
 
 const StyledRipple = styled(Ripple)`
   display: flex;

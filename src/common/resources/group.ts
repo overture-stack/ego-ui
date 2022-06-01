@@ -1,5 +1,4 @@
-import { Application, CreateGroupInput, Entity, Group, Policy, User } from 'common/typedefs';
-import { MaskLevel, Permission } from 'common/typedefs/Permission';
+import { Application, CreateGroupInput, Group, Policy, User } from 'common/typedefs';
 import { IListParams, IListResponse } from 'common/typedefs/Resource';
 import {
   createGroup,

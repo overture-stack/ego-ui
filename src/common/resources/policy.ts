@@ -1,4 +1,4 @@
-import { Application, RequiredPolicyFields, Group, Policy, User } from 'common/typedefs';
+import { RequiredPolicyFields, Group, Policy, User } from 'common/typedefs';
 import { IListParams, IListResponse } from 'common/typedefs/Resource';
 import {
   createPolicy,

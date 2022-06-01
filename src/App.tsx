@@ -5,10 +5,10 @@ import { Route, Switch } from 'react-router-dom';
 import BreadCrumb from 'components/BreadCrumb';
 import Login from 'components/Login';
 import ResourceRoute from 'components/ResourceRoute';
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import Nav from 'components/Nav';
 import NoAccess from 'components/NoAccess';
 import useAuthContext from 'components/global/hooks/useAuthContext';
+import { navResourceList } from 'components/Nav/Nav';
 
 const ProtectedRoute = ({
   component,
@@ -35,13 +35,12 @@ const App = () => {
               <div css={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 <BreadCrumb path={props.location.pathname} />
                 <Switch>
-                  {Object.keys(RESOURCE_MAP).map((key) => {
-                    const resource = RESOURCE_MAP[key];
+                  {navResourceList.map((resourceName) => {
                     return (
                       <ProtectedRoute
-                        key={key}
-                        path={`/${resource.name.plural}/:id?/:subResourceType?/:subResourceId?`}
-                        render={(p) => <ResourceRoute {...p} resource={resource} />}
+                        key={resourceName}
+                        path={`/${resourceName}/:id?/:childResourceName?`}
+                        render={() => <ResourceRoute />}
                       />
                     );
                   })}

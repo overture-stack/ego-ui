@@ -7,3 +7,13 @@ export enum ResourceType {
   API_KEYS = 'API Keys',
   POLICIES = 'policies',
 }
+
+// TODO: added this for now to make compiler happy
+export enum SingularResourceType {
+  PERMISSION = 'permission',
+  USER = 'user',
+  GROUP = 'group',
+  APPLICATION = 'application',
+  API_KEY = 'API Key',
+  POLICY = 'policy',
+}

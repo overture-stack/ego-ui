@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import { css, useTheme } from '@emotion/react';
-import path from 'ramda/src/path';
-import React from 'react';
-import { Route } from 'react-router';
+import { css } from '@emotion/react';
+// import path from 'ramda/src/path';
+// import React from 'react';
+// import { Route } from 'react-router';
 import withSize from 'react-sizeme';
-import { compose, withProps } from 'recompose';
+import { compose } from 'recompose';
 import styled from '@emotion/styled';
 
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import ResourceExplorer from 'components/ResourceExplorer';
+// import RESOURCE_MAP from 'common/RESOURCE_MAP';
+// import ResourceExplorer from 'components/ResourceExplorer';
 
 const StyledScreenDiv = styled('div')`
   position: relative;
@@ -24,26 +24,27 @@ const enhance = compose(
     refreshRate: 100,
     monitorHeight: false,
   }),
-  withProps(({ match }) => {
-    const shouldListSubResource = Object.keys(RESOURCE_MAP).includes(
-      path(['params', 'subResourceType'], match),
-    );
+  // withProps(({ match }) => {
+  //   const shouldListSubResource = Object.keys(RESOURCE_MAP).includes(
+  //     path(['params', 'subResourceType'], match),
+  //   );
 
-    return {
-      shouldListSubResource,
-    };
-  }),
+  //   return {
+  //     shouldListSubResource,
+  //   };
+  // }),
 );
 
-const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
-  const id = match.params.id;
-  const theme = useTheme();
-  const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
-  const translateX = shouldShowSubResourceDetails
-    ? '-100%'
-    : shouldListSubResource
-    ? `${-(size.width - theme.dimensions.contentPanel.width)}px`
-    : 0;
+// const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
+const ResourceRoute = () => {
+  // const id = match.params.id;
+  // const theme = useTheme();
+  // const shouldShowSubResourceDetails = match.params.subResourceId !== undefined;
+  // const translateX = shouldShowSubResourceDetails
+  //   ? '-100%'
+  //   : shouldListSubResource
+  //   ? `${-(size.width - theme.dimensions.contentPanel.width)}px`
+  //   : 0;
 
   return (
     <div
@@ -62,17 +63,17 @@ const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
       <StyledScreenDiv
         css={{
           zIndex: 10,
-          transform: `translateX(${translateX})`,
+          // transform: `translateX(${translateX})`,
         }}
         className="Screen"
       >
-        <ResourceExplorer id={id} resource={resource} />
+        {/* <ResourceExplorer id={id} resource={resource} /> */}
       </StyledScreenDiv>
       <StyledScreenDiv
-        css={{ zIndex: 9, transform: `translateX(${translateX})` }}
+        // css={{ zIndex: 9, transform: `translateX(${translateX})` }}
         className="Screen"
       >
-        {resource.associatedTypes.map((associatedType) => {
+        {/* {resource.associatedTypes.map((associatedType) => {
           const associatedResource = RESOURCE_MAP[associatedType];
 
           return (
@@ -92,7 +93,7 @@ const ResourceRoute = ({ resource, match, shouldListSubResource, size }) => {
               }}
             />
           );
-        })}
+        })} */}
       </StyledScreenDiv>
     </div>
   );
