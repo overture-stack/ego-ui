@@ -23,7 +23,7 @@ type ParentResource =
   | ResourceType.POLICIES;
 
 const iconStyle = { opacity: 0.9 };
-const navIcons: { [key in ParentResource]: () => ReactElement } = {
+const navIcons: Record<ParentResource, () => ReactElement> = {
   [ResourceType.USERS]: () => <Icon style={iconStyle} name="user" />,
   [ResourceType.GROUPS]: () => <Icon style={iconStyle} name="group" />,
   [ResourceType.APPLICATIONS]: () => <ApplicationIcon style={iconStyle} />,

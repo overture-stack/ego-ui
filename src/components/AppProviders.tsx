@@ -7,8 +7,6 @@ import { ListProvider } from './global/hooks/useListContext';
 import defaultTheme from '../theme';
 
 import { EGO_JWT_KEY } from 'common/constants';
-// import { EntityProvider } from './global/hooks/useEntityContext';
-// import RESOURCE_MAP from 'common/RESOURCE_MAP';
 
 const AppProviders = ({ children }: { children: React.ReactElement }) => {
   const [initialJwt, setInitialJwt] = useState<string>(undefined);
