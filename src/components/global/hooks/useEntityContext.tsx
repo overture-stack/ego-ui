@@ -1,12 +1,4 @@
-import React, {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 // import { isEmpty, omit, uniq, findIndex, get } from 'lodash';
 // import { ENTITY_MAX_ASSOCIATED } from 'common/constants';
 // import { ResourceType } from 'common/enums';
@@ -19,17 +11,6 @@ import { get } from 'lodash';
 // import { IResource } from 'common/typedefs/Resource';
 // import { Permission, SimplePermission } from 'common/typedefs/Permission';
 // import { ApiKey } from 'common/typedefs/ApiKey';
-
-// export enum ContentState {
-//   DISPLAYING = 'displaying',
-//   CREATING = 'creating',
-//   EDITING = 'editing',
-//   DISABLING = 'disabling',
-//   DELETING = 'deleting',
-//   CONFIRM_DELETE = 'confirmDelete',
-//   SAVING_EDIT = 'savingEdit',
-//   SAVING_CREATE = 'savingCreate',
-// }
 
 // interface AssociatedItems {
 //   limit: number;
@@ -112,19 +93,18 @@ export const EntityProvider = ({ id, children }: { id: string; children: ReactNo
 
   const getResource = useMemo(() => () => get(RESOURCE_MAP, currentResource), [currentResource]);
 
-  const loadEntity = useCallback(async () => {
-    if (currentId) {
-      const resource = getResource();
-      const data = await resource.getItem(currentId);
-      setEntityState(data);
-    } else {
-      setEntityState(null);
-    }
-  }, [currentId, getResource]);
-
   useEffect(() => {
+    const loadEntity = async () => {
+      if (currentId) {
+        const resource = getResource();
+        const data = await resource.getItem(currentId);
+        setEntityState({ item: data });
+      } else {
+        setEntityState(null);
+      }
+    };
     loadEntity();
-  }, [loadEntity]);
+  }, [currentId, getResource]);
   //   const setItem = async (id: string, resource: IResource) => {
   //     const isCreate = id === 'create';
 

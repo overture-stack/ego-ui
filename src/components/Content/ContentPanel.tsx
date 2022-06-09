@@ -8,8 +8,6 @@
 // import useEntityContext from 'components/global/hooks/useEntityContext';
 // import { Entity } from 'common/typedefs';
 
-// const EmptyField = () => <span css={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
-
 // export const getFieldContent = (row, data) => {
 //   if (row.fieldContent) {
 //     return row.fieldContent;

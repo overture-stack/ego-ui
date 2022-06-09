@@ -192,12 +192,12 @@ const List = () => {
           })
         }
       /> */}
-      {(listParams.limit < list.count || listParams.offset > 0) && (
+      {(listParams.limit < list?.count || listParams.offset > 0) && (
         <Pagination
           onChange={(page) => setListParams({ offset: page * listParams.limit })}
           offset={listParams.offset}
           limit={listParams.limit}
-          total={list.count}
+          total={list?.count}
           range={3}
         />
       )}

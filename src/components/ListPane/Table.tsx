@@ -116,7 +116,7 @@ const Table = ({ schema }: { schema: Schema }) => {
         className="-striped -highlight"
         columns={getColumns(schema, listParams.sortOrder)}
         pageSize={listParams.limit}
-        data={list.resultSet}
+        data={list?.resultSet}
         showPagination={false}
         sorted={[{ id: listParams.sortField.key, desc: listParams.sortOrder === 'DESC' }]}
         onSortedChange={(newSort) => {
