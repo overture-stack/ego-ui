@@ -10,8 +10,7 @@ import Pagination from 'components/Pagination';
 // import getStyles from './ListPane.styles';
 
 // import { isChildOfPolicy } from 'common/associatedUtils';
-// import useAuthContext from 'components/global/hooks/useAuthContext';
-import useListContext from 'components/global/hooks/useListContext';
+import useListContext, { SortOrder } from 'components/global/hooks/useListContext';
 import Table from './Table';
 import schemas from 'common/schemas';
 import useDebounce from 'components/global/hooks/useDebounce';
@@ -139,10 +138,13 @@ const List = () => {
               style={{
                 backgroundColor: 'transparent',
                 paddingBottom: 0,
-                ...(listParams.sortOrder === 'ASC' && { color: theme.colors.primary_5 }),
+                ...(listParams.sortOrder === SortOrder.ASC && { color: theme.colors.primary_5 }),
               }}
               onClick={() =>
-                setListParams({ sortOrder: listParams.sortOrder === 'ASC' ? 'DESC' : 'ASC' })
+                setListParams({
+                  sortOrder:
+                    listParams.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+                })
               }
               icon="chevron up"
             />
@@ -153,7 +155,10 @@ const List = () => {
                 ...(listParams.sortOrder === 'DESC' && { color: theme.colors.primary_5 }),
               }}
               onClick={() =>
-                setListParams({ sortOrder: listParams.sortOrder === 'ASC' ? 'DESC' : 'ASC' })
+                setListParams({
+                  sortOrder:
+                    listParams.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+                })
               }
               icon="chevron down"
             />

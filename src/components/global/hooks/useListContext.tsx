@@ -1,7 +1,19 @@
-import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { ResourceType, SortOrder } from 'common/typedefs/Resource';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { ResourceType } from 'common/typedefs/Resource';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import schemas from 'common/schemas';
+
+export enum SortOrder {
+  DESC = 'DESC',
+  ASC = 'ASC',
+}
 
 interface ListParams {
   offset: number;
@@ -39,7 +51,7 @@ const initialParams: any = {
   limit: 20,
   // TODO: add fieldNames enum
   sortField: initialSortField, // double check this can apply to all entity types
-  sortOrder: 'ASC',
+  sortOrder: SortOrder.ASC,
   query: '',
 };
 
@@ -51,14 +63,13 @@ const initialListState = {
 type T_ListContext = {
   list: List;
   listParams: ListParams;
-  currentResource: any;
+  currentResource: ResourceType;
   setListParams: (params: Partial<ListParams>) => void;
 };
 const ListContext = createContext<T_ListContext>({
   list: initialListState,
   listParams: initialParams,
   currentResource: undefined,
-  // updateList: () => {},
   setListParams: () => {},
 });
 
@@ -102,8 +113,8 @@ export const ListProvider = ({
   });
   const [listState, setListState] = useState<List>(initialListState);
 
-  const setListParams = useMemo(
-    () => (newParams: Partial<ListParams>) =>
+  const setListParams = useCallback(
+    (newParams: Partial<ListParams>) =>
       setCurrentListParams((params) => ({ ...params, ...newParams })),
     [],
   );
@@ -221,7 +232,6 @@ export const ListProvider = ({
   const listData = {
     list: listState,
     currentResource,
-    // updateList,
     listParams: currentListParams,
     setListParams,
   };
