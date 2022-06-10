@@ -29,7 +29,7 @@ const ContentPanel = ({ mode = ContentState.DISPLAYING }: { mode: ContentState }
           </ControlsContainer>
           <div
             css={css`
-              padding: 1rem 0.5rem;
+              padding: 0.5rem;
             `}
           >
             <MetaSection />

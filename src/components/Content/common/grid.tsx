@@ -21,7 +21,8 @@ export const Section = styled(Grid)`
     border-bottom: 1px solid ${theme.colors.grey_3};
     &.ui.grid {
       margin: 0;
-      padding-bottom: 0.5rem;
+      padding-bottom: 1rem;
+      padding-top: 0.5rem;
     }
   `}
 `;

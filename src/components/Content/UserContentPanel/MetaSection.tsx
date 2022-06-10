@@ -20,24 +20,12 @@ const MetaSection = () => {
   const user = entity?.item as User;
   return (
     <div>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-bottom: 1rem;
-          }
-        `}
-      >
+      <Section>
         <FieldRow fieldName={FieldNames.ID} fieldValue={user?.id} />
         <FieldRow fieldName={FieldNames.NAME} fieldValue={`${user?.firstName} ${user?.lastName}`} />
         <FieldRow fieldName={FieldNames.EMAIL} fieldValue={user?.email} />
       </Section>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-top: 0.5rem;
-          }
-        `}
-      >
+      <Section>
         <BasicColumn width={8}>
           <Grid.Row>
             <BasicColumn width={8}>

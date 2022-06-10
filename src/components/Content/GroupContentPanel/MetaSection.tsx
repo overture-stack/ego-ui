@@ -10,23 +10,11 @@ const MetaSection = () => {
   const group = entity?.item as Group;
   return (
     <div>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-bottom: 1rem;
-          }
-        `}
-      >
+      <Section>
         <FieldRow fieldName={FieldNames.ID} fieldValue={group?.id} />
         <FieldRow fieldName={FieldNames.NAME} fieldValue={group?.name} />
       </Section>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-bottom: 1rem;
-          }
-        `}
-      >
+      <Section>
         <FieldRow fieldName={FieldNames.STATUS} fieldValue={group?.status} />
         <FieldRow fieldName={FieldNames.DESCRIPTION} fieldValue={group?.description} />
       </Section>

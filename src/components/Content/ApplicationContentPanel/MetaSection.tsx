@@ -14,23 +14,11 @@ const MetaSection = () => {
   const application = entity?.item as Application;
   return (
     <div>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-bottom: 1rem;
-          }
-        `}
-      >
+      <Section>
         <FieldRow fieldName={FieldNames.ID} fieldValue={application?.id} />
         <FieldRow fieldName={FieldNames.NAME} fieldValue={application?.name} />
       </Section>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-bottom: 1rem;
-          }
-        `}
-      >
+      <Section>
         <ApplicationFieldRow fieldName={FieldNames.STATUS} fieldValue={application?.status} />
         <ApplicationFieldRow
           fieldName={FieldNames.APPLICATION_TYPE}

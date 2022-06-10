@@ -10,13 +10,7 @@ const MetaSection = () => {
   const policy = entity?.item as Policy;
   return (
     <div>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-bottom: 1rem;
-          }
-        `}
-      >
+      <Section>
         <FieldRow fieldName={FieldNames.ID} fieldValue={policy?.id} />
         <FieldRow fieldName={FieldNames.NAME} fieldValue={policy?.name} />
       </Section>
