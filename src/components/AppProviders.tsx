@@ -2,6 +2,7 @@ import { ThemeProvider } from '@emotion/react';
 
 import defaultTheme from '../theme';
 import { EGO_JWT_KEY } from 'common/constants';
+
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AuthProvider } from './global/hooks/useAuthContext';

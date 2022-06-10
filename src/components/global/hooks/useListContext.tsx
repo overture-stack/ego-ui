@@ -4,13 +4,16 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
-// import { isEmpty, get, isEqual } from 'lodash';
-import { ResourceType, SortOrder } from 'common/typedefs/Resource';
+import { ResourceType } from 'common/typedefs/Resource';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import schemas from 'common/schemas';
+
+export enum SortOrder {
+  DESC = 'DESC',
+  ASC = 'ASC',
+}
 
 interface ListParams {
   offset: number;
@@ -48,7 +51,7 @@ const initialParams: any = {
   limit: 20,
   // TODO: add fieldNames enum
   sortField: initialSortField, // double check this can apply to all entity types
-  sortOrder: 'ASC',
+  sortOrder: SortOrder.ASC,
   query: '',
 };
 
@@ -60,14 +63,13 @@ const initialListState = {
 type T_ListContext = {
   list: List;
   listParams: ListParams;
-  currentResource: any;
+  currentResource: ResourceType;
   setListParams: (params: Partial<ListParams>) => void;
 };
 const ListContext = createContext<T_ListContext>({
   list: initialListState,
   listParams: initialParams,
   currentResource: undefined,
-  // updateList: () => {},
   setListParams: () => {},
 });
 
@@ -111,29 +113,11 @@ export const ListProvider = ({
   });
   const [listState, setListState] = useState<List>(initialListState);
 
-  const setListParams = useMemo(
-    () => (newParams: Partial<ListParams>) =>
+  const setListParams = useCallback(
+    (newParams: Partial<ListParams>) =>
       setCurrentListParams((params) => ({ ...params, ...newParams })),
     [],
   );
-
-  const loadList = useCallback(async () => {
-    if (currentResource) {
-      const getList = RESOURCE_MAP[currentResource].getList;
-      // TODO: make sure correct schema is used here once child list context is introduced
-      const validSortField = schemas[currentResource].find(
-        (r) => r.key === currentListParams.sortField.key,
-      )
-        ? currentListParams.sortField
-        : null;
-      const newParams = {
-        ...currentListParams,
-        sortField: validSortField || getInitialSortField(currentResource),
-      };
-      const data = await getList(newParams);
-      setListState(data);
-    }
-  }, [currentResource, currentListParams]);
 
   useEffect(() => {
     if (resourceName) {
@@ -147,8 +131,28 @@ export const ListProvider = ({
   }, [resourceName]);
 
   useEffect(() => {
+    const loadList = async () => {
+      if (currentResource) {
+        const getList = RESOURCE_MAP[currentResource].getList;
+        // TODO: make sure correct schema is used here once child list context is introduced
+        const validSortField = schemas[currentResource].find(
+          (r) => r.key === currentListParams.sortField.key,
+        )
+          ? currentListParams.sortField
+          : null;
+        const newParams = {
+          ...currentListParams,
+          sortField: validSortField || getInitialSortField(currentResource),
+        };
+        // TODO: there's still 1 extra api request happening when the resource type changes, possibly because of params update. need to investigate
+        // previously this useEffect was watching resourceType instead of currentResource, and that caused a second extra request with the old resource
+        // if there is an existing search query, the first request will still have that query in the params.
+        const data = await getList(newParams);
+        setListState(data);
+      }
+    };
     loadList();
-  }, [loadList]);
+  }, [currentResource, currentListParams]);
 
   // const getListFunc = (associatedType, parent) => {
   //   return associatedType === ResourceType.PERMISSIONS && !isEmpty(parent)
@@ -228,7 +232,6 @@ export const ListProvider = ({
   const listData = {
     list: listState,
     currentResource,
-    // updateList,
     listParams: currentListParams,
     setListParams,
   };
