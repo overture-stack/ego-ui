@@ -31,7 +31,7 @@ const ContentPanel = ({ mode = ContentState.DISPLAYING }: { mode: ContentState }
           </div>
         </React.Fragment>
       ) : (
-        <EmptyContent message="Please select a group" />
+        <EmptyContent message="Please select an application" />
       )}
     </div>
   );

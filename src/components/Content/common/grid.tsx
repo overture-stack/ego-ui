@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import { Grid } from 'semantic-ui-react';
+import { Grid, SemanticWIDTHS } from 'semantic-ui-react';
 
 export const StyledRow = styled(Grid.Row)`
   height: 48px;
@@ -77,13 +77,23 @@ const EmptyField = () => (
   </span>
 );
 
-export const FieldRow = ({ fieldName, fieldValue }: { fieldName: string; fieldValue: string }) => {
+export const FieldRow = ({
+  fieldName,
+  fieldValue,
+  fieldNameWidth = 4,
+  fieldContentWidth = 12,
+}: {
+  fieldName: string;
+  fieldValue: string;
+  fieldNameWidth?: SemanticWIDTHS;
+  fieldContentWidth?: SemanticWIDTHS;
+}) => {
   return (
     <StyledRow>
-      <Grid.Column width={4}>
+      <Grid.Column width={fieldNameWidth}>
         <FieldName>{fieldName}</FieldName>
       </Grid.Column>
-      <Grid.Column width={12}>
+      <Grid.Column width={fieldContentWidth}>
         <FieldContent>{fieldValue || <EmptyField />}</FieldContent>
       </Grid.Column>
     </StyledRow>

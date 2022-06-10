@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { RippleButton } from 'components/Ripple';
+import React from 'react';
 
 export const CreateButton = () => (
   <RippleButton
@@ -170,3 +171,13 @@ export const SaveButton = () => {
     </RippleButton>
   );
 };
+
+export const CreateableEntityDisplayControls = () => (
+  <React.Fragment>
+    <div>
+      <EditButton />
+      <CreateButton />
+    </div>
+    <DeleteButton />
+  </React.Fragment>
+);
