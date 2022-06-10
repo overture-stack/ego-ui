@@ -40,7 +40,7 @@ const MetaSection = () => {
       >
         <BasicColumn width={8}>
           <Grid.Row>
-            <BasicColumn width={7}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldName>{FieldNames.USER_TYPE}</FieldName>
               </BasicRow>
@@ -51,7 +51,7 @@ const MetaSection = () => {
                 <FieldName>{FieldNames.LANGUAGE}</FieldName>
               </BasicRow>
             </BasicColumn>
-            <BasicColumn width={9}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldContent
                   css={css`
@@ -72,7 +72,7 @@ const MetaSection = () => {
         </BasicColumn>
         <BasicColumn width={8}>
           <Grid.Row>
-            <BasicColumn width={7}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldName>{FieldNames.STATUS}</FieldName>
               </BasicRow>
@@ -80,7 +80,7 @@ const MetaSection = () => {
                 <FieldName>{FieldNames.LAST_LOGIN}</FieldName>
               </BasicRow>
             </BasicColumn>
-            <BasicColumn width={9}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldContent>{user?.status}</FieldContent>
               </BasicRow>
