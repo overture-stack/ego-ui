@@ -9,10 +9,9 @@ import 'react-table/react-table.css';
 // import { isChildOfPolicy, isGroup, isUserPermission } from 'common/associatedUtils';
 // import { messenger } from 'common/injectGlobals';
 // import ActionButton from 'components/Associator/ActionButton';
-import useListContext from 'components/global/hooks/useListContext';
+import useListContext, { SortOrder } from 'components/global/hooks/useListContext';
 import { Schema } from 'common/schemas/types';
 import { get } from 'lodash';
-import { SortOrder } from 'common/typedefs/Resource';
 
 const enhance = compose(
   withSize({
@@ -35,7 +34,7 @@ const getColumns = (schema: Schema, sortOrder: SortOrder) => {
     accessor: s.key,
     Header: s.fieldName,
     sortable: s.sortable || false,
-    sortMethod: () => (sortOrder === 'DESC' ? 1 : -1),
+    sortMethod: () => (sortOrder === SortOrder.ASC ? 1 : -1),
   }));
 };
 
@@ -52,7 +51,7 @@ const getColumns = (schema: Schema, sortOrder: SortOrder) => {
 // }) => {
 const Table = ({ schema }: { schema: Schema }) => {
   const theme = useTheme();
-  const { list, listParams } = useListContext();
+  const { list, listParams, setListParams } = useListContext();
 
   // const handleAction = async (item) => {
   //   if (resource.name.singular === 'API Key') {
@@ -115,8 +114,16 @@ const Table = ({ schema }: { schema: Schema }) => {
         pageSize={listParams.limit}
         data={list.resultSet}
         showPagination={false}
-        // sorted={[{ id: listParams.sortField.key, desc: listParams.sortOrder === 'DESC' }]}
-        // onSortedChange={(newSort) => onSortChange(newSort[0].id, newSort[0].desc ? 'DESC' : 'ASC')}
+        sorted={[{ id: listParams.sortField.key, desc: listParams.sortOrder === 'DESC' }]}
+        onSortedChange={(newSort) => {
+          setListParams({
+            sortField: {
+              key: newSort[0].id,
+              fieldName: schema.find((r) => r.key === newSort[0].id).fieldName,
+            },
+            sortOrder: newSort[0].desc ? SortOrder.DESC : SortOrder.ASC,
+          });
+        }}
         getTdProps={(state, rowInfo, column, instance) => ({
           // onClick: () => rowInfo && onSelect(rowInfo.original),
           ...(column.id === 'type' &&

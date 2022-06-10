@@ -31,8 +31,6 @@ export type ISchema = IField[];
 
 export type ResourceType = GROUPS | APPLICATIONS | USERS | API_KEYS | PERMISSIONS | POLICIES;
 
-export type SortOrder = 'DESC' | 'ASC';
-
 interface IBaseListParams {
   offset?: number = null;
   limit?: number = null;

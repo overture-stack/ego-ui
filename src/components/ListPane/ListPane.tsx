@@ -1,21 +1,19 @@
 /** @jsxImportSource @emotion/react */
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { css, useTheme } from '@emotion/react';
 import { noop } from 'lodash';
-// import React, { useEffect } from 'react';
 import { compose, defaultProps } from 'recompose';
-import { Button, Dropdown } from 'semantic-ui-react';
-// import { useParams } from 'react-router';
+import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
 
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
-// import { RippleButton } from 'components/Ripple';
 // import getStyles from './ListPane.styles';
 
 // import { isChildOfPolicy } from 'common/associatedUtils';
-// import useAuthContext from 'components/global/hooks/useAuthContext';
-import useListContext from 'components/global/hooks/useListContext';
+import useListContext, { SortOrder } from 'components/global/hooks/useListContext';
 import Table from './Table';
 import schemas from 'common/schemas';
+import useDebounce from 'components/global/hooks/useDebounce';
 
 const enhance = compose(
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
@@ -48,32 +46,17 @@ const paneControls = {
 
 const List = () => {
   // const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
-  const {
-    list,
-    listParams,
-    // setListParams,
-    currentResource,
-    // updateList,
-  } = useListContext();
+  const { list, listParams, setListParams, currentResource } = useListContext();
   const theme = useTheme();
-  // const routerParams: any = useParams();
   const columnWidth = 200;
   // TODO: for the moment schema setup for parent resources only
   const tableSchema = schemas[currentResource];
-  // useEffect(() => {
-  //   if (!(listParams.sortOrder && listParams.sortField)) {
-  //     setListParams({
-  //       ...listParams,
-  //       sortField: resource.initialSortField(isChildOfPolicy(get(parent, 'resource'))),
-  //       sortOrder: resource.initialSortOrder,
-  //     });
-  //   }
-  // }, [listParams, setListParams, resource, parent]);
+  const [query, setQuery] = useState<string>('');
 
-  // useEffect(() => {
-  //   const debouncedSetListParams = debounce(() => setListParams(listParams), 300);
-  //   debouncedSetListParams();
-  // }, [resource, parent, listParams, setListParams, routerParams.subResourceType]);
+  const debouncedQuery = useDebounce(query, 200);
+  useEffect(() => {
+    setListParams({ query: debouncedQuery });
+  }, [debouncedQuery, setListParams]);
 
   return (
     <div
@@ -98,48 +81,71 @@ const List = () => {
     >
       <ControlContainer>
         <div css={paneControls.searchContainer}>
-          {/* <Input
+          <Input
             icon={
               listParams.query.length > 0 ? (
-                <Icon name={'close'} onClick={(e) => setListParams({ query: '' })} link={true} />
+                <Icon name={'close'} onClick={() => setQuery('')} link={true} />
               ) : (
                 <Icon name={'search'} />
               )
             }
-            value={listParams.query}
+            value={query}
             placeholder="Search..."
-            onChange={(event, { value }) => setListParams({ query: value })}
-          /> */}
+            onChange={(event, { value }) => setQuery(value)}
+          />
         </div>
         <div css={paneControls.sortContainer}>
           Sort by:
           <Dropdown
-            selection
-            style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
+            button
+            style={{
+              minWidth: '9.1em',
+              marginLeft: '0.5em',
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: theme.colors.white,
+              border: `1px solid ${theme.colors.grey_3}`,
+              paddingLeft: '15px',
+              paddingRight: '12px',
+              fontWeight: 'normal',
+              color: theme.colors.black,
+            }}
             selectOnNavigation={false}
-            options={schemas[currentResource]
-              .filter((field) => field.sortable)
-              .map((sortableField) => ({
-                text: sortableField.fieldName,
-                value: sortableField.key,
-              }))}
             text={listParams.sortField.fieldName}
-            // onChange={(event, { value }) =>
-            //   setListParams({
-            //     sortField: resource
-            //       .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-            //       .find((field) => field.key === value),
-            //   })
-            // }
-          />
+          >
+            <Dropdown.Menu>
+              {schemas[currentResource]
+                .filter((field) => field.sortable)
+                .map((sortableField) => {
+                  return (
+                    <Dropdown.Item
+                      key={sortableField.key}
+                      text={sortableField.fieldName}
+                      value={sortableField.key}
+                      onClick={(
+                        event: SyntheticEvent,
+                        { value, text }: { value: string; text: string },
+                      ) => {
+                        setListParams({ sortField: { key: value, fieldName: text } });
+                      }}
+                    />
+                  );
+                })}
+            </Dropdown.Menu>
+          </Dropdown>
           <Button.Group css={paneControls.sortOrderWrapper} vertical>
             <Button
               style={{
                 backgroundColor: 'transparent',
                 paddingBottom: 0,
-                ...(listParams.sortOrder === 'ASC' && { color: theme.colors.primary_5 }),
+                ...(listParams.sortOrder === SortOrder.ASC && { color: theme.colors.primary_5 }),
               }}
-              // onClick={() => setListParams({ ...listParams, sortOrder: 'ASC' })}
+              onClick={() =>
+                setListParams({
+                  sortOrder:
+                    listParams.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+                })
+              }
               icon="chevron up"
             />
             <Button
@@ -148,7 +154,12 @@ const List = () => {
                 backgroundColor: 'transparent',
                 ...(listParams.sortOrder === 'DESC' && { color: theme.colors.primary_5 }),
               }}
-              // onClick={() => setListParams({ ...listParams, sortOrder: 'DESC' })}
+              onClick={() =>
+                setListParams({
+                  sortOrder:
+                    listParams.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+                })
+              }
               icon="chevron down"
             />
           </Button.Group>
@@ -188,8 +199,7 @@ const List = () => {
       /> */}
       {(listParams.limit < list.count || listParams.offset > 0) && (
         <Pagination
-          onChange={() => null}
-          // onChange={(page) => setListParams({ ...listParams, offset: page * listParams.limit })}
+          onChange={(page) => setListParams({ offset: page * listParams.limit })}
           offset={listParams.offset}
           limit={listParams.limit}
           total={list.count}

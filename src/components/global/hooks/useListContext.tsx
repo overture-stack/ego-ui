@@ -6,10 +6,14 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-// import { isEmpty, get, isEqual } from 'lodash';
-import { ResourceType, SortOrder } from 'common/typedefs/Resource';
+import { ResourceType } from 'common/typedefs/Resource';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import schemas from 'common/schemas';
+
+export enum SortOrder {
+  DESC = 'DESC',
+  ASC = 'ASC',
+}
 
 interface ListParams {
   offset: number;
@@ -47,7 +51,7 @@ const initialParams: any = {
   limit: 20,
   // TODO: add fieldNames enum
   sortField: initialSortField, // double check this can apply to all entity types
-  sortOrder: 'ASC',
+  sortOrder: SortOrder.ASC,
   query: '',
 };
 
@@ -59,14 +63,14 @@ const initialListState = {
 type T_ListContext = {
   list: List;
   listParams: ListParams;
-  currentResource: any;
+  currentResource: ResourceType;
+  setListParams: (params: Partial<ListParams>) => void;
 };
 const ListContext = createContext<T_ListContext>({
   list: initialListState,
   listParams: initialParams,
   currentResource: undefined,
-  // updateList: () => {},
-  // setListParams: () => {},
+  setListParams: () => {},
 });
 
 const getInitialSortField = (resource: ResourceType) => {
@@ -99,15 +103,8 @@ export const ListProvider = ({
 }) => {
   // tracking resource and subresource changes because "parent" can be constructed based on their state
   // tracking just the resource type name as that can be used to access anything in the RESOURCE MAP
-  // const [currentResource, setCurrentResource] = useState<ResourceType | 'create'>(resourceName);
   // const [currentSubResourceName, setCurrentSubResourceName] = useState<ResourceType | 'edit'>(
   //   subResourceName,
-  // );
-  // const [currentListParams, setCurrentListParams] = useState<ListParams>(
-  //   getInitialParamsByResource(
-  //     RESOURCE_MAP[resourceName],
-  //     getResourceParent(resourceName, resourceId, subResourceName),
-  //   ),
   // );
   const [currentResource, setCurrentResource] = useState<ResourceType>(resourceName);
   const [currentListParams, setCurrentListParams] = useState<ListParams>({
@@ -116,18 +113,11 @@ export const ListProvider = ({
   });
   const [listState, setListState] = useState<List>(initialListState);
 
-  const loadList = useCallback(async () => {
-    if (resourceName) {
-      const getList = RESOURCE_MAP[resourceName].getList;
-      const newParams = {
-        ...currentListParams,
-        sortField: getInitialSortField(resourceName),
-      };
-      // TODO: there's still 2 api requests happening, because of params update i think. need to investigate
-      const data = await getList(newParams);
-      setListState(data);
-    }
-  }, [resourceName, currentListParams]);
+  const setListParams = useCallback(
+    (newParams: Partial<ListParams>) =>
+      setCurrentListParams((params) => ({ ...params, ...newParams })),
+    [],
+  );
 
   useEffect(() => {
     if (resourceName) {
@@ -135,13 +125,34 @@ export const ListProvider = ({
       setCurrentListParams((current) => ({
         ...current,
         sortField: getInitialSortField(resourceName),
+        // TODO: should changing resource reset the sortOrder to the default order (ASC)?
       }));
     }
   }, [resourceName]);
 
   useEffect(() => {
+    const loadList = async () => {
+      if (currentResource) {
+        const getList = RESOURCE_MAP[currentResource].getList;
+        // TODO: make sure correct schema is used here once child list context is introduced
+        const validSortField = schemas[currentResource].find(
+          (r) => r.key === currentListParams.sortField.key,
+        )
+          ? currentListParams.sortField
+          : null;
+        const newParams = {
+          ...currentListParams,
+          sortField: validSortField || getInitialSortField(currentResource),
+        };
+        // TODO: there's still 1 extra api request happening when the resource type changes, possibly because of params update. need to investigate
+        // previously this useEffect was watching resourceType instead of currentResource, and that caused a second extra request with the old resource
+        // if there is an existing search query, the first request will still have that query in the params.
+        const data = await getList(newParams);
+        setListState(data);
+      }
+    };
     loadList();
-  }, [loadList]);
+  }, [currentResource, currentListParams]);
 
   // const getListFunc = (associatedType, parent) => {
   //   return associatedType === ResourceType.PERMISSIONS && !isEmpty(parent)
@@ -221,9 +232,8 @@ export const ListProvider = ({
   const listData = {
     list: listState,
     currentResource,
-    // updateList,
     listParams: currentListParams,
-    // setListParams,
+    setListParams,
   };
 
   return <ListContext.Provider value={listData}>{children}</ListContext.Provider>;
