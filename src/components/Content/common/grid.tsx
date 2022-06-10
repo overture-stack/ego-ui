@@ -26,6 +26,16 @@ export const Section = styled(Grid)`
   `}
 `;
 
+export const BasicColumn = styled(Grid.Column)`
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+`;
+
+export const BasicRow = styled(Grid.Row)`
+  padding-top: 15px;
+  padding-bottom: 15px;
+`;
+
 export const FieldContent = ({
   children,
   className,
@@ -54,7 +64,18 @@ export const FieldName = styled('span')`
   `}
 `;
 
-const EmptyField = () => <span css={{ opacity: 0.4, fontStyle: 'italic' }}>empty</span>;
+const EmptyField = () => (
+  <span
+    css={css`
+      opacity: 0.4;
+      font-style: italic;
+      display: inline-flex;
+      align-items: center;
+    `}
+  >
+    empty
+  </span>
+);
 
 export const FieldRow = ({ fieldName, fieldValue }: { fieldName: string; fieldValue: string }) => {
   return (

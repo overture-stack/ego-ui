@@ -4,25 +4,15 @@ import format from 'date-fns/format/index.js';
 import { User } from 'common/typedefs';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 import { Grid } from 'semantic-ui-react';
-import { FieldContent, FieldName, FieldRow, Section } from '../common/grid';
+import { BasicColumn, BasicRow, FieldContent, FieldName, FieldRow, Section } from '../common/grid';
 import { DATE_FORMAT } from 'common/constants';
 import { css, useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
+import { FieldNames } from '../types';
 
 // next steps: make some common components. it's likely you'll have to refactor existing display components cuz there's so much
 // "if this resource" logic
 // you need: fieldName, fieldContent, FieldRow, Section
 // Action header (create/edit/delete/save)
-
-const BasicColumn = styled(Grid.Column)`
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-`;
-
-const BasicRow = styled(Grid.Row)`
-  padding-top: 15px;
-  padding-bottom: 15px;
-`;
 
 const MetaSection = () => {
   const theme = useTheme();
@@ -37,9 +27,9 @@ const MetaSection = () => {
           }
         `}
       >
-        <FieldRow fieldName="ID" fieldValue={user?.id} />
-        <FieldRow fieldName="Name" fieldValue={`${user?.firstName} ${user?.lastName}`} />
-        <FieldRow fieldName="Email" fieldValue={user?.email} />
+        <FieldRow fieldName={FieldNames.ID} fieldValue={user?.id} />
+        <FieldRow fieldName={FieldNames.NAME} fieldValue={`${user?.firstName} ${user?.lastName}`} />
+        <FieldRow fieldName={FieldNames.EMAIL} fieldValue={user?.email} />
       </Section>
       <Section
         css={css`
@@ -52,13 +42,13 @@ const MetaSection = () => {
           <Grid.Row>
             <BasicColumn width={7}>
               <BasicRow>
-                <FieldName>User Type</FieldName>
+                <FieldName>{FieldNames.USER_TYPE}</FieldName>
               </BasicRow>
               <BasicRow>
-                <FieldName>Created</FieldName>
+                <FieldName>{FieldNames.CREATED}</FieldName>
               </BasicRow>
               <BasicRow>
-                <FieldName>Language</FieldName>
+                <FieldName>{FieldNames.LANGUAGE}</FieldName>
               </BasicRow>
             </BasicColumn>
             <BasicColumn width={9}>
@@ -84,10 +74,10 @@ const MetaSection = () => {
           <Grid.Row>
             <BasicColumn width={7}>
               <BasicRow>
-                <FieldName>Status</FieldName>
+                <FieldName>{FieldNames.STATUS}</FieldName>
               </BasicRow>
               <BasicRow>
-                <FieldName>Last Login</FieldName>
+                <FieldName>{FieldNames.LAST_LOGIN}</FieldName>
               </BasicRow>
             </BasicColumn>
             <BasicColumn width={9}>
@@ -106,60 +96,3 @@ const MetaSection = () => {
 };
 
 export default MetaSection;
-
-/* <StyledGrid className="customGrid">
-        {.map(({ fieldContent, fieldName, key }) => {
-          return (
-            <StyledRow className="contentView contentRow" key={`${entity.id}-${key}`}>
-              <Grid.Column
-                className="fieldNameColumn"
-                css={css`
-                  &.fieldNameColumn.wide.column {
-                    padding-left: 0px;
-                  }
-                `}
-                width={theme.dimensions.fieldNameWidths.user}
-              >
-                <StyledRow className="contentRow" css={{ padding: 0 }}>
-                  <span
-                    css={(theme) => ({
-                      alignItems: 'center',
-                      color: theme.colors.grey_6,
-                      display: 'inline-flex',
-                      fontSize: 11,
-                      paddingRight: 10,
-                    })}
-                    className="contentFieldName"
-                  >
-                    {fieldName}
-                  </span>
-                </StyledRow>
-              </Grid.Column>
-              <Grid.Column
-                className="idContent"
-                width={11}
-                css={css`
-                  &.idContent.column.wide {
-                    padding-left: 5px;
-                  }
-                `}
-              >
-                <StyledRow className="contentRow">
-                  <FieldContent
-                    css={[
-                      {
-                        display: 'flex',
-                        flex: '0 0 100%',
-                        paddingLeft: 0,
-                      },
-                    ]}
-                    className="contentFieldContent"
-                  >
-                    {fieldContent}
-                  </FieldContent>
-                </StyledRow>
-              </Grid.Column>
-            </StyledRow>
-          );
-        })}
-      </StyledGrid> */
