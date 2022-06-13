@@ -8,6 +8,7 @@ import { Application, Group, Policy, User } from 'common/typedefs';
 import useListContext from './useListContext';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { get } from 'lodash';
+import { ContentState } from 'components/Content/types';
 // import { IResource } from 'common/typedefs/Resource';
 // import { Permission, SimplePermission } from 'common/typedefs/Permission';
 // import { ApiKey } from 'common/typedefs/ApiKey';
@@ -43,28 +44,19 @@ export interface EntityState {
 type T_EntityContext = {
   currentId?: string;
   entity: EntityState;
+  mode: ContentState;
+  setMode: any;
   //   stageChange: (change?: any) => void;
   //   undoChanges: (id?: string) => void;
   //   saveChanges: () => void;
   //   deleteItem: () => void;
   //   setItem: (id: string, resource: IResource) => void;
+  // should not need to track lastValidId any longer as edit/create will be tracked in state, not the url path
+  // currentId will be unchanged no matter which content mode
   //   lastValidId?: string;
   //   contentState: ContentState;
   //   setContentState: (contentState: ContentState) => void;
 };
-
-const EntityContext = createContext<T_EntityContext>({
-  currentId: undefined,
-  entity: null,
-  //   stageChange: () => {},
-  //   undoChanges: () => {},
-  //   saveChanges: () => {},
-  //   deleteItem: () => {},
-  //   setItem: () => {},
-  //   lastValidId: undefined,
-  //   contentState: ContentState.DISPLAYING,
-  //   setContentState: () => {},
-});
 
 export const initialEntityState: EntityState = {
   item: null,
@@ -74,6 +66,21 @@ export const initialEntityState: EntityState = {
   //   resource: null,
   // id: null,
 };
+
+const EntityContext = createContext<T_EntityContext>({
+  currentId: undefined,
+  entity: initialEntityState,
+  mode: ContentState.DISPLAYING,
+  setMode: () => {},
+  //   stageChange: () => {},
+  //   undoChanges: () => {},
+  //   saveChanges: () => {},
+  //   deleteItem: () => {},
+  //   setItem: () => {},
+  //   lastValidId: undefined,
+  //   contentState: ContentState.DISPLAYING,
+  //   setContentState: () => {},
+});
 
 // export const getListFunc = (associatedType, parent) => {
 //   return associatedType === ResourceType.PERMISSIONS && !isEmpty(parent)
@@ -89,6 +96,7 @@ export const EntityProvider = ({ id, children }: { id: string; children: ReactNo
   //   const [lastValidId, setLastValidId] = useState<string>(undefined);
   //   const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
 
+  const [currentMode, setCurrentMode] = useState<ContentState>(ContentState.DISPLAYING);
   useEffect(() => setCurrentId(id), [id]);
 
   const getResource = useMemo(() => () => get(RESOURCE_MAP, currentResource), [currentResource]);
@@ -298,6 +306,8 @@ export const EntityProvider = ({ id, children }: { id: string; children: ReactNo
   const entityData = {
     currentId,
     entity: entityState,
+    mode: currentMode,
+    setMode: setCurrentMode,
     //     stageChange,
     //     undoChanges,
     //     saveChanges,

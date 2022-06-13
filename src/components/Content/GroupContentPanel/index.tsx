@@ -1,35 +1,23 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import ControlsContainer from 'components/ControlsContainer';
 import EmptyContent from 'components/EmptyContent';
 import useEntityContext from 'components/global/hooks/useEntityContext';
-import React from 'react';
-import { CreateableEntityDisplayControls } from '../common/buttons';
-import { ContentState } from '../types';
+import { CreateableEntityHeader } from '../common/buttons';
 import MetaSection from './MetaSection';
 
-const ContentPanel = ({ mode = ContentState.DISPLAYING }: { mode: ContentState }) => {
+const ContentPanel = () => {
   const { currentId } = useEntityContext();
   return (
     <div>
+      <CreateableEntityHeader />
       {currentId ? (
-        <React.Fragment>
-          <ControlsContainer
-            css={css`
-              padding: 0 24px;
-              justify-content: space-between;
-            `}
-          >
-            {mode === ContentState.DISPLAYING && <CreateableEntityDisplayControls />}
-          </ControlsContainer>
-          <div
-            css={css`
-              padding: 0.5rem;
-            `}
-          >
-            <MetaSection />
-          </div>
-        </React.Fragment>
+        <div
+          css={css`
+            padding: 0.5rem;
+          `}
+        >
+          <MetaSection />
+        </div>
       ) : (
         <EmptyContent message="Please select a group" />
       )}

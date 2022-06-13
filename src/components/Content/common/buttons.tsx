@@ -1,46 +1,56 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import ControlsContainer from 'components/ControlsContainer';
+import useEntityContext from 'components/global/hooks/useEntityContext';
 import { RippleButton } from 'components/Ripple';
 import React from 'react';
+import { ContentState } from '../types';
 
-export const CreateButton = () => (
-  <RippleButton
-    basic
-    size="tiny"
-    css={(theme) => css`
-      &.ui.button.basic {
-        box-shadow: none;
-        color: ${theme.colors.primary_7} !important;
-        border: 1px solid ${theme.colors.primary_7};
-      }
-    `}
-    // disabled={isSaving}
-    // onClick={() => history.push(`/${resource.name.plural}/create`)}
-  >
-    Create
-  </RippleButton>
-);
-
-export const EditButton = () => (
-  <RippleButton
-    css={(theme) => css`
-      &.ui.button {
-        color: ${theme.colors.white};
-        background-color: ${theme.colors.accent};
-        border: 1px solid ${theme.colors.accent};
-        &:hover {
-          background-color: ${theme.colors.accent_dark};
-          border: 1px solid ${theme.colors.accent_dark};
+export const CreateButton = () => {
+  const { setMode } = useEntityContext();
+  return (
+    <RippleButton
+      basic
+      size="tiny"
+      css={(theme) => css`
+        &.ui.button.basic {
+          box-shadow: none;
+          color: ${theme.colors.primary_7} !important;
+          border: 1px solid ${theme.colors.primary_7};
         }
-      }
-    `}
-    // disabled={isSaving}
-    // onClick={() => history.push(`/${resource.name.plural}/${id}/edit`)}
-    size="tiny"
-  >
-    Edit
-  </RippleButton>
-);
+      `}
+      // disabled={isSaving}
+      onClick={() => setMode(ContentState.CREATING)}
+    >
+      Create
+    </RippleButton>
+  );
+};
+
+export const EditButton = () => {
+  const { setMode } = useEntityContext();
+  return (
+    <RippleButton
+      css={(theme) => css`
+        &.ui.button {
+          color: ${theme.colors.white};
+          background-color: ${theme.colors.accent};
+          border: 1px solid ${theme.colors.accent};
+          &:hover {
+            background-color: ${theme.colors.accent_dark};
+            border: 1px solid ${theme.colors.accent_dark};
+          }
+        }
+      `}
+      // disabled={isSaving}
+      onClick={() => setMode(ContentState.EDITING)}
+      // onClick={() => history.push(`/${resource.name.plural}/${id}/edit`)}
+      size="tiny"
+    >
+      Edit
+    </RippleButton>
+  );
+};
 
 export const DisableButton = () => (
   <RippleButton
@@ -117,26 +127,31 @@ export const DeleteButton = () => (
   </RippleButton>
 );
 
-export const CancelButton = () => (
-  <RippleButton
-    basic
-    size="tiny"
-    css={(theme) => css`
-      &.ui.button.basic {
-        box-shadow: none;
-        color: ${theme.colors.grey_6} !important;
-        border: 1px solid ${theme.colors.grey_6};
-      }
-    `}
-    // disabled={isSaving}
-    onClick={async () => {
-      // await undoChanges(lastValidId);
-      // history.push(`/${resource.name.plural}/${lastValidId || ''}`);
-    }}
-  >
-    Cancel
-  </RippleButton>
-);
+export const CancelButton = () => {
+  const { setMode } = useEntityContext();
+  return (
+    <RippleButton
+      basic
+      size="tiny"
+      css={(theme) => css`
+        &.ui.button.basic {
+          box-shadow: none;
+          color: ${theme.colors.grey_6} !important;
+          border: 1px solid ${theme.colors.grey_6};
+        }
+      `}
+      // disabled={isSaving}
+      onClick={async () => {
+        // TODO: restore previous entity state
+        setMode(ContentState.DISPLAYING);
+        // await undoChanges(lastValidId);
+        // history.push(`/${resource.name.plural}/${lastValidId || ''}`);
+      }}
+    >
+      Cancel
+    </RippleButton>
+  );
+};
 
 export const SaveButton = () => {
   return (
@@ -181,3 +196,37 @@ export const CreateableEntityDisplayControls = () => (
     <DeleteButton />
   </React.Fragment>
 );
+
+export const CreateableEntityHeader = () => {
+  const { currentId, mode } = useEntityContext();
+  return (
+    <ControlsContainer
+      css={css`
+        padding: 0 24px;
+        justify-content: space-between;
+      `}
+    >
+      {mode === ContentState.DISPLAYING ? (
+        currentId ? (
+          <CreateableEntityDisplayControls />
+        ) : (
+          <CreateButton />
+        )
+      ) : null}
+      {(mode === ContentState.EDITING || mode === ContentState.CREATING) && (
+        <EntityEditingControls />
+      )}
+    </ControlsContainer>
+  );
+};
+
+export const EntityEditingControls = () => (
+  <React.Fragment>
+    <CancelButton />
+    <SaveButton />
+  </React.Fragment>
+);
+
+// if in edit mode, you need:
+// - editable fields
+// - edit mode controls (save, cancel)
