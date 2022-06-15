@@ -1,34 +1,35 @@
+import { FieldNames } from 'components/Content/types';
 import { Schema } from './types';
 
 const schema: Schema = [
   {
-    fieldName: 'ID',
+    fieldName: FieldNames.ID,
     key: 'id',
     sortable: true,
   },
   {
-    fieldName: 'First Name',
+    fieldName: FieldNames.FIRST_NAME,
     key: 'firstName',
     sortable: true,
   },
   {
-    fieldName: 'Last Name',
+    fieldName: FieldNames.LAST_NAME,
     initialSort: true,
     key: 'lastName',
     sortable: true,
   },
   {
-    fieldName: 'Email',
+    fieldName: FieldNames.EMAIL,
     key: 'email',
     sortable: true,
   },
   {
-    fieldName: 'User Type',
+    fieldName: FieldNames.USER_TYPE,
     key: 'type',
     sortable: true,
   },
   {
-    fieldName: 'Status',
+    fieldName: FieldNames.STATUS,
     key: 'status',
     sortable: false,
   },

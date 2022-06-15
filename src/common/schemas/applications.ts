@@ -1,44 +1,45 @@
+import { FieldNames } from 'components/Content/types';
 import { Schema } from './types';
 
 const schema: Schema = [
   {
-    fieldName: 'ID',
+    fieldName: FieldNames.ID,
     key: 'id',
     sortable: true,
   },
   {
-    fieldName: 'Name',
+    fieldName: FieldNames.NAME,
     initialSort: true,
     key: 'name',
     sortable: true,
   },
   {
-    fieldName: 'Description',
+    fieldName: FieldNames.DESCRIPTION,
     key: 'description',
     sortable: true,
   },
   {
-    fieldName: 'Status',
+    fieldName: FieldNames.STATUS,
     key: 'status',
     sortable: true,
   },
   {
-    fieldName: 'Application Type',
+    fieldName: FieldNames.APPLICATION_TYPE,
     key: 'type',
     sortable: true,
   },
   {
-    fieldName: 'Client ID',
+    fieldName: FieldNames.CLIENT_ID,
     key: 'clientId',
     sortable: false,
   },
   {
-    fieldName: 'Redirect Uri',
+    fieldName: FieldNames.REDIRECT_URI,
     key: 'redirectUri',
     sortable: false,
   },
   {
-    fieldName: 'Error Redirect Uri',
+    fieldName: FieldNames.ERROR_REDIRECT_URI,
     key: 'errorRedirectUri',
     sortable: false,
   },

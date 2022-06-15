@@ -1,3 +1,4 @@
+// TODO: revisit these states, possibly will re-implement some as loading states within the buttons
 export enum ContentState {
   DISPLAYING = 'DISPLAYING',
   CREATING = 'CREATING',
@@ -10,7 +11,7 @@ export enum ContentState {
 }
 
 export enum FieldNames {
-  ID = 'Id',
+  ID = 'ID',
   NAME = 'Name',
   EMAIL = 'Email',
   USER_TYPE = 'User Type',
@@ -20,8 +21,17 @@ export enum FieldNames {
   STATUS = 'Status',
   DESCRIPTION = 'Description',
   APPLICATION_TYPE = 'Application Type',
-  CLIENT_ID = 'Client Id',
+  CLIENT_ID = 'Client ID',
   CLIENT_SECRET = 'Client Secret',
   REDIRECT_URI = 'Redirect URI',
   ERROR_REDIRECT_URI = 'Error Redirect URI',
+  FIRST_NAME = 'First Name',
+  LAST_NAME = 'Last Name',
+  API_KEY = 'API Key',
+  SCOPE = 'Scope',
+  EXPIRY = 'Expiry',
+  ISSUED = 'Issued',
+  POLICY_NAME = 'Policy Name',
+  ACCESS_LEVEL = 'Access Level',
+  INHERITANCE = 'Inheritance',
 }
