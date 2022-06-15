@@ -3,24 +3,31 @@ import { css } from '@emotion/react';
 import EmptyContent from 'components/EmptyContent';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 import { CreateableEntityHeader } from '../common/buttons';
-import MetaSection from './MetaSection';
+import { ContentState } from '../types';
+import MetaSection, { PolicyForm } from './MetaSection';
 
 const ContentPanel = () => {
-  const { currentId } = useEntityContext();
+  const { currentId, mode } = useEntityContext();
   return (
     <div>
       <CreateableEntityHeader />
-      {currentId ? (
-        <div
-          css={css`
-            padding: 0.5rem;
-          `}
-        >
-          <MetaSection />
-        </div>
-      ) : (
-        <EmptyContent message="Please select a policy" />
-      )}
+      <div
+        css={css`
+          padding: 0.5rem;
+        `}
+      >
+        {mode === ContentState.CREATING ? (
+          <PolicyForm />
+        ) : currentId ? (
+          mode === ContentState.EDITING ? (
+            <PolicyForm isEditing />
+          ) : (
+            <MetaSection />
+          )
+        ) : (
+          <EmptyContent message="Please select a policy" />
+        )}
+      </div>
     </div>
   );
 };

@@ -1,24 +1,47 @@
 import { Group } from 'common/typedefs';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 
-import { FieldRow, Section } from '../common/grid';
+import { FieldRow, Section, TextInput } from '../common/grid';
+import { isEditing } from '../common/utils';
 import { FieldNames } from '../types';
 
 const MetaSection = () => {
-  const { entity } = useEntityContext();
-  const group = entity?.item as Group;
+  const { entity, stagedEntity, mode } = useEntityContext();
+  const group = (isEditing(mode) ? stagedEntity?.item : entity?.item) as Group;
   return (
     <div>
       <Section>
-        <FieldRow fieldName={FieldNames.ID} fieldValue={group?.id} />
-        <FieldRow fieldName={FieldNames.NAME} fieldValue={group?.name} />
+        <FieldRow fieldName={FieldNames.ID}>{group?.id}</FieldRow>
+        <FieldRow fieldName={FieldNames.NAME}>{group?.name}</FieldRow>
       </Section>
       <Section>
-        <FieldRow fieldName={FieldNames.STATUS} fieldValue={group?.status} />
-        <FieldRow fieldName={FieldNames.DESCRIPTION} fieldValue={group?.description} />
+        <FieldRow fieldName={FieldNames.STATUS}>{group?.status}</FieldRow>
+        <FieldRow fieldName={FieldNames.DESCRIPTION}>{group?.description}</FieldRow>
       </Section>
     </div>
   );
 };
 
+export const GroupForm = ({ isEditing = false }: { isEditing?: boolean }) => {
+  const { entity, stagedEntity } = useEntityContext();
+  const stagedGroup = stagedEntity.item as Group;
+  return (
+    <div>
+      <Section>
+        {isEditing && <FieldRow fieldName={FieldNames.ID}>{entity.item?.id}</FieldRow>}
+        <FieldRow fieldName={FieldNames.NAME}>
+          <TextInput value={stagedGroup?.name} />
+        </FieldRow>
+      </Section>
+      <Section>
+        <FieldRow fieldName={FieldNames.STATUS}>
+          <TextInput value={stagedGroup?.status} />
+        </FieldRow>
+        <FieldRow fieldName={FieldNames.DESCRIPTION}>
+          <TextInput value={stagedGroup?.description} />
+        </FieldRow>
+      </Section>
+    </div>
+  );
+};
 export default MetaSection;

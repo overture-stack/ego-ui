@@ -53,13 +53,13 @@ export const ApplicationForm = ({ isEditing = false }: { isEditing?: boolean }) 
           <ApplicationFieldRow fieldName={FieldNames.ID}>{entity.item?.id}</ApplicationFieldRow>
         )}
         <ApplicationFieldRow fieldName={FieldNames.NAME}>
-          <TextInput value={stagedApplication.name} />
+          <TextInput value={stagedApplication?.name} />
         </ApplicationFieldRow>
       </Section>
       <Section>
         <ApplicationFieldRow fieldName={FieldNames.STATUS}>
           <Dropdown
-            value={stagedApplication.status}
+            value={stagedApplication?.status}
             selection
             options={[
               { text: APPLICATION_STATUS.APPROVED, value: APPLICATION_STATUS.APPROVED },
@@ -71,7 +71,7 @@ export const ApplicationForm = ({ isEditing = false }: { isEditing?: boolean }) 
         </ApplicationFieldRow>
         <ApplicationFieldRow fieldName={FieldNames.APPLICATION_TYPE}>
           <Dropdown
-            value={stagedApplication.type}
+            value={stagedApplication?.type}
             selection
             options={[
               { text: APPLICATION_TYPE.CLIENT, value: APPLICATION_TYPE.CLIENT },
@@ -80,16 +80,16 @@ export const ApplicationForm = ({ isEditing = false }: { isEditing?: boolean }) 
           />
         </ApplicationFieldRow>
         <ApplicationFieldRow fieldName={FieldNames.CLIENT_ID}>
-          <TextInput value={stagedApplication.clientId} />
+          <TextInput value={stagedApplication?.clientId} />
         </ApplicationFieldRow>
         <ApplicationFieldRow fieldName={FieldNames.CLIENT_SECRET}>
-          <TextInput value={stagedApplication.clientSecret} />
+          <TextInput value={stagedApplication?.clientSecret} />
         </ApplicationFieldRow>
         <ApplicationFieldRow fieldName={FieldNames.REDIRECT_URI}>
-          <TextInput value={stagedApplication.redirectUri} />
+          <TextInput value={stagedApplication?.redirectUri} />
         </ApplicationFieldRow>
         <ApplicationFieldRow fieldName={FieldNames.ERROR_REDIRECT_URI}>
-          <TextInput value={stagedApplication.errorRedirectUri} />
+          <TextInput value={stagedApplication?.errorRedirectUri} />
         </ApplicationFieldRow>
       </Section>
     </Fragment>

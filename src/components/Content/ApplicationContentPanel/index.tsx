@@ -9,23 +9,25 @@ import MetaSection, { ApplicationForm } from './MetaSection';
 const ContentPanel = () => {
   const { currentId, mode } = useEntityContext();
   return (
-    <div
-      css={css`
-        padding: 0.5rem;
-      `}
-    >
+    <div>
       <CreateableEntityHeader />
-      {mode === ContentState.CREATING ? (
-        <ApplicationForm />
-      ) : currentId ? (
-        mode === ContentState.EDITING ? (
-          <ApplicationForm isEditing />
+      <div
+        css={css`
+          padding: 0.5rem;
+        `}
+      >
+        {mode === ContentState.CREATING ? (
+          <ApplicationForm />
+        ) : currentId ? (
+          mode === ContentState.EDITING ? (
+            <ApplicationForm isEditing />
+          ) : (
+            <MetaSection />
+          )
         ) : (
-          <MetaSection />
-        )
-      ) : (
-        <EmptyContent message="Please select an application" />
-      )}
+          <EmptyContent message="Please select an application" />
+        )}
+      </div>
     </div>
   );
 };
