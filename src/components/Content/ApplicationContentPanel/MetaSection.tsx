@@ -1,4 +1,4 @@
-import { Application, APPLICATION_STATUS, APPLICATION_TYPE } from 'common/typedefs/Application';
+import { Application, ApplicationStatus, ApplicationType } from 'common/typedefs/Application';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 import { Fragment } from 'react';
 import { Dropdown } from 'semantic-ui-react';
@@ -62,10 +62,10 @@ export const ApplicationForm = ({ isEditing = false }: { isEditing?: boolean }) 
             value={stagedApplication?.status}
             selection
             options={[
-              { text: APPLICATION_STATUS.APPROVED, value: APPLICATION_STATUS.APPROVED },
-              { text: APPLICATION_STATUS.DISABLED, value: APPLICATION_STATUS.DISABLED },
-              { text: APPLICATION_STATUS.PENDING, value: APPLICATION_STATUS.PENDING },
-              { text: APPLICATION_STATUS.REJECTED, value: APPLICATION_STATUS.REJECTED },
+              { text: ApplicationStatus.APPROVED, value: ApplicationStatus.APPROVED },
+              { text: ApplicationStatus.DISABLED, value: ApplicationStatus.DISABLED },
+              { text: ApplicationStatus.PENDING, value: ApplicationStatus.PENDING },
+              { text: ApplicationStatus.REJECTED, value: ApplicationStatus.REJECTED },
             ]}
           />
         </ApplicationFieldRow>
@@ -74,8 +74,8 @@ export const ApplicationForm = ({ isEditing = false }: { isEditing?: boolean }) 
             value={stagedApplication?.type}
             selection
             options={[
-              { text: APPLICATION_TYPE.CLIENT, value: APPLICATION_TYPE.CLIENT },
-              { text: APPLICATION_TYPE.ADMIN, value: APPLICATION_TYPE.ADMIN },
+              { text: ApplicationType.CLIENT, value: ApplicationType.CLIENT },
+              { text: ApplicationType.ADMIN, value: ApplicationType.ADMIN },
             ]}
           />
         </ApplicationFieldRow>

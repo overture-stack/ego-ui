@@ -6,7 +6,7 @@ import useEntityContext from 'components/global/hooks/useEntityContext';
 import React from 'react';
 import { DisableButton, EditButton, EntityEditingControls } from '../common/buttons';
 import { ContentState } from '../types';
-import MetaSection from './MetaSection';
+import MetaSection, { UserForm } from './MetaSection';
 
 const getControls = (id: string, mode: ContentState) => {
   if (id) {
@@ -38,7 +38,9 @@ const ContentPanel = () => {
         {getControls(currentId, mode)}
       </ControlsContainer>
       {currentId ? (
-        <React.Fragment>
+        mode === ContentState.EDITING ? (
+          <UserForm />
+        ) : (
           <div
             css={css`
               padding: 0.5rem;
@@ -46,7 +48,7 @@ const ContentPanel = () => {
           >
             <MetaSection />
           </div>
-        </React.Fragment>
+        )
       ) : (
         <EmptyContent message="Please select a user" />
       )}

@@ -15,12 +15,12 @@ export interface Application extends RequiredApplicationFields {
 
 export type CreateApplicationInput = RequiredApplicationFields & Partial<Application>;
 
-export enum APPLICATION_TYPE {
+export enum ApplicationType {
   CLIENT = 'CLIENT',
   ADMIN = 'ADMIN',
 }
 
-export enum APPLICATION_STATUS {
+export enum ApplicationStatus {
   APPROVED = 'APPROVED',
   DISABLED = 'DISABLED',
   PENDING = 'PENDING',

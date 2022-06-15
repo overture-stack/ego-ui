@@ -1,7 +1,7 @@
-import { Group } from 'common/typedefs';
+import { Group, GroupStatus } from 'common/typedefs';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 
-import { FieldRow, Section, TextInput } from '../common/grid';
+import { FieldRow, Section, StyledDropdown, TextInput } from '../common/grid';
 import { isEditing } from '../common/utils';
 import { FieldNames } from '../types';
 
@@ -35,7 +35,17 @@ export const GroupForm = ({ isEditing = false }: { isEditing?: boolean }) => {
       </Section>
       <Section>
         <FieldRow fieldName={FieldNames.STATUS}>
-          <TextInput value={stagedGroup?.status} />
+          <StyledDropdown
+            placeholder={FieldNames.STATUS}
+            value={stagedGroup?.status}
+            selection
+            options={[
+              { text: GroupStatus.APPROVED, value: GroupStatus.APPROVED },
+              { text: GroupStatus.DISABLED, value: GroupStatus.DISABLED },
+              { text: GroupStatus.PENDING, value: GroupStatus.PENDING },
+              { text: GroupStatus.REJECTED, value: GroupStatus.REJECTED },
+            ]}
+          />
         </FieldRow>
         <FieldRow fieldName={FieldNames.DESCRIPTION}>
           <TextInput value={stagedGroup?.description} />

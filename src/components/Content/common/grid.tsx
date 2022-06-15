@@ -2,7 +2,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import { Grid, SemanticWIDTHS } from 'semantic-ui-react';
+import { Dropdown, Grid, Input, SemanticWIDTHS } from 'semantic-ui-react';
 
 export const StyledRow = styled(Grid.Row)`
   height: 48px;
@@ -80,23 +80,52 @@ const EmptyField = () => (
 
 export const FieldRow = ({
   fieldName,
-  fieldValue,
   fieldNameWidth = 4,
   fieldContentWidth = 12,
+  className,
+  children,
 }: {
   fieldName: string;
-  fieldValue: string;
   fieldNameWidth?: SemanticWIDTHS;
   fieldContentWidth?: SemanticWIDTHS;
+  className?: string;
+  children: ReactNode;
 }) => {
   return (
-    <StyledRow>
+    <StyledRow className={className}>
       <Grid.Column width={fieldNameWidth}>
         <FieldName>{fieldName}</FieldName>
       </Grid.Column>
-      <Grid.Column width={fieldContentWidth}>
-        <FieldContent>{fieldValue || <EmptyField />}</FieldContent>
-      </Grid.Column>
+      <Grid.Column width={fieldContentWidth}>{children || <EmptyField />}</Grid.Column>
     </StyledRow>
   );
 };
+
+export const TextInput = ({
+  value,
+  onChange = () => {},
+}: {
+  value: string;
+  onChange?: () => void;
+}) => (
+  <Input
+    size="mini"
+    value={value || ''}
+    type="text"
+    onChange={onChange}
+    css={css`
+      &.ui.mini.input {
+        display: flex;
+        flex: 1;
+      }
+    `}
+  />
+);
+
+export const StyledDropdown = styled(Dropdown)`
+  font-size: 12px;
+  &.ui.selection.dropdown {
+    min-width: 150px !important;
+    margin: 0 !important;
+  }
+`;

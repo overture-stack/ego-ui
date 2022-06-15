@@ -5,6 +5,7 @@ import useEntityContext from 'components/global/hooks/useEntityContext';
 import { RippleButton } from 'components/Ripple';
 import React from 'react';
 import { ContentState } from '../types';
+import { isEditing } from './utils';
 
 export const CreateButton = () => {
   const { setMode } = useEntityContext();
@@ -154,6 +155,7 @@ export const CancelButton = () => {
 };
 
 export const SaveButton = () => {
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       size="tiny"
@@ -170,17 +172,18 @@ export const SaveButton = () => {
       `}
       // disabled={isSaving || !valid}
       // loading={isSaving}
-      // onClick={async () => {
-      //   setContentState(
-      //     contentState === ContentState.EDITING
-      //       ? ContentState.SAVING_EDIT
-      //       : ContentState.SAVING_CREATE,
-      //   );
-      //   const newState = ((await saveChanges()) as unknown) as EntityState;
-      //   await updateList(resource, parent);
-      //   await setContentState(ContentState.DISPLAYING);
-      //   history.replace(`/${resource.name.plural}/${newState.item.id}`);
-      // }}
+      onClick={async () => {
+        //   setContentState(
+        //     contentState === ContentState.EDITING
+        //       ? ContentState.SAVING_EDIT
+        //       : ContentState.SAVING_CREATE,
+        //   );
+        //   const newState = ((await saveChanges()) as unknown) as EntityState;
+        //   await updateList(resource, parent);
+        //   await setContentState(ContentState.DISPLAYING);
+        setMode(ContentState.DISPLAYING);
+        //   history.replace(`/${resource.name.plural}/${newState.item.id}`);
+      }}
     >
       Save
     </RippleButton>
@@ -213,9 +216,7 @@ export const CreateableEntityHeader = () => {
           <CreateButton />
         )
       ) : null}
-      {(mode === ContentState.EDITING || mode === ContentState.CREATING) && (
-        <EntityEditingControls />
-      )}
+      {isEditing(mode) && <EntityEditingControls />}
     </ControlsContainer>
   );
 };
@@ -226,7 +227,3 @@ export const EntityEditingControls = () => (
     <SaveButton />
   </React.Fragment>
 );
-
-// if in edit mode, you need:
-// - editable fields
-// - edit mode controls (save, cancel)
