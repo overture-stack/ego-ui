@@ -46,6 +46,9 @@ type T_EntityContext = {
   entity: EntityState;
   mode: ContentState;
   setMode: any;
+  stagedEntity: EntityState;
+  associatedEntities: any[];
+  // stagedAssociated: [];
   //   stageChange: (change?: any) => void;
   //   undoChanges: (id?: string) => void;
   //   saveChanges: () => void;
@@ -72,6 +75,9 @@ const EntityContext = createContext<T_EntityContext>({
   entity: initialEntityState,
   mode: ContentState.DISPLAYING,
   setMode: () => {},
+  stagedEntity: initialEntityState,
+  associatedEntities: [],
+  // stagedAssociated: [],
   //   stageChange: () => {},
   //   undoChanges: () => {},
   //   saveChanges: () => {},
@@ -92,23 +98,28 @@ export const EntityProvider = ({ id, children }: { id: string; children: ReactNo
   const { currentResource } = useListContext();
   const [entityState, setEntityState] = useState(initialEntityState);
   const [currentId, setCurrentId] = useState<string>(id); // separate from lastValidId because it can also be 'create'
+  const [currentMode, setCurrentMode] = useState<ContentState>(ContentState.DISPLAYING);
+  const [stagedEntityState, setStagedEntityState] = useState<EntityState>(initialEntityState);
   //   const [currentSubResource, setCurrentSubResource] = useState<string>(subResource);
   //   const [lastValidId, setLastValidId] = useState<string>(undefined);
   //   const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
 
-  const [currentMode, setCurrentMode] = useState<ContentState>(ContentState.DISPLAYING);
   useEffect(() => setCurrentId(id), [id]);
 
   const getResource = useMemo(() => () => get(RESOURCE_MAP, currentResource), [currentResource]);
 
+  // when entering create mode with an entity already loaded, need to clear stagedEntityState
+  // if create action is cancelled in this scenario, can restore previous loaded entity from entityState (and reload stagedEntityState)
   useEffect(() => {
     const loadEntity = async () => {
       if (currentId) {
         const resource = getResource();
         const data = await resource.getItem(currentId);
         setEntityState({ item: data });
+        setStagedEntityState({ item: data });
       } else {
-        setEntityState(null);
+        setEntityState(initialEntityState);
+        setStagedEntityState(initialEntityState);
       }
     };
     loadEntity();
@@ -308,6 +319,8 @@ export const EntityProvider = ({ id, children }: { id: string; children: ReactNo
     entity: entityState,
     mode: currentMode,
     setMode: setCurrentMode,
+    stagedEntity: stagedEntityState,
+    associatedEntities: [],
     //     stageChange,
     //     undoChanges,
     //     saveChanges,
