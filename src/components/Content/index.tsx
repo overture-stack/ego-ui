@@ -20,6 +20,7 @@ const Content = () => {
     <div
       css={css`
         width: 510px;
+        min-width: 510px;
       `}
     >
       <Component />

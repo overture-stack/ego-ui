@@ -4,7 +4,7 @@ import ControlsContainer from 'components/ControlsContainer';
 import EmptyContent from 'components/EmptyContent';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 import React from 'react';
-import { DisableButton, EditButton } from '../common/buttons';
+import { CreateableEntityDisplayControls } from '../common/buttons';
 import { ContentState } from '../types';
 import MetaSection from './MetaSection';
 
@@ -20,12 +20,7 @@ const ContentPanel = ({ mode = ContentState.DISPLAYING }: { mode: ContentState }
               justify-content: space-between;
             `}
           >
-            {mode === ContentState.DISPLAYING && (
-              <React.Fragment>
-                <EditButton />
-                <DisableButton />
-              </React.Fragment>
-            )}
+            {mode === ContentState.DISPLAYING && <CreateableEntityDisplayControls />}
           </ControlsContainer>
           <div
             css={css`
@@ -36,7 +31,7 @@ const ContentPanel = ({ mode = ContentState.DISPLAYING }: { mode: ContentState }
           </div>
         </React.Fragment>
       ) : (
-        <EmptyContent message="Please select a user" />
+        <EmptyContent message="Please select a group" />
       )}
     </div>
   );

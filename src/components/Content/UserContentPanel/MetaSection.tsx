@@ -20,27 +20,15 @@ const MetaSection = () => {
   const user = entity?.item as User;
   return (
     <div>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-bottom: 1rem;
-          }
-        `}
-      >
+      <Section>
         <FieldRow fieldName={FieldNames.ID} fieldValue={user?.id} />
         <FieldRow fieldName={FieldNames.NAME} fieldValue={`${user?.firstName} ${user?.lastName}`} />
         <FieldRow fieldName={FieldNames.EMAIL} fieldValue={user?.email} />
       </Section>
-      <Section
-        css={css`
-          &.ui.grid {
-            padding-top: 0.5rem;
-          }
-        `}
-      >
+      <Section>
         <BasicColumn width={8}>
           <Grid.Row>
-            <BasicColumn width={7}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldName>{FieldNames.USER_TYPE}</FieldName>
               </BasicRow>
@@ -51,7 +39,7 @@ const MetaSection = () => {
                 <FieldName>{FieldNames.LANGUAGE}</FieldName>
               </BasicRow>
             </BasicColumn>
-            <BasicColumn width={9}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldContent
                   css={css`
@@ -72,7 +60,7 @@ const MetaSection = () => {
         </BasicColumn>
         <BasicColumn width={8}>
           <Grid.Row>
-            <BasicColumn width={7}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldName>{FieldNames.STATUS}</FieldName>
               </BasicRow>
@@ -80,7 +68,7 @@ const MetaSection = () => {
                 <FieldName>{FieldNames.LAST_LOGIN}</FieldName>
               </BasicRow>
             </BasicColumn>
-            <BasicColumn width={9}>
+            <BasicColumn width={8}>
               <BasicRow>
                 <FieldContent>{user?.status}</FieldContent>
               </BasicRow>

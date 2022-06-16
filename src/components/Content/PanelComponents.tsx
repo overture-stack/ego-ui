@@ -1,12 +1,15 @@
 import { ResourceType } from 'common/enums';
 import UserContentPanel from './UserContentPanel';
+import GroupContentPanel from './GroupContentPanel';
+import ApplicationContentPanel from './ApplicationContentPanel';
+import PolicyContentPanel from './PolicyContentPanel';
 
 // convert to ParentResource?
-const PanelComponents = {
+const PanelComponents = Object.freeze({
   [ResourceType.USERS]: UserContentPanel,
-  [ResourceType.GROUPS]: () => <div />,
-  [ResourceType.APPLICATIONS]: () => <div />,
-  [ResourceType.POLICIES]: () => <div />,
-};
+  [ResourceType.GROUPS]: GroupContentPanel,
+  [ResourceType.APPLICATIONS]: ApplicationContentPanel,
+  [ResourceType.POLICIES]: PolicyContentPanel,
+});
 
 export default PanelComponents;
