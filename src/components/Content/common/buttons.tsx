@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, useTheme } from '@emotion/react';
 import { Fragment } from 'react';
-        
+
 import ControlsContainer from 'components/ControlsContainer';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 import { RippleButton } from 'components/Ripple';
@@ -9,8 +9,8 @@ import { ContentState } from '../types';
 import { isEditing } from './utils';
 
 export const CreateButton = () => {
-  const { setMode } = useEntityContext();
   const theme = useTheme();
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       basic
@@ -31,8 +31,8 @@ export const CreateButton = () => {
 };
 
 export const EditButton = () => {
-  const { setMode } = useEntityContext();
   const theme = useTheme();
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       css={css`
@@ -142,6 +142,7 @@ export const DeleteButton = () => {
 
 export const CancelButton = () => {
   const theme = useTheme();
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       basic
@@ -167,9 +168,8 @@ export const CancelButton = () => {
 };
 
 export const SaveButton = () => {
+  const theme = useTheme();
   const { setMode } = useEntityContext();
-   const theme = useTheme();
-
   return (
     <RippleButton
       size="tiny"
