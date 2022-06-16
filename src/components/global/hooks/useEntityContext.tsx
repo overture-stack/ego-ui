@@ -105,7 +105,7 @@ export const EntityProvider = ({ id, children }: { id: string; children: ReactNo
   //   const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
 
   useEffect(() => setCurrentId(id), [id]);
-
+  useEffect(() => setCurrentMode(ContentState.DISPLAYING), [id, currentResource]);
   const getResource = useMemo(() => () => get(RESOURCE_MAP, currentResource), [currentResource]);
 
   // when entering create mode with an entity already loaded, need to clear stagedEntityState
