@@ -10,29 +10,30 @@ import { compose } from 'recompose';
 import Content from 'components/Content';
 import ListPane from 'components/ListPane';
 // import { ResourceType } from 'common/enums';
-// import useEntityContext, { getListFunc } from 'components/global/hooks/useEntityContext';
+import useListContext from './global/hooks/useListContext';
 
 const enhance = compose(withRouter);
 
 // const ResourceExplorer = ({ id, resource, history, parent }) => {
 const ResourceExplorer = () => {
-  // const { stageChange } = useEntityContext();
+  const { listParams, list } = useListContext();
   return (
     <React.Fragment>
       <ListPane
-      // resource={resource}
-      // parent={parent}
-      // selectedItemId={id}
-      // onSelect={(item) => {
-      //   // prevent select action on child tables
-      //   if (isEmpty(parent)) {
-      //     history.replace(
-      //       `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
-      //         resource.name.plural
-      //       }${item.id.toString() === id ? '' : `/${item.id}`}`,
-      //     );
-      //   }
-      // }}
+        showPagination={listParams.limit < list?.count || listParams.offset > 0}
+        // resource={resource}
+        // parent={parent}
+        // selectedItemId={id}
+        // onSelect={(item) => {
+        //   // prevent select action on child tables
+        //   if (isEmpty(parent)) {
+        //     history.replace(
+        //       `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
+        //         resource.name.plural
+        //       }${item.id.toString() === id ? '' : `/${item.id}`}`,
+        //     );
+        //   }
+        // }}
       />
       <Content />
       {/* <Content
