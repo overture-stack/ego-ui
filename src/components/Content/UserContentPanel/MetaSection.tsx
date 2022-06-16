@@ -94,36 +94,33 @@ export const UserForm = () => {
   return (
     <div>
       <Section>
-        <FieldRow fieldNameWidth={2} fieldContentWidth={14} fieldName={FieldNames.ID}>
-          {entity.item?.id}
-        </FieldRow>
-        {/* check if firstname/lastname are on the same row in overture-qa */}
-        <Grid.Row
-          className="edit-user-name"
+        <FieldRow fieldName={FieldNames.ID}>{entity.item?.id}</FieldRow>
+        <FieldRow
+          fieldName={FieldNames.NAME}
           css={css`
-            &.row.edit-user-name {
-              padding-left: 1rem;
-              padding-top: 3px;
-              padding-bottom: 3px;
-            }
+            align-items: center !important;
+            margin-bottom: 5px !important;
+            margin-top: 0 !important;
           `}
         >
-          <FieldRow
-            fieldName={FieldNames.FIRST_NAME}
-            css={css`
-              margin-right: 1rem;
-            `}
-          >
-            <TextInput value={user?.firstName} />
-          </FieldRow>
-          <FieldRow fieldName={FieldNames.LAST_NAME}>
-            <TextInput value={user?.lastName} />
-          </FieldRow>
-        </Grid.Row>
-
-        <FieldRow fieldNameWidth={2} fieldContentWidth={14} fieldName={FieldNames.EMAIL}>
-          {user?.email}
+          <Grid.Row css={css``}>
+            <TextInput
+              css={css`
+                margin-right: 0.5rem;
+                max-width: 150px;
+              `}
+              value={user?.firstName}
+            />
+            <TextInput
+              css={css`
+                margin-left: 0.5rem;
+                max-width: 150px;
+              `}
+              value={user?.lastName}
+            />
+          </Grid.Row>
         </FieldRow>
+        <FieldRow fieldName={FieldNames.EMAIL}>{user?.email}</FieldRow>
       </Section>
       <Section>
         <BasicColumn width={8}>
@@ -191,8 +188,9 @@ export const UserForm = () => {
             <BasicColumn width={8}>
               <Grid.Row
                 css={css`
-                  padding-top: 10px;
-                  padding-bottom: 7px;
+                  padding-top: 0.7rem;
+                  padding-bottom: 0px;
+                  margin-left: -0.5rem;
                 `}
               >
                 <StyledDropdown
@@ -206,7 +204,11 @@ export const UserForm = () => {
                   ]}
                 />
               </Grid.Row>
-              <BasicRow>
+              <BasicRow
+                css={css`
+                  padding-top: 22px;
+                `}
+              >
                 <FieldContent>{format(user?.lastLogin, DATE_FORMAT)}</FieldContent>
               </BasicRow>
             </BasicColumn>

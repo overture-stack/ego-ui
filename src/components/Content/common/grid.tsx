@@ -103,12 +103,15 @@ export const FieldRow = ({
 
 export const TextInput = ({
   value,
+  className,
   onChange = () => {},
 }: {
   value: string;
+  className?: string;
   onChange?: () => void;
 }) => (
   <Input
+    className={className}
     size="mini"
     value={value || ''}
     type="text"

@@ -37,21 +37,21 @@ const ContentPanel = () => {
       >
         {getControls(currentId, mode)}
       </ControlsContainer>
-      {currentId ? (
-        mode === ContentState.EDITING ? (
-          <UserForm />
-        ) : (
-          <div
-            css={css`
-              padding: 0.5rem;
-            `}
-          >
+      <div
+        css={css`
+          padding: 0.5rem;
+        `}
+      >
+        {currentId ? (
+          mode === ContentState.EDITING ? (
+            <UserForm />
+          ) : (
             <MetaSection />
-          </div>
-        )
-      ) : (
-        <EmptyContent message="Please select a user" />
-      )}
+          )
+        ) : (
+          <EmptyContent message="Please select a user" />
+        )}
+      </div>
     </div>
   );
 };
