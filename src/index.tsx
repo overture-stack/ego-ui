@@ -15,6 +15,7 @@ const messages = {};
 ReactDOM.render(
   <IntlProvider locale={locale} messages={messages}>
     <Router basename={PUBLIC_PATH}>
+      {/* should AppProviders be above Router?? */}
       <AppProviders>
         <App />
       </AppProviders>

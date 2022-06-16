@@ -9,6 +9,7 @@ import Nav from 'components/Nav';
 import NoAccess from 'components/NoAccess';
 import useAuthContext from 'components/global/hooks/useAuthContext';
 import { navResourceList } from 'components/Nav/Nav';
+import ContentProviders from 'components/ContentProviders';
 
 const ProtectedRoute = ({
   component,
@@ -29,24 +30,27 @@ const App = () => {
         <Route path="/" exact component={Login} />
         <Route path="/no-access" exact component={NoAccess} />
         <ProtectedRoute
+          path={`/:resourceName?/:id?/:childResourceName?`}
           component={(props) => (
-            <React.Fragment>
-              <Nav />
-              <div css={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                <BreadCrumb path={props.location.pathname} />
-                <Switch>
-                  {navResourceList.map((resourceName) => {
-                    return (
-                      <ProtectedRoute
-                        key={resourceName}
-                        path={`/${resourceName}/:id?/:childResourceName?`}
-                        render={() => <ResourceRoute />}
-                      />
-                    );
-                  })}
-                </Switch>
-              </div>
-            </React.Fragment>
+            <ContentProviders {...props}>
+              <React.Fragment>
+                <Nav />
+                <div css={{ width: 0, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                  {/* TODO: is this the right path? */}
+                  <BreadCrumb path={props.location.pathname} />
+                  <Switch>
+                    {navResourceList.map((resourceName) => {
+                      return (
+                        <ProtectedRoute
+                          key={resourceName}
+                          render={(props: any) => <ResourceRoute {...props} />}
+                        />
+                      );
+                    })}
+                  </Switch>
+                </div>
+              </React.Fragment>
+            </ContentProviders>
           )}
         />
       </Switch>

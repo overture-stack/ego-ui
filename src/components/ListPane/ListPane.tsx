@@ -44,7 +44,7 @@ const paneControls = {
   },
 };
 
-const List = () => {
+const List = ({ showPagination }: { showPagination: boolean }) => {
   // const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
   const { list, listParams, setListParams, currentResource } = useListContext();
   const theme = useTheme();
@@ -197,12 +197,12 @@ const List = () => {
           })
         }
       /> */}
-      {(listParams.limit < list.count || listParams.offset > 0) && (
+      {showPagination && (
         <Pagination
           onChange={(page) => setListParams({ offset: page * listParams.limit })}
           offset={listParams.offset}
           limit={listParams.limit}
-          total={list.count}
+          total={list?.count}
           range={3}
         />
       )}
