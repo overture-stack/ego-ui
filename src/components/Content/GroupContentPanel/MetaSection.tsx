@@ -54,4 +54,5 @@ export const GroupForm = ({ isEditing = false }: { isEditing?: boolean }) => {
     </div>
   );
 };
+
 export default MetaSection;

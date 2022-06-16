@@ -8,6 +8,7 @@ import { Application, Group, Policy, User } from 'common/typedefs';
 import useListContext from './useListContext';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { get } from 'lodash';
+
 import { ContentState } from 'components/Content/types';
 // import { IResource } from 'common/typedefs/Resource';
 // import { Permission, SimplePermission } from 'common/typedefs/Permission';
@@ -105,6 +106,7 @@ export const EntityProvider = ({ id, children }: { id: string; children: ReactNo
   //   const [contentState, setContentState] = useState<ContentState>(ContentState.DISPLAYING);
 
   useEffect(() => setCurrentId(id), [id]);
+
   useEffect(() => setCurrentMode(ContentState.DISPLAYING), [id, currentResource]);
   const getResource = useMemo(() => () => get(RESOURCE_MAP, currentResource), [currentResource]);
 

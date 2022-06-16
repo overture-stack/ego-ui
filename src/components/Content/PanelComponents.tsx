@@ -5,11 +5,11 @@ import ApplicationContentPanel from './ApplicationContentPanel';
 import PolicyContentPanel from './PolicyContentPanel';
 
 // convert to ParentResource?
-const PanelComponents = {
+const PanelComponents = Object.freeze({
   [ResourceType.USERS]: UserContentPanel,
   [ResourceType.GROUPS]: GroupContentPanel,
   [ResourceType.APPLICATIONS]: ApplicationContentPanel,
   [ResourceType.POLICIES]: PolicyContentPanel,
-};
+});
 
 export default PanelComponents;

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+
 import EmptyContent from 'components/EmptyContent';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 import { CreateableEntityHeader } from '../common/buttons';
