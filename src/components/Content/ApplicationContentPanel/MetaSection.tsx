@@ -1,9 +1,8 @@
 import { Application, ApplicationStatus, ApplicationType } from 'common/typedefs/Application';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 import { Fragment } from 'react';
-import { Dropdown } from 'semantic-ui-react';
 
-import { FieldRow, Section, TextInput } from '../common/grid';
+import { FieldRow, Section, StyledDropdown, TextInput } from '../common/grid';
 import { FieldNames } from '../types';
 
 const ApplicationFieldRow = (props: any) => (
@@ -58,7 +57,7 @@ export const ApplicationForm = ({ isEditing = false }: { isEditing?: boolean }) 
       </Section>
       <Section>
         <ApplicationFieldRow fieldName={FieldNames.STATUS}>
-          <Dropdown
+          <StyledDropdown
             value={stagedApplication?.status}
             selection
             options={[
@@ -70,7 +69,7 @@ export const ApplicationForm = ({ isEditing = false }: { isEditing?: boolean }) 
           />
         </ApplicationFieldRow>
         <ApplicationFieldRow fieldName={FieldNames.APPLICATION_TYPE}>
-          <Dropdown
+          <StyledDropdown
             value={stagedApplication?.type}
             selection
             options={[
