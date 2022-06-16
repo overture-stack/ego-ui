@@ -1,7 +1,7 @@
 import { Policy } from 'common/typedefs';
 import useEntityContext from 'components/global/hooks/useEntityContext';
 
-import { FieldRow, Section } from '../common/grid';
+import { FieldRow, Section, TextInput } from '../common/grid';
 import { FieldNames } from '../types';
 
 const MetaSection = () => {
@@ -10,10 +10,23 @@ const MetaSection = () => {
   return (
     <div>
       <Section>
-        <FieldRow fieldName={FieldNames.ID} fieldValue={policy?.id} />
-        <FieldRow fieldName={FieldNames.NAME} fieldValue={policy?.name} />
+        <FieldRow fieldName={FieldNames.ID}>{policy?.id}</FieldRow>
+        <FieldRow fieldName={FieldNames.NAME}>{policy?.name}</FieldRow>
       </Section>
     </div>
+  );
+};
+
+export const PolicyForm = ({ isEditing = false }: { isEditing?: boolean }) => {
+  const { entity, stagedEntity } = useEntityContext();
+  const policy = stagedEntity.item as Policy;
+  return (
+    <Section>
+      {isEditing && <FieldRow fieldName={FieldNames.ID}>{entity.item?.id}</FieldRow>}
+      <FieldRow fieldName={FieldNames.NAME}>
+        <TextInput value={policy?.name} />
+      </FieldRow>
+    </Section>
   );
 };
 

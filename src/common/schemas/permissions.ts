@@ -1,27 +1,28 @@
+import { FieldNames } from 'components/Content/types';
 import { Schema } from './types';
 
 const schema: Schema = [
   {
-    fieldName: 'Policy Name',
+    fieldName: FieldNames.POLICY_NAME,
     initialSort: true,
     key: 'policy',
     sortable: true,
   },
   {
-    fieldName: 'Access Level',
+    fieldName: FieldNames.ACCESS_LEVEL,
     key: 'accessLevel',
     sortable: true,
   },
   {
-    fieldName: 'Inheritance',
+    fieldName: FieldNames.INHERITANCE,
     key: 'ownerType',
     sortable: true,
   },
-  {
-    fieldName: 'Action',
-    key: 'action',
-    sortable: false,
-  },
+  // {
+  //   fieldName: 'Action',
+  //   key: 'action',
+  //   sortable: false,
+  // },
 ];
 
 const mapTableData = (results) => {

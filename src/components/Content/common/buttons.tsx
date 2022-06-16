@@ -1,10 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css, useTheme } from '@emotion/react';
-import { RippleButton } from 'components/Ripple';
 import { Fragment } from 'react';
+
+import ControlsContainer from 'components/ControlsContainer';
+import useEntityContext from 'components/global/hooks/useEntityContext';
+import { RippleButton } from 'components/Ripple';
+import { ContentState } from '../types';
+import { isEditing } from './utils';
 
 export const CreateButton = () => {
   const theme = useTheme();
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       basic
@@ -17,7 +23,7 @@ export const CreateButton = () => {
         }
       `}
       // disabled={isSaving}
-      // onClick={() => history.push(`/${resource.name.plural}/create`)}
+      onClick={() => setMode(ContentState.CREATING)}
     >
       Create
     </RippleButton>
@@ -26,6 +32,7 @@ export const CreateButton = () => {
 
 export const EditButton = () => {
   const theme = useTheme();
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       css={css`
@@ -40,6 +47,7 @@ export const EditButton = () => {
         }
       `}
       // disabled={isSaving}
+      onClick={() => setMode(ContentState.EDITING)}
       // onClick={() => history.push(`/${resource.name.plural}/${id}/edit`)}
       size="tiny"
     >
@@ -134,6 +142,7 @@ export const DeleteButton = () => {
 
 export const CancelButton = () => {
   const theme = useTheme();
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       basic
@@ -147,6 +156,8 @@ export const CancelButton = () => {
       `}
       // disabled={isSaving}
       onClick={async () => {
+        // TODO: restore previous entity state
+        setMode(ContentState.DISPLAYING);
         // await undoChanges(lastValidId);
         // history.push(`/${resource.name.plural}/${lastValidId || ''}`);
       }}
@@ -158,6 +169,7 @@ export const CancelButton = () => {
 
 export const SaveButton = () => {
   const theme = useTheme();
+  const { setMode } = useEntityContext();
   return (
     <RippleButton
       size="tiny"
@@ -174,17 +186,18 @@ export const SaveButton = () => {
       `}
       // disabled={isSaving || !valid}
       // loading={isSaving}
-      // onClick={async () => {
-      //   setContentState(
-      //     contentState === ContentState.EDITING
-      //       ? ContentState.SAVING_EDIT
-      //       : ContentState.SAVING_CREATE,
-      //   );
-      //   const newState = ((await saveChanges()) as unknown) as EntityState;
-      //   await updateList(resource, parent);
-      //   await setContentState(ContentState.DISPLAYING);
-      //   history.replace(`/${resource.name.plural}/${newState.item.id}`);
-      // }}
+      onClick={async () => {
+        //   setContentState(
+        //     contentState === ContentState.EDITING
+        //       ? ContentState.SAVING_EDIT
+        //       : ContentState.SAVING_CREATE,
+        //   );
+        //   const newState = ((await saveChanges()) as unknown) as EntityState;
+        //   await updateList(resource, parent);
+        //   await setContentState(ContentState.DISPLAYING);
+        setMode(ContentState.DISPLAYING);
+        //   history.replace(`/${resource.name.plural}/${newState.item.id}`);
+      }}
     >
       Save
     </RippleButton>
@@ -198,5 +211,33 @@ export const CreateableEntityDisplayControls = () => (
       <CreateButton />
     </div>
     <DeleteButton />
+  </Fragment>
+);
+
+export const CreateableEntityHeader = () => {
+  const { currentId, mode } = useEntityContext();
+  return (
+    <ControlsContainer
+      css={css`
+        padding: 0 24px;
+        justify-content: space-between;
+      `}
+    >
+      {mode === ContentState.DISPLAYING ? (
+        currentId ? (
+          <CreateableEntityDisplayControls />
+        ) : (
+          <CreateButton />
+        )
+      ) : null}
+      {isEditing(mode) && <EntityEditingControls />}
+    </ControlsContainer>
+  );
+};
+
+export const EntityEditingControls = () => (
+  <Fragment>
+    <CancelButton />
+    <SaveButton />
   </Fragment>
 );

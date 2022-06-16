@@ -4,6 +4,7 @@ import { DATE_FORMAT } from 'common/constants';
 import { getApiKeyStatus } from 'components/Associator/apiKeysUtils';
 import { revokeApiKey } from 'services';
 import { Schema } from './types';
+import { FieldNames } from 'components/Content/types';
 
 const mapTableData = (results) => {
   return results.map((result) => ({
@@ -19,36 +20,36 @@ const mapTableData = (results) => {
 // API keys only have a child table
 const schema: Schema = [
   {
-    fieldName: 'API Key',
+    fieldName: FieldNames.API_KEY,
     initialSort: true,
     key: 'name',
     sortable: true,
   },
   {
-    fieldName: 'Scope',
+    fieldName: FieldNames.SCOPE,
     key: 'scope',
     sortable: false,
   },
   {
-    fieldName: 'Expiry',
+    fieldName: FieldNames.EXPIRY,
     key: 'expiryDate',
     sortable: true,
   },
   {
-    fieldName: 'Issued',
+    fieldName: FieldNames.ISSUED,
     key: 'issueDate',
     sortable: true,
   },
   {
-    fieldName: 'Status',
+    fieldName: FieldNames.STATUS,
     key: 'isRevoked',
     sortable: true,
   },
-  {
-    fieldName: 'Action',
-    key: 'action',
-    sortable: false,
-  },
+  // {
+  //   fieldName: 'Action',
+  //   key: 'action',
+  //   sortable: false,
+  // },
 ];
 
 export default schema;
