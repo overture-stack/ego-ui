@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, useTheme } from '@emotion/react';
 import { RippleButton } from 'components/Ripple';
+import { Fragment } from 'react';
 
 export const CreateButton = () => {
   const theme = useTheme();
@@ -191,11 +192,11 @@ export const SaveButton = () => {
 };
 
 export const CreateableEntityDisplayControls = () => (
-  <React.Fragment>
+  <Fragment>
     <div>
       <EditButton />
       <CreateButton />
     </div>
     <DeleteButton />
-  </React.Fragment>
+  </Fragment>
 );
