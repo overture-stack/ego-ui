@@ -40,6 +40,13 @@ spec:
 """
         }
     }
+    parameters {
+        booleanParam(
+            name: 'PUBLISH_IMAGE',
+            defaultValue: false,
+            description: 'Publishes an image with {git commit} tag'
+        )
+    }
     stages {
         stage('Prepare') {
             steps {
@@ -73,24 +80,39 @@ spec:
         }
         stage('Publish Develop') {
             when {
-                branch "develop"
+                anyOf {
+                    branch "develop"
+                    expression { return params.PUBLISH_IMAGE }
+                }
             }
             steps {
                 container('docker') {
                     withCredentials([usernamePassword(credentialsId:'OvertureBioGithub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
                     }
-                    sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:edge"
-                    sh "docker push ${dockerRepo}:${commit}"
-                    sh "docker push ${dockerRepo}:edge"
+                    script {
+                        if (env.BRANCH_NAME ==~ 'develop') {
+                            sh "docker tag ${dockerRepo}:${commit} ${dockerRepo}:edge"
+                            sh "docker push ${dockerRepo}:${commit}"
+                            sh "docker push ${dockerRepo}:edge"
+                        } else {
+                            sh "docker push ${dockerRepo}:${commit}"
+                        }
+                    }
                }
                 container('docker') {
                     withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh 'docker login -u $USERNAME -p $PASSWORD'
                     }
-                    sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:edge"
-                    sh "docker push ${dockerHubRepo}:${commit}"
-                    sh "docker push ${dockerHubRepo}:edge"
+                    script {
+                        if (env.BRANCH_NAME ==~ 'develop') {
+                            sh "docker tag ${dockerHubRepo}:${commit} ${dockerHubRepo}:edge"
+                            sh "docker push ${dockerHubRepo}:${commit}"
+                            sh "docker push ${dockerHubRepo}:edge"
+                        } else {
+                            sh "docker push ${dockerHubRepo}:${commit}"
+                        }
+                    }
                 }
             }
         }
