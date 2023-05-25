@@ -153,6 +153,7 @@ const Associator = ({
 
     messenger.subscribe(onMessage);
     return () => messenger.unsubscribe(onMessage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const AssociatorComponent =
