@@ -9,7 +9,7 @@ import { compose } from 'recompose';
 import styled from '@emotion/styled';
 
 import ajax from 'services/ajax';
-import { Orcid, Google, GitHub, LinkedIn } from './Icons';
+import { Orcid, Google, GitHub, LinkedIn, Passport } from './Icons';
 import brandImage from 'assets/brand-image.svg';
 
 const styles = {
@@ -52,6 +52,7 @@ enum LoginProvider {
   Github = 'GitHub',
   Linkedin = 'LinkedIn',
   Orcid = 'ORCiD',
+  Passport = 'Passport broker',
 }
 
 enum ProviderLoginPaths {
@@ -61,6 +62,7 @@ enum ProviderLoginPaths {
   github = 'github',
   linkedin = 'linkedin',
   orcid = 'orcid',
+  passport = 'passport',
 }
 
 type IconComponent = ComponentType<{ width: number; height: number }>;
@@ -72,6 +74,7 @@ type ProviderType = {
 };
 
 const providers: ProviderType[] = [
+  { name: LoginProvider.Passport, path: ProviderLoginPaths.passport, Icon: Passport },
   { name: LoginProvider.Google, path: ProviderLoginPaths.google, Icon: Google },
   { name: LoginProvider.Orcid, path: ProviderLoginPaths.orcid, Icon: Orcid },
   { name: LoginProvider.Github, path: ProviderLoginPaths.github, Icon: GitHub },
