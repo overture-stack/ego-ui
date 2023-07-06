@@ -7,6 +7,7 @@ const dimensions = {
     group: 3,
     policy: 3,
     user: 4,
+    visa: 2
   },
   screen: {
     minWidth: 1400,

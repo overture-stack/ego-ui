@@ -8,13 +8,16 @@ import {
   addGroupPermissionToPolicy,
   addGroupToUser,
   addUserPermissionToPolicy,
+  addVisaPermissionToPolicy,
   createApplication,
   createGroup,
   createPolicy,
+  createVisa,
   deleteApplication,
   deleteGroup,
   deletePolicy,
   deleteUser,
+  deleteVisa,
   getApiKeys,
   getApp,
   getApps,
@@ -25,17 +28,22 @@ import {
   getPolicy,
   getUser,
   getUserAndUserGroupPermissions,
+  getVisaPermissions,
   getUsers,
+  getVisa,
+  getVisas,
   removeApplicationFromGroup,
   removeApplicationFromUser,
   removeGroupFromUser,
   removeGroupPermissionFromPolicy,
   removeUserPermissionFromPolicy,
+  removeVisaFromPolicy,
   revokeApiKey,
   updateApplication,
   updateGroup,
   updatePolicy,
   updateUser,
+  updateVisa,
 } from 'services';
 
 import { DATE_FORMAT, STATUSES } from 'common/injectGlobals';
@@ -52,6 +60,7 @@ import {
   PermissionListItem,
   PolicyListItem,
   UserListItem,
+  VisaListItem,
 } from 'components/ListItem';
 
 import { IResource, TResourceType } from 'common/typedefs/Resource';
@@ -69,6 +78,8 @@ import {
   POLICY,
   USER,
   USERS,
+  VISAS,
+  VISA
 } from 'common/enums';
 import { getUserDisplayName } from './getUserDisplayName';
 import ApplicationIcon from 'components/Icons/application';
@@ -463,11 +474,13 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     addItem: {
       groups: true,
       users: false,
+      visas: true,
     },
     associatedTypes: [],
     AssociatorComponent: {
       groups: PermissionsTable,
       users: UserPermissionsTable,
+      visas: PermissionsTable,
     },
     childSchema: [],
     emptyMessage: '',
@@ -481,6 +494,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
     getList: {
       groups: getGroupPermissions,
       users: getUserAndUserGroupPermissions,
+      visas: getVisaPermissions,
     },
     getListAll: getPolicies,
     getName: (item) => get(item, 'name'),
@@ -586,6 +600,95 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
       },
     ],
     updateItem: updatePolicy,
+  },
+  visas: {
+    add: {
+      permissions: ({ permission, item }) => 
+        addVisaPermissionToPolicy({
+          visa: { ...item, mask: permission.mask },
+          policy: permission,
+        }),
+    },
+    addItem: true,
+    associatedTypes: [PERMISSIONS],
+    AssociatorComponent: null,
+    childSchema: [
+      { key: 'id', fieldName: 'ID', sortable: true, initialSort: true },
+      { key: 'type', fieldName: 'Type', sortable: true },
+      { key: 'source', fieldName: 'Source', sortable: true },
+      { fieldName: 'Value', key: 'value', sortable: true },
+    ],
+    createItem: createVisa,
+    deleteItem: deleteVisa,
+    emptyMessage: 'Please select a visa',
+    initialSortField(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).find((field) => field.initialSort);
+    },
+    sortableFields(isChildOfPolicy: boolean) {
+      return (isChildOfPolicy ? this.childSchema : this.schema).filter((field) => field.sortable);
+    },
+    getItem: getVisa,
+    getKey: (item) => item.id.toString(),
+    getList: getVisas,
+    getListAll: getVisas,
+    getName: (item) => get(item, 'name'),
+    Icon: ({ style }) => <Icon name="address card" style={style} />,
+    initialSortOrder: 'ASC',
+    isParent: true,
+    ListItem: VisaListItem,
+    mapTableData(results) {
+      return results.map((result) => ({
+        ...result,
+        action: 'remove',
+        actionText: 'REMOVE',
+      }));
+    },
+    name: { singular: VISA, plural: VISAS },
+    remove: {
+      permissions: ({ permission, item }) =>
+        removeVisaFromPolicy({ visa: item, policy: permission }),
+    },
+    rowHeight: 44,
+    schema: [
+      {
+        fieldName: 'ID',
+        immutable: true,
+        key: 'id',
+        panelSection: 'id',
+        sortable: true,
+      },
+      {
+        fieldName: 'Type',
+        initialSort: true,
+        key: 'type',
+        panelSection: 'meta',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'Source',
+        key: 'source',
+        panelSection: 'meta',
+        required: false,
+        sortable: true,
+      },
+      {
+        fieldName: 'Value',
+        key: 'value',
+        panelSection: 'meta',
+        required: true,
+        sortable: true,
+      },
+      {
+        fieldName: 'By',
+        key: 'by',
+        panelSection: 'meta',
+        required: true,
+        sortable: true,
+      },
+      { fieldName: 'Action', key: 'action', sortable: false },
+    ],
+    updateItem: updateVisa,
   },
 };
 

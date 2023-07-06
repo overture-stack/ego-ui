@@ -11,7 +11,7 @@ import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import { IResource } from 'common/typedefs/Resource';
 import ItemSelector from './ItemSelector';
 
-import { isGroup } from 'common/associatedUtils';
+import { isGroup, isVisa } from 'common/associatedUtils';
 import { API_KEYS, PERMISSIONS, USERS } from 'common/enums';
 import { getUserDisplayName } from 'common/getUserDisplayName';
 
@@ -65,7 +65,7 @@ const enhance = compose(
   withStateHandlers(
     ({ initialItems, resource, type }) => {
       const parsedItems =
-        isGroup(resource) && type === PERMISSIONS
+        (isGroup(resource) || isVisa(resource)) && type === PERMISSIONS
           ? (initialItems || []).map((item) => getParsedItem(item))
           : initialItems;
       return { allAssociatedItems: [], itemsInList: parsedItems || [] };
@@ -87,7 +87,7 @@ const enhance = compose(
       setAllAssociatedItems: () => (allAssociatedItems) => ({ allAssociatedItems }),
       setItemsInList: ({ itemsInList }, { resource, type }) => (items) => ({
         itemsInList:
-          isGroup(resource) && type === PERMISSIONS
+          (isGroup(resource) || isVisa(resource)) && type === PERMISSIONS
             ? (items || []).map((i) => getParsedItem(i))
             : items,
       }),
