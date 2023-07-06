@@ -179,6 +179,12 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         panelSection: 'meta',
       },
       {
+        fieldName: 'Provider Type',
+        key: 'providerType',
+        panelSection: null,
+        sortable: true,
+      },
+      {
         fieldName: 'Created',
         hideOnTable: true,
         immutable: true,
