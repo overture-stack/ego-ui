@@ -661,7 +661,7 @@ const RESOURCE_MAP: { [key in TResourceType]: IResource } = {
         fieldName: 'Type',
         initialSort: true,
         key: 'type',
-        panelSection: 'meta',
+        panelSection: 'id',
         required: true,
         sortable: true,
       },

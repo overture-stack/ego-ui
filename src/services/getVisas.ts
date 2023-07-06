@@ -14,7 +14,7 @@ export const getVisas = ({
 }): Promise<{ count: number; resultSet: Visa[]; offset: number; limit: number }> => {
   return ajax
     .get(
-      `/visa?${queryString.stringify(
+      `/visas?${queryString.stringify(
         omitBy(
           {
             limit,

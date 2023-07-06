@@ -34,7 +34,7 @@ export const addGroupPermissionToPolicy = ({ policy, group }) => {
 
 export const addVisaPermissionToPolicy = ({ policy, visa }) => {
   return ajax
-    .post(`/visa/permissions`, { 
+    .post(`/visas/permissions`, { 
       policyId: policy.id,
       visaId: visa.id,
       accessLevel: visa.mask 
@@ -59,7 +59,7 @@ export const removeUserPermissionFromPolicy = ({ policy, user }) => {
 
 export const removeVisaFromPolicy = ({ policy, visa }) => {
   return ajax
-    .delete(`/visa/${visa.id}/permissions/${policy.id}`)
+    .delete(`/visas/${visa.id}/permissions/${policy.id}`)
     .then((r) => r.data)
     .catch((err) => console.debug(err));
 };

@@ -8,7 +8,7 @@ import { clientSideSort } from './clientSideSortUtil';
 
 export const getVisa = (id) => {
   return ajax
-    .get(`/visa/${id}`)
+    .get(`/visas/${id}`)
     .then((r) => r.data)
     .catch((err) => err);
 };
@@ -23,7 +23,7 @@ export const getVisaPermissions = ({
 }): Promise<{ count: number; resultSet: VisaPermission[]; offset: number; limit: number }> => {
   return ajax
     .get(
-      `/visa/permissions/${visaId}?${queryString.stringify(
+      `/visas/permissions/${visaId}?${queryString.stringify(
         omitBy(
           {
             limit,
