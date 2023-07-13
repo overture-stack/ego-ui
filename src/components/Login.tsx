@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED } from 'common/injectGlobals';
+import { API_ROOT, EGO_CLIENT_ID, KEYCLOAK_ENABLED, PASSPORT_ENABLED } from 'common/injectGlobals';
 import { injectState } from 'freactal';
 import { css } from '@emotion/react';
 import jwtDecode from 'jwt-decode';
@@ -182,7 +182,7 @@ class Component extends React.Component<any, any> {
               ? 'Or login with one of the following services'
               : 'Login with one of the following'}
           </h3>
-          {providers.map(({ name, path, Icon }) => {
+          {providers.filter(provider => !(provider.name === LoginProvider.Passport && !PASSPORT_ENABLED)).map(({ name, path, Icon }) => {
             return (
               <LoginButton
                 key={name}

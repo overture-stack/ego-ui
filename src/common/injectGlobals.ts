@@ -12,6 +12,8 @@ export const EGO_CLIENT_ID = process.env.REACT_APP_EGO_CLIENT_ID;
 
 export const PUBLIC_PATH = process.env.REACT_APP_PUBLIC_PATH;
 
+export const PASSPORT_ENABLED = process.env.REACT_APP_PASSPORT_ENABLED === 'true' || false;
+
 export const KEYCLOAK_ENABLED = process.env.REACT_APP_KEYCLOAK_ENABLED === 'true' || false;
 
 export const STATUSES = ['DISABLED', 'APPROVED', 'PENDING', 'REJECTED'];
