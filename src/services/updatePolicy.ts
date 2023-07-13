@@ -32,6 +32,17 @@ export const addGroupPermissionToPolicy = ({ policy, group }) => {
     .catch((err) => console.debug(err));
 };
 
+export const addVisaPermissionToPolicy = ({ policy, visa }) => {
+  return ajax
+    .post(`/visas/permissions`, { 
+      policyId: policy.id,
+      visaId: visa.id,
+      accessLevel: visa.mask 
+    })
+    .then((r) => r.data)
+    .catch((err) => console.debug(err));
+};
+
 export const removeGroupPermissionFromPolicy = ({ policy, group }) => {
   return ajax
     .delete(`/policies/${policy.id}/permission/group/${group.id}`)
@@ -42,6 +53,13 @@ export const removeGroupPermissionFromPolicy = ({ policy, group }) => {
 export const removeUserPermissionFromPolicy = ({ policy, user }) => {
   return ajax
     .delete(`/policies/${policy.id}/permission/user/${user.id}`)
+    .then((r) => r.data)
+    .catch((err) => console.debug(err));
+};
+
+export const removeVisaFromPolicy = ({ policy, visa }) => {
+  return ajax
+    .delete(`/visas/${visa.id}/permissions/${policy.id}`)
     .then((r) => r.data)
     .catch((err) => console.debug(err));
 };

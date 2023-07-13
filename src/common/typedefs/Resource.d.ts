@@ -22,7 +22,7 @@ export interface IField {
 
 export type ISchema = IField[];
 
-export type TResourceType = GROUPS | APPLICATIONS | USERS | API_KEYS | PERMISSIONS | POLICIES;
+export type TResourceType = GROUPS | APPLICATIONS | USERS | API_KEYS | PERMISSIONS | POLICIES | VISAS;
 
 export type TSortDirection = 'DESC' | 'ASC';
 
@@ -49,11 +49,15 @@ interface IUserPermissionParams extends IBaseListParams {
   userId: string;
 }
 
+interface IVisaPermissionParams extends IBaseListParams {
+  visaId: string
+}
+
 interface IListResponse {
   limit: number;
   offset: number;
   count: number;
-  resultSet: User[] | Group[] | Application[] | Policy[] | UserPermission[] | ApiKey[];
+  resultSet: User[] | Group[] | Application[] | Policy[] | UserPermission[] | ApiKey[] | Visa[];
 }
 
 type TGetItem = (id: string) => Promise<User | Group | Application | string>;
@@ -125,6 +129,7 @@ interface IAddToApplication {
 interface IPermissionsGetList {
   groups: (params: IGroupPermissionParams) => Promise<IListResponse>;
   users: (params: IUserPermissionParams) => Promise<IListResponse>;
+  visas: (params: IVisaPermissionParams) => Promise<IListResponse>;
 }
 
 type TGetList = (params: IListParams) => Promise<IListResponse>;
@@ -152,7 +157,7 @@ export interface IResource {
   associatedTypes: Types[];
   initialSortField: (any) => string;
   childSchema?: Schema;
-  addItem: boolean | { groups: boolean; users: boolean };
+  addItem: boolean | { groups: boolean; users: boolean; visas: boolean };
   add?: IAddToUser | IAddToGroup | IAddToApplication | any;
   remove?: any;
   getKey: Function;

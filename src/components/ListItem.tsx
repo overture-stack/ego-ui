@@ -199,3 +199,28 @@ export const PermissionListItem = ({
     />
   );
 };
+
+export const VisaListItem = ({
+  item,
+  sortField,
+  className = '',
+  onClick,
+  parent,
+  selected,
+  style,
+}) => {
+  console.log(`VisaListItem:${JSON.stringify(item)}`)
+  const secondaryField = sortField === 'name' ? 'id' : sortField;
+  return (
+    <BasicListItem
+      className={className}
+      onClick={onClick}
+      selected={selected}
+      parent={parent}
+      resourceType="visa"
+      primaryField={item.type}
+      secondaryField={item[secondaryField]}
+      style={style}
+    />
+  );
+};

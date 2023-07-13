@@ -1,6 +1,6 @@
 import { get, isEmpty } from 'lodash';
 
-import { API_KEY, GROUP, PERMISSION, POLICY, USER } from 'common/enums';
+import { API_KEY, GROUP, PERMISSION, POLICY, USER, VISA } from 'common/enums';
 
 const getResourceName = resource => get(resource, 'name.singular');
 const hasParent = parent => !isEmpty(parent);
@@ -16,6 +16,7 @@ const isPermission = resource => getResourceName(resource) === PERMISSION;
 const isUser = resource => getResourceName(resource) === USER;
 const isGroup = resource => getResourceName(resource) === GROUP;
 const isApiKey = resource => getResourceName(resource) === API_KEY;
+const isVisa = resource => getResourceName(resource) === VISA;
 
 export {
   isChildOfPolicy,
@@ -26,5 +27,6 @@ export {
   isPermission,
   isUser,
   isGroup,
+  isVisa,
   hasParent,
 };
