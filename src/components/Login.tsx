@@ -182,7 +182,7 @@ class Component extends React.Component<any, any> {
               ? 'Or login with one of the following services'
               : 'Login with one of the following'}
           </h3>
-          {providers.filter(provider => !(provider.name === LoginProvider.Passport && !PASSPORT_ENABLED)).map(({ name, path, Icon }) => {
+          {providers.filter(provider => PASSPORT_ENABLED || provider.name !== LoginProvider.Passport).map(({ name, path, Icon }) => {
             return (
               <LoginButton
                 key={name}

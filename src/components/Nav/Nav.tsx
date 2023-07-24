@@ -74,7 +74,8 @@ const Nav = ({ effects, state }) => {
         </Emblem>
       </div>
       <ul css={listStyles}>
-        {Object.keys(pickBy(RESOURCE_MAP, (r) => r.isParent)).filter(key => !(key === VISAS && !PASSPORT_ENABLED)).map((key) => {
+        {Object.keys(pickBy(RESOURCE_MAP, (r) => r.isParent)).map((key) => {
+          if(key === VISAS && !PASSPORT_ENABLED) { return null; }
           const resource = RESOURCE_MAP[key];
           return (
             <li key={key}>
