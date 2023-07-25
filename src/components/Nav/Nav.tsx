@@ -7,6 +7,8 @@ import { injectState } from 'freactal';
 import { compose } from 'recompose';
 import { Icon } from 'semantic-ui-react';
 
+import { VISAS } from 'common/enums';
+import { PASSPORT_ENABLED } from 'common/injectGlobals';
 import RESOURCE_MAP from 'common/RESOURCE_MAP';
 import UnstyledButton from 'components/UnstyledButton';
 import CurrentUserNavItem from './CurrentUserNavItem';
@@ -73,6 +75,7 @@ const Nav = ({ effects, state }) => {
       </div>
       <ul css={listStyles}>
         {Object.keys(pickBy(RESOURCE_MAP, (r) => r.isParent)).map((key) => {
+          if(key === VISAS && !PASSPORT_ENABLED) { return null; }
           const resource = RESOURCE_MAP[key];
           return (
             <li key={key}>
