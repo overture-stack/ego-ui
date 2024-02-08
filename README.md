@@ -1,34 +1,94 @@
-<h1 align="center"> EGO Authorization Service UI </h1><br>
+# Ego-UI - Authentication and Authorization
 
-<p align="center">
-UI for managing EGO Authentication and Authorization services
-</p>
+[<img hspace="5" src="https://img.shields.io/badge/chat-on--slack-blue?style=for-the-badge">](http://slack.overture.bio)
+[<img hspace="5" src="https://img.shields.io/badge/License-gpl--v3.0-blue?style=for-the-badge">](https://github.com/overture-stack/ego-ui/blob/develop/LICENSE)
+[<img hspace="5" src="https://img.shields.io/badge/Code%20of%20Conduct-2.1-blue?style=for-the-badge">](code_of_conduct.md)
 
-<p align="center">
-  <a href="http://www.overture.bio/products/ego" target="_blank"><img alt="Release Candidate" title="Release Candidate" src=https://www.overture.bio/img/progress-horizontal-RC.svg width="320" /></a>
-</p>
+<div>
+<img align="right" width="66vw" vspace="5" src="icon-ego.png" alt="ego-logo" hspace="30"/>
+</div>
 
-## Setup
+A UI for managing user privileges that natively interacts with our [Ego](https://github.com/overture-stack/ego) authentication and authorization microservice.
+
+<!--Blockqoute-->
+
+</br>
+
+> 
+> <div>
+> <img align="left" src="ov-logo.png" height="90" hspace="0"/>
+> </div>
+> 
+> *Ego-UI is a vital service within the [Overture](https://www.overture.bio/) research software ecosystem. With our genomics data management solutions, scientists can significantly improve the lifecycle of their data and the quality of their research. See our [related products](#related-products) for more information on what Overture can offer.*
+> 
+> 
+
+<!--Blockqoute-->
+
+## Technical Specifications
+
+- Written in Typescript 
+- Bootstrapped with the [Create React App](https://github.com/facebook/create-react-app)
+
+## Development
 
 ### Requirements
 
-- [Node 8+](https://nodejs.org/en/download/current/)
-- [yarnpkg](https://yarnpkg.com/en/docs/install)
+- [Node.js 8 or higher](https://nodejs.org/en/download/current/)
+- [Yarn package manager](https://classic.yarnpkg.com/en/docs/install#mac-stable)
 
-### Develop
+### Setup
 
-1. create a `.env` file at the root of the repo, following the schema of the [.env.schema](.env.schema)
-1. install dependencies (from repo root, run `yarn`)
-1. start development server (from repo root, run `yarn start`)
+To setup the development enviroment,
+
+1. Create a `.env` file at the root of the repo, using the same structure as the [.env.schema](.env.schema) file.
+2. Install dependencies by running `yarn` from the root of the repo.
+3. Start the development server by running `yarn start` from the root of the repo.
 
 ### Build
 
-1. create a `.env` file at the root of the repo, following the schema of the [.env.schema](.env.schema)
-1. run `yarn build`.
-1. deploy the resulting `build/` folder
+To build the project, 
 
-### Configure
+1. Create a `.env` file at the root of the repo, using the same structure as the [.env.schema](.env.schema) file.
+2. Execute the command `yarn build` 
+3. Deploy the contents of the `build/` directory that was created as a result.
 
-1. To change the brand image, replace the svg in [src/assets/brand-image.svg](src/assets/brand-image.svg) and [src/assets/brand-image-small.svg](src/assets/brand-image-small.svg) with your own brand image files
+## Documentation
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+- For more information see our Ego Developer [wiki](https://github.com/overture-stack/ego/wiki)
+- For Ego user installation see our website [here](https://www.overture.bio/documentation/ego/installation/)
+- For administrative guidance see our website [here](https://www.overture.bio/documentation/ego/user-guide/admin-ui/)
+
+
+## Support & Contributions
+
+- Filing an [issue](https://github.com/overture-stack/ego-ui/issues)
+- Making a [contribution](CONTRIBUTING.md)
+- Connect with us on [Slack](http://slack.overture.bio)
+- Add or Upvote a [feature request](https://github.com/overture-stack/ego-ui/issues?q=is%3Aopen+is%3Aissue+label%3Anew-feature+sort%3Areactions-%2B1-desc)
+
+## Related Products 
+
+<div>
+  <img align="right" alt="Overture overview" src="https://www.overture.bio/static/124ca0fede460933c64fe4e50465b235/a6d66/system-diagram.png" width="45%" hspace="5">
+</div>
+
+Overture is an ecosystem of research software tools, each with narrow responsibilities, designed to address the changing needs of genomics research. 
+
+The Overture **Data Management System** (DMS) is a fully functional and customizable data portal built from a packaged collection of Overture's microservices. For more information on DMS, read our [DMS documentation](https://www.overture.bio/documentation/dms/).
+
+<!--Read our architecture overview to see how these services relate-->
+
+See the links below for additional information on our other research software tools:
+
+</br>
+
+|Product|Description|
+|---|---|
+|[Ego](https://www.overture.bio/products/ego/)|An authorization and user management service|
+|[Ego UI](https://www.overture.bio/products/ego-ui/)|A UI for managing EGO authentication and authorization services|
+|[Score](https://www.overture.bio/products/score/)| Transfer data quickly and easily to and from any cloud-based storage system|
+|[Song](https://www.overture.bio/products/song/)|Catalog and manage metadata of genomics data spread across cloud storage systems|
+|[Maestro](https://www.overture.bio/products/maestro/)|Organizing your distributed data into a centralized Elasticsearch index|
+|[Arranger](https://www.overture.bio/products/arranger/)|Organize an intuitive data search interface, complete with customizable components, tables, and search terms|
+
