@@ -6,9 +6,9 @@ import { Button, Grid, Label } from 'semantic-ui-react';
 import styled from '@emotion/styled';
 import { useTheme } from '@emotion/react';
 
-import { DATE_FORMAT } from 'common/injectGlobals';
+import { DATE_FORMAT } from 'common/constants';
 import { getApiKeyStatus } from './apiKeysUtils';
-import { FieldName } from 'components/Content/ContentPanelView';
+import { FieldName } from 'components/Content/common/grid';
 
 const CustomLabel = styled(Label)`
   ${({ theme, bgcolor }) => `

@@ -4,50 +4,16 @@ import { groupBy } from 'lodash';
 import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import { useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
 
-import { USER } from 'common/enums';
-
-const StyledRow = styled(Grid.Row)`
-  height: 48px;
-  align-items: center;
-  padding: 0.5rem 0rem;
-`;
-
-const StyledGrid = styled(Grid)`
-  &.customGrid {
-    margin: 0;
-  }
-`;
-
-const Section = styled('div')`
-  ${({ theme }) => `
-    border-bottom: 1px solid ${theme.colors.grey_3};
-    margin: 0 1rem 0 1.5rem;
-    padding: 0.5rem 0 2rem;
-  `}
-`;
-
-const FieldContent = styled('span')`
-  font-size: 14px;
-`;
-
-export const FieldName = styled('span')`
-  ${({ theme }) => `
-    align-items: center;
-    color: ${theme.colors.grey_6};
-    display: inline-flex;
-    font-size: 11px;
-    padding-right: 10px;
-  `}
-`;
+import { SingularResourceType } from 'common/enums';
+import { FieldContent, FieldName, Section, StyledGrid, StyledRow } from './common/grid';
 
 const ContentView = ({ entity, entityType, rows }) => {
   const panelSections = groupBy(rows, 'panelSection');
   const theme = useTheme();
   return (
     <div>
-      <Section
+      {/* <Section
         className="contentPanel id"
         css={css`
           padding-top: 0;
@@ -114,12 +80,12 @@ const ContentView = ({ entity, entityType, rows }) => {
       {panelSections['meta'] && panelSections['meta'].length > 0 && (
         <Section className="contentPanel meta">
           <Grid columns="equal">
-            {entityType === USER ? (
+            {entityType === SingularResourceType.USER ? (
               <React.Fragment>
                 <StyledRow className="contentView contentRow">
                   {panelSections['meta'].slice(0, 2).map(({ fieldContent, fieldName, key }) => {
                     const adminStyle =
-                      entityType === USER &&
+                      entityType === SingularResourceType.USER &&
                       key === 'type' &&
                       typeof fieldContent === 'string' &&
                       (fieldContent || '').toLowerCase() === 'admin'
@@ -225,7 +191,7 @@ const ContentView = ({ entity, entityType, rows }) => {
             );
           })}
         </Grid>
-      </Section>
+      </Section> */}
     </div>
   );
 };

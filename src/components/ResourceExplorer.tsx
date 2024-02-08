@@ -1,39 +1,42 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { get, isEmpty } from 'lodash';
+// import { get, isEmpty } from 'lodash';
 import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import { compose } from 'recompose';
 
-import RESOURCE_MAP from 'common/RESOURCE_MAP';
-import Associator from 'components/Associator/Associator';
+// import RESOURCE_MAP from 'common/RESOURCE_MAP';
+// import Associator from 'components/Associator/Associator';
 import Content from 'components/Content';
 import ListPane from 'components/ListPane';
-import { provideList } from 'stateProviders';
-import { PERMISSIONS } from 'common/enums';
-import { getListFunc } from 'stateProviders/provideEntity';
+// import { ResourceType } from 'common/enums';
+import useListContext from './global/hooks/useListContext';
 
-const enhance = compose(withRouter, provideList);
+const enhance = compose(withRouter);
 
-const ResourceExplorer = ({ id, resource, history, parent }) => {
+// const ResourceExplorer = ({ id, resource, history, parent }) => {
+const ResourceExplorer = () => {
+  const { listParams, list } = useListContext();
   return (
     <React.Fragment>
       <ListPane
-        resource={resource}
-        parent={parent}
-        selectedItemId={id}
-        onSelect={(item) => {
-          // prevent select action on child tables
-          if (isEmpty(parent)) {
-            history.replace(
-              `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
-                resource.name.plural
-              }${item.id.toString() === id ? '' : `/${item.id}`}`,
-            );
-          }
-        }}
+        showPagination={listParams.limit < list?.count || listParams.offset > 0}
+        // resource={resource}
+        // parent={parent}
+        // selectedItemId={id}
+        // onSelect={(item) => {
+        //   // prevent select action on child tables
+        //   if (isEmpty(parent)) {
+        //     history.replace(
+        //       `${parent ? `/${parent.resource.name.plural}/${parent.id}` : ''}/${
+        //         resource.name.plural
+        //       }${item.id.toString() === id ? '' : `/${item.id}`}`,
+        //     );
+        //   }
+        // }}
       />
-      <Content
+      <Content />
+      {/* <Content
         id={id}
         resource={resource}
         parent={parent}
@@ -42,14 +45,14 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
           ...resource.associatedTypes.map((associatedType) => {
             return {
               key: associatedType,
-              fieldContent: ({ associated, editing, stageChange }) => {
+              fieldContent: ({ associated, editing }) => {
                 return (
                   <React.Fragment>
                     <Associator
                       editing={editing}
                       fetchItems={
                         RESOURCE_MAP[associatedType][
-                          associatedType === PERMISSIONS ? 'getListAll' : 'getList'
+                          associatedType === ResourceType.PERMISSIONS ? 'getListAll' : 'getList'
                         ]
                       }
                       fetchExistingAssociations={(params) => {
@@ -67,7 +70,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                         });
                       }}
                       getName={RESOURCE_MAP[associatedType].getName}
-                      initialItems={associated[associatedType].resultSet}
+                      initialItems={associated[associatedType]?.resultSet}
                       onAdd={(item) => {
                         stageChange({ [associatedType]: { add: item } });
                       }}
@@ -78,7 +81,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                       parentId={id}
                     />
                     {!parent &&
-                      associated[associatedType].count >
+                      associated[associatedType]?.count >
                         get(associated[associatedType], 'resultSet.length', 0) && (
                         <NavLink
                           to={`/${resource.name.plural}/${id}/${associatedType}`}
@@ -89,7 +92,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
                             paddingTop: 10,
                           })}
                         >
-                          View {associated[associatedType].count} {associatedType}
+                          View {associated[associatedType]?.count} {associatedType}
                         </NavLink>
                       )}
                   </React.Fragment>
@@ -99,7 +102,7 @@ const ResourceExplorer = ({ id, resource, history, parent }) => {
             };
           }),
         ]}
-      />
+      /> */}
     </React.Fragment>
   );
 };

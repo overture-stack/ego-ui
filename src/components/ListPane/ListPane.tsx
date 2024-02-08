@@ -1,76 +1,25 @@
 /** @jsxImportSource @emotion/react */
-import { useTheme } from '@emotion/react';
-import { debounce, get, merge, noop } from 'lodash';
-import React, { useEffect } from 'react';
-import { compose, defaultProps, withProps, withState } from 'recompose';
+import { SyntheticEvent, useEffect, useState } from 'react';
+import { css, useTheme } from '@emotion/react';
+import { noop } from 'lodash';
+import { compose, defaultProps } from 'recompose';
 import { Button, Dropdown, Icon, Input } from 'semantic-ui-react';
-import { injectState } from 'freactal';
 
-import { TEntity } from 'common/typedefs';
-import { IResource, TSortDirection } from 'common/typedefs/Resource';
 import ControlContainer from 'components/ControlsContainer';
 import Pagination from 'components/Pagination';
-import { RippleButton } from 'components/Ripple';
-import ItemGrid from './ItemGrid';
-import ItemTable from './ItemTable';
-import getStyles from './ListPane.styles';
+// import getStyles from './ListPane.styles';
 
-import { isChildOfPolicy } from 'common/associatedUtils';
-
-enum DisplayMode {
-  Table,
-  Grid,
-}
-
-interface IListProps {
-  initialQuery: string;
-  resource: IResource;
-  onSelect: Function;
-  getKey: Function;
-  columnWidth: number;
-  styles: any;
-  selectedItemId: string;
-  currentSort: {
-    order: TSortDirection;
-    field: any;
-  };
-  setCurrentSort: Function;
-  setQuery: Function;
-  query: string;
-  effects: {
-    updateList: Function;
-    refreshList: Function;
-    setListResource: Function;
-    setUserPreferences: Function;
-  };
-  state: {
-    preferences: {
-      listDisplayMode: DisplayMode;
-    };
-    list: {
-      limit: number;
-      resultSet: TEntity[];
-      count: number;
-      params: any;
-    };
-  };
-  parent: {
-    id: string;
-    resource: IResource;
-  };
-}
+// import { isChildOfPolicy } from 'common/associatedUtils';
+import useListContext, { SortOrder } from 'components/global/hooks/useListContext';
+import Table from './Table';
+import schemas from 'common/schemas';
+import useDebounce from 'components/global/hooks/useDebounce';
 
 const enhance = compose(
-  injectState,
   defaultProps({ columnWidth: 200, rowHeight: 60, onSelect: noop }),
-  withState('query', 'setQuery', (props) => props.initialQuery || ''),
-  withState('currentSort', 'setCurrentSort', (props) => ({
-    field: props.resource.initialSortField(isChildOfPolicy(get(props.parent, 'resource'))),
-    order: props.resource.initialSortOrder,
-  })),
-  withProps(({ columnWidth, resource, styles: stylesProp }) => ({
-    styles: merge(getStyles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
-  })),
+  // withProps(({ columnWidth, resource, styles: stylesProp }) => ({
+  //   styles: merge(getStyles({ columnWidth, rowHeight: resource.rowHeight }), [stylesProp]),
+  // })),
 );
 
 const paneControls = {
@@ -95,63 +44,47 @@ const paneControls = {
   },
 };
 
-const List = ({
-  onSelect,
-  getKey,
-  styles,
-  selectedItemId,
-  currentSort,
-  currentSort: { field, order },
-  setCurrentSort,
-  setQuery,
-  state: {
-    preferences: { listDisplayMode },
-    list: {
-      count = 0,
-      params: { offset, limit },
-    },
-  },
-  effects: { updateList, refreshList, setUserPreferences, setListResource },
-  columnWidth,
-  parent,
-  resource,
-  query,
-}: IListProps) => {
-  const updateData = async () => {
-    await setListResource(resource, parent);
-    updateList({
-      offset: 0,
-      sortField: field.key,
-      sortOrder: order,
-      query,
-      ...(parent && { [`${parent.resource.name.singular}Id`]: parent.id }),
-    });
-  };
-
-  useEffect(() => {
-    updateData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const debouncedUpdate = debounce(() => updateData(), 100);
-    debouncedUpdate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resource, query, order, field.key]);
-
-  const displayMode: any =
-    typeof listDisplayMode !== 'undefined' ? listDisplayMode : DisplayMode.Table;
-
+const List = ({ showPagination }: { showPagination: boolean }) => {
+  // const List = ({ onSelect, getKey, styles, selectedItemId, columnWidth, parent, resource }: any) => {
+  const { list, listParams, setListParams, currentResource } = useListContext();
   const theme = useTheme();
+  const columnWidth = 200;
+  // TODO: for the moment schema setup for parent resources only
+  const tableSchema = schemas[currentResource];
+  const [query, setQuery] = useState<string>('');
+
+  const debouncedQuery = useDebounce(query, 200);
+  useEffect(() => {
+    setListParams({ query: debouncedQuery });
+  }, [debouncedQuery, setListParams]);
 
   return (
-    <div css={styles.container}>
+    <div
+      css={css`
+        min-width: ${columnWidth}px;
+        background: ${theme.colors.grey_2};
+        border-right: 1px solid ${theme.colors.grey_3};
+        overflow-y: auto;
+        display: flex;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-direction: column;
+        & .items-wrapper: {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          flex-grow: 1;
+          justify-content: space-evenly;
+          margin: 10px 10px 0px;
+        }
+      `}
+    >
       <ControlContainer>
         <div css={paneControls.searchContainer}>
           <Input
             icon={
-              query.length > 0 ? (
-                <Icon name={'close'} onClick={(e) => setQuery('')} link={true} />
+              listParams.query.length > 0 ? (
+                <Icon name={'close'} onClick={() => setQuery('')} link={true} />
               ) : (
                 <Icon name={'search'} />
               )
@@ -164,129 +97,112 @@ const List = ({
         <div css={paneControls.sortContainer}>
           Sort by:
           <Dropdown
-            selection
-            style={{ minWidth: '9.1em', marginLeft: '0.5em' }}
+            button
+            style={{
+              minWidth: '9.1em',
+              marginLeft: '0.5em',
+              display: 'flex',
+              justifyContent: 'space-between',
+              backgroundColor: theme.colors.white,
+              border: `1px solid ${theme.colors.grey_3}`,
+              paddingLeft: '15px',
+              paddingRight: '12px',
+              fontWeight: 'normal',
+              color: theme.colors.black,
+            }}
             selectOnNavigation={false}
-            options={resource
-              .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-              .map((field) => ({
-                text: field.fieldName,
-                value: field.key,
-              }))}
-            text={currentSort.field.fieldName}
-            onChange={(event, { value }) =>
-              setCurrentSort({
-                ...currentSort,
-                field: resource
-                  .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-                  .find((field) => field.key === value),
-              })
-            }
-          />
+            text={listParams.sortField.fieldName}
+          >
+            <Dropdown.Menu>
+              {schemas[currentResource]
+                .filter((field) => field.sortable)
+                .map((sortableField) => {
+                  return (
+                    <Dropdown.Item
+                      key={sortableField.key}
+                      text={sortableField.fieldName}
+                      value={sortableField.key}
+                      onClick={(
+                        event: SyntheticEvent,
+                        { value, text }: { value: string; text: string },
+                      ) => {
+                        setListParams({ sortField: { key: value, fieldName: text } });
+                      }}
+                    />
+                  );
+                })}
+            </Dropdown.Menu>
+          </Dropdown>
           <Button.Group css={paneControls.sortOrderWrapper} vertical>
             <Button
               style={{
                 backgroundColor: 'transparent',
                 paddingBottom: 0,
-                ...(currentSort.order === 'ASC' && { color: theme.colors.primary_5 }),
+                ...(listParams.sortOrder === SortOrder.ASC && { color: theme.colors.primary_5 }),
               }}
-              onClick={() => setCurrentSort({ ...currentSort, order: 'ASC' })}
+              onClick={() =>
+                setListParams({
+                  sortOrder:
+                    listParams.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+                })
+              }
               icon="chevron up"
             />
             <Button
               style={{
                 paddingTop: 0,
                 backgroundColor: 'transparent',
-                ...(currentSort.order === 'DESC' && { color: theme.colors.primary_5 }),
+                ...(listParams.sortOrder === 'DESC' && { color: theme.colors.primary_5 }),
               }}
-              onClick={() => setCurrentSort({ ...currentSort, order: 'DESC' })}
+              onClick={() =>
+                setListParams({
+                  sortOrder:
+                    listParams.sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+                })
+              }
               icon="chevron down"
             />
           </Button.Group>
         </div>
-        <div css={paneControls.displayModeContainer}>
-          <RippleButton
-            compact
-            style={displayMode === DisplayMode.Table ? { color: theme.colors.primary_5 } : {}}
-            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Table })}
-          >
-            <Button.Content>
-              <Icon name="list" fitted />
-            </Button.Content>
-          </RippleButton>
-          <RippleButton
-            compact
-            style={displayMode === DisplayMode.Grid ? { color: theme.colors.primary_5 } : {}}
-            onClick={() => setUserPreferences({ listDisplayMode: DisplayMode.Grid })}
-          >
-            <Button.Content>
-              <Icon name="grid layout" fitted />
-            </Button.Content>
-          </RippleButton>
-        </div>
       </ControlContainer>
-      {displayMode === DisplayMode.Grid ? (
-        <ItemGrid
-          Component={resource.ListItem}
-          getKey={resource.getKey}
-          sortField={currentSort.field}
-          selectedItemId={selectedItemId}
-          onSelect={onSelect}
-          styles={styles}
-          columnWidth={columnWidth}
-          rowHeight={resource.rowHeight}
-          onRemove={
-            parent &&
-            (async (item) => {
-              const removeFunction =
-                parent.resource.remove[resource.name.plural] || (() => Promise.resolve());
-              await removeFunction({
-                [resource.name.plural]: item,
-                item: parent,
-              });
-              refreshList();
-            })
-          }
-          parent={parent}
-        />
-      ) : (
-        <ItemTable
-          parent={parent}
-          resource={resource}
-          getKey={getKey}
-          currentSort={currentSort}
-          selectedItemId={selectedItemId}
-          onSelect={onSelect}
-          // styles={styles}
-          onSortChange={(newSortField, newSortOrder) => {
-            setCurrentSort({
-              ...currentSort,
-              order: newSortOrder,
-              field: resource
-                .sortableFields(isChildOfPolicy(get(parent, 'resource')))
-                .find((field) => field.key === newSortField),
+      <Table schema={tableSchema} />
+      {/* <ItemTable
+        resultSet={list.resultSet}
+        parent={parent}
+        resource={resource}
+        getKey={getKey}
+        currentSort={{ sortField: listParams.sortField, sortOrder: listParams.sortOrder }}
+        selectedItemId={selectedItemId}
+        onSelect={onSelect}
+        onSortChange={(newSortField, newSortOrder) => {
+          setListParams({
+            sortOrder: newSortOrder,
+            sortField: resource
+              .sortableFields(isChildOfPolicy(get(parent, 'resource')))
+              .find((field) => field.key === newSortField),
+          });
+        }}
+        handleListUpdate={updateList}
+        onRemove={
+          // only for child tables
+          parent &&
+          (async (item) => {
+            const removeFunction =
+              parent.resource.remove[resource.name.plural] || (() => Promise.resolve());
+            await removeFunction({
+              [resource.name.plural]: item,
+              item: parent,
             });
-          }}
-          onRemove={
-            parent &&
-            (async (item) => {
-              const removeFunction =
-                parent.resource.remove[resource.name.plural] || (() => Promise.resolve());
-              await removeFunction({
-                [resource.name.plural]: item,
-                item: parent,
-              });
-              refreshList();
-            })
-          }
-        />
-      )}
-      {(limit < count || offset > 0) && (
+            updateList(resource, parent);
+          })
+        }
+      /> */}
+      {showPagination && (
         <Pagination
-          onChange={(page) => updateList({ offset: page * limit })}
-          offset={offset}
-          limit={limit}
-          total={count}
+          onChange={(page) => setListParams({ offset: page * listParams.limit })}
+          offset={listParams.offset}
+          limit={listParams.limit}
+          total={list?.count}
           range={3}
         />
       )}

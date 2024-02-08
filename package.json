@@ -11,7 +11,7 @@
     "debug": "3.1.0",
     "downshift": "^1.14.0",
     "flexboxgrid": "^6.3.1",
-    "freactal": "^1.1.1",
+    "jsonwebtoken": "^8.5.1",
     "jwt-decode": "2.2.0",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
@@ -47,6 +47,8 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@types/jest": "^21.1.2",
+    "@types/jsonwebtoken": "8.5.1",
+    "@types/lodash": "^4.14.178",
     "@types/node": "^8.0.33",
     "@types/react": "16.8.3",
     "@types/react-dom": "16.8.3",
